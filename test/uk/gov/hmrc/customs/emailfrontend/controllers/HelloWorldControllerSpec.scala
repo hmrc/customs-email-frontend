@@ -1,4 +1,4 @@
-package uk.gov.hmrc.customsemailfrontend.controllers
+package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -6,9 +6,9 @@ import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment, _}
+import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import uk.gov.hmrc.customsemailfrontend.config.AppConfig
 
 class HelloWorldControllerSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
   private val fakeRequest = FakeRequest("GET", "/")
