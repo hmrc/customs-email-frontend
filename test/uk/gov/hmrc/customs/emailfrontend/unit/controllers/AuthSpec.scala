@@ -23,6 +23,7 @@ import play.api.{Configuration, Mode}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.HelloWorldController
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
+import uk.gov.hmrc.customs.emailfrontend.views.html.hello_world
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 
@@ -34,8 +35,9 @@ class AuthSpec extends ControllerSpec {
 
   private val request = FakeRequest("GET", "/").withCSRFToken
   private val eori = Eori("ZZ123456789")
+  private val view = app.injector.instanceOf[hello_world]
 
-  val controller = new HelloWorldController(fakeAction)
+  val controller = new HelloWorldController(fakeAction, view)
 
   "Accessing a controller that requires a user to be authorised" should {
     "allow a fully authorised user access the page" in withAuthorisedUser(eori) {
@@ -43,15 +45,15 @@ class AuthSpec extends ControllerSpec {
     }
 
     "not allow an authorised user without an enrolled eori to access the page" in withAuthorisedUserWithoutEori {
-      status(controller.helloWorld(request)) shouldBe UNAUTHORIZED
+      status(controller.helloWorld(request)) shouldBe SEE_OTHER
     }
 
     "not allow an authorised user without any enrolments to access the page" in withAuthorisedUserWithoutEnrolments {
-      status(controller.helloWorld(request)) shouldBe UNAUTHORIZED
+      status(controller.helloWorld(request)) shouldBe SEE_OTHER
     }
 
     "not allow a logged out user to access the page" in {
-      status(controller.helloWorld(request)) shouldBe UNAUTHORIZED
+      status(controller.helloWorld(request)) shouldBe SEE_OTHER
     }
   }
 
