@@ -16,19 +16,20 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
+import play.api.mvc.Results.Redirect
+import play.api.mvc._
 import play.api.{Configuration, Environment}
-import play.api.mvc.{ActionBuilder, ActionRefiner, AnyContent, BodyParser, Request, Result}
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolment, InsufficientEnrolments, NoActiveSession}
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.allEnrolments
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, LoggedInUser}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
-import play.api.mvc.Results.Unauthorized
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthAction(auth: AuthConnector, override val config: Configuration, override val env: Environment, p: BodyParser[AnyContent])(implicit override val executionContext: ExecutionContext) extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] with AuthorisedFunctions with AuthRedirects {
+class AuthAction(predicate: Either[AuthProvider, Enrolment], auth: AuthConnector, override val config: Configuration, override val env: Environment, p: BodyParser[AnyContent])(implicit override val executionContext: ExecutionContext) extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] with AuthorisedFunctions with AuthRedirects {
 
   override def authConnector: AuthConnector = auth
 
@@ -36,15 +37,18 @@ class AuthAction(auth: AuthConnector, override val config: Configuration, overri
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-    authorised(Enrolment("HMRC-CUS-ORG"))
+    authorised(predicate.fold(fa => AuthProviders(fa), fb => fb))
       .retrieve(allEnrolments)(
         userAllEnrolments =>
           Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments))))
-      ) recover withAuthOrRedirect(request)
+      ) recover (withRedirect(request) orElse withAuth(request))
   }
 
-  private def withAuthOrRedirect(implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
+  private def withRedirect(implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
+    case _: InsufficientEnrolments => Left(Redirect(IneligibleUserController.show()))
+  }
+
+  private def withAuth(implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
     case _: NoActiveSession => Left(toGGLogin(continueUrl = "/"))
-    case _: InsufficientEnrolments => Left(Unauthorized("No Enrollment for CUSTOMS"))
   }
 }

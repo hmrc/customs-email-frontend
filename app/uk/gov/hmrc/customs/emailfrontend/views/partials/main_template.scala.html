@@ -17,7 +17,6 @@
 @import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 @import uk.gov.hmrc.play.views.html.layouts._
 
-
 @this(govuk_wrapper: govuk_wrapper, sidebar: Sidebar, article: Article)
 @(title: String,
   sidebarLinks: Option[Html] = None,
@@ -25,8 +24,6 @@
   bodyClasses: Option[String] = None,
   mainClass: Option[String] = None,
   scriptElem: Option[Html] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages, appConfig: AppConfig)
-
-
 
 @serviceInfoContent = {}
 

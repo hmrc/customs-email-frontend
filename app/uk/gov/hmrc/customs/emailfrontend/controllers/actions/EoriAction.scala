@@ -16,14 +16,15 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
-import play.api.mvc.Results.Unauthorized
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Eori, EoriRequest}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class EoriAction(implicit override val executionContext: ExecutionContext) extends ActionRefiner[AuthenticatedRequest, EoriRequest] {
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, EoriRequest[A]]] = {
-    Future.successful(request.user.eori map (eori => EoriRequest(request, Eori(eori))) toRight Unauthorized("No Eori"))
+    Future.successful(request.user.eori map (eori => EoriRequest(request, Eori(eori))) toRight Redirect(IneligibleUserController.show()))
   }
 }

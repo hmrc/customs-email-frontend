@@ -1,3 +1,5 @@
 # microservice specific routes
 
 GET        /hello-world             uk.gov.hmrc.customs.emailfrontend.controllers.HelloWorldController.helloWorld
+
+GET        /ineligible              uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController.show

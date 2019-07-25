@@ -22,7 +22,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.views.html.error_template
+import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
 
 @Singleton
 class ErrorHandler @Inject()(val messagesApi: MessagesApi, implicit val appConfig: AppConfig, errorView: error_template) extends FrontendErrorHandler {

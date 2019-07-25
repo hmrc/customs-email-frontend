@@ -21,7 +21,8 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
+import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EoriRequest}
 
 import scala.concurrent.ExecutionContext
@@ -30,13 +31,17 @@ import scala.concurrent.ExecutionContext
 trait Actions {
 
   def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest]
+  def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest]
   def eori: ActionRefiner[AuthenticatedRequest, EoriRequest]
 }
 
 @Singleton
 class ActionsImpl @Inject()(authConnector: AuthConnector, config: Configuration, environment: Environment, mcc: MessagesControllerComponents)
                            (implicit ec: ExecutionContext, messagesApi: MessagesApi) extends Actions {
-  def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(authConnector, config, environment, mcc.parsers.defaultBodyParser)
+
+  override def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Left(GovernmentGateway), authConnector, config, environment, mcc.parsers.defaultBodyParser)
+
+  def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Right(Enrolment("HMRC-CUS-ORG")), authConnector, config, environment, mcc.parsers.defaultBodyParser)
 
   def eori: ActionRefiner[AuthenticatedRequest, EoriRequest] = new EoriAction()
 }
