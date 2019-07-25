@@ -15,6 +15,8 @@
  *@
 
 @import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+
+@this(main_template: main_template)
 @(eori: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = "Hello from customs-email-frontend", bodyClasses = None) {

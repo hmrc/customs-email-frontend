@@ -40,11 +40,11 @@ class AuthAction(auth: AuthConnector, override val config: Configuration, overri
       .retrieve(allEnrolments)(
         userAllEnrolments =>
           Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments))))
-      ) recover wAR(request)
+      ) recover withAuthOrRedirect(request)
   }
 
-  private def wAR(implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
+  private def withAuthOrRedirect(implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
     case _: NoActiveSession => Left(toGGLogin(continueUrl = "/"))
-    case _: InsufficientEnrolments => Left(Unauthorized("Oops"))
+    case _: InsufficientEnrolments => Left(Unauthorized("No Enrollment for CUSTOMS"))
   }
 }

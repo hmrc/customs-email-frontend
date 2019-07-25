@@ -26,10 +26,10 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.hello_world
 
 
 @Singleton
-class HelloWorldController @Inject()(actions: Actions)(implicit appConfig: AppConfig, override val messagesApi: MessagesApi) extends I18nSupport {
+class HelloWorldController @Inject()(actions: Actions, view: hello_world)(implicit appConfig: AppConfig, override val messagesApi: MessagesApi) extends I18nSupport {
 
   def helloWorld: Action[AnyContent] = (actions.auth andThen actions.eori) { implicit request =>
-    Ok(hello_world(request.eori.id))
+    Ok(view(request.eori.id))
   }
 
 }

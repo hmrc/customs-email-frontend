@@ -24,6 +24,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EoriAction(implicit override val executionContext: ExecutionContext) extends ActionRefiner[AuthenticatedRequest, EoriRequest] {
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, EoriRequest[A]]] = {
-    Future.successful(request.user.eori map (eori => EoriRequest(request, Eori(eori))) toRight Unauthorized("Bye"))
+    Future.successful(request.user.eori map (eori => EoriRequest(request, Eori(eori))) toRight Unauthorized("No Eori"))
   }
 }
