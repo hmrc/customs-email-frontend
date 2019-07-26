@@ -21,11 +21,14 @@ import org.scalatest.{Matchers, WordSpecLike}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.MessagesApi
-import play.api.mvc.{AnyContent, BodyParser}
-import play.api.test.Helpers
-import play.api.{Environment, Play}
+import play.api.mvc.{AnyContent, BodyParser, RequestHeader}
+import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
+import play.api.test.{FakeRequest, Helpers}
+import play.api.{Configuration, Environment, Mode, Play}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.unit.{AuthBuilder, FakeAction}
+import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+
 
 trait ControllerSpec extends WordSpecLike with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder {
 
@@ -37,8 +40,13 @@ trait ControllerSpec extends WordSpecLike with Matchers with MockitoSugar with G
 
   val env: Environment = Environment.simple()
 
-  private val mockAppConfig = mock[AppConfig]
+  private val config = Configuration.load(env)
+  private val serviceConfig = new ServicesConfig(config, new RunMode(config, Mode.Dev))
+  implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig)
+
+  val request: RequestHeader = FakeRequest("GET", "/").withCSRFToken
+
   private val cc = Helpers.stubControllerComponents()
 
-  val fakeAction = new FakeAction(mockAuthConnector, cc.parsers.defaultBodyParser)(cc.messagesApi, mockAppConfig, cc.executionContext)
+  val fakeAction = new FakeAction(mockAuthConnector, cc.parsers.defaultBodyParser)(cc.messagesApi, appConfig, cc.executionContext)
 }

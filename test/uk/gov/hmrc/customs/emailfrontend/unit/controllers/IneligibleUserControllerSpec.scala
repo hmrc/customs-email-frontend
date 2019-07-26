@@ -16,29 +16,15 @@
 
 package uk.gov.hmrc.customs.emailfrontend.unit.controllers
 
-import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.{Configuration, Mode}
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 
 class IneligibleUserControllerSpec extends ControllerSpec {
 
-  private val request = FakeRequest("GET", "/").withCSRFToken
-
   private val view = app.injector.instanceOf[ineligible_user]
-
-  private val config = Configuration.load(env)
-  private val serviceConfig = new ServicesConfig(config, new RunMode(config, Mode.Dev))
-
-  private implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig)
-
   private val controller = new IneligibleUserController(fakeAction, view)
-
 
   "IneligibleUserController" should {
 

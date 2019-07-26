@@ -16,24 +16,14 @@
 
 package uk.gov.hmrc.customs.emailfrontend.unit.controllers
 
-import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.{Configuration, Mode}
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 
 class AuthSpec extends ControllerSpec {
 
-  private val config = Configuration.load(env)
-  private val serviceConfig = new ServicesConfig(config, new RunMode(config, Mode.Dev))
-  private implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig)
-
-  private val request = FakeRequest("GET", "/").withCSRFToken
   private val eori = Eori("ZZ123456789")
   private val view = app.injector.instanceOf[start_page]
 
