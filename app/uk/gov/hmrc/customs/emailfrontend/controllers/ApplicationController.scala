@@ -22,13 +22,13 @@ import play.api.mvc.Results.Ok
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.views.html.hello_world
+import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 
 
 @Singleton
-class HelloWorldController @Inject()(actions: Actions, view: hello_world)(implicit appConfig: AppConfig, override val messagesApi: MessagesApi) extends I18nSupport {
+class ApplicationController @Inject()(actions: Actions, view: start_page)(implicit appConfig: AppConfig, override val messagesApi: MessagesApi) extends I18nSupport {
 
-  def helloWorld: Action[AnyContent] = (actions.authEnrolled andThen actions.eori) { implicit request =>
+  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.eori) { implicit request =>
     Ok(view(request.eori.id))
   }
 
