@@ -20,8 +20,9 @@ import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.allEnrolments
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -35,26 +36,28 @@ trait AuthBuilder {
 
   private val notLoggedInException = new NoActiveSession("A user is not logged in") {}
 
+  val userInternalId = Some("internalId")
+
 
   def withAuthorisedUser(eori: Eori)(test: => Unit) {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
 
-    when(mockAuthConnector.authorise(any(), meq(allEnrolments))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.successful(userEnrollments))
+    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId))(any[HeaderCarrier], any[ExecutionContext]))
+      .thenReturn(Future.successful(new ~(userEnrollments, userInternalId)))
     test
   }
 
   def withAuthorisedUserWithoutEnrolments(test: => Unit) {
-    when(mockAuthConnector.authorise(any(), meq(allEnrolments))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.successful(Enrolments(Set.empty)))
+    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId))(any[HeaderCarrier], any[ExecutionContext]))
+      .thenReturn(Future.successful(new ~(Enrolments(Set.empty), userInternalId)))
     test
   }
 
   def withAuthorisedUserWithoutEori(test: => Unit) {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG")))
 
-    when(mockAuthConnector.authorise(any(), meq(allEnrolments))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.successful(userEnrollments))
+    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId))(any[HeaderCarrier], any[ExecutionContext]))
+      .thenReturn(Future.successful(new ~(userEnrollments, userInternalId)))
     test
   }
 

@@ -18,11 +18,16 @@ package uk.gov.hmrc.customs.emailfrontend.model
 
 import uk.gov.hmrc.auth.core.{EnrolmentIdentifier, Enrolments}
 
-case class LoggedInUser(enrolments: Enrolments) {
+case class LoggedInUser(enrolments: Enrolments, internalId: InternalId) {
   lazy val eori: Option[EnrolmentIdentifier] = enrolments.getEnrolment("HMRC-CUS-ORG") flatMap (_.getIdentifier("EORINumber"))
 }
 
 case class Eori(id: String)
 object Eori {
   def apply(identifier: EnrolmentIdentifier) = new Eori(identifier.value)
+}
+
+case class InternalId(id: String)
+object InternalId {
+  def apply(internalId: Option[String]) = new InternalId(internalId getOrElse "")
 }

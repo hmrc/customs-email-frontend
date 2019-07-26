@@ -20,9 +20,10 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.allEnrolments
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
-import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, LoggedInUser}
+import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, InternalId, LoggedInUser}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
@@ -38,10 +39,10 @@ class AuthAction(predicate: Either[AuthProvider, Enrolment], auth: AuthConnector
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     authorised(predicate.fold(authProvider => AuthProviders(authProvider), enrolment => enrolment))
-      .retrieve(allEnrolments)(
-        userAllEnrolments =>
-          Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments))))
-      ) recover (withRedirect(request) orElse withAuth(request))
+      .retrieve(allEnrolments and internalId) {
+        case userAllEnrolments ~ userInternalId =>
+          Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments, InternalId(userInternalId)))))
+      } recover (withRedirect(request) orElse withAuth(request))
   }
 
   private def withRedirect(implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
