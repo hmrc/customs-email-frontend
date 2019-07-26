@@ -25,7 +25,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   private val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
   private val assetsUrl = config.get[String]("assets.url")
-  private val serviceIdentifier = "MyService"
+  private val serviceIdentifier = "CDS"
 
   val assetsPrefix: String = assetsUrl + config.get[String]("assets.version")
   val analyticsToken: String = config.get[String](s"google-analytics.token")
@@ -34,4 +34,5 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val reportAProblemPartialUrl: String = s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifier"
   val reportAProblemNonJSUrl: String = s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifier"
 
+  val ggSignRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
 }

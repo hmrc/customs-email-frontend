@@ -14,3 +14,5 @@ lazy val microservice = Project(appName, file("."))
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)
+
+PlayKeys.devSettings := Seq("play.server.http.port" -> "9898")
