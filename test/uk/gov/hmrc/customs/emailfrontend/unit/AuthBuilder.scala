@@ -19,8 +19,9 @@ package uk.gov.hmrc.customs.emailfrontend.unit
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.allEnrolments
-import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments}
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -31,6 +32,9 @@ trait AuthBuilder {
   this: MockitoSugar =>
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
+
+  private val notLoggedInException = new NoActiveSession("A user is not logged in") {}
+
 
   def withAuthorisedUser(eori: Eori)(test: => Unit) {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
@@ -51,6 +55,12 @@ trait AuthBuilder {
 
     when(mockAuthConnector.authorise(any(), meq(allEnrolments))(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.successful(userEnrollments))
+    test
+  }
+
+  def withUnauthorisedUser(test: => Unit) {
+    when(mockAuthConnector.authorise(meq(AuthProviders(GovernmentGateway)), any())(any[HeaderCarrier], any[ExecutionContext]))
+      .thenReturn(Future.failed(notLoggedInException))
     test
   }
 

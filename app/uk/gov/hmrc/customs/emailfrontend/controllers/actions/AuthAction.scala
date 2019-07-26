@@ -29,15 +29,15 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthAction(predicate: Either[AuthProvider, Enrolment], auth: AuthConnector, override val config: Configuration, override val env: Environment, p: BodyParser[AnyContent])(implicit override val executionContext: ExecutionContext) extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] with AuthorisedFunctions with AuthRedirects {
+class AuthAction(predicate: Either[AuthProvider, Enrolment], auth: AuthConnector, override val config: Configuration, override val env: Environment, defaultBodyParser: BodyParser[AnyContent])(implicit override val executionContext: ExecutionContext) extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] with AuthorisedFunctions with AuthRedirects {
 
   override def authConnector: AuthConnector = auth
 
-  override def parser: BodyParser[AnyContent] = p
+  override def parser: BodyParser[AnyContent] = defaultBodyParser
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-    authorised(predicate.fold(fa => AuthProviders(fa), fb => fb))
+    authorised(predicate.fold(authProvider => AuthProviders(authProvider), enrolment => enrolment))
       .retrieve(allEnrolments)(
         userAllEnrolments =>
           Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments))))
