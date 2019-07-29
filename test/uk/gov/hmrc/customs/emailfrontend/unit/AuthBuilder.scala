@@ -25,6 +25,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.HeaderCarrier
+import org.mockito.Mockito.reset
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,6 +39,7 @@ trait AuthBuilder {
 
   val userInternalId = Some("internalId")
 
+  def resetAuthConnector(): Unit = reset(mockAuthConnector)
 
   def withAuthorisedUser(eori: Eori)(test: => Unit) {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
@@ -49,7 +51,7 @@ trait AuthBuilder {
 
   def withAuthorisedUserWithoutEnrolments(test: => Unit) {
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.successful(new ~(Enrolments(Set.empty), userInternalId)))
+      .thenReturn(Future.successful(new ~(Enrolments(Set.empty[Enrolment]), userInternalId)))
     test
   }
 
@@ -57,12 +59,12 @@ trait AuthBuilder {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG")))
 
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.successful(new ~(userEnrollments, userInternalId)))
+      .thenReturn(Future.failed(InsufficientEnrolments("Some Message")))
     test
   }
 
   def withUnauthorisedUser(test: => Unit) {
-    when(mockAuthConnector.authorise(meq(AuthProviders(GovernmentGateway)), any())(any[HeaderCarrier], any[ExecutionContext]))
+    when(mockAuthConnector.authorise(any[AuthProviders], any())(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.failed(notLoggedInException))
     test
   }

@@ -34,5 +34,5 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val reportAProblemPartialUrl: String = s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifier"
   val reportAProblemNonJSUrl: String = s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifier"
 
-  val ggSignRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
+  val ggSignInRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
 }

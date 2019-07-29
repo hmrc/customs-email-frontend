@@ -20,7 +20,6 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
 
-
 class IneligibleUserControllerSpec extends ControllerSpec {
 
   private val view = app.injector.instanceOf[ineligible_user]
@@ -29,11 +28,14 @@ class IneligibleUserControllerSpec extends ControllerSpec {
   "IneligibleUserController" should {
 
     "have a status of Unauthorised (401)" in withAuthorisedUserWithoutEnrolments {
-      status(controller.show(request)) shouldBe UNAUTHORIZED
+      val eventualResult = controller.show(request)
+      status(eventualResult) shouldBe UNAUTHORIZED
     }
 
     "have a status of See Other (303)" in withUnauthorisedUser {
-      status(controller.show(request)) shouldBe SEE_OTHER
+      val result = controller.show(request)
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) should contain("/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fcustoms-email-frontend%2Fstart&origin=customs-email-frontend")
     }
 
   }

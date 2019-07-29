@@ -22,6 +22,7 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
 import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, InternalId, LoggedInUser}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,11 +31,13 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthAction(predicate: Either[AuthProvider, Enrolment], auth: AuthConnector, override val config: Configuration, override val env: Environment, defaultBodyParser: BodyParser[AnyContent])(implicit override val executionContext: ExecutionContext) extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] with AuthorisedFunctions with AuthRedirects {
-
-  override def authConnector: AuthConnector = auth
-
-  override def parser: BodyParser[AnyContent] = defaultBodyParser
+class AuthAction(predicate: Either[AuthProvider, Enrolment],
+                 appConfig: AppConfig,
+                 override val authConnector: AuthConnector,
+                 override val config: Configuration,
+                 override val env: Environment,
+                 override val parser: BodyParser[AnyContent])(implicit val executionContext: ExecutionContext)
+  extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] with AuthorisedFunctions with AuthRedirects {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -42,14 +45,14 @@ class AuthAction(predicate: Either[AuthProvider, Enrolment], auth: AuthConnector
       .retrieve(allEnrolments and internalId) {
         case userAllEnrolments ~ userInternalId =>
           Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments, InternalId(userInternalId)))))
-      } recover (withRedirect(request) orElse withAuth(request))
+      } recover (withAuth(request) orElse withRedirect(request))
   }
 
-  private def withRedirect(implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
+  private def withRedirect[A](implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
     case _: InsufficientEnrolments => Left(Redirect(IneligibleUserController.show()))
   }
 
-  private def withAuth(implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
-    case _: NoActiveSession => Left(toGGLogin(continueUrl = "/"))
+  private def withAuth[A](implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
+    case _: NoActiveSession => Left(toGGLogin(continueUrl = appConfig.ggSignInRedirectUrl))
   }
 }
