@@ -24,7 +24,7 @@ Start the required development services (make sure your service-manager-config f
 
 Stop all running services
 
-    sm --start CUSTOMS_EMAIL_FRONTEND_DEP -f
+    sm --stop CUSTOMS_EMAIL_FRONTEND_DEP -f
     
 #### Building
 To imitate the checks ran when building run (in the root directory)
