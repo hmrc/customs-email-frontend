@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.unit.controllers
 
 import akka.stream.Materializer
-import org.scalatest.{Matchers, WordSpecLike}
+import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.MessagesApi
@@ -30,7 +30,7 @@ import uk.gov.hmrc.customs.emailfrontend.unit.{AuthBuilder, FakeAction}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 
-trait ControllerSpec extends WordSpecLike with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder {
+trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder {
 
   implicit def materializer: Materializer = Play.materializer
 
