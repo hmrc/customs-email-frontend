@@ -46,14 +46,11 @@ class AuthAction(predicate: Either[AuthProvider, Enrolment],
         case userAllEnrolments ~ Some(userInternalId) =>
           Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments, InternalId(userInternalId)))))
         case _ => Future.successful(Left(Redirect(IneligibleUserController.show())))
-      } recover (withAuth(request) orElse withRedirect(request))
+      } recover withAuthOrRedirect(request)
   }
 
-  private def withRedirect[A](implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
-    case _: InsufficientEnrolments => Left(Redirect(IneligibleUserController.show()))
-  }
-
-  private def withAuth[A](implicit request: Request[_]): PartialFunction[Throwable, Either[Result, Nothing]] = {
+  private def withAuthOrRedirect[A](implicit request: Request[_]): PartialFunction[Throwable, Either[Result, A]] = {
     case _: NoActiveSession => Left(toGGLogin(continueUrl = appConfig.ggSignInRedirectUrl))
+    case _: InsufficientEnrolments => Left(Redirect(IneligibleUserController.show()))
   }
 }
