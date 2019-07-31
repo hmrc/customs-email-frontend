@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+package uk.gov.hmrc.customs.emailfrontend.model
 
-@main_template(title = "Hello from customs-email-frontend", bodyClasses = None) {
-    <h1>Hello from customs-email-frontend !</h1>
+import play.api.mvc.{Request, WrappedRequest}
+
+case class AuthenticatedRequest[A](request: Request[A], user: LoggedInUser) extends WrappedRequest[A](request)
+
+case class EoriRequest[A](request: AuthenticatedRequest[A], eori: Eori) extends WrappedRequest[A](request) {
+
+  val user: LoggedInUser = request.user
 }

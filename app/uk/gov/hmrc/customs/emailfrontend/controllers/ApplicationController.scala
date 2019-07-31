@@ -17,21 +17,19 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.{Inject, Singleton}
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Ok
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import uk.gov.hmrc.customs.emailfrontend.views.html.hello_world
+import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
+import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 
-import scala.concurrent.Future
 
 @Singleton
-class HelloWorldController @Inject()(appConfig: AppConfig, mcc: MessagesControllerComponents)
-  extends FrontendController(mcc) {
+class ApplicationController @Inject()(actions: Actions, view: start_page)(implicit appConfig: AppConfig, override val messagesApi: MessagesApi) extends I18nSupport {
 
-  implicit val config: AppConfig = appConfig
-
-  val helloWorld: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(hello_world()))
+  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.eori) { implicit request =>
+    Ok(view(request.eori.id))
   }
 
 }

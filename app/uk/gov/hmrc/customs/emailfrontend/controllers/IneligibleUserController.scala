@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.config
+package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-
-import play.api.i18n.MessagesApi
-import play.api.mvc.Request
-import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Unauthorized
+import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
+import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
 
 @Singleton
-class ErrorHandler @Inject()(val messagesApi: MessagesApi, implicit val appConfig: AppConfig, errorView: error_template) extends FrontendErrorHandler {
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    errorView(pageTitle, heading, message)
+class IneligibleUserController @Inject()(actions: Actions, view: ineligible_user)(implicit appConfig: AppConfig, override val messagesApi: MessagesApi) extends I18nSupport {
+
+  def show: Action[AnyContent] = actions.auth { implicit request =>
+    Unauthorized(view())
+  }
+
 }
