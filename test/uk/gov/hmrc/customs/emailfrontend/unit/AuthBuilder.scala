@@ -37,11 +37,11 @@ trait AuthBuilder {
 
   private val notLoggedInException = new NoActiveSession("A user is not logged in") {}
 
-  val userInternalId = Some("internalId")
+  private val internId = Some("internalId")
 
   def resetAuthConnector(): Unit = reset(mockAuthConnector)
 
-  def withAuthorisedUser(eori: Eori)(test: => Unit) {
+  def withAuthorisedUser(eori: Eori, userInternalId: Option[String] = internId)(test: => Unit) {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
 
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId))(any[HeaderCarrier], any[ExecutionContext]))
@@ -51,16 +51,18 @@ trait AuthBuilder {
 
   def withAuthorisedUserWithoutEnrolments(test: => Unit) {
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.successful(new ~(Enrolments(Set.empty[Enrolment]), userInternalId)))
+      .thenReturn(Future.successful(new ~(Enrolments(Set.empty[Enrolment]), internId)))
     test
   }
 
   def withAuthorisedUserWithoutEori(test: => Unit) {
-    val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG")))
-
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId))(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.failed(InsufficientEnrolments("Some Message")))
     test
+  }
+
+  def withUnauthorisedUserWithoutInternalId(test: => Unit) {
+    withAuthorisedUser(Eori("ZZ111111111"), None)(test)
   }
 
   def withUnauthorisedUser(test: => Unit) {
@@ -68,5 +70,6 @@ trait AuthBuilder {
       .thenReturn(Future.failed(notLoggedInException))
     test
   }
+
 
 }

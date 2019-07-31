@@ -43,8 +43,9 @@ class AuthAction(predicate: Either[AuthProvider, Enrolment],
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     authorised(predicate.fold(authProvider => AuthProviders(authProvider), enrolment => enrolment))
       .retrieve(allEnrolments and internalId) {
-        case userAllEnrolments ~ userInternalId =>
+        case userAllEnrolments ~ Some(userInternalId) =>
           Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments, InternalId(userInternalId)))))
+        case _ => Future.successful(Left(Redirect(IneligibleUserController.show())))
       } recover (withAuth(request) orElse withRedirect(request))
   }
 

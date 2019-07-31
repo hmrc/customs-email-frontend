@@ -22,7 +22,6 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 
-
 class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
 
   override protected def beforeEach(): Unit = resetAuthConnector()
@@ -40,6 +39,12 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
     }
 
     "not allow an authorised user without an enrolled eori to access the page" in withAuthorisedUserWithoutEori {
+      val result = controller.show(request)
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) should contain(ineligibleUrl)
+    }
+
+    "not allow an authorised user with and eori and without an internal id to access the page" in withUnauthorisedUserWithoutInternalId {
       val result = controller.show(request)
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) should contain(ineligibleUrl)

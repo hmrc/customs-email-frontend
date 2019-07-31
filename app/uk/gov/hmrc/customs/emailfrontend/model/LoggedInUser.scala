@@ -28,6 +28,3 @@ object Eori {
 }
 
 case class InternalId(id: String)
-object InternalId {
-  def apply(internalId: Option[String]) = new InternalId(internalId getOrElse "")
-}
