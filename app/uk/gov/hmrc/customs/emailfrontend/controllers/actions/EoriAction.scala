@@ -18,6 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
+import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Eori, EoriRequest}
 
@@ -25,6 +26,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EoriAction(implicit override val executionContext: ExecutionContext) extends ActionRefiner[AuthenticatedRequest, EoriRequest] {
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, EoriRequest[A]]] = {
-    Future.successful(request.user.eori map (eori => EoriRequest(request, Eori(eori))) toRight Redirect(IneligibleUserController.show()))
+
+    def enrolmentToRequest: Option[EnrolmentIdentifier] => Option[EoriRequest[A]] = {
+      case Some(eori: EnrolmentIdentifier) if eori.value.nonEmpty => Some(EoriRequest(request, Eori(eori)))
+      case _ => None
+    }
+
+    Future.successful((enrolmentToRequest(request.user.eori) orElse None) toRight Redirect(IneligibleUserController.show()))
   }
 }
