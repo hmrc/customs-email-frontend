@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.unit
 
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment}
@@ -29,7 +28,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EoriReques
 import scala.concurrent.ExecutionContext
 
 class FakeAction(authConnector: AuthConnector, bodyParser: BodyParser[AnyContent])
-                (implicit messages: MessagesApi, appConfig: AppConfig, ec: ExecutionContext) extends Actions with MockitoSugar {
+                (implicit messages: MessagesApi, appConfig: AppConfig, ec: ExecutionContext) extends Actions {
 
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
