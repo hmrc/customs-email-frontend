@@ -1,2 +1,16 @@
+customs.emailfrontend.service-name=Change your email for CDS
+customs.emailfrontend.continue-button=Continue
+customs.emailfrontend.back=Back
+
 customs.emailfrontend.ineligible-user.title=You cannot use this service
 customs.emailfrontend.ineligible-user.heading=You must be enrolled to CDS to use this service
+customs.emailfrontend.change-your-email.title-and-heading=Change your email address for CDS
+customs.emailfrontend.change-your-email.label=We''ll use your new email address to replace your exisiting email address
+
+
+
+#error messages
+customs.emailfrontend.error-summary.problem=There is a problem.
+customs.emailfrontend.errors.valid-email.empty=Enter your email address
+customs.emailfrontend.errors.valid-email.too-long=The email address must be 50 characters or less
+customs.emailfrontend.errors.valid-email.wrong-format=Enter a valid email address

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-@import partials.main_template
+package uk.gov.hmrc.customs.emailfrontend.views.helpers.subscription
 
-@this(main_template: main_template)
-@(eori: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+import play.api.i18n.Messages
 
-@main_template(title = "Hello from customs-email-frontend", bodyClasses = None) {
-    <h1>Hello from customs-email-frontend @eori !</h1>
-
-    <a class="button button--get-started" href='email' role="button">Let's do this!</a>
+object ViewHelper {
+  def continueButtonText(isReview: Boolean)(implicit messages: Messages): String = if (isReview) Messages("cds.navigation.save-and-review") else Messages("cds.navigation.continue")
 }
+

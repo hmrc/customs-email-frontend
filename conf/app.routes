@@ -1,5 +1,9 @@
 # microservice specific routes
 
-GET        /start             uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController.show
+GET        /start                                               uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController.show
 
-GET        /ineligible              uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController.show
+GET        /ineligible                                          uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController.show
+
+GET        /email                                               uk.gov.hmrc.customs.emailfrontend.controllers.EmailController.show
+POST       /email                                               uk.gov.hmrc.customs.emailfrontend.controllers.EmailController.submit
+

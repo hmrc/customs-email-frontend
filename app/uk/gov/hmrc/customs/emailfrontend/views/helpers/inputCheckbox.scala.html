@@ -1,0 +1,76 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@(field: Field, radioOptions: Seq[(String, String)], hints: Map[String, String], args: (Symbol, Any)*)(implicit messages: Messages, formInstance: Option[Form[_]] = None)
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@elements = @{
+    FieldElements(field.id, field, Html(""), args.toMap, messages)
+}
+@parentField = @{
+    args.toMap.get('parentField).asInstanceOf[Option[Field]]
+}
+@labelAfter = @{
+    elements.args.getOrElse('_labelAfter, false).asInstanceOf[Boolean]
+}
+
+<div id="@field.id-field" class="@elements.args.get('_divClass) @if(elements.hasErrors) {error}">
+    <fieldset id="@field.id-fieldset">
+
+        @if(elements.args.get('_legend).isDefined) {
+            <legend @if(elements.args.get('_legendClass).isDefined) {
+                class="@elements.args.get('_legendClass)" } >
+            @elements.args.get('_legend)
+            </legend>
+        }
+
+        @if(elements.hasErrors) {
+            @elements.errors.map { error => <span class="error-message">@Messages(error)</span> }
+        }
+
+        @radioOptions.map { case (value, label) =>
+            @defining(s"${elements.field.name}-${value.toLowerCase.replace(" ", "_")}") { inputId =>
+                @elements.args.get('_wrapperDivClass).map { wrapperDivClass => <div class="@wrapperDivClass"> }
+                <label for="@inputId" @elements.args.get('_labelClass).map { labelClass => class="@labelClass @field.value.filter(_ == value).map { _ => selected }" }>
+                    @if(!labelAfter) {
+                        @label
+                    }
+                <input
+                type="checkbox"
+                id="@inputId"
+                name="@elements.field.name"
+                value="@value"
+                    @elements.args.get('_inputClass).map { inputClass => class="@inputClass" }
+                    @field.value.filter(_ == value).map { _ => checked="checked" }>
+
+                    @if(labelAfter) {
+
+                        <span @elements.args.get('_labelAfterClass).map { spanClass => class="@spanClass" }>@label</span>
+                    }
+
+                    @hints.get(value).map { hint =>
+                        <br/> <span class="form-hint-secondary">@hint</span>
+                    }
+                </label>
+                @elements.args.get('_wrapperDivClass).map { _ => </div> }
+            }
+
+        }
+
+    </fieldset>
+</div>

@@ -6,7 +6,8 @@ object AppDependencies {
   val compile = Seq(
     "uk.gov.hmrc" %% "govuk-template" % "5.36.0-play-26",
     "uk.gov.hmrc" %% "play-ui" % "7.40.0-play-26",
-    "uk.gov.hmrc" %% "bootstrap-play-26" % "0.42.0"
+    "uk.gov.hmrc" %% "bootstrap-play-26" % "0.42.0",
+    "uk.gov.hmrc" %% "emailaddress" % "3.2.0"
   )
 
   val test = Seq(
@@ -18,5 +19,4 @@ object AppDependencies {
     "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test, it",
     "org.mockito" % "mockito-core" % "3.0.0" % "test,it"
   )
-
 }
