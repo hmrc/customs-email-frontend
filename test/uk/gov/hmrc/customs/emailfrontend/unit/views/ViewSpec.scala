@@ -28,7 +28,6 @@ import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 import scala.concurrent.duration._
 
-
 trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   implicit val timeout: Timeout = 30.seconds

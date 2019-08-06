@@ -70,6 +70,4 @@ trait AuthBuilder {
       .thenReturn(Future.failed(notLoggedInException))
     test
   }
-
-
 }

@@ -23,9 +23,9 @@ lazy val scoverageSettings = {
   Seq(ScoverageKeys.coverageExcludedPackages := List("<empty>",
     "Reverse.*",
     "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.controllers\\.actions\\.ActionsImpl*",
-    "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.views.*",
+    "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.views\\.html\\.partials*",
     ".*(BuildInfo|Routes|TestOnly).*").mkString(";"),
-    ScoverageKeys.coverageMinimum := 100,
+    ScoverageKeys.coverageMinimum := 97,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
     parallelExecution in Test := true)
