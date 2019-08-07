@@ -52,7 +52,7 @@ class ConfirmEmailController @Inject()(actions: Actions,
         formData => {
           formData.isYes match {
             case Some(true) => Future.successful(Ok(view(confirmEmailForm)))
-            case Some(false) =>  Future.successful(Ok(redirectForNo(emailForm)))
+            case _ =>  Future.successful(Ok(redirectForNo(emailForm)))
           }
         }
       )

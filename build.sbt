@@ -24,6 +24,7 @@ lazy val scoverageSettings = {
     "Reverse.*",
     "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.controllers\\.actions\\.ActionsImpl*",
     "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.views\\.html\\.partials*",
+    "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.views\\.html\\.helpers*",
     ".*(BuildInfo|Routes|TestOnly).*").mkString(";"),
     ScoverageKeys.coverageMinimum := 95,
     ScoverageKeys.coverageFailOnMinimum := true,
