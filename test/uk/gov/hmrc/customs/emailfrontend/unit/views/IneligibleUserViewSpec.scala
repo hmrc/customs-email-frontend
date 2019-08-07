@@ -21,7 +21,6 @@ import org.jsoup.nodes.Document
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
 
-
 class IneligibleUserViewSpec extends ViewSpec {
 
   private val view = app.injector.instanceOf[ineligible_user]
@@ -37,5 +36,4 @@ class IneligibleUserViewSpec extends ViewSpec {
       doc.body.getElementsByTag("h1").text mustBe "You must be enrolled to CDS to use this service"
     }
   }
-
 }

@@ -30,5 +30,4 @@ class IneligibleUserController @Inject()(actions: Actions, view: ineligible_user
   def show: Action[AnyContent] = actions.auth { implicit request =>
     Unauthorized(view())
   }
-
 }

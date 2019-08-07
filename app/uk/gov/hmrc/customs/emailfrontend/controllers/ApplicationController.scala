@@ -24,12 +24,10 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 
-
 @Singleton
 class ApplicationController @Inject()(actions: Actions, view: start_page)(implicit appConfig: AppConfig, override val messagesApi: MessagesApi) extends I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.eori) { implicit request =>
     Ok(view(request.eori.id))
   }
-
 }

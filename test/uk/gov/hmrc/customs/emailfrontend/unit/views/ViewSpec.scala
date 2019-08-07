@@ -29,7 +29,6 @@ import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 
 import scala.concurrent.duration._
 
-
 trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   implicit val timeout: Timeout = 30.seconds
