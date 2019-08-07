@@ -18,3 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.domain
 
 case class EmailModel(email: String)
 
+case class YesNoModel(isYes: Option[Boolean])
+
+
+

@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 @import partials.main_template
 @import uk.gov.hmrc.customs.emailfrontend.domain.EmailModel
-@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.EmailController
+@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController
 
 @import views.html.helper._
 
@@ -39,10 +39,10 @@
 
     @helpers.errorSummary(emailForm)
 
-    @helper.form(EmailController.submit(),'id -> "emailForm") {
+    @helper.form(WhatIsYourEmailController.submit(),'id -> "emailForm") {
         @CSRF.formField
 
-        <h1>@messages("customs.emailfrontend.change-your-email.title-and-heading")</h1>
+        <h1 class="heading-xlarge">@messages("customs.emailfrontend.change-your-email.title-and-heading")</h1>
 
         @inputText(
             "email",

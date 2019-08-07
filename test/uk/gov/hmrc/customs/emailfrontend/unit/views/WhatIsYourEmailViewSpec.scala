@@ -22,10 +22,10 @@ import play.api.data.Form
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.customs.emailfrontend.domain.EmailModel
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms
-import uk.gov.hmrc.customs.emailfrontend.views.html.email_page
+import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
 
-class EmailPageViewSpec extends ViewSpec {
-  private val view = app.injector.instanceOf[email_page]
+class WhatIsYourEmailViewSpec extends ViewSpec {
+  private val view = app.injector.instanceOf[what_is_your_email]
   private val form: Form[EmailModel] = Forms.emailForm
   private val formWithEmptyError: Form[EmailModel] = Forms.emailForm.bind(Map("email" -> ""))
   private val formWithWrongFormatError: Form[EmailModel] = Forms.emailForm.bind(Map("email" -> "invalid"))

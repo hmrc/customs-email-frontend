@@ -22,19 +22,19 @@ import play.api.mvc.Results.Ok
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.views.html.email_page
-import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
+import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
+import uk.gov.hmrc.customs.emailfrontend.forms.Forms.{confirmEmailForm, emailForm}
+import uk.gov.hmrc.customs.emailfrontend.views.html.confirm_email
 import play.api.mvc.Results.BadRequest
 
 import scala.concurrent.Future
 
 @Singleton
-class EmailController @Inject()(actions: Actions, view: email_page)(implicit appConfig: AppConfig, override val messagesApi: MessagesApi) extends I18nSupport {
+class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_email, nextView: confirm_email)(implicit appConfig: AppConfig, override val messagesApi: MessagesApi) extends I18nSupport {
 
 
   def show: Action[AnyContent] = actions.auth { implicit request =>
-    val form = emailForm
-    Ok(view(form))
+    Ok(view(emailForm))
   }
 
   def submit: Action[AnyContent] = actions.auth.async { implicit request =>
@@ -45,9 +45,7 @@ class EmailController @Inject()(actions: Actions, view: email_page)(implicit app
           )
         },
         formData => {
-          //todo: cache input email and go to another page
-          val form = emailForm
-          Future.successful(Ok(view(form)))
+          Future.successful(Ok(nextView(confirmEmailForm)))
         }
       )
   }

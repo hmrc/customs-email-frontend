@@ -17,10 +17,9 @@
 package uk.gov.hmrc.customs.emailfrontend.forms
 
 import play.api.data.Form
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
-import uk.gov.hmrc.customs.emailfrontend.domain.EmailModel
+import uk.gov.hmrc.customs.emailfrontend.domain._
 import play.api.data.Forms._
-import uk.gov.hmrc.emailaddress.EmailAddress
+import uk.gov.hmrc.customs.emailfrontend.forms.Validation._
 
 object Forms {
 
@@ -30,11 +29,10 @@ object Forms {
     )(EmailModel.apply)(EmailModel.unapply)
   )
 
-  def validEmail: Constraint[String] = Constraint({
-    case e if e.trim.isEmpty => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.empty"))
-    case e if e.length > 50 => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.too-long"))
-    case e if !EmailAddress.isValid(e) => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.wrong-format"))
-    case _ => Valid
-  })
+  val confirmEmailForm: Form[YesNoModel] = Form(
+    mapping(
+      "isYes" -> optional(boolean).verifying(validYesNo("customs.emailfrontend.errors.valid-confirm-email"))
+    )(YesNoModel.apply)(YesNoModel.unapply)
+  )
 
 }
