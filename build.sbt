@@ -25,7 +25,7 @@ lazy val scoverageSettings = {
     "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.controllers\\.actions\\.ActionsImpl*",
     "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.views.*",
     ".*(BuildInfo|Routes|TestOnly).*").mkString(";"),
-    ScoverageKeys.coverageMinimum := 100,
+    ScoverageKeys.coverageMinimum := 95,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
     parallelExecution in Test := true)
