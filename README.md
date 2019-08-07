@@ -1,7 +1,7 @@
 
 # customs-email-frontend
 
-This is a frontend application currently serving the purpose of updating the stored contact email address.
+This is a frontend application currently serving the purpose of updating the stored customs contact email address.
 
 [[Build Status]](https://build.tax.service.gov.uk/job/EORI/view/EORI-NEW-BUILD-MONITOR/job/7.customs-email-frontend-pipeline/)
 
