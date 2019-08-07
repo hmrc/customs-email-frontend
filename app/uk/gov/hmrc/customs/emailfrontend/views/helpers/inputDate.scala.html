@@ -14,9 +14,11 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.helpers.Input
+@this(playUiInput:Input)
+
 @(formItem:Form[_], fieldName: String, args: (Symbol,Any)*)(implicit lang: Messages)
 
-@import uk.gov.hmrc.play.views.html.{ helpers => playUi}
 @import views.html.helper._
 
 @elements = @{ FieldElements(formItem(fieldName).id, formItem(fieldName), null, args.toMap, lang) }
@@ -60,21 +62,21 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
         </div>
         }
     </legend>
-        @playUi.input(
+        @playUiInput(
             formItem(s"$fieldName.day"),
             '_label -> Messages("date.fields.day"),
             '_labelClass -> "form-group form-group-day",
             '_inputClass -> inputClass,
             '_emptyValueText -> " "
         )
-        @playUi.input(
+        @playUiInput(
             formItem(s"$fieldName.month"),
             '_label -> Messages("date.fields.month"),
             '_labelClass -> "form-group form-group-month",
             '_inputClass -> inputClass,
             '_emptyValueText -> " "
         )
-        @playUi.input(
+        @playUiInput(
             formItem(s"$fieldName.year"),
             '_label -> Messages("date.fields.year"),
             '_labelClass -> "form-group form-group-year",
