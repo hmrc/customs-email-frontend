@@ -17,20 +17,20 @@
 package uk.gov.hmrc.customs.emailfrontend.unit.controllers
 
 import akka.stream.Materializer
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.{Matchers, OptionValues, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.MessagesApi
-import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded, BodyParser, ControllerComponents, Request, RequestHeader}
+import play.api.mvc._
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
-import play.api.test.{FakeRequest, Helpers}
+import play.api.test.FakeRequest
 import play.api.{Configuration, Environment, Mode, Play}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.unit.{AuthBuilder, FakeAction}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 
-trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder {
+trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder with OptionValues {
 
   implicit def materializer: Materializer = Play.materializer
 

@@ -40,5 +40,8 @@ class AppConfigSpec extends ControllerSpec {
     "have analyticsHost defined" in {
       appConfig.analyticsHost shouldBe "auto"
     }
+    "have feedbackSurveyUrl defined" in {
+      appConfig.feedbackUrl shouldBe "http://localhost:9514/feedback/CDS"
+    }
   }
 }
