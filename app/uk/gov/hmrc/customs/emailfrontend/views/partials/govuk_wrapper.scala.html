@@ -16,9 +16,6 @@
 
 @import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 @import play.twirl.api.HtmlFormat
-
-
-
 @import uk.gov.hmrc.play.views.html.layouts._
 @import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
 @import views.html.layouts.GovUkTemplate
@@ -56,7 +53,7 @@
 
 @insideHeader = {
     @header_nav(
-      navTitle = Some("customs-email-frontend"),
+      navTitle = Some(messages("customs.emailfrontend.service-name")),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(headerNavLinks))

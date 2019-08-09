@@ -41,7 +41,7 @@ trait AuthBuilder {
 
   def resetAuthConnector(): Unit = reset(mockAuthConnector)
 
-  def withAuthorisedUser(eori: Eori, userInternalId: Option[String] = internId)(test: => Unit) {
+  def withAuthorisedUser(eori: Eori = Eori("GB1234567890"), userInternalId: Option[String] = internId)(test: => Unit) {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
 
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId))(any[HeaderCarrier], any[ExecutionContext]))
