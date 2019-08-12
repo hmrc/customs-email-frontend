@@ -1,7 +1,7 @@
 customs.emailfrontend.service-name=Change your email for CDS
 customs.emailfrontend.continue-button=Continue
 customs.emailfrontend.back=Back
-customs.emailfrontend.signOut=Sign out
+customs.emailfrontend.sign-out=Sign out
 
 customs.emailfrontend.ineligible-user.title=You cannot use this service
 customs.emailfrontend.ineligible-user.heading=You must be enrolled to CDS to use this service
