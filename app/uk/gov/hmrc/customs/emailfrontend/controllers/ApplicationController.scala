@@ -30,4 +30,8 @@ class ApplicationController @Inject()(actions: Actions, view: start_page)(implic
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.eori) { implicit request =>
     Ok(view(request.eori.id))
   }
+
+  def keepAlive: Action[AnyContent] = actions.unauthorised { implicit request =>
+      Ok("Ok")
+  }
 }
