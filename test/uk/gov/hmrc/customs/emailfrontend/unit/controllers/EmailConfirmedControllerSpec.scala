@@ -28,7 +28,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec {
 
   "EmailConfirmedController" should {
 
-    "have a status of OK(200)" in withAuthorisedUser() {
+    "have a status of OK" in withAuthorisedUser() {
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe OK
     }
