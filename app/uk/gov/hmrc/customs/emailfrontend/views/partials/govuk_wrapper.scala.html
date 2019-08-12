@@ -47,9 +47,16 @@
       linkElem = None,
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="refresh" content="900;url=/customs-email-frontend/signout" />
 }
 
-@headerNavLinks = {}
+@isLoggedIn = @{!request.session.isEmpty && request.session.get("userId").isDefined}
+
+
+@headerNavLinks = {@if(isLoggedIn) {
+    <a class="link--no-underline" href="/customs-email-frontend/signout" id="sign-out">@messages("customs.emailfrontend.signout")</a>
+    }
+}
 
 @insideHeader = {
     @header_nav(

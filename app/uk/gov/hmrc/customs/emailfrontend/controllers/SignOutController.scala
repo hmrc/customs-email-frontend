@@ -18,20 +18,15 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Ok
-import play.api.mvc._
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 
 @Singleton
-class ApplicationController @Inject()(actions: Actions, view: start_page)(implicit appConfig: AppConfig, override val messagesApi: MessagesApi) extends I18nSupport {
-
-  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.eori) { implicit request =>
-    Ok(view(request.eori.id))
-  }
-
-  def keepAlive: Action[AnyContent] = actions.unauthorised { implicit request =>
-      Ok("Ok")
+class SignOutController @Inject()(actions: Actions)(implicit appConfig: AppConfig, override val messagesApi: MessagesApi) extends I18nSupport   {
+  def signOut: Action[AnyContent] = actions.auth {
+    implicit request =>
+     Redirect(appConfig.feedbackUrl).withNewSession
   }
 }

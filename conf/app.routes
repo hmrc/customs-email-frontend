@@ -1,6 +1,7 @@
 # microservice specific routes
 
 GET         /start                                              uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController.show
+GET         /signout                                            uk.gov.hmrc.customs.emailfrontend.controllers.SignOutController.signOut
 
 GET         /ineligible                                         uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController.show
 

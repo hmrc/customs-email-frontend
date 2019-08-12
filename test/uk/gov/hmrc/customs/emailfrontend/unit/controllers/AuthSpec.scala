@@ -68,4 +68,11 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
       redirectLocation(result) should contain("/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fcustoms-email-frontend%2Fstart&origin=customs-email-frontend")
     }
   }
+
+  "Keep Alive" should {
+    "allow unauthenticated users to refresh their session" in withUnauthorisedUser {
+      val result = controller.keepAlive(request)
+      status(result) shouldBe OK
+    }
+  }
 }

@@ -1,6 +1,7 @@
 customs.emailfrontend.service-name=Change your email for CDS
 customs.emailfrontend.continue-button=Continue
 customs.emailfrontend.back=Back
+customs.emailfrontend.signout=Sign Out
 
 customs.emailfrontend.ineligible-user.title=You cannot use this service
 customs.emailfrontend.ineligible-user.heading=You must be enrolled to CDS to use this service
@@ -21,3 +22,8 @@ customs.emailfrontend.errors.valid-email.too-long=The email address must be 50 c
 customs.emailfrontend.errors.valid-email.wrong-format=Enter a valid email address
 
 customs.emailfrontend.errors.valid-confirm-email=Tell us if this is the correct email address
+
+#timeout dialog
+customs.emailfrontend.timeout.message=For your security, we will delete your answers and you will be signed out in
+customs.emailfrontend.timeout.keep-alive-button=Get another 15 minutes
+customs.emailfrontend.timeout.sign-out-button=Sign out now
