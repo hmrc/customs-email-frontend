@@ -54,7 +54,11 @@
 
 
 @headerNavLinks = {@if(isLoggedIn) {
-    <a class="link--no-underline" href="/customs-email-frontend/signout" id="sign-out">@messages("customs.emailfrontend.signout")</a>
+<ul id="proposition-link" class="header__menu__proposition-links">
+    <li class="u--no-print">
+        <a class="link--no-underline" href="/customs-email-frontend/signout" id="sign-out">@messages("customs.emailfrontend.signout")</a>
+    </li>
+</ul>
     }
 }
 
