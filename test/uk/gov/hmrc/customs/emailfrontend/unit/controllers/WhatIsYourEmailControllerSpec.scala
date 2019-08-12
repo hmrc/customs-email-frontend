@@ -17,8 +17,6 @@
 package uk.gov.hmrc.customs.emailfrontend.unit.controllers
 
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
-import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.views.html.{confirm_email, what_is_your_email}

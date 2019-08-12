@@ -1,7 +1,7 @@
 customs.emailfrontend.service-name=Change your email for CDS
 customs.emailfrontend.continue-button=Continue
 customs.emailfrontend.back=Back
-customs.emailfrontend.signout=Sign Out
+customs.emailfrontend.signOut=Sign out
 
 customs.emailfrontend.ineligible-user.title=You cannot use this service
 customs.emailfrontend.ineligible-user.heading=You must be enrolled to CDS to use this service
@@ -13,7 +13,8 @@ customs.emailfrontend.confirm-your-email.hint=We''ll send you a link to confirm 
 customs.emailfrontend.confirm-your-email.yes-no-label=Is this the email address you want to use?
 customs.emailfrontend.confirm-your-email.yes=Yes, this is the email address I want to use
 customs.emailfrontend.confirm-your-email.no=No, I need to change this email
-
+customs.emailfrontend.email-confirmed.title-and-heading=Email address confirmed
+customs.emailfrontend.email-confirmed.info=Your email address for CDS has been changed.
 
 #error messages
 customs.emailfrontend.error-summary.problem=There is a problem.

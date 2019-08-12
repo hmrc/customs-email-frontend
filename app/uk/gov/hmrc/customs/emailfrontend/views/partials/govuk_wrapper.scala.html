@@ -28,10 +28,10 @@
       footer_links: FooterLinks,
       main_content: MainContent,
       reportAProblemLink: ReportAProblemLink,
-      hmrcGovUkTemplate: GovUkTemplate)
+      hmrcGovUkTemplate: GovUkTemplate,
+      appConfig: AppConfig)
 
-@(appConfig: AppConfig,
-  title: String,
+@(title: String,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
   bodyClasses: Option[String] = None,

@@ -10,3 +10,5 @@ POST        /email                                              uk.gov.hmrc.cust
 
 GET         /confirm_email                                      uk.gov.hmrc.customs.emailfrontend.controllers.ConfirmEmailController.show
 POST        /confirm_email                                      uk.gov.hmrc.customs.emailfrontend.controllers.ConfirmEmailController.submit
+
+GET         /eori-change-email-verified                         uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController.show
