@@ -20,11 +20,12 @@ import akka.util.Timeout
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Lang, Messages, MessagesApi, MessagesImpl}
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.{Configuration, Environment, Mode}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 
 import scala.concurrent.duration._
 
@@ -33,7 +34,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite {
   implicit val timeout: Timeout = 30.seconds
   private val messageApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit val messages: Messages = MessagesImpl(Lang("en"), messageApi)
-  implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+  implicit val request: Request[String] = Request(FakeRequest("GET", "/").withCSRFToken, "")
 
   val env: Environment = Environment.simple()
   val config: Configuration = Configuration.load(env)

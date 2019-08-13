@@ -17,20 +17,20 @@
 package uk.gov.hmrc.customs.emailfrontend.unit.controllers
 
 import akka.stream.Materializer
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.{Matchers, OptionValues, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.MessagesApi
-import play.api.mvc.{AnyContent, BodyParser, RequestHeader}
+import play.api.mvc._
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
-import play.api.test.{FakeRequest, Helpers}
+import play.api.test.FakeRequest
 import play.api.{Configuration, Environment, Mode, Play}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.unit.{AuthBuilder, FakeAction}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 
-trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder {
+trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder with OptionValues {
 
   implicit def materializer: Materializer = Play.materializer
 
@@ -46,7 +46,14 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
 
   val request: RequestHeader = FakeRequest("GET", "/").withCSRFToken
 
-  private val cc = Helpers.stubControllerComponents()
+  implicit val cc = app.injector.instanceOf[ControllerComponents]
 
   val fakeAction = new FakeAction(mockAuthConnector, cc.parsers.defaultBodyParser)(cc.messagesApi, appConfig, cc.executionContext)
+
+  private def formUrlEncodedBody(data: Seq[(String, String)]) =
+    AnyContentAsFormUrlEncoded(play.utils.OrderPreserving.groupBy(data)(_._1))
+
+  def requestWithForm(data: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
+    Request(FakeRequest("GET", "/").withCSRFToken, formUrlEncodedBody(data))
+
 }

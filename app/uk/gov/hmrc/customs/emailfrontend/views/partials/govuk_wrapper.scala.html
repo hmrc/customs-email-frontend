@@ -16,9 +16,6 @@
 
 @import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 @import play.twirl.api.HtmlFormat
-
-
-
 @import uk.gov.hmrc.play.views.html.layouts._
 @import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
 @import views.html.layouts.GovUkTemplate
@@ -31,10 +28,10 @@
       footer_links: FooterLinks,
       main_content: MainContent,
       reportAProblemLink: ReportAProblemLink,
-      hmrcGovUkTemplate: GovUkTemplate)
+      hmrcGovUkTemplate: GovUkTemplate,
+      appConfig: AppConfig)
 
-@(appConfig: AppConfig,
-  title: String,
+@(title: String,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
   bodyClasses: Option[String] = None,
@@ -50,13 +47,24 @@
       linkElem = None,
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="refresh" content="900;url=/customs-email-frontend/signout" />
 }
 
-@headerNavLinks = {}
+@isLoggedIn = @{!request.session.isEmpty && request.session.get("userId").isDefined}
+
+
+@headerNavLinks = {@if(isLoggedIn) {
+<ul id="proposition-link" class="header__menu__proposition-links">
+    <li class="u--no-print">
+        <a class="link--no-underline" href="/customs-email-frontend/signout" id="sign-out">@messages("customs.emailfrontend.sign-out")</a>
+    </li>
+</ul>
+    }
+}
 
 @insideHeader = {
     @header_nav(
-      navTitle = Some("customs-email-frontend"),
+      navTitle = Some(messages("customs.emailfrontend.service-name")),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(headerNavLinks))

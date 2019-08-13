@@ -18,16 +18,33 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Unauthorized
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.Results.{BadRequest, Ok}
+import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
+import uk.gov.hmrc.customs.emailfrontend.forms.Forms.{confirmEmailForm, emailForm}
+import uk.gov.hmrc.customs.emailfrontend.views.html.{confirm_email, what_is_your_email}
+
+import scala.concurrent.Future
 
 @Singleton
-class IneligibleUserController @Inject()(actions: Actions, view: ineligible_user)(implicit override val messagesApi: MessagesApi) extends I18nSupport {
+class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_email, nextView: confirm_email)(implicit override val messagesApi: MessagesApi) extends I18nSupport {
+
 
   def show: Action[AnyContent] = actions.auth { implicit request =>
-    Unauthorized(view())
+    Ok(view(emailForm))
+  }
+
+  def submit: Action[AnyContent] = actions.auth.async { implicit request =>
+    emailForm.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(
+          BadRequest(view(emailForm = formWithErrors))
+        )
+      },
+      formData => {
+        Future.successful(Ok(nextView(confirmEmailForm)))
+      }
+    )
   }
 }

@@ -35,6 +35,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val reportAProblemNonJSUrl: String = s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifier"
 
   val ggSignInRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
+  val feedbackUrl: String = config.get[String]("external-url.feedback-survey")
 
   val appName: String = config.get[String]("appName")
   val save4LaterBaseUrl: String = servicesConfig.baseUrl("cachable.short-lived-cache")

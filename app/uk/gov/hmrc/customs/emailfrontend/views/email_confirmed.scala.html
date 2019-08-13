@@ -14,11 +14,24 @@
  * limitations under the License.
  *@
 
+@import play.api.i18n.Lang
 @import partials.main_template
+@import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
+
 
 @this(main_template: main_template)
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(messages("customs.emailfrontend.ineligible-user.title")) {
-<h1>@messages("customs.emailfrontend.ineligible-user.heading")</h1>
+@main_template(messages("customs.emailfrontend.email-confirmed.title-and-heading")) {
+
+<div class="column-two-thirds start_page">
+    <h1 class="heading-xlarge">@messages("customs.emailfrontend.email-confirmed.title-and-heading")</h1>
+
+    <p id="info">@messages("customs.emailfrontend.email-confirmed.info")</p>
+
+    <a class="button" href='@SignOutController.signOut.url'
+       role="button">@messages("customs.emailfrontend.sign-out")</a>
+
+</div>
 }

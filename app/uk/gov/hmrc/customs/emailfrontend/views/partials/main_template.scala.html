@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 @import uk.gov.hmrc.play.views.html.layouts._
 
 @this(govuk_wrapper: govuk_wrapper, sidebar: Sidebar, article: Article)
@@ -23,7 +22,7 @@
   contentHeader: Option[Html] = None,
   bodyClasses: Option[String] = None,
   mainClass: Option[String] = None,
-  scriptElem: Option[Html] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages, appConfig: AppConfig)
+  scriptElem: Option[Html] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages)
 
 @serviceInfoContent = {}
 
@@ -33,12 +32,29 @@
     }
 }
 
-@govuk_wrapper(appConfig = appConfig,
-               title = title,
+@message={@messages("customs.emailfrontend.timeout.message")}
+@keepAliveText={@messages("customs.emailfrontend.timeout.keep-alive-button")}
+@signoutText={@messages("customs.emailfrontend.timeout.sign-out-button")}
+
+@exScripts = @{scriptElem.getOrElse("") +
+s"""<script type='text/javascript'>
+        window.GOVUK.timeoutDialog({
+           timeout: 900,
+           countdown: 300,
+           message: '$message',
+           keepAliveUrl: '/customs-email-frontend/',
+           signOutUrl: '/customs-email-frontend/signout',
+           keepAliveButtonText: '$keepAliveText',
+           signOutButtonText: '$signoutText',
+        });
+</script>"""
+}
+
+@govuk_wrapper(title = title,
                mainClass = mainClass,
                bodyClasses = bodyClasses,
                sidebar = sidebarLocal,
                contentHeader = contentHeader,
                mainContent = article(mainContent),
                serviceInfoContent = serviceInfoContent,
-               scriptElem = scriptElem)
+               scriptElem = Some(Html(exScripts)))

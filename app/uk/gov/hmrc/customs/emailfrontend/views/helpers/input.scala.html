@@ -1,0 +1,60 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@(field: play.api.data.Field, args: (Symbol, Any)*)(implicit lang: Messages)
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@elements = @{
+    FieldElements(field.id, field, null, args.toMap, lang)
+}
+
+@allErrors = @{elements.errors ++ args.flatMap {
+    case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
+    case _ => Seq.empty
+    }
+}
+
+@outputAttributes(elements: FieldElements)(attributeMappings: (Symbol, String)*) = @{
+    attributeMappings.flatMap{
+        case (symbol, attributeName) =>
+        elements.args.get(symbol).map(value => Html(attributeName + "=" + "\"" + value + "\" "))
+    }
+}
+
+@isLabelH1 = @{
+    elements.args.getOrElse('_isLabelH1, false).asInstanceOf[Boolean]
+}
+
+<div id="@elements.field.name-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
+    <label for="@elements.field.name" class="form-label-bold">
+        @elements.label
+        @allErrors.map { error => <span class="error-message">@lang(error)</span> }
+    </label>
+
+
+    <div class="suggestions-input-container">
+        <input type="text" @outputAttributes(elements)(
+        'spellcheck -> "spellcheck",
+        'ariahaspopup -> "aria-haspopup",
+        'ariaowns -> "aria-owns")
+        name="@elements.field.name"
+        id="@elements.field.name"
+        class="form-control @if(allErrors.nonEmpty) {form-control-error}"
+        value="@elements.field.value" />
+    </div>
+</div>

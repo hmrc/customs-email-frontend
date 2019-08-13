@@ -29,7 +29,7 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.reportAProblemPartialUrl shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=CDS"
     }
     "have assetsPrefix defined" in {
-      appConfig.assetsPrefix shouldBe "http://localhost:9032/assets/2.149.0"
+      appConfig.assetsPrefix shouldBe "http://localhost:9032/assets/3.4.0"
     }
     "have ggSignInRedirectUrl defined" in {
       appConfig.ggSignInRedirectUrl shouldBe "http://localhost:9898/customs-email-frontend/start"
@@ -39,6 +39,9 @@ class AppConfigSpec extends ControllerSpec {
     }
     "have analyticsHost defined" in {
       appConfig.analyticsHost shouldBe "auto"
+    }
+    "have feedbackSurveyUrl defined" in {
+      appConfig.feedbackUrl shouldBe "http://localhost:9514/feedback/CDS"
     }
     "have save4LaterDomain defined" in {
       appConfig.save4LaterDomain shouldBe "save4later"
