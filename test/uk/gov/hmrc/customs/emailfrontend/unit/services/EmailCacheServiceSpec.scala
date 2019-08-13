@@ -74,6 +74,16 @@ class EmailCacheServiceSpec extends PlaySpec
       cache mustBe cacheMap
 
     }
+    "save Email should throw IllegalStateException" in {
+      Mockito.doReturn(Future.successful(cacheMap),Future.successful(cacheMap))
+        .when(service.asInstanceOf[ShortLivedCache]).
+        cache(any[String],any[String],any[EmailStatus])(any[HeaderCarrier],any[Writes[EmailStatus]],any[ExecutionContext])
+      val status = intercept[IllegalStateException] {
+        service.saveEmail(None, emailStatus).futureValue
+      }
+      status.getMessage mustBe "Auth InternalId Missing"
+
+    }
 
     "fetch Email" in {
       Mockito.doReturn(Future.successful(Some(emailStatus)), Future.successful(Some(emailStatus)))
@@ -83,8 +93,18 @@ class EmailCacheServiceSpec extends PlaySpec
       val  cachedEmailStatus =  service.fetchEmail(Some(internalId)).futureValue
 
       cachedEmailStatus mustBe Some(emailStatus)
-
     }
+
+    "fetch Email should throw IllegalStateException" in {
+      Mockito.doReturn(Future.successful(Some(emailStatus)), Future.successful(Some(emailStatus)))
+        .when(service.asInstanceOf[ShortLivedCache]).
+        fetchAndGetEntry(any[String],any[String])(any[HeaderCarrier],any[Reads[EmailStatus]],any[ExecutionContext])
+      val cachedEmailStatus =  intercept[IllegalStateException] {
+        service.fetchEmail(None).futureValue
+      }
+      cachedEmailStatus.getMessage mustBe "Auth InternalId Missing"
+    }
+
   }
 
 
