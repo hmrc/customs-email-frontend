@@ -41,11 +41,13 @@ trait Actions {
 class ActionsImpl @Inject()(authConnector: AuthConnector, config: Configuration, environment: Environment, mcc: MessagesControllerComponents, appConfig: AppConfig)
                            (implicit ec: ExecutionContext, messagesApi: MessagesApi) extends Actions {
 
-  override def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Left(GovernmentGateway), appConfig, authConnector, config, environment, mcc.parsers.defaultBodyParser)
+  private def bodyParser = mcc.parsers.defaultBodyParser
 
-  def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Right(Enrolment("HMRC-CUS-ORG")), appConfig, authConnector, config, environment, mcc.parsers.defaultBodyParser)
+  override def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Left(GovernmentGateway), appConfig, authConnector, config, environment, bodyParser)
+
+  def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Right(Enrolment("HMRC-CUS-ORG")), appConfig, authConnector, config, environment, bodyParser)
 
   def eori: ActionRefiner[AuthenticatedRequest, EoriRequest] = new EoriAction()
 
-  override def unauthorised: DefaultActionBuilder = new UnauthorisedAction(mcc.parsers.defaultBodyParser)
+  override def unauthorised: DefaultActionBuilder = new UnauthorisedAction(bodyParser)
 }

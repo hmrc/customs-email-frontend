@@ -25,6 +25,7 @@ import play.api.mvc._
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.FakeRequest
 import play.api.{Configuration, Environment, Mode, Play}
+import play.utils.OrderPreserving.groupBy
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.unit.{AuthBuilder, FakeAction}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
@@ -46,12 +47,12 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
 
   val request: RequestHeader = FakeRequest("GET", "/").withCSRFToken
 
-  implicit val cc = app.injector.instanceOf[ControllerComponents]
+  implicit val cc: ControllerComponents = app.injector.instanceOf[ControllerComponents]
 
   val fakeAction = new FakeAction(mockAuthConnector, cc.parsers.defaultBodyParser)(cc.messagesApi, appConfig, cc.executionContext)
 
   private def formUrlEncodedBody(data: Seq[(String, String)]) =
-    AnyContentAsFormUrlEncoded(play.utils.OrderPreserving.groupBy(data)(_._1))
+    AnyContentAsFormUrlEncoded(groupBy(data)(_._1))
 
   def requestWithForm(data: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
     Request(FakeRequest("GET", "/").withCSRFToken, formUrlEncodedBody(data))

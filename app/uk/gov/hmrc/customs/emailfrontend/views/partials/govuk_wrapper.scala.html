@@ -52,7 +52,6 @@
 
 @isLoggedIn = @{!request.session.isEmpty && request.session.get("userId").isDefined}
 
-
 @headerNavLinks = {@if(isLoggedIn) {
 <ul id="proposition-link" class="header__menu__proposition-links">
     <li class="u--no-print">
