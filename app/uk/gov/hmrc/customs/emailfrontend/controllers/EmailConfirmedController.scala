@@ -16,18 +16,17 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Unauthorized
+import play.api.mvc.Results.Ok
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
+import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 
-@Singleton
-class IneligibleUserController @Inject()(actions: Actions, view: ineligible_user)(implicit override val messagesApi: MessagesApi) extends I18nSupport {
+class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed)
+                                        (implicit override val messagesApi: MessagesApi) extends I18nSupport {
 
   def show: Action[AnyContent] = actions.auth { implicit request =>
-    Unauthorized(view())
+    Ok(view())
   }
 }

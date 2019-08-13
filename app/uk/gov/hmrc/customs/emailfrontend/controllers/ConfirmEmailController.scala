@@ -18,15 +18,11 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Ok
+import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.mvc._
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.views.html.confirm_email
-import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.{confirmEmailForm, emailForm}
-import play.api.mvc.Results.BadRequest
-import uk.gov.hmrc.customs.emailfrontend.domain.YesNoModel
+import uk.gov.hmrc.customs.emailfrontend.views.html.{confirm_email, what_is_your_email}
 
 import scala.concurrent.Future
 
@@ -34,8 +30,7 @@ import scala.concurrent.Future
 class ConfirmEmailController @Inject()(actions: Actions,
                                        view: confirm_email,
                                        redirectForNo: what_is_your_email)
-                                      (implicit appConfig: AppConfig,
-                                       override val messagesApi: MessagesApi) extends I18nSupport {
+                                      (implicit override val messagesApi: MessagesApi) extends I18nSupport {
 
 
   def show: Action[AnyContent] = actions.auth { implicit request =>

@@ -28,10 +28,10 @@
       footer_links: FooterLinks,
       main_content: MainContent,
       reportAProblemLink: ReportAProblemLink,
-      hmrcGovUkTemplate: GovUkTemplate)
+      hmrcGovUkTemplate: GovUkTemplate,
+      appConfig: AppConfig)
 
-@(appConfig: AppConfig,
-  title: String,
+@(title: String,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
   bodyClasses: Option[String] = None,
@@ -56,7 +56,7 @@
 @headerNavLinks = {@if(isLoggedIn) {
 <ul id="proposition-link" class="header__menu__proposition-links">
     <li class="u--no-print">
-        <a class="link--no-underline" href="/customs-email-frontend/signout" id="sign-out">@messages("customs.emailfrontend.signout")</a>
+        <a class="link--no-underline" href="/customs-email-frontend/signout" id="sign-out">@messages("customs.emailfrontend.sign-out")</a>
     </li>
 </ul>
     }

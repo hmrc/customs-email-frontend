@@ -29,11 +29,11 @@ class GovUkWrapperViewSpec extends ViewSpec {
     "have a Sign Out link when signed in" in {
 
       val request2 = FakeRequest("GET", "/").withSession("userId" -> "USERID")
-      val doc = Jsoup.parse(contentAsString(view(appConfig, "title")(request2, messages)))
-      doc.body().getElementById("sign-out").text mustBe "Sign Out"
+      val doc = Jsoup.parse(contentAsString(view("title")(request2, messages)))
+      doc.body().getElementById("sign-out").text mustBe "Sign out"
     }
     "not have a Sign Out link when not signed in" in {
-      val doc = Jsoup.parse(contentAsString(view(appConfig, "title")))
+      val doc = Jsoup.parse(contentAsString(view("title")))
       doc.body.getElementById("sign-out") mustBe null
     }
   }
