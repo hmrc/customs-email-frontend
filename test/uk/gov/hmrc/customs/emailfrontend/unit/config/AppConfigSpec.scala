@@ -40,5 +40,26 @@ class AppConfigSpec extends ControllerSpec {
     "have analyticsHost defined" in {
       appConfig.analyticsHost shouldBe "auto"
     }
+    "have save4LaterDomain defined" in {
+      appConfig.save4LaterDomain shouldBe "save4later"
+    }
+    "have save4LaterBaseUrl defined" in {
+      appConfig.save4LaterBaseUrl shouldBe "http://localhost:9272"
+    }
+    "have emailVerificationBaseUrl defined" in {
+      appConfig.emailVerificationBaseUrl shouldBe "http://localhost:9477"
+    }
+    "have emailVerificationWithContext defined" in {
+      appConfig.emailVerificationWithContext shouldBe "http://localhost:9477/email-verification"
+    }
+    "have emailVerificationTemplateId defined" in {
+      appConfig.emailVerificationTemplateId shouldBe "verifyEmailAddress"
+    }
+    "have emailVerificationLinkExpiryDuration defined" in {
+      appConfig.emailVerificationLinkExpiryDuration shouldBe "P3D"
+    }
+    "have appName defined" in {
+      appConfig.appName shouldBe "customs-email-frontend"
+    }
   }
 }

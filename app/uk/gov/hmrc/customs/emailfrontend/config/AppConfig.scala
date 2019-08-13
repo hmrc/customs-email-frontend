@@ -35,4 +35,17 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val reportAProblemNonJSUrl: String = s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifier"
 
   val ggSignInRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
+
+  val appName: String = config.get[String]("appName")
+  val save4LaterBaseUrl: String = servicesConfig.baseUrl("cachable.short-lived-cache")
+
+  val save4LaterDomain: String = config.get[String]("microservice.services.cachable.short-lived-cache.domain")
+
+   lazy val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
+   lazy val emailVerificationContext: String = config.get[String]("microservice.services.email-verification.context")
+   val  emailVerificationWithContext = s"${emailVerificationBaseUrl}/${emailVerificationContext}"
+   val emailVerificationTemplateId: String = config.get[String]("microservice.services.email-verification.templateId")
+   val emailVerificationLinkExpiryDuration: String = config.get[String]("microservice.services.email-verification.linkExpiryDuration")
+
+
 }
