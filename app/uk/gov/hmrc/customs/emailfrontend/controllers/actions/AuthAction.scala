@@ -22,7 +22,6 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, InternalId, LoggedInUser}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -32,12 +31,14 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthAction(predicate: Either[AuthProvider, Enrolment],
-                 appConfig: AppConfig,
                  override val authConnector: AuthConnector,
                  override val config: Configuration,
                  override val env: Environment,
                  override val parser: BodyParser[AnyContent])(implicit val executionContext: ExecutionContext)
   extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] with AuthorisedFunctions with AuthRedirects {
+
+  private lazy val ggSignInRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
+
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -50,7 +51,7 @@ class AuthAction(predicate: Either[AuthProvider, Enrolment],
   }
 
   private def withAuthOrRedirect[A](implicit request: Request[_]): PartialFunction[Throwable, Either[Result, A]] = {
-    case _: NoActiveSession => Left(toGGLogin(continueUrl = appConfig.ggSignInRedirectUrl))
+    case _: NoActiveSession => Left(toGGLogin(continueUrl = ggSignInRedirectUrl))
     case _: InsufficientEnrolments => Left(Redirect(IneligibleUserController.show()))
   }
 }

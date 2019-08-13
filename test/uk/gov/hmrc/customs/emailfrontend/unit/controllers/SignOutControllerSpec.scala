@@ -23,7 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 
 class SignOutControllerSpec extends ControllerSpec {
 
-  val controller = new SignOutController(fakeAction)
+  val controller = new SignOutController(fakeAction, appConfig)
 
   "SignOut Controller" should {
     "return have status See_Other (303) and redirect to feedback survey" in withAuthorisedUserWithoutEnrolments {
@@ -39,6 +39,5 @@ class SignOutControllerSpec extends ControllerSpec {
       val result = startPageController.show(request)
       session(result) shouldBe Session.emptyCookie
     }
-
   }
 }

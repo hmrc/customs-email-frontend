@@ -49,7 +49,7 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
 
   implicit val cc: ControllerComponents = app.injector.instanceOf[ControllerComponents]
 
-  val fakeAction = new FakeAction(mockAuthConnector, cc.parsers.defaultBodyParser)(cc.messagesApi, appConfig, cc.executionContext)
+  val fakeAction = new FakeAction(mockAuthConnector, cc.parsers.defaultBodyParser)(cc.messagesApi, cc.executionContext)
 
   private def formUrlEncodedBody(data: Seq[(String, String)]) =
     AnyContentAsFormUrlEncoded(groupBy(data)(_._1))
