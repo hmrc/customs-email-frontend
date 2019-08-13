@@ -27,7 +27,7 @@ import play.api.libs.json.{Writes, _}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
-import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailCachingConfig}
+import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, Save4LaterCachingConfig}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,7 +40,7 @@ class EmailCacheServiceSpec extends PlaySpec
   with BeforeAndAfterAll
   with BeforeAndAfterEach {
 
-  private val mockEmailCachingConfig = mock[EmailCachingConfig]
+  private val mockEmailCachingConfig = mock[Save4LaterCachingConfig]
   private val mockApplicationCrypto = mock[ApplicationCrypto]
 
   val internalId = "InternalID"

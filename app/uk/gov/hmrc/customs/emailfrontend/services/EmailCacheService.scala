@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class EmailCachingConfig @Inject()(httpClient: HttpClient)(implicit appConfig: AppConfig) extends ShortLivedHttpCaching {
+class Save4LaterCachingConfig @Inject()(httpClient: HttpClient)(implicit appConfig: AppConfig) extends ShortLivedHttpCaching {
 
   override def defaultSource: String = appConfig.appName
 
@@ -43,7 +43,7 @@ class EmailCachingConfig @Inject()(httpClient: HttpClient)(implicit appConfig: A
 
 
 @Singleton
-class EmailCacheService @Inject()(caching: EmailCachingConfig, applicationCrypto: ApplicationCrypto)
+class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationCrypto: ApplicationCrypto)
   extends ShortLivedCache {
 
   override implicit val crypto: CompositeSymmetricCrypto = applicationCrypto.JsonCrypto
