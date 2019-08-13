@@ -74,7 +74,7 @@ class EmailCacheServiceSpec extends PlaySpec
       cache mustBe cacheMap
 
     }
-    "save Email should throw IllegalStateException" in {
+    "save Email throw IllegalStateException" in {
       Mockito.doReturn(Future.successful(cacheMap),Future.successful(cacheMap))
         .when(service.asInstanceOf[ShortLivedCache]).
         cache(any[String],any[String],any[EmailStatus])(any[HeaderCarrier],any[Writes[EmailStatus]],any[ExecutionContext])
@@ -95,7 +95,7 @@ class EmailCacheServiceSpec extends PlaySpec
       cachedEmailStatus mustBe Some(emailStatus)
     }
 
-    "fetch Email should throw IllegalStateException" in {
+    "fetch Email throw IllegalStateException" in {
       Mockito.doReturn(Future.successful(Some(emailStatus)), Future.successful(Some(emailStatus)))
         .when(service.asInstanceOf[ShortLivedCache]).
         fetchAndGetEntry(any[String],any[String])(any[HeaderCarrier],any[Reads[EmailStatus]],any[ExecutionContext])
