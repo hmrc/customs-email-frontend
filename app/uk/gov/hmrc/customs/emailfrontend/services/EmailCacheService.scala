@@ -29,15 +29,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class Save4LaterCachingConfig @Inject()(httpClient: HttpClient)(implicit appConfig: AppConfig) extends ShortLivedHttpCaching {
+class Save4LaterCachingConfig @Inject()(httpClient: HttpClient, appConfig: AppConfig) extends ShortLivedHttpCaching {
 
-  override def defaultSource: String = appConfig.appName
+  override val defaultSource: String = appConfig.appName
 
-  override def baseUri: String = appConfig.save4LaterBaseUrl
+  override val baseUri: String = appConfig.save4LaterBaseUrl
 
-  override def domain: String = appConfig.save4LaterDomain
+  override val domain: String = appConfig.save4LaterDomain
 
-  override def http: HttpClient = httpClient
+  override val http: HttpClient = httpClient
 
 }
 

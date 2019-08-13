@@ -66,7 +66,7 @@ class EmailVerificationConnectorSpec extends  IntegrationSpec with BeforeAndAfte
       |}""".stripMargin
   )
 
-  def before(): Unit = {
+  before {
     resetMockServer()
   }
 
