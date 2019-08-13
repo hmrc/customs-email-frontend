@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.domain
+package uk.gov.hmrc.customs.emailfrontend.model
 
-case class EmailModel(email: String)
+case class Email(email: String)
 
-case class YesNoModel(isYes: Option[Boolean])
-
-
-
+case class YesNo(isYes: Option[Boolean])

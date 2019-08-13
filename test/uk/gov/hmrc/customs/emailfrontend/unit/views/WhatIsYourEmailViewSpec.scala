@@ -20,16 +20,16 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.emailfrontend.domain.EmailModel
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms
+import uk.gov.hmrc.customs.emailfrontend.model.Email
 import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
 
 class WhatIsYourEmailViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[what_is_your_email]
-  private val form: Form[EmailModel] = Forms.emailForm
-  private val formWithEmptyError: Form[EmailModel] = Forms.emailForm.bind(Map("email" -> ""))
-  private val formWithWrongFormatError: Form[EmailModel] = Forms.emailForm.bind(Map("email" -> "invalid"))
-  private val formWithTooLongError: Form[EmailModel] = Forms.emailForm.bind(Map("email" -> "abcdefghijklmnopqrstuvwxyz1234567890@abcdefghijklmnopqrstuvwxyz1234567890"))
+  private val form: Form[Email] = Forms.emailForm
+  private val formWithEmptyError: Form[Email] = Forms.emailForm.bind(Map("email" -> ""))
+  private val formWithWrongFormatError: Form[Email] = Forms.emailForm.bind(Map("email" -> "invalid"))
+  private val formWithTooLongError: Form[Email] = Forms.emailForm.bind(Map("email" -> "abcdefghijklmnopqrstuvwxyz1234567890@abcdefghijklmnopqrstuvwxyz1234567890"))
   private val doc: Document = Jsoup.parse(contentAsString(view(form)))
   private val docWithEmptyError: Document = Jsoup.parse(contentAsString(view(formWithEmptyError)))
   private val docWithWrongFormatError: Document = Jsoup.parse(contentAsString(view(formWithWrongFormatError)))

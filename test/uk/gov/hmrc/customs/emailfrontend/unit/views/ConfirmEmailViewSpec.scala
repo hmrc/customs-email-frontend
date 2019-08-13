@@ -20,14 +20,14 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.emailfrontend.domain.YesNoModel
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms
+import uk.gov.hmrc.customs.emailfrontend.model.YesNo
 import uk.gov.hmrc.customs.emailfrontend.views.html.confirm_email
 
 class ConfirmEmailViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[confirm_email]
-  private val form: Form[YesNoModel] = Forms.confirmEmailForm
-  private val formWithEmptyError: Form[YesNoModel] = Forms.confirmEmailForm.bind(Map("isYes" -> ""))
+  private val form: Form[YesNo] = Forms.confirmEmailForm
+  private val formWithEmptyError: Form[YesNo] = Forms.confirmEmailForm.bind(Map("isYes" -> ""))
   private val doc: Document = Jsoup.parse(contentAsString(view(form)))
   private val docWithEmptyError: Document = Jsoup.parse(contentAsString(view(formWithEmptyError)))
 

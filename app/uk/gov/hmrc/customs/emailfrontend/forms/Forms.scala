@@ -17,22 +17,22 @@
 package uk.gov.hmrc.customs.emailfrontend.forms
 
 import play.api.data.Form
-import uk.gov.hmrc.customs.emailfrontend.domain._
 import play.api.data.Forms._
 import uk.gov.hmrc.customs.emailfrontend.forms.Validation._
+import uk.gov.hmrc.customs.emailfrontend.model.{Email, YesNo}
 
 object Forms {
 
-  val emailForm: Form[EmailModel] = Form(
+  val emailForm: Form[Email] = Form(
     mapping(
       "email" -> text.verifying(validEmail)
-    )(EmailModel.apply)(EmailModel.unapply)
+    )(Email.apply)(Email.unapply)
   )
 
-  val confirmEmailForm: Form[YesNoModel] = Form(
+  val confirmEmailForm: Form[YesNo] = Form(
     mapping(
       "isYes" -> optional(boolean).verifying(validYesNo("customs.emailfrontend.errors.valid-confirm-email"))
-    )(YesNoModel.apply)(YesNoModel.unapply)
+    )(YesNo.apply)(YesNo.unapply)
   )
 
 }

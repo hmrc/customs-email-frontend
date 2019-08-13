@@ -15,13 +15,13 @@
  *@
 
 @import partials.main_template
-@import uk.gov.hmrc.customs.emailfrontend.domain.YesNoModel
+@import uk.gov.hmrc.customs.emailfrontend.model.YesNo
 @import uk.gov.hmrc.customs.emailfrontend.controllers.routes.ConfirmEmailController
 
 @import views.html.helper._
 
 @this(main_template: main_template)
-@(confirmEmailForm: Form[YesNoModel])(implicit request: Request[_], messages: Messages)
+@(confirmEmailForm: Form[YesNo])(implicit request: Request[_], messages: Messages)
 
 @inputRadioGroup(field: String, options: Seq[(String, String)]) = {
 
