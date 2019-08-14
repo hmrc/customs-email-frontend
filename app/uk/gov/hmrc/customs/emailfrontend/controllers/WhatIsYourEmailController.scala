@@ -28,7 +28,7 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.{confirm_email, what_is_your
 import scala.concurrent.Future
 
 @Singleton
-class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_email, nextView: confirm_email)(implicit override val messagesApi: MessagesApi) extends I18nSupport {
+class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_email, nextView: confirm_email)(implicit val messagesApi: MessagesApi) extends I18nSupport {
 
 
   def show: Action[AnyContent] = actions.auth { implicit request =>
