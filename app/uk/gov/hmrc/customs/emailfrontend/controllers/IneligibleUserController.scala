@@ -25,7 +25,7 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
 
 @Singleton
-class IneligibleUserController @Inject()(actions: Actions, view: ineligible_user)(implicit val messagesApi: MessagesApi) extends I18nSupport {
+class IneligibleUserController @Inject()(actions: Actions, view: ineligible_user)(implicit override val messagesApi: MessagesApi) extends I18nSupport {
 
   def show: Action[AnyContent] = actions.auth { implicit request =>
     Unauthorized(view())

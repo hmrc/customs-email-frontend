@@ -24,7 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 
 class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed)
-                                        (implicit val messagesApi: MessagesApi) extends I18nSupport {
+                                        (implicit override val messagesApi: MessagesApi) extends I18nSupport {
 
   def show: Action[AnyContent] = actions.auth { implicit request =>
     Ok(view())

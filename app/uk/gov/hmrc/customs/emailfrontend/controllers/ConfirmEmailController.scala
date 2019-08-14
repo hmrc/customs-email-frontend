@@ -30,7 +30,7 @@ import scala.concurrent.Future
 class ConfirmEmailController @Inject()(actions: Actions,
                                        view: confirm_email,
                                        redirectForNo: what_is_your_email)
-                                      (implicit val messagesApi: MessagesApi) extends I18nSupport {
+                                      (implicit override val messagesApi: MessagesApi) extends I18nSupport {
 
 
   def show: Action[AnyContent] = actions.auth { implicit request =>

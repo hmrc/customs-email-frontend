@@ -18,11 +18,10 @@ package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
 import com.google.inject.ImplementedBy
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EoriRequest}
 
 import scala.concurrent.ExecutionContext
@@ -38,7 +37,7 @@ trait Actions {
 
 @Singleton
 class ActionsImpl @Inject()(authConnector: AuthConnector, config: Configuration, environment: Environment, mcc: MessagesControllerComponents)
-                           (implicit ec: ExecutionContext, messagesApi: MessagesApi) extends Actions {
+                           (implicit ec: ExecutionContext) extends Actions {
 
   private def bodyParser = mcc.parsers.defaultBodyParser
 
