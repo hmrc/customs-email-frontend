@@ -24,7 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 
 @Singleton
-class SignOutController @Inject()(actions: Actions, appConfig: AppConfig)(implicit val messagesApi: MessagesApi) extends I18nSupport {
+class SignOutController @Inject()(actions: Actions, appConfig: AppConfig)(implicit override val messagesApi: MessagesApi) extends I18nSupport {
   def signOut: Action[AnyContent] = actions.auth {
     implicit request =>
       Redirect(appConfig.feedbackUrl).withNewSession
