@@ -28,7 +28,7 @@ class ErrorHandlerSpec extends ViewSpec {
 
   implicit def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  private val errorHandler = new ErrorHandler(messagesApi, appConfig, view)
+  private val errorHandler = new ErrorHandler(messagesApi, view)
 
   "standardErrorTemplate" should {
     val result = Jsoup.parse(contentAsString(errorHandler.standardErrorTemplate("Some Title", "Some Heading", "Some Message Content")))

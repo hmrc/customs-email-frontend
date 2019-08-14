@@ -28,18 +28,18 @@ import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EoriReques
 import scala.concurrent.ExecutionContext
 
 class FakeAction(authConnector: AuthConnector, bodyParser: BodyParser[AnyContent])
-                (implicit messages: MessagesApi, appConfig: AppConfig, ec: ExecutionContext) extends Actions {
+                (implicit messages: MessagesApi, ec: ExecutionContext) extends Actions {
 
   private val env = Environment.simple()
   private val configuration = Configuration.load(env)
 
   val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "ZZ123456789")))
 
-  override def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Right(Enrolment("HMRC-CUS-ORG")), appConfig, authConnector, configuration, env, bodyParser)
+  override def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Right(Enrolment("HMRC-CUS-ORG")), authConnector, configuration, env, bodyParser)
 
   override def eori: ActionRefiner[AuthenticatedRequest, EoriRequest] = new EoriAction()
 
-  override def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Left(GovernmentGateway), appConfig, authConnector, configuration, env, bodyParser)
+  override def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Left(GovernmentGateway), authConnector, configuration, env, bodyParser)
 
   override def unauthorised: DefaultActionBuilder = new UnauthorisedAction(bodyParser)
 }
