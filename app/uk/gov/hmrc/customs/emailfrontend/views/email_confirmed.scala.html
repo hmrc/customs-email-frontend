@@ -24,13 +24,9 @@
 
 @main_template(messages("customs.emailfrontend.email-confirmed.title-and-heading")) {
 
-<div class="column-two-thirds start_page">
     <h1 class="heading-xlarge">@messages("customs.emailfrontend.email-confirmed.title-and-heading")</h1>
 
     <p id="info">@messages("customs.emailfrontend.email-confirmed.info")</p>
 
-    <a class="button" href='@SignOutController.signOut.url'
-       role="button">@messages("customs.emailfrontend.sign-out")</a>
-
-</div>
+    <a class="button" href="@SignOutController.signOut.url" role="button">@messages("customs.emailfrontend.sign-out")</a>
 }
