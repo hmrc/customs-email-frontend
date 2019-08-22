@@ -69,7 +69,6 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec {
 
       status(eventualResult) shouldBe SEE_OTHER
       redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-your-email")
-
     }
   }
 }
