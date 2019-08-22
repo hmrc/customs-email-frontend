@@ -38,9 +38,7 @@ class Save4LaterCachingConfig @Inject()(httpClient: HttpClient, appConfig: AppCo
   override val domain: String = appConfig.save4LaterDomain
 
   override val http: HttpClient = httpClient
-
 }
-
 
 @Singleton
 class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationCrypto: ApplicationCrypto)

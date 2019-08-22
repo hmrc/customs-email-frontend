@@ -18,18 +18,20 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.{BadRequest, Ok}
 import play.api.mvc._
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.forms.Forms.{confirmEmailForm, emailForm}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{confirm_email, what_is_your_email}
+import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
+import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
+import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
+import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_email, nextView: confirm_email)(implicit override val messagesApi: MessagesApi) extends I18nSupport {
-
+class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_email, emailCacheService: EmailCacheService, mcc: MessagesControllerComponents)
+                                         (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+  extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = actions.auth { implicit request =>
     Ok(view(emailForm))
@@ -38,12 +40,12 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_e
   def submit: Action[AnyContent] = actions.auth.async { implicit request =>
     emailForm.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(
-          BadRequest(view(emailForm = formWithErrors))
-        )
+        Future.successful(BadRequest(view(formWithErrors)))
       },
       formData => {
-        Future.successful(Ok(nextView(confirmEmailForm)))
+        emailCacheService.saveEmail(Some(request.user.internalId.id), EmailStatus(formData.email)).map {
+          _ => Redirect(routes.CheckYourEmailController.show())
+        }
       }
     )
   }

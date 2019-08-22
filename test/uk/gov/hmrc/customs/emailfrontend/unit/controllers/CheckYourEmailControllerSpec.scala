@@ -18,14 +18,17 @@ package uk.gov.hmrc.customs.emailfrontend.unit.controllers
 
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.emailfrontend.controllers.ConfirmEmailController
-import uk.gov.hmrc.customs.emailfrontend.views.html.{confirm_email, what_is_your_email}
+import uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController
+import uk.gov.hmrc.customs.emailfrontend.services.EmailVerificationService
+import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 
-class ConfirmEmailControllerSpec extends ControllerSpec {
+class CheckYourEmailControllerSpec extends ControllerSpec {
 
-  private val view = app.injector.instanceOf[confirm_email]
-  private val redirectForNo =app.injector.instanceOf[what_is_your_email]
-  private val controller = new ConfirmEmailController(fakeAction, view, redirectForNo)
+  private val view = app.injector.instanceOf[check_your_email]
+  private val mockEmailVerificationService = mock[EmailVerificationService]
+
+
+  private val controller = new CheckYourEmailController(fakeAction, view, mockEmailVerificationService)
 
   "ConfirmEmailController" should {
 

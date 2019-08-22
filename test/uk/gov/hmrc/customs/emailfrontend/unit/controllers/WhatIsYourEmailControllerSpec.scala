@@ -29,30 +29,30 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec {
 
   "WhatIsYourEmailController" should {
 
-    "have a status of OK(200)" in withAuthorisedUser() {
+    "have a status of OK" in withAuthorisedUser() {
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe OK
     }
 
-    "have a status of Bad Request (400) when no email is provided" in withAuthorisedUser() {
+    "have a status of Bad Request when no email is provided" in withAuthorisedUser() {
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
 
       val eventualResult = controller.submit(request)
       status(eventualResult) shouldBe BAD_REQUEST
     }
 
-    "have a status of Bad Request (400) when the email is invalid" in withAuthorisedUser() {
+    "have a status of Bad Request when the email is invalid" in withAuthorisedUser() {
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "invalidEmail")
 
       val eventualResult = controller.submit(request)
       status(eventualResult) shouldBe BAD_REQUEST
     }
 
-    "have a status of OK (200) when the email is valid" in withAuthorisedUser() {
+    "have a status of OK when the email is valid" in withAuthorisedUser() {
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "valid@email.com")
 
       val eventualResult = controller.submit(request)
-      status(eventualResult) shouldBe OK
+      status(eventualResult) shouldBe SEE_OTHER
     }
 
   }

@@ -16,12 +16,12 @@
 
 @import partials.main_template
 @import uk.gov.hmrc.customs.emailfrontend.model.YesNo
-@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.ConfirmEmailController
+@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController
 
 @import views.html.helper._
 
 @this(main_template: main_template)
-@(confirmEmailForm: Form[YesNo])(implicit request: Request[_], messages: Messages)
+@(confirmEmailForm: Form[YesNo], email: String)(implicit request: Request[_], messages: Messages)
 
 @inputRadioGroup(field: String, options: Seq[(String, String)]) = {
 
@@ -37,7 +37,7 @@
 
     @helpers.errorSummary(confirmEmailForm)
 
-    @helper.form(ConfirmEmailController.submit(),'id -> "confirmEmailForm") {
+    @helper.form(CheckYourEmailController.submit(),'id -> "confirmEmailForm") {
         @CSRF.formField
 
         <h1 class="heading-xlarge">@messages("customs.emailfrontend.confirm-your-email.title-and-heading")</h1>
@@ -48,7 +48,7 @@
                     @messages("customs.emailfrontend.confirm-your-email.email-address")
                 </dt>
                 <dd class="cya-answer">
-                    john.doe
+                    @email
                 </dd>
             </div>
         </dl>

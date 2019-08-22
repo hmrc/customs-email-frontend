@@ -42,12 +42,16 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
   val env: Environment = Environment.simple()
 
   private val config = Configuration.load(env)
+
   private val serviceConfig = new ServicesConfig(config, new RunMode(config, Mode.Dev))
+
   implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig)
 
   val request: RequestHeader = FakeRequest("GET", "/").withCSRFToken
 
   implicit val cc: ControllerComponents = app.injector.instanceOf[ControllerComponents]
+
+  implicit val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
   val fakeAction = new FakeAction(mockAuthConnector, cc.parsers.defaultBodyParser)(cc.messagesApi, cc.executionContext)
 
