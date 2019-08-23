@@ -25,9 +25,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 object EmailVerificationStubService {
 
-
   def expectedGetUrl(email:String) = s"/email-verification/verified-email-addresses/$email"
-
 
   private val expectedVerifiedEmailPostUrl = "/email-verification/verified-email-check"
 
@@ -36,7 +34,6 @@ object EmailVerificationStubService {
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val emailVerifiedCheckRequestJson: JsValue = Json.parse("""{"email": "john.doe@example.com"}""")
-
 
   val emailVerifiedResponseJson: JsValue = Json.parse("""{"email": "john.doe@example.com"}""")
 
@@ -57,9 +54,11 @@ object EmailVerificationStubService {
   def stubEmailVerified() = {
     stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, emailVerifiedResponseJson.toString, OK)
   }
+
   def stubEmailNotVerified() = {
     stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, emailVerificationNotFoundJson.toString, NOT_FOUND)
   }
+
   def stubEmailVerifiedInternalServerError() = {
     stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, internalServerErrorJson.toString, INTERNAL_SERVER_ERROR)
   }
@@ -67,9 +66,11 @@ object EmailVerificationStubService {
   def stubVerificationRequestSent()={
     stubVerificationRequest(expectedPostUrl,"", CREATED)
   }
+
   def stubEmailAlreadyVerified()={
     stubVerificationRequest(expectedPostUrl,"", CONFLICT)
   }
+
   def stubVerificationRequestError()={
     stubVerificationRequest(expectedPostUrl, internalServerErrorJson.toString(),INTERNAL_SERVER_ERROR)
   }
@@ -95,6 +96,4 @@ object EmailVerificationStubService {
       )
     )
   }
-
-
 }
