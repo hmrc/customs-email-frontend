@@ -18,19 +18,19 @@ package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsObject, Json}
+import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
+import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationKeys._
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.EmailVerificationRequestResponse
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.EmailVerificationStateResponse
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import EmailVerificationKeys._
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfig)(
-                                            implicit ec: ExecutionContext) {
-
+class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfig, auditable: Auditable)(
+  implicit ec: ExecutionContext) {
 
   private[connectors] lazy val checkVerifiedEmailUrl: String =
     s"${appConfig.emailVerificationWithContext}/verified-email-check"
@@ -40,8 +40,8 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
 
   def getEmailVerificationState(emailAddress: String)
                                (implicit hc: HeaderCarrier): Future[EmailVerificationStateResponse] = {
+    auditRequest("customs-update-email-verification-state", "CustomsUpdateEmailVerificationState", emailAddress, checkVerifiedEmailUrl)
     http.POST[JsObject, EmailVerificationStateResponse](checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
-
   }
 
   def createEmailVerificationRequest(emailAddress: String, continueUrl: String)
@@ -54,10 +54,19 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
         LinkExpiryDurationKey -> appConfig.emailVerificationLinkExpiryDuration,
         ContinueUrlKey -> continueUrl
       )
+    auditRequest("customs-update-email-verification-request", "CustomsUpdateEmailVerificationRequest", emailAddress, createEmailVerificationRequestUrl)
     http.POST[JsObject, EmailVerificationRequestResponse](createEmailVerificationRequestUrl, jsonBody)
   }
-}
 
+  private def auditRequest(transactionName: String, auditType: String, emailAddress: String, url: String)(implicit hc: HeaderCarrier): Unit = {
+    auditable.sendDataEvent(
+      transactionName = transactionName,
+      path = url,
+      detail = Map("txName" -> auditType, "email" -> emailAddress),
+      auditType = auditType
+    )
+  }
+}
 
 object EmailVerificationKeys {
   val EmailKey = "email"
