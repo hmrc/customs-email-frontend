@@ -79,7 +79,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
         emailCacheService.saveEmail(Some(internalId.id), EmailStatus(email, isVerified = true)).map { _ =>
           Redirect(EmailConfirmedController.show())
         }
-      case _ => throw new IllegalStateException("CreateEmailVerificationRequest Failed")
+      case None => throw new IllegalStateException("CreateEmailVerificationRequest Failed")
     }
   }
 

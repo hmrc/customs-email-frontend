@@ -30,6 +30,8 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.unit.{AuthBuilder, FakeAction}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
+import scala.concurrent.ExecutionContext
+
 
 trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder with OptionValues {
 
@@ -50,6 +52,8 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
   val request: RequestHeader = FakeRequest("GET", "/").withCSRFToken
 
   implicit val cc: ControllerComponents = app.injector.instanceOf[ControllerComponents]
+
+  implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
 
   implicit val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 

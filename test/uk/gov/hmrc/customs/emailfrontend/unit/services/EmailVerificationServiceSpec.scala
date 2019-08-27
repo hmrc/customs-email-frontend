@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.customs.emailfrontend.unit.services
 
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import org.mockito._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.BAD_REQUEST
@@ -29,9 +29,10 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificatio
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerificationStateErrorResponse, EmailVerificationStateResponse, EmailVerified}
 import uk.gov.hmrc.customs.emailfrontend.services.EmailVerificationService
 import uk.gov.hmrc.http.HeaderCarrier
+import scala.concurrent.Future
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+
 
 class EmailVerificationServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach {
   private val mockConnector = mock[EmailVerificationConnector]
