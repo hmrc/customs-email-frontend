@@ -16,44 +16,60 @@
 
 package uk.gov.hmrc.customs.emailfrontend.unit.controllers
 
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
-import uk.gov.hmrc.customs.emailfrontend.views.html.{confirm_email, what_is_your_email}
+import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
+import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
+import uk.gov.hmrc.http.cache.client.CacheMap
+
+import scala.concurrent.Future
 
 class WhatIsYourEmailControllerSpec extends ControllerSpec {
 
   private val view = app.injector.instanceOf[what_is_your_email]
-  private val nextView = app.injector.instanceOf[confirm_email]
-  private val controller = new WhatIsYourEmailController(fakeAction, view, nextView)
+  private val mockEmailCacheService = mock[EmailCacheService]
+
+  val internalId = "InternalID"
+  val jsonValue = Json.toJson("emailStatus")
+  val data = Map(internalId -> jsonValue)
+  val cacheMap = CacheMap(internalId, data)
+
+  private val controller = new WhatIsYourEmailController(fakeAction, view, mockEmailCacheService, mcc)
 
   "WhatIsYourEmailController" should {
 
-    "have a status of OK(200)" in withAuthorisedUser() {
+    "have a status of OK" in withAuthorisedUser() {
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe OK
     }
 
-    "have a status of Bad Request (400) when no email is provided" in withAuthorisedUser() {
+    "have a status of Bad Request when no email is provided" in withAuthorisedUser() {
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
-
       val eventualResult = controller.submit(request)
+
       status(eventualResult) shouldBe BAD_REQUEST
     }
 
-    "have a status of Bad Request (400) when the email is invalid" in withAuthorisedUser() {
+    "have a status of Bad Request when the email is invalid" in withAuthorisedUser() {
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "invalidEmail")
-
       val eventualResult = controller.submit(request)
+
       status(eventualResult) shouldBe BAD_REQUEST
     }
 
-    "have a status of OK (200) when the email is valid" in withAuthorisedUser() {
+    "have a status of OK when the email is valid" in withAuthorisedUser() {
+      when(mockEmailCacheService.saveEmail(any(), any())(any(), any())).thenReturn(Future.successful(cacheMap))
+
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "valid@email.com")
-
       val eventualResult = controller.submit(request)
-      status(eventualResult) shouldBe OK
-    }
 
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-your-email")
+
+    }
   }
 }

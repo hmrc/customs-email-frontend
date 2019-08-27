@@ -22,14 +22,14 @@ import play.api.data.Form
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms
 import uk.gov.hmrc.customs.emailfrontend.model.YesNo
-import uk.gov.hmrc.customs.emailfrontend.views.html.confirm_email
+import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 
-class ConfirmEmailViewSpec extends ViewSpec {
-  private val view = app.injector.instanceOf[confirm_email]
+class CheckYourEmailViewSpec extends ViewSpec {
+  private val view = app.injector.instanceOf[check_your_email]
   private val form: Form[YesNo] = Forms.confirmEmailForm
   private val formWithEmptyError: Form[YesNo] = Forms.confirmEmailForm.bind(Map("isYes" -> ""))
-  private val doc: Document = Jsoup.parse(contentAsString(view(form)))
-  private val docWithEmptyError: Document = Jsoup.parse(contentAsString(view(formWithEmptyError)))
+  private val doc: Document = Jsoup.parse(contentAsString(view(form, "test@email.com")))
+  private val docWithEmptyError: Document = Jsoup.parse(contentAsString(view(formWithEmptyError, "test@email.com")))
 
   "Confirm Email page" should {
     "have the correct title" in {
@@ -57,7 +57,5 @@ class ConfirmEmailViewSpec extends ViewSpec {
       docWithEmptyError.getElementById("errors").text contains "Tell us if this is the correct email address"
       docWithEmptyError.getElementsByClass("error-message").text mustBe "Tell us if this is the correct email address"
     }
-
   }
-
 }

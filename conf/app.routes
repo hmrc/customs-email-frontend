@@ -8,7 +8,9 @@ GET         /ineligible                                         uk.gov.hmrc.cust
 GET         /email                                              uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.show
 POST        /email                                              uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.submit
 
-GET         /confirm_email                                      uk.gov.hmrc.customs.emailfrontend.controllers.ConfirmEmailController.show
-POST        /confirm_email                                      uk.gov.hmrc.customs.emailfrontend.controllers.ConfirmEmailController.submit
+GET         /check-your-email                                   uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController.show
+POST        /check-your-email                                   uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController.submit
 
-GET         /eori-change-email-verified                         uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController.show
+GET         /verify-your-email                                  uk.gov.hmrc.customs.emailfrontend.controllers.VerifyYourEmailController.show
+
+GET         /email-verified                                     uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController.show
