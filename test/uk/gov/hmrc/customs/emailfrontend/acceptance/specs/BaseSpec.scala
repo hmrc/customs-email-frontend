@@ -27,7 +27,9 @@ import uk.gov.hmrc.customs.emailfrontend.utils.{Constants, WireMockRunner}
 trait BaseSpec extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuite with BeforeAndAfterAll with WireMockRunner {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Map("metrics.enabled" -> false,"microservice.services.auth.port" -> Constants.wireMockPort))
+    .configure(Map("metrics.enabled" -> false,
+      "microservice.services.auth.port" -> Constants.wireMockPort,
+      "microservice.services.cachable.short-lived-cache.port" -> Constants.wireMockPort))
     .disable[com.kenshoo.play.metrics.PlayModule]
     .build()
 
@@ -40,6 +42,8 @@ trait BaseSpec extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuit
   }
 
   val authUrl = "/auth/authorise"
+  val save4LaterGetUrl = "/save4later/customs-email-frontend/EORINumber"
+  val save4LaterPutUrl = "/save4later/customs-email-frontend/EORINumber/data/email"
   private val authUrlMatcher = urlEqualTo(authUrl)
 
   def authRequestJson() =
@@ -58,6 +62,35 @@ trait BaseSpec extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuit
         aResponse()
           .withStatus(Status.OK)
           .withBody("""{"allEnrolments": [], "internalId": "EORINumber"}""".stripMargin)
+      )
+    )
+  }
+
+  def save4LaterWithNoData() = {
+    stubFor(get(urlEqualTo(save4LaterGetUrl))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
+          .withBody("""{"data": {}, "id": ""}""".stripMargin)
+      )
+    )
+
+    stubFor(put(urlEqualTo(save4LaterPutUrl))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
+          .withBody("""{"data": {}, "id": ""}""".stripMargin)
+      )
+    )
+  }
+
+  def save4LaterWithData() = {
+    val encryptedEmail = "YKEtCuoQiCSDa7UDy8cs/mhnhVx31sNgNMJ3yXL47rLKc5P2y6Vk4Nsv4fn+OapA"
+    stubFor(get(urlEqualTo(save4LaterGetUrl))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
+          .withBody(s"""{"data": {"email": "$encryptedEmail"}, "id": "1"}""".stripMargin)
       )
     )
   }

@@ -24,16 +24,17 @@ class ChangeEmailSpec extends BaseSpec with SpecHelper {
     scenario("user changes the email address") {
       Given("the user has successfully logged in")
         authenticate()
+        save4LaterWithNoData()
         navigateTo(WhatIsYourEmailPage)
         verifyCurrentPage(WhatIsYourEmailPage)
       When("the user provides an email address to change")
-        enterText(WhatIsYourEmailPage.emailTextFieldId)("test@test.com")
+        save4LaterWithData()
+        enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
         clickContinue()
       Then("the user should be on 'Check your email address' page")
         verifyCurrentPage(CheckYourEmailAddressPage)
       Then("the new email address provided should be updated")
-        assertIsTextVisible(CheckYourEmailAddressPage.emailAddressXpath)("test@test.com")
+        assertIsTextVisible(CheckYourEmailAddressPage.emailAddressXpath)("b@a.com")
     }
   }
-
 }
