@@ -16,17 +16,23 @@
 
 package uk.gov.hmrc.customs.emailfrontend.acceptance.specs
 
-import uk.gov.hmrc.customs.emailfrontend.acceptance.pages.{BasePage, WhatIsYourEmailPage}
+import uk.gov.hmrc.customs.emailfrontend.acceptance.pages.{CheckYourEmailAddressPage, WhatIsYourEmailPage}
 
-class ChangeEmailSpec extends BaseSpec with BasePage {
+class ChangeEmailSpec extends BaseSpec with SpecHelper {
 
   feature("change email address") {
     scenario("user changes the email address") {
       Given("the user has successfully logged in")
         authenticate()
         navigateTo(WhatIsYourEmailPage)
+        verifyCurrentPage(WhatIsYourEmailPage)
       When("the user provides an email address to change")
+        enterText(WhatIsYourEmailPage.emailTextFieldId)("test@test.com")
+        clickContinue()
+      Then("the user should be on 'Check your email address' page")
+        verifyCurrentPage(CheckYourEmailAddressPage)
       Then("the new email address provided should be updated")
+        assertIsTextVisible(CheckYourEmailAddressPage.emailAddressXpath)("test@test.com")
     }
   }
 
