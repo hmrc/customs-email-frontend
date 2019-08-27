@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.acceptance.pages
+package uk.gov.hmrc.customs.emailfrontend.utils
 
-import org.openqa.selenium.support.ui.{ExpectedConditions, WebDriverWait}
-import org.scalatest.Matchers
-import org.scalatestplus.selenium.Page
-import uk.gov.hmrc.customs.emailfrontend.acceptance.pages.utils.Configuration
-
-trait BasePage extends Matchers {
-
-  lazy val webDriver = Configuration.webDriver
-
-  def navigateTo : Page => Unit = page => webDriver.navigate().to(page.url)
-
-  def verifyCurrentPage : Page => Boolean = page => {
-    new WebDriverWait(webDriver,5).until(ExpectedConditions.urlContains(page.url))
-  }
-
+object Constants {
+  lazy val wireMockPort = 11111
+  lazy val wireMockHost = "localhost"
 }
