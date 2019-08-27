@@ -18,11 +18,13 @@ package uk.gov.hmrc.customs.emailfrontend.acceptance.pages
 
 import org.openqa.selenium.By
 
-class WhatIsYourEmailPage extends BasePage {
-  override val url: String = "http://localhost:19001/customs-email-frontend/email"
-  override val title = "Change your email address for CDS"
+class CheckYourEmailAddressPage extends BasePage {
+  override val url: String = "http://localhost:19001/customs-email-frontend/check-your-email"
+  override val title = "Check your email address"
 
-  val emailTextFieldId: By = By.id("email")
+  val emailAddressXpath: By = By.xpath("//*[@id='confirmEmailForm']/dl/div/dd")
 }
 
-object WhatIsYourEmailPage extends WhatIsYourEmailPage
+object CheckYourEmailAddressPage extends CheckYourEmailAddressPage
+
+

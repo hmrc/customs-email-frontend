@@ -16,19 +16,12 @@
 
 package uk.gov.hmrc.customs.emailfrontend.acceptance.pages
 
-import org.openqa.selenium.support.ui.{ExpectedConditions, WebDriverWait}
-import org.scalatest.Matchers
 import org.scalatestplus.selenium.Page
-import uk.gov.hmrc.customs.emailfrontend.acceptance.pages.utils.Configuration
 
-trait BasePage extends Matchers {
 
-  lazy val webDriver = Configuration.webDriver
+trait BasePage extends Page{
 
-  def navigateTo : Page => Unit = page => webDriver.navigate().to(page.url)
+  val title : String
 
-  def verifyCurrentPage : Page => Boolean = page => {
-    new WebDriverWait(webDriver,5).until(ExpectedConditions.urlContains(page.url))
-  }
 
 }
