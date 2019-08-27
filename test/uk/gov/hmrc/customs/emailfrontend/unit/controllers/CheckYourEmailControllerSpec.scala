@@ -81,7 +81,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec {
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email/create")
     }
   }
 
