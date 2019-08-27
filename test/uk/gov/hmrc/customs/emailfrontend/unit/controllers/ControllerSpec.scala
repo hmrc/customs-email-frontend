@@ -53,6 +53,8 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
 
   implicit val cc: ControllerComponents = app.injector.instanceOf[ControllerComponents]
 
+  implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
+
   implicit val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
   val fakeAction = new FakeAction(mockAuthConnector, cc.parsers.defaultBodyParser)(cc.messagesApi, cc.executionContext)
