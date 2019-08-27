@@ -6,6 +6,7 @@ GET         /signout                                            uk.gov.hmrc.cust
 GET         /ineligible                                         uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController.show
 
 GET         /email                                              uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.show
+GET         /email/create                                       uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.create
 POST        /email                                              uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.submit
 
 GET         /check-your-email                                   uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController.show

@@ -22,6 +22,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
+import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
 import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
 import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -42,8 +43,27 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec {
 
   "WhatIsYourEmailController" should {
 
-    "have a status of OK" in withAuthorisedUser() {
+    "have a status of SEE_OTHER for show method when email found in cache" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@email"))))
+
       val eventualResult = controller.show(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-your-email")
+    }
+
+    "have a status of SEE_OTHER for show method when email not found in cache" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
+
+      val eventualResult = controller.show(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email/create")
+    }
+
+    "have a status of OK for create method" in withAuthorisedUser() {
+      val eventualResult = controller.create(request)
+
       status(eventualResult) shouldBe OK
     }
 
