@@ -39,5 +39,5 @@ trait SpecHelper extends Matchers {
   def assertIsTextVisible(locator: By) : String => Boolean = text => new WebDriverWait(webDriver,10).until(ExpectedConditions.textToBePresentInElementLocated(locator,text))
 
   def clickContinue(): Unit = webDriver.findElement(By.id("continue")).click()
-
+  
 }
