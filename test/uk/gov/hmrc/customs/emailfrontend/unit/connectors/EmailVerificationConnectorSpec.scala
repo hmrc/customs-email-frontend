@@ -16,12 +16,16 @@
 
 package uk.gov.hmrc.customs.emailfrontend.unit.connectors
 
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
+import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestResponse, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerificationStateErrorResponse, EmailVerificationStateResponse, EmailVerified}
@@ -30,7 +34,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.Constants._
 import uk.gov.hmrc.customs.emailfrontend.utils.{IntegrationSpec, WireMockRunner}
 import uk.gov.hmrc.http._
 
-class EmailVerificationConnectorSpec extends  IntegrationSpec with BeforeAndAfter with BeforeAndAfterAll with GuiceOneAppPerSuite   with WireMockRunner{
+class EmailVerificationConnectorSpec extends IntegrationSpec with BeforeAndAfter with BeforeAndAfterAll with GuiceOneAppPerSuite with WireMockRunner with MockitoSugar {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder().configure(Map(
     "microservice.services.email-verification.host" -> wireMockHost,
@@ -44,6 +48,7 @@ class EmailVerificationConnectorSpec extends  IntegrationSpec with BeforeAndAfte
   )).build()
 
   private lazy val connector = app.injector.instanceOf[EmailVerificationConnector]
+  private val mockAuditor = mock[Auditable]
   private val email = "john.doe@example.com"
   private val expectedContinueUrl = "/customs/test-email-continue/"
 
@@ -81,51 +86,49 @@ class EmailVerificationConnectorSpec extends  IntegrationSpec with BeforeAndAfte
 
     "the email is verified" should {
       "return an EmailVerified response" in {
-        EmailVerificationStubService.stubEmailVerified
-
+        EmailVerificationStubService.stubEmailVerified()
         val expected = Right(EmailVerified)
+        doNothing().when(mockAuditor).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
         val result: EmailVerificationStateResponse = connector.getEmailVerificationState(email).futureValue
 
         result mustBe expected
       }
     }
+
     "the email is not verified" should {
 
       "return an EmailNotVerified response" in {
-        EmailVerificationStubService.stubEmailNotVerified
-
+        EmailVerificationStubService.stubEmailNotVerified()
         val expected = Right(EmailNotVerified)
+        doNothing().when(mockAuditor).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
         val result: EmailVerificationStateResponse = connector.getEmailVerificationState("notverified@gmail.com").futureValue
 
         result mustBe expected
       }
     }
 
-
     "the email service Internal Server Error" should {
 
       "return an Internal Server Error" in {
-        EmailVerificationStubService.stubEmailVerifiedInternalServerError
-        val expected = Left(EmailVerificationStateErrorResponse(
-          INTERNAL_SERVER_ERROR,
-          EmailVerificationStubService.internalServerErrorJson.toString
-        ))
+        EmailVerificationStubService.stubEmailVerifiedInternalServerError()
+        val expected = Left(EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, EmailVerificationStubService.internalServerErrorJson.toString))
+        doNothing().when(mockAuditor).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
         val result: EmailVerificationStateResponse = connector.getEmailVerificationState(email).futureValue
 
         result mustBe expected
       }
     }
-
   }
-
 
   "Calling createEmailVerificationRequest" when {
 
     "the post is successful" should {
+
       "return an EmailVerificationRequestSent" in {
         val expected = Right(EmailVerificationRequestSent)
-        EmailVerificationStubService.stubVerificationRequestSent
-        val result: EmailVerificationRequestResponse = connector.createEmailVerificationRequest(email,expectedContinueUrl).futureValue
+        EmailVerificationStubService.stubVerificationRequestSent()
+        doNothing().when(mockAuditor).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
+        val result: EmailVerificationRequestResponse = connector.createEmailVerificationRequest(email, expectedContinueUrl).futureValue
 
         result mustBe expected
       }
@@ -135,28 +138,22 @@ class EmailVerificationConnectorSpec extends  IntegrationSpec with BeforeAndAfte
 
       "return an EmailAlreadyVerified" in {
         val expected = Right(EmailAlreadyVerified)
-        EmailVerificationStubService.stubEmailAlreadyVerified
-
-
+        EmailVerificationStubService.stubEmailAlreadyVerified()
+        doNothing().when(mockAuditor).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
         val result: EmailVerificationRequestResponse = connector.createEmailVerificationRequest(email, expectedContinueUrl).futureValue
 
         result mustBe expected
       }
     }
 
-
     "the email service Internal Server Error" should {
 
       "return an Internal Server Error" in {
+        val expected = Left(EmailVerificationRequestFailure(INTERNAL_SERVER_ERROR, EmailVerificationStubService.internalServerErrorJson.toString))
+        EmailVerificationStubService.stubVerificationRequestError()
+        doNothing().when(mockAuditor).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
 
-        val expected = Left(EmailVerificationRequestFailure(
-          INTERNAL_SERVER_ERROR,
-          EmailVerificationStubService.internalServerErrorJson.toString
-        ))
-        EmailVerificationStubService.stubVerificationRequestError
-
-        val result: EmailVerificationRequestResponse =
-          connector.createEmailVerificationRequest("scala@gmail.com", "/home").futureValue
+        val result: EmailVerificationRequestResponse = connector.createEmailVerificationRequest("scala@gmail.com", "/home").futureValue
 
         result mustBe expected
       }
