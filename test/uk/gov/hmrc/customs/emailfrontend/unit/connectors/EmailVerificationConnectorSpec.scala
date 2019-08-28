@@ -30,20 +30,21 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestResponse, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerificationStateErrorResponse, EmailVerificationStateResponse, EmailVerified}
 import uk.gov.hmrc.customs.emailfrontend.stubservices.EmailVerificationStubService
+import uk.gov.hmrc.customs.emailfrontend.utils.Constants._
 import uk.gov.hmrc.customs.emailfrontend.utils.{IntegrationSpec, WireMockRunner}
 import uk.gov.hmrc.http._
 
 class EmailVerificationConnectorSpec extends IntegrationSpec with BeforeAndAfter with BeforeAndAfterAll with GuiceOneAppPerSuite with WireMockRunner with MockitoSugar {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder().configure(Map(
-    "microservice.services.email-verification.host" -> host,
-    "microservice.services.email-verification.port" -> port,
+    "microservice.services.email-verification.host" -> wireMockHost,
+    "microservice.services.email-verification.port" -> wireMockPort,
     "microservice.services.email-verification.context" -> "email-verification",
     "microservice.services.email-verification.templateId" -> "verifyEmailAddresssbt",
     "microservice.services.email-verification.LinkExpiryDuration" -> "P1D",
     "auditing.enabled" -> false,
-    "auditing.consumer.baseUri.host" -> host,
-    "auditing.consumer.baseUri.port" -> host
+    "auditing.consumer.baseUri.host" -> wireMockHost,
+    "auditing.consumer.baseUri.port" -> wireMockPort
   )).build()
 
   private lazy val connector = app.injector.instanceOf[EmailVerificationConnector]
