@@ -43,11 +43,12 @@ trait SpecHelper extends Matchers {
     webDriver.findElement(locator).sendKeys(text)
   }
 
-  def assertIsTextVisible(locator: By) : String => Boolean = text => new WebDriverWait(webDriver,10).until(ExpectedConditions.textToBePresentInElementLocated(locator,text))
+  def assertIsTextVisible(locator: By) : String => Boolean = text => {
+    new WebDriverWait(webDriver,10).until(ExpectedConditions.textToBePresentInElementLocated(locator,text))
+  }
 
   def clickContinue(): Unit = {
     waitForPresenceOfElement(continueButtonId)
     webDriver.findElement(continueButtonId).click()
   }
-  
 }

@@ -29,9 +29,9 @@ trait StubForWireMock {
   def authRequestJson() =
     """{
       |"authorise" : [{
-      |"authProviders" : ["GovernmentGateway"]
+      | "authProviders" : ["GovernmentGateway"]
       |}],
-      |"retrieve" : ["allEnrolments","internalId"]
+      | "retrieve" : ["allEnrolments","internalId"]
       |}
     """.stripMargin
 
@@ -74,5 +74,4 @@ trait StubForWireMock {
       )
     )
   }
-
 }
