@@ -15,6 +15,11 @@ customs.emailfrontend.confirm-your-email.yes=Yes, this is the email address I wa
 customs.emailfrontend.confirm-your-email.no=No, I need to change this email
 customs.emailfrontend.email-confirmed.title-and-heading=Email address confirmed
 customs.emailfrontend.email-confirmed.info=Your email address for CDS has been changed.
+customs.emailfrontend.verify-email.title=Verify your email address
+customs.emailfrontend.verify-email.para1=We have sent an email to {0}. Click on the link in the email to verify your email address.
+customs.emailfrontend.verify-email.para2=You can <a href="{0}">change your email address</a> if it is not correct.
+customs.emailfrontend.verify-email.progressive-disclosure.heading=I did not get an email
+customs.emailfrontend.verify-email.progressive-disclosure.content=Check your junk folder. If it is not there we can <a href="{0}">send it again</a>. If we send your email again, any previous links will stop working.
 
 #error messages
 customs.emailfrontend.error-summary.problem=There is a problem.
