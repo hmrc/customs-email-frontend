@@ -19,7 +19,7 @@ package acceptance.pages
 import org.openqa.selenium.By
 
 class CheckYourEmailAddressPage extends BasePage {
-  override val url: String = "http://localhost:19001/customs-email-frontend/check-your-email"
+  override val url: String = "http://localhost:9000/customs-email-frontend/check-your-email"
   override val title = "Check your email address"
 
   val emailAddressId: By = By.id("cya-answer-id")
