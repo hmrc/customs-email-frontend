@@ -14,30 +14,40 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.acceptance.specs
+package uk.gov.hmrc.customs.emailfrontend.acceptance.utils
 
-import org.openqa.selenium.By
+import org.openqa.selenium.{By, WebDriver, WebElement}
 import org.openqa.selenium.support.ui.{ExpectedConditions, WebDriverWait}
 import org.scalatest.{Assertion, Matchers}
 import org.scalatestplus.selenium.Page
 import uk.gov.hmrc.customs.emailfrontend.acceptance.pages.BasePage
-import uk.gov.hmrc.customs.emailfrontend.acceptance.pages.utils.Configuration
 
 trait SpecHelper extends Matchers {
 
-  lazy val webDriver = Configuration.webDriver
+  lazy val webDriver: WebDriver = Configuration.webDriver
+  private val continueButtonId: By = By.id("continue")
 
   def navigateTo: Page => Unit = page => webDriver.navigate().to(page.url)
+
+  def waitForPresenceOfElement(locator:By): WebElement = {
+    new WebDriverWait(webDriver,10).until(ExpectedConditions.presenceOfElementLocated(locator))
+  }
 
   def verifyCurrentPage: BasePage => Assertion = page => {
     new WebDriverWait(webDriver, 5).until(ExpectedConditions.urlContains(page.url))
     assert(webDriver.getTitle contentEquals page.title, s"Page title: '${webDriver.getTitle}' not as expected")
   }
 
-  def enterText(locator: By): String => Unit = text => webDriver.findElement(locator).sendKeys(text)
+  def enterText(locator: By): String => Unit = text => {
+    waitForPresenceOfElement(locator)
+    webDriver.findElement(locator).sendKeys(text)
+  }
 
   def assertIsTextVisible(locator: By) : String => Boolean = text => new WebDriverWait(webDriver,10).until(ExpectedConditions.textToBePresentInElementLocated(locator,text))
 
-  def clickContinue(): Unit = webDriver.findElement(By.id("continue")).click()
+  def clickContinue(): Unit = {
+    waitForPresenceOfElement(continueButtonId)
+    webDriver.findElement(continueButtonId).click()
+  }
   
 }

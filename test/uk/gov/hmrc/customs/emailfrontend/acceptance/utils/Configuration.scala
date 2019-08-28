@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.acceptance.pages.utils
+package uk.gov.hmrc.customs.emailfrontend.acceptance.utils
 
 import org.openqa.selenium.WebDriver
 import uk.gov.hmrc.webdriver.SingletonDriver
@@ -27,4 +27,7 @@ object Configuration {
 
   lazy val webDriver: WebDriver = SingletonDriver.getInstance()
 
+
+
+  sys.addShutdownHook(webDriver.quit())
 }

@@ -23,5 +23,4 @@ trait BasePage extends Page{
 
   val title : String
 
-
 }

@@ -16,15 +16,14 @@
 
 package uk.gov.hmrc.customs.emailfrontend.acceptance.specs
 
-import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.{BeforeAndAfterAll, FeatureSpec, GivenWhenThen}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
-import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
+import uk.gov.hmrc.customs.emailfrontend.acceptance.utils.StubForWireMock
 import uk.gov.hmrc.customs.emailfrontend.utils.{Constants, WireMockRunner}
 
-trait BaseSpec extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuite with BeforeAndAfterAll with WireMockRunner {
+trait BaseSpec extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuite with BeforeAndAfterAll with WireMockRunner with StubForWireMock {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(Map("metrics.enabled" -> false,
@@ -39,59 +38,5 @@ trait BaseSpec extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuit
 
   override def afterAll: Unit = {
     stopMockServer()
-  }
-
-  val authUrl = "/auth/authorise"
-  val save4LaterGetUrl = "/save4later/customs-email-frontend/EORINumber"
-  val save4LaterPutUrl = "/save4later/customs-email-frontend/EORINumber/data/email"
-  private val authUrlMatcher = urlEqualTo(authUrl)
-
-  def authRequestJson() =
-    """{
-      |"authorise" : [{
-      |"authProviders" : ["GovernmentGateway"]
-      |}],
-      |"retrieve" : ["allEnrolments","internalId"]
-      |}
-    """.stripMargin
-
-  def authenticate() = {
-    stubFor(post(authUrlMatcher)
-      .withRequestBody(equalToJson(authRequestJson()))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withBody("""{"allEnrolments": [], "internalId": "EORINumber"}""".stripMargin)
-      )
-    )
-  }
-
-  def save4LaterWithNoData() = {
-    stubFor(get(urlEqualTo(save4LaterGetUrl))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withBody("""{"data": {}, "id": ""}""".stripMargin)
-      )
-    )
-
-    stubFor(put(urlEqualTo(save4LaterPutUrl))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withBody("""{"data": {}, "id": ""}""".stripMargin)
-      )
-    )
-  }
-
-  def save4LaterWithData() = {
-    val encryptedEmail = "YKEtCuoQiCSDa7UDy8cs/mhnhVx31sNgNMJ3yXL47rLKc5P2y6Vk4Nsv4fn+OapA"
-    stubFor(get(urlEqualTo(save4LaterGetUrl))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withBody(s"""{"data": {"email": "$encryptedEmail"}, "id": "1"}""".stripMargin)
-      )
-    )
   }
 }

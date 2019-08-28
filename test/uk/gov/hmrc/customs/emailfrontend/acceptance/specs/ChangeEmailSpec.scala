@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.acceptance.specs
 
+import uk.gov.hmrc.customs.emailfrontend.acceptance.utils.SpecHelper
 import uk.gov.hmrc.customs.emailfrontend.acceptance.pages.{CheckYourEmailAddressPage, WhatIsYourEmailPage}
 
 class ChangeEmailSpec extends BaseSpec with SpecHelper {
