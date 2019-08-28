@@ -22,7 +22,7 @@ class CheckYourEmailAddressPage extends BasePage {
   override val url: String = "http://localhost:19001/customs-email-frontend/check-your-email"
   override val title = "Check your email address"
 
-  val emailAddressXpath: By = By.xpath("//*[@id='confirmEmailForm']/dl/div/dd")
+  val emailAddressId: By = By.id("cya-answer-id")
 }
 
 object CheckYourEmailAddressPage extends CheckYourEmailAddressPage

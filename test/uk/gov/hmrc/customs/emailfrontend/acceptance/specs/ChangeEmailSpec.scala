@@ -35,7 +35,7 @@ class ChangeEmailSpec extends BaseSpec with SpecHelper {
       Then("the user should be on 'Check your email address' page")
         verifyCurrentPage(CheckYourEmailAddressPage)
       Then("the new email address provided should be updated")
-        assertIsTextVisible(CheckYourEmailAddressPage.emailAddressXpath)("b@a.com")
+        assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
     }
   }
 }

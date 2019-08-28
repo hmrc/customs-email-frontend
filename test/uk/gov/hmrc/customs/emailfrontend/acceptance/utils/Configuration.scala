@@ -27,7 +27,5 @@ object Configuration {
 
   lazy val webDriver: WebDriver = SingletonDriver.getInstance()
 
-
-
   sys.addShutdownHook(webDriver.quit())
 }
