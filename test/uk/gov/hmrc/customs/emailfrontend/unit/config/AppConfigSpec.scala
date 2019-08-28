@@ -29,7 +29,7 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.reportAProblemPartialUrl shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=CDS"
     }
     "have assetsPrefix defined" in {
-      appConfig.assetsPrefix shouldBe "http://localhost:9032/assets/3.4.0"
+      appConfig.assetsPrefix shouldBe "https://www.development.tax.service.gov.uk/assets/3.4.0"
     }
     "have ggSignInRedirectUrl defined" in {
       appConfig.ggSignInRedirectUrl shouldBe "http://localhost:9898/customs-email-frontend/start"
