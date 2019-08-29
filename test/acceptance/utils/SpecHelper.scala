@@ -51,4 +51,9 @@ trait SpecHelper extends Matchers {
     waitForPresenceOfElement(continueButtonId)
     webDriver.findElement(continueButtonId).click()
   }
+
+  def clickOn(locator:By): Unit = {
+    waitForPresenceOfElement(locator)
+    webDriver.findElement(locator).click()
+  }
 }

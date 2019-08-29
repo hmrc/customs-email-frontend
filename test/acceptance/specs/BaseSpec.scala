@@ -31,7 +31,8 @@ trait BaseSpec extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuit
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(Map("metrics.enabled" -> false,
       "microservice.services.auth.port" -> Constants.wireMockPort,
-      "microservice.services.cachable.short-lived-cache.port" -> Constants.wireMockPort))
+      "microservice.services.cachable.short-lived-cache.port" -> Constants.wireMockPort,
+      "microservice.services.email-verification.port" -> Constants.wireMockPort))
     .disable[com.kenshoo.play.metrics.PlayModule]
     .build()
 

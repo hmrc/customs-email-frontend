@@ -24,6 +24,7 @@ class CheckYourEmailAddressPage extends BasePage {
   override val title = "Check your email address"
 
   val emailAddressId: By = By.id("cya-answer-id")
+  val yesEmailAddressCss : By = By.cssSelector("#isYes-true")
 }
 
 object CheckYourEmailAddressPage extends CheckYourEmailAddressPage

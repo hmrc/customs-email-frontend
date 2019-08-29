@@ -16,26 +16,34 @@
 
 package acceptance.specs
 
-import acceptance.pages.{CheckYourEmailAddressPage, WhatIsYourEmailPage}
+import acceptance.pages.{CheckYourEmailAddressPage, StartPage, VerifyYourEmailAddressPage, WhatIsYourEmailPage}
 import acceptance.utils.SpecHelper
 
-class ChangeEmailSpec extends BaseSpec with SpecHelper {
+class SendEmailVerificationSpec extends BaseSpec with SpecHelper {
 
-  feature("change email address") {
-    scenario("user changes the email address") {
+  feature("Send email to user for verification") {
+    scenario("user amends the email and submits for verification") {
+      stubVerificationRequestSent()
       Given("the user has successfully logged in")
         authenticate()
         save4LaterWithNoData()
-        navigateTo(WhatIsYourEmailPage)
-        verifyCurrentPage(WhatIsYourEmailPage)
+        navigateTo(StartPage)
+        verifyCurrentPage(StartPage)
+        authenticateGG()
+        clickOn(StartPage.emailLinkText)
       When("the user provides an email address to change")
         save4LaterWithData()
         enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
         clickContinue()
       Then("the user should be on 'Check your email address' page")
         verifyCurrentPage(CheckYourEmailAddressPage)
-      Then("the new email address provided should be updated")
         assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
+      When("the user confirms to update the email address")
+        clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
+        clickContinue()
+      Then("the user should be on 'Verify email address' page")
+        verifyCurrentPage(VerifyYourEmailAddressPage)
+        assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
     }
   }
 }
