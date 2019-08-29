@@ -16,10 +16,11 @@
 
 package acceptance.pages
 
+import acceptance.utils.Configuration
 import org.openqa.selenium.By
 
 class WhatIsYourEmailPage extends BasePage {
-  override val url: String = "http://localhost:6001/customs-email-frontend/email"
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/email"
   override val title = "Change your email address for CDS"
 
   val emailTextFieldId: By = By.id("email")
