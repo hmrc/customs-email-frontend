@@ -62,7 +62,7 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
     auditable.sendDataEvent(
       transactionName = transactionName,
       path = url,
-      detail = Map("txName" -> auditType, "email" -> emailAddress),
+      detail = Map("emailAddress" -> emailAddress),
       auditType = auditType
     )
   }

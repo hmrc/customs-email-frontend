@@ -27,7 +27,11 @@ object EmailVerificationStateHttpParser {
   implicit object GetEmailVerificationStateHttpReads extends HttpReads[EmailVerificationStateResponse] {
     override def read(method: String, url: String, response: HttpResponse): EmailVerificationStateResponse =
       response.status match {
-        case OK => Right(EmailVerified)
+        case OK =>
+          Logger.debug(
+            "[GetEmailVerificationStateHttpParser][GetEmailVerificationStateHttpReads][read] - Email Verified"
+          )
+          Right(EmailVerified)
         case NOT_FOUND =>
           Logger.warn(
             "[GetEmailVerificationStateHttpParser][GetEmailVerificationStateHttpReads][read] - Email not verified"
@@ -49,5 +53,4 @@ object EmailVerificationStateHttpParser {
   case object EmailNotVerified extends EmailVerificationState
 
   case class EmailVerificationStateErrorResponse(status: Int, body: String)
-
 }
