@@ -25,7 +25,7 @@ import utils.{Constants, WireMockRunner}
 
 trait BaseSpec extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuite with BeforeAndAfterAll with WireMockRunner with StubForWireMock {
 
-  override lazy val port = Option(System.getProperty("port")).fold(9000)(_.toInt)
+  override lazy val port = Option(System.getProperty("port")).fold(6001)(_.toInt)
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(Map("metrics.enabled" -> false,
