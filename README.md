@@ -11,7 +11,6 @@ This is a frontend application currently serving the purpose of updating the sto
 You'll need [Service Manager](https://github.com/hmrc/service-manager) to develop locally.
 
 
-
 #### Service Manager Commands
 
 What's running?
@@ -34,9 +33,10 @@ To imitate the checks ran when building run (in the root directory)
 To start the app using SBT simply use the command
 
     sbt run
+
 from the terminal, visit [this link](http://localhost:9898/customs-email-frontend/start) to see the app running.
 
-You'll need to use a Government Gateway account to access most pages as they are authenticated.
+You'll need to use a Government Gateway account with CDS enrolment to access most pages as they are authenticated.
 
 ### License
 
