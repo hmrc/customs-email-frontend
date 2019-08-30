@@ -47,8 +47,4 @@ object Configuration {
     case DEV => "https://www.development.tax.service.gov.uk"
     case LOCAL => Option(System.getProperty("host")).getOrElse("http://localhost:" + port)
   }
-
-
 }
-
-
