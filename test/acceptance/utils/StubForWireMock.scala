@@ -18,9 +18,11 @@ package acceptance.utils
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import play.api.http.Status
+import play.api.libs.json.Json
 import play.mvc.Http.HeaderNames.CONTENT_TYPE
 import play.mvc.Http.MimeTypes.JSON
 import play.mvc.Http.Status.CREATED
+import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationKeys._
 
 trait StubForWireMock {
 
@@ -86,8 +88,20 @@ trait StubForWireMock {
     )
   }
 
+  def verificationRequestJson(): String = {
+    """{
+      |"email":"b@a.com",
+      |"templateId" : "verifyEmailAddress",
+      |"templateParameters":{},
+      |"linkExpiryDuration":"P3D",
+      |"continueUrl":"/customs-email-frontend/email-verified"
+      |}
+    """.stripMargin
+  }
+
   def stubVerificationRequest(url: String, response: String,status: Int): Unit = {
     stubFor(post(urlEqualTo(url))
+      .withRequestBody(equalToJson(verificationRequestJson()))
       .willReturn(
         aResponse()
           .withBody(response)
