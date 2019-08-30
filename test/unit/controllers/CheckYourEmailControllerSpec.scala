@@ -81,7 +81,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec {
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email/create")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email-address/create")
     }
   }
 
@@ -96,7 +96,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec {
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email-verified")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email-address-confirmed")
     }
 
     "redirect to Email Confirmed page when email already verified" in withAuthorisedUser() {
@@ -107,7 +107,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec {
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/verify-your-email")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/confirm-email-address")
     }
 
     "throw exception when createEmailVerificationRequest failed" in withAuthorisedUser() {

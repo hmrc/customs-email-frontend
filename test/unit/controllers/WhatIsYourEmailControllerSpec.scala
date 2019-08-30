@@ -49,7 +49,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec {
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-your-email")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-email-address")
     }
 
     "have a status of SEE_OTHER for show method when email not found in cache" in withAuthorisedUser() {
@@ -58,7 +58,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec {
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email/create")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email-address/create")
     }
 
     "have a status of OK for create method" in withAuthorisedUser() {
@@ -88,7 +88,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec {
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-your-email")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-email-address")
     }
   }
 }
