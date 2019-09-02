@@ -94,7 +94,7 @@ trait StubForWireMock {
       |"templateId" : "verifyEmailAddress",
       |"templateParameters":{},
       |"linkExpiryDuration":"P3D",
-      |"continueUrl":"/customs-email-frontend/email-verified"
+      |"continueUrl":"/customs-email-frontend/email-address-confirmed"
       |}
     """.stripMargin
   }
