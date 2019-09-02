@@ -19,12 +19,11 @@ package acceptance.pages
 import acceptance.utils.Configuration
 import org.openqa.selenium.By
 
-class CheckYourEmailAddressPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/customs-email-frontend/check-email-address"
-  override val title = "Check your email address"
+class StartPage extends BasePage {
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/start"
+  override val title = "Hello from customs-email-frontend"
 
-  val emailAddressId: By = By.id("cya-answer-id")
-  val yesEmailAddressCss : By = By.cssSelector("#isYes-true")
+  val emailLinkText: By = By.linkText("Let's do this!")
 }
 
-object CheckYourEmailAddressPage extends CheckYourEmailAddressPage
+object StartPage extends StartPage

@@ -17,7 +17,10 @@
 package acceptance.utils
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status
+import play.mvc.Http.HeaderNames.CONTENT_TYPE
+import play.mvc.Http.MimeTypes.JSON
 
 trait StubForWireMock {
 
@@ -25,8 +28,45 @@ trait StubForWireMock {
   val authUrl = "/auth/authorise"
   val save4LaterGetUrl = s"/save4later/customs-email-frontend/$eoriNumber"
   val save4LaterPutUrl = s"/save4later/customs-email-frontend/$eoriNumber/data/email"
+  val emailVerificationPostUrl = "/email-verification/verification-requests"
 
-  def authRequestJson() =
+  private def authRequestJson(): String =
+    """{
+      |"authorise" : [{
+      | "enrolment" : "HMRC-CUS-ORG",
+      | "identifiers" : [],
+      | "state" : "Activated"
+      |}],
+      | "retrieve" : ["allEnrolments","internalId"]
+      |}
+    """.stripMargin
+
+  def authenticate(): StubMapping = {
+    stubFor(post(urlEqualTo(authUrl))
+      .withRequestBody(equalToJson(authRequestJson()))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
+          .withBody(
+            s"""{"allEnrolments": [
+               |  {
+               | "key": "HMRC-CUS-ORG",
+               | "identifiers": [
+               |   {
+               |     "key": "EORINumber",
+               |     "value": "$eoriNumber"
+               |   }
+               | ]
+               |}
+               |],
+               |"internalId": "$eoriNumber"
+               |}
+              """.stripMargin)
+      )
+    )
+  }
+
+  private def authGGRequestJson(): String =
     """{
       |"authorise" : [{
       | "authProviders" : ["GovernmentGateway"]
@@ -35,9 +75,9 @@ trait StubForWireMock {
       |}
     """.stripMargin
 
-  def authenticate() = {
+  def authenticateGG(): StubMapping = {
     stubFor(post(urlEqualTo(authUrl))
-      .withRequestBody(equalToJson(authRequestJson()))
+      .withRequestBody(equalToJson(authGGRequestJson()))
       .willReturn(
         aResponse()
           .withStatus(Status.OK)
@@ -46,7 +86,33 @@ trait StubForWireMock {
     )
   }
 
-  def save4LaterWithNoData() = {
+  private def verificationRequestJson(): String = {
+    """{
+      |"email":"b@a.com",
+      |"templateId" : "verifyEmailAddress",
+      |"templateParameters":{},
+      |"linkExpiryDuration":"P3D",
+      |"continueUrl":"/customs-email-frontend/email-address-confirmed"
+      |}
+    """.stripMargin
+  }
+
+  private def stubVerificationRequest(url: String, status: Int): Unit = {
+    stubFor(post(urlEqualTo(url))
+      .withRequestBody(equalToJson(verificationRequestJson()))
+      .willReturn(
+        aResponse()
+          .withStatus(status)
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
+
+  def stubVerificationRequestSent(): Unit = {
+    stubVerificationRequest(emailVerificationPostUrl, Status.CREATED)
+  }
+
+  def save4LaterWithNoData(): StubMapping = {
     stubFor(get(urlEqualTo(save4LaterGetUrl))
       .willReturn(
         aResponse()
@@ -64,7 +130,7 @@ trait StubForWireMock {
     )
   }
 
-  def save4LaterWithData() = {
+  def save4LaterWithData(): StubMapping = {
     val encryptedEmail = "YKEtCuoQiCSDa7UDy8cs/mhnhVx31sNgNMJ3yXL47rLKc5P2y6Vk4Nsv4fn+OapA"
     stubFor(get(urlEqualTo(save4LaterGetUrl))
       .willReturn(

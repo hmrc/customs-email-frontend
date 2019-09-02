@@ -18,9 +18,6 @@ package acceptance.pages
 
 import org.scalatestplus.selenium.Page
 
-
-trait BasePage extends Page{
-
+trait BasePage extends Page {
   val title : String
-
 }
