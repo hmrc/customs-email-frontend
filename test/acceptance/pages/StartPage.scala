@@ -27,5 +27,3 @@ class StartPage extends BasePage {
 }
 
 object StartPage extends StartPage
-
-
