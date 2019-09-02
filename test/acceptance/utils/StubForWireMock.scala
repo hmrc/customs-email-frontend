@@ -18,11 +18,8 @@ package acceptance.utils
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import play.api.http.Status
-import play.api.libs.json.Json
 import play.mvc.Http.HeaderNames.CONTENT_TYPE
 import play.mvc.Http.MimeTypes.JSON
-import play.mvc.Http.Status.CREATED
-import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationKeys._
 
 trait StubForWireMock {
 
@@ -51,7 +48,8 @@ trait StubForWireMock {
         aResponse()
           .withStatus(Status.OK)
           .withBody(
-            s"""{"allEnrolments": [{
+            s"""{"allEnrolments": [
+               |  {
                | "key": "HMRC-CUS-ORG",
                | "identifiers": [
                |   {
@@ -61,7 +59,9 @@ trait StubForWireMock {
                | ]
                |}
                |],
-            "internalId": "$eoriNumber"}""".stripMargin)
+               |"internalId": "$eoriNumber"
+               |}
+              """.stripMargin)
       )
     )
   }
@@ -99,12 +99,12 @@ trait StubForWireMock {
     """.stripMargin
   }
 
-  def stubVerificationRequest(url: String, response: String,status: Int): Unit = {
+  def stubVerificationRequest(url: String, status: Int): Unit = {
     stubFor(post(urlEqualTo(url))
       .withRequestBody(equalToJson(verificationRequestJson()))
       .willReturn(
         aResponse()
-          .withBody(response)
+          .withBody("")
           .withStatus(status)
           .withHeader(CONTENT_TYPE, JSON)
       )
@@ -112,7 +112,7 @@ trait StubForWireMock {
   }
 
   def stubVerificationRequestSent() = {
-    stubVerificationRequest(emailVerificationPostUrl, "", CREATED)
+    stubVerificationRequest(emailVerificationPostUrl, Status.CREATED)
   }
 
 

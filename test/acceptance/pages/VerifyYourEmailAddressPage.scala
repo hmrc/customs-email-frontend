@@ -27,7 +27,3 @@ class VerifyYourEmailAddressPage extends BasePage {
 }
 
 object VerifyYourEmailAddressPage extends VerifyYourEmailAddressPage
-
-
-
-
