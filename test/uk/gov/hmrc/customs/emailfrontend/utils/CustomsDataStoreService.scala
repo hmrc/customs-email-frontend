@@ -16,8 +16,20 @@
 
 package uk.gov.hmrc.customs.emailfrontend.utils
 
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
-import org.scalatestplus.play.PlaySpec
+import com.github.tomakehurst.wiremock.client.WireMock._
+import play.mvc.Http.HeaderNames.CONTENT_TYPE
+import play.mvc.Http.MimeTypes.JSON
 
-trait IntegrationSpec extends PlaySpec with ScalaFutures with Eventually with IntegrationPatience with BeforeAndAfterAll with Await
+trait CustomsDataStoreService extends WireMockRunner {
+
+  def returnCustomsDataStoreResponse(url: String, request: String, status: Int): Unit = {
+    stubFor(post(urlEqualTo(url))
+      .withRequestBody(equalToJson(request))
+      .willReturn(
+        aResponse()
+          .withStatus(status)
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
+}

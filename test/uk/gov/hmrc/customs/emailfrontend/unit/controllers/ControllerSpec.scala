@@ -28,12 +28,12 @@ import play.api.{Configuration, Environment, Mode, Play}
 import play.utils.OrderPreserving.groupBy
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.unit.{AuthBuilder, FakeAction}
+import uk.gov.hmrc.customs.emailfrontend.utils.Await
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 import scala.concurrent.ExecutionContext
 
-
-trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder with OptionValues {
+trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder with OptionValues with Await{
 
   implicit def materializer: Materializer = Play.materializer
 
@@ -64,5 +64,4 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
 
   def requestWithForm(data: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
     Request(FakeRequest("GET", "/").withCSRFToken, formUrlEncodedBody(data))
-
 }

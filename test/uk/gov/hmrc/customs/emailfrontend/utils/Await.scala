@@ -16,8 +16,13 @@
 
 package uk.gov.hmrc.customs.emailfrontend.utils
 
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
-import org.scalatestplus.play.PlaySpec
+import scala.concurrent.duration.{Duration, FiniteDuration, _}
+import scala.concurrent.{Await => WaitFor, Future}
 
-trait IntegrationSpec extends PlaySpec with ScalaFutures with Eventually with IntegrationPatience with BeforeAndAfterAll with Await
+trait Await {
+
+  implicit val defaultTimeout: FiniteDuration = 5 seconds
+
+  def await[A](future: Future[A])(implicit timeout: Duration): A = WaitFor.result(future, timeout)
+
+}
