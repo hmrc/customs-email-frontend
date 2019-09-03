@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import partials.main_template
+package integration
 
-@this(main_template: main_template)
-@(eori: String)(implicit request: Request[_], messages: Messages)
+import com.github.tomakehurst.wiremock.client.WireMock._
+import play.mvc.Http.HeaderNames.CONTENT_TYPE
+import play.mvc.Http.MimeTypes.JSON
+import utils.WireMockRunner
 
-@main_template("Hello from customs-email-frontend") {
-    <h1>Hello from customs-email-frontend @eori !</h1>
+trait CustomsDataStoreService extends WireMockRunner {
 
-    <a class="button button--get-started" href='email-address' role="button">Let's do this!</a>
+  def returnCustomsDataStoreResponse(url: String, request: String, status: Int): Unit = {
+    stubFor(post(urlEqualTo(url))
+      .withRequestBody(equalToJson(request))
+      .willReturn(
+        aResponse()
+          .withStatus(status)
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
 }

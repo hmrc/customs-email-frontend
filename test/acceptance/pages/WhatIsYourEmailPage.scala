@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import partials.main_template
+package acceptance.pages
 
-@this(main_template: main_template)
-@(eori: String)(implicit request: Request[_], messages: Messages)
+import acceptance.utils.Configuration
+import org.openqa.selenium.By
 
-@main_template("Hello from customs-email-frontend") {
-    <h1>Hello from customs-email-frontend @eori !</h1>
+class WhatIsYourEmailPage extends BasePage {
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/email-address"
+  override val title = "Change your email address for CDS"
 
-    <a class="button button--get-started" href='email-address' role="button">Let's do this!</a>
+  val emailTextFieldId: By = By.id("email")
 }
+
+object WhatIsYourEmailPage extends WhatIsYourEmailPage
