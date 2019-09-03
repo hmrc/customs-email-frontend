@@ -29,13 +29,15 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector)(implicit ec: ExecutionContext) {
 
-  def storeEmail(eori: Eori, email: String)(implicit hc: HeaderCarrier): Future[Unit] = {
+  def storeEmail(eori: Eori, email: String)(implicit hc: HeaderCarrier): Future[Either[String, Int]] = {
     customsDataStoreConnector.storeEmailAddress(DataStoreRequest(eori.id, email)) map { response =>
       response.status match {
         case OK =>
           Logger.info("CustomsDataStore: data store request is successful")
-        case _ =>
+          Right(OK)
+        case failStatus =>
           Logger.warn(s"CustomsDataStore: data store request is failed with status ${response.status}")
+          Left(s"Request failed with status $failStatus")
       }
     }
   }
