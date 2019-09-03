@@ -35,7 +35,7 @@ class CustomsDataStoreIntegrationSpec extends IntegrationSpec with CustomsDataSt
   val eori = Eori("GB0123456789")
   val Email = "a@b.com"
 
-  implicit lazy val app: Application = new GuiceApplicationBuilder()
+  override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
         "microservice.services.tax-enrolments.host" -> Host,

@@ -29,13 +29,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)(implicit hc: HeaderCarrier) {
+class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable) {
 
   private val url: String = appConfig.customsDataStoreUrl
-  private val header: HeaderCarrier = hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.customsDataStoreToken}")))
 
-  def storeEmailAddress(dataStoreRequest: DataStoreRequest): Future[HttpResponse] = {
+  def storeEmailAddress(dataStoreRequest: DataStoreRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val query = s"""{"query" : "mutation {byEori(eoriHistory:{eori:\\"${dataStoreRequest.eori}\\"}, notificationEmail:{address:\\"${dataStoreRequest.email}\\"})}"}"""
+    val header: HeaderCarrier = hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.customsDataStoreToken}")))
 
     val detail = Map("eori number" -> dataStoreRequest.eori, "emailAddress" -> dataStoreRequest.email)
     auditRequest("DataStoreEmailRequestSubmitted", detail)

@@ -19,5 +19,6 @@ package uk.gov.hmrc.customs.emailfrontend.utils
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
-trait IntegrationSpec extends PlaySpec with ScalaFutures with Eventually with IntegrationPatience with BeforeAndAfterAll with Await
+trait IntegrationSpec extends PlaySpec with ScalaFutures with Eventually with IntegrationPatience with BeforeAndAfterAll with Await with GuiceOneAppPerSuite

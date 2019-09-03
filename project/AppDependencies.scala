@@ -20,7 +20,6 @@ object AppDependencies {
     "org.pegdown" % "pegdown" % "1.6.0" % "test, it",
     "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test, it",
     "org.mockito" % "mockito-core" % "3.0.0" % "test,it",
-    "com.github.tomakehurst" % "wiremock-jre8" % "2.24.1" % "test,it",
-    "uk.gov.hmrc" %% "reactivemongo-test" % "4.14.0-play-26" % "test,it"
+    "com.github.tomakehurst" % "wiremock-standalone" % "2.23.2" % "test"
   )
 }

@@ -34,7 +34,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.Constants._
 import uk.gov.hmrc.customs.emailfrontend.utils.{IntegrationSpec, WireMockRunner}
 import uk.gov.hmrc.http._
 
-class EmailVerificationConnectorSpec extends IntegrationSpec with BeforeAndAfter with BeforeAndAfterAll with GuiceOneAppPerSuite with WireMockRunner with MockitoSugar {
+class EmailVerificationConnectorSpec extends IntegrationSpec with BeforeAndAfter with BeforeAndAfterAll with WireMockRunner with MockitoSugar {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder().configure(Map(
     "microservice.services.email-verification.host" -> wireMockHost,

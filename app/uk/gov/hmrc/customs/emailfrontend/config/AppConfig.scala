@@ -50,8 +50,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val customsDataStoreBaseUrl: String = servicesConfig.baseUrl("customs-data-store")
   val customsDataStoreContext: String = config.get[String]("microservice.services.customs-data-store.context")
-  val customsDataStoreUrl = s"$customsDataStoreBaseUrl/$customsDataStoreContext"
+  val customsDataStoreUrl = s"$customsDataStoreBaseUrl$customsDataStoreContext"
   val customsDataStoreToken: String = config.get[String]("microservice.services.customs-data-store.token")
-
-
 }
