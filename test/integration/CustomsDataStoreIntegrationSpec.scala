@@ -18,6 +18,7 @@ package integration
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{equalToJson, postRequestedFor, urlEqualTo}
+import integration.stubservices.CustomsDataStoreService
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers.NO_CONTENT
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector

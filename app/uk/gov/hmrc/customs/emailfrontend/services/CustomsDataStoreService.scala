@@ -33,7 +33,7 @@ class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataSt
     customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email) map { response =>
       response.status match {
         case OK =>
-          Logger.info("CustomsDataStore: data store request is successful")
+          Logger.debug("CustomsDataStore: data store request is successful")
           response
         case _ =>
           Logger.warn(s"CustomsDataStore: data store request is failed with status ${response.status}")

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package integration
+package integration.stubservices
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import play.mvc.Http.HeaderNames.CONTENT_TYPE

@@ -45,12 +45,11 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
   "EmailConfirmedController" should {
     "have a status of OK when email found in cache" in withAuthorisedUser() {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
-      when(mockCustomsDataStoreService.storeEmail(any(), any())(any())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(OK)))
 
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe OK
-
-      verify(mockCustomsDataStoreService).storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier])
     }
 
     "have a status of SEE_OTHER for show method when email not found in cache" in withAuthorisedUser() {
