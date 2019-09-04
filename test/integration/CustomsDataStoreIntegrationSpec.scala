@@ -70,14 +70,14 @@ class CustomsDataStoreIntegrationSpec extends IntegrationSpec with CustomsDataSt
 
   "CustomsDataStoreConnector" should {
     "call customs data store service with correct url and payload" in {
-      await(customsDataStoreConnector.storeEmailAddress(dataStoreRequest))
+      customsDataStoreConnector.storeEmailAddress(dataStoreRequest).futureValue
 
       WireMock.verify(postRequestedFor(urlEqualTo(expectedUrl)).withRequestBody(equalToJson(dataStoreRequestQuery)))
     }
 
     "return successful future with correct status when customs data store service returns good status(204)" in {
       returnCustomsDataStoreResponse(expectedUrl, dataStoreRequestQuery, NO_CONTENT)
-      await(customsDataStoreConnector.storeEmailAddress(dataStoreRequest)).status mustBe NO_CONTENT
+      customsDataStoreConnector.storeEmailAddress(dataStoreRequest).futureValue.status mustBe NO_CONTENT
     }
   }
 }

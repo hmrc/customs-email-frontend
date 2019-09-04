@@ -16,13 +16,14 @@
 
 package unit.services
 
-import integration.Await
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
+import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.customs.emailfrontend.services.CustomsDataStoreService
@@ -31,7 +32,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CustomsDataStoreServiceSpec extends PlaySpec with MockitoSugar with Await with BeforeAndAfterEach {
+class CustomsDataStoreServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
 
   private val mockConnector = mock[CustomsDataStoreConnector]
 
@@ -39,7 +40,7 @@ class CustomsDataStoreServiceSpec extends PlaySpec with MockitoSugar with Await 
 
   private val service = new CustomsDataStoreService(mockConnector)
 
-  val eori = Eori("GB123456789")
+  val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
   val email = "abc@def.com"
 
   override protected def beforeEach(): Unit = {
@@ -50,14 +51,13 @@ class CustomsDataStoreServiceSpec extends PlaySpec with MockitoSugar with Await 
     "return a status OK when data store request is successful" in {
       when(mockConnector.storeEmailAddress(any())(any())).thenReturn(Future.successful(HttpResponse(OK)))
 
-      await(service.storeEmail(eori, email)) mustBe Right(OK)
+      service.storeEmail(enrolmentIdentifier, email).futureValue.status mustBe OK
     }
   }
 
   "return a status BAD_REQUEST when data store request is successful" in {
     when(mockConnector.storeEmailAddress(any())(any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
-    await(service.storeEmail(eori, email)) mustBe Left("Request failed with status 400")
+    service.storeEmail(enrolmentIdentifier, email).futureValue.status mustBe BAD_REQUEST
   }
 }
-

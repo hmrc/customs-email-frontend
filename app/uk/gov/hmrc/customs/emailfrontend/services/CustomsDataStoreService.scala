@@ -19,25 +19,26 @@ package uk.gov.hmrc.customs.emailfrontend.services
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.http.Status.OK
+import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.domain.DataStoreRequest
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector)(implicit ec: ExecutionContext) {
 
-  def storeEmail(eori: Eori, email: String)(implicit hc: HeaderCarrier): Future[Either[String, Int]] = {
-    customsDataStoreConnector.storeEmailAddress(DataStoreRequest(eori.id, email)) map { response =>
+  def storeEmail(enrolmentId: EnrolmentIdentifier, email: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    customsDataStoreConnector.storeEmailAddress(DataStoreRequest(Eori(enrolmentId).id, email)) map { response =>
       response.status match {
         case OK =>
           Logger.info("CustomsDataStore: data store request is successful")
-          Right(OK)
-        case failStatus =>
+          response
+        case _ =>
           Logger.warn(s"CustomsDataStore: data store request is failed with status ${response.status}")
-          Left(s"Request failed with status $failStatus")
+          response
       }
     }
   }

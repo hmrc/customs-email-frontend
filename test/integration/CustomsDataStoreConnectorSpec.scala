@@ -18,6 +18,7 @@ package integration
 
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
+import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.domain.DataStoreRequest
@@ -27,7 +28,7 @@ import unit.controllers.ControllerSpec
 
 import scala.concurrent.Future
 
-class CustomsDataStoreConnectorSpec extends ControllerSpec {
+class CustomsDataStoreConnectorSpec extends ControllerSpec with ScalaFutures {
 
   private val mockHttp = mock[HttpClient]
   private val mockAuditable = mock[Auditable]
@@ -38,14 +39,12 @@ class CustomsDataStoreConnectorSpec extends ControllerSpec {
     "successfully send a query request to customs data store and return the OK response" in {
       when(mockHttp.doPost(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(200)))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-      val result = await(testConnector.storeEmailAddress(DataStoreRequest("eori", "emailaddress")))
-      result.status shouldBe 200
+      testConnector.storeEmailAddress(DataStoreRequest("eori", "emailaddress")).futureValue.status shouldBe 200
     }
     "return the failure response from customs data store" in {
       when(mockHttp.doPost(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(400)))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-      val result = await(testConnector.storeEmailAddress(DataStoreRequest("", "")))
-      result.status shouldBe 400
+     testConnector.storeEmailAddress(DataStoreRequest("", "")).futureValue.status  shouldBe 400
     }
   }
 }

@@ -21,4 +21,4 @@ import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
-trait IntegrationSpec extends PlaySpec with ScalaFutures with Eventually with IntegrationPatience with BeforeAndAfterAll with Await with GuiceOneAppPerSuite
+trait IntegrationSpec extends PlaySpec with ScalaFutures with Eventually with IntegrationPatience with BeforeAndAfterAll with GuiceOneAppPerSuite

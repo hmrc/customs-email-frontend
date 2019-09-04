@@ -17,7 +17,6 @@
 package unit.controllers
 
 import akka.stream.Materializer
-import integration.Await
 import org.scalatest.{Matchers, OptionValues, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -33,7 +32,7 @@ import unit.{AuthBuilder, FakeAction}
 
 import scala.concurrent.ExecutionContext
 
-trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder with OptionValues with Await {
+trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder with OptionValues {
 
   implicit def materializer: Materializer = Play.materializer
 

@@ -18,6 +18,7 @@ package unit.controllers
 
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
+import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController
@@ -26,9 +27,9 @@ import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerif
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 
-class CheckYourEmailControllerSpec extends ControllerSpec {
+class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
 
   private val view = app.injector.instanceOf[check_your_email]
   private val mockEmailVerificationService = mock[EmailVerificationService]
@@ -116,8 +117,9 @@ class CheckYourEmailControllerSpec extends ControllerSpec {
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "true")
 
+      import scala.concurrent.duration._
       val result = intercept[IllegalStateException] {
-        await(controller.submit(request))
+       Await.result(controller.submit(request), 5 seconds)
       }
 
       result.getMessage shouldBe "CreateEmailVerificationRequest Failed"
