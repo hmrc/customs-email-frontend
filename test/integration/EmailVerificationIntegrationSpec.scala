@@ -72,7 +72,6 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec
     }
 
     "the email is not verified" should {
-
       "return an EmailNotVerified response" in {
         EmailVerificationStubService.stubEmailNotVerified()
         val expected = Right(EmailNotVerified)
@@ -83,7 +82,6 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec
     }
 
     "the email service Internal Server Error" should {
-
       "return an Internal Server Error" in {
         EmailVerificationStubService.stubEmailVerifiedInternalServerError()
         val expected = Left(EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, EmailVerificationStubService.internalServerErrorResponse))
@@ -95,9 +93,7 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec
   }
 
   "Calling createEmailVerificationRequest" when {
-
     "the post is successful" should {
-
       "return an EmailVerificationRequestSent" in {
         EmailVerificationStubService.stubVerificationRequestSent()
         val expected = Right(EmailVerificationRequestSent)
@@ -108,7 +104,6 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec
     }
 
     "the email is already verified" should {
-
       "return an EmailAlreadyVerified" in {
         EmailVerificationStubService.stubEmailAlreadyVerified()
         val expected = Right(EmailAlreadyVerified)
@@ -119,7 +114,6 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec
     }
 
     "the email service Internal Server Error" should {
-
       "return an Internal Server Error" in {
         EmailVerificationStubService.stubVerificationRequestError()
         val expected = Left(EmailVerificationRequestFailure(INTERNAL_SERVER_ERROR, EmailVerificationStubService.internalServerErrorResponse))
