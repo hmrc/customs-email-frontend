@@ -42,13 +42,13 @@ class CustomsDataStoreConnectorSpec extends PlaySpec with ScalaFutures with Mock
 
   val testConnector = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
 
-  val url = "customs-data-store/customs-data-store/graphql"
+  val url = "/customs-data-store/graphql"
   val testEori = Eori("GB1234556789")
   val testEmail = "email@test.com"
   val query = s"""{"query" : "mutation {byEori(eoriHistory:{eori:\\"${testEori.id}\\"}, notificationEmail:{address:\\"$testEmail\\"})}"}"""
   val token = "secret-token"
   val headers = Seq("Content-Type" -> "application/json")
-  val header: HeaderCarrier = hc.copy(authorization = Some(Authorization(s"""Bearer "secret-token"""")))
+  val header: HeaderCarrier = hc.copy(authorization = Some(Authorization(s"Bearer $token")))
 
 
   override def beforeEach(): Unit = {
@@ -60,13 +60,13 @@ class CustomsDataStoreConnectorSpec extends PlaySpec with ScalaFutures with Mock
   "CustomsDataStoreConnector" should {
     "successfully send a query request to customs data store and return the OK response" in {
       when(mockHttp.doPost(
-        meq(url),
+        any(),
         meq(Json.parse(query)),
         meq(headers)
       )(any(), meq(header)))
         .thenReturn(Future.successful(HttpResponse(200)))
         doNothing ().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-        testConnector.storeEmailAddress(testEori, "emailaddress").futureValue.status mustBe 200
+        testConnector.storeEmailAddress(testEori, testEmail).futureValue.status mustBe 200
     }
 
     "return the failure response from customs data store" in {
