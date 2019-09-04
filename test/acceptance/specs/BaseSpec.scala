@@ -18,18 +18,25 @@ package acceptance.specs
 
 import acceptance.utils.Configuration.webDriver
 import acceptance.utils.{Configuration, StubForWireMock}
-import org.scalatest.{BeforeAndAfterAll, FeatureSpec, GivenWhenThen}
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, FeatureSpec, GivenWhenThen}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import utils.{Constants, WireMockRunner}
 
-trait BaseSpec extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuite with BeforeAndAfterAll with WireMockRunner with StubForWireMock {
+trait BaseSpec extends FeatureSpec
+  with GivenWhenThen
+  with GuiceOneServerPerSuite
+  with BeforeAndAfterAll
+  with BeforeAndAfterEach
+  with WireMockRunner
+  with StubForWireMock {
 
   override lazy val port = Configuration.port
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(Map("metrics.enabled" -> false,
+      "auditing.enabled" -> false,
       "microservice.services.auth.port" -> Constants.wireMockPort,
       "microservice.services.cachable.short-lived-cache.port" -> Constants.wireMockPort,
       "microservice.services.email-verification.port" -> Constants.wireMockPort))
@@ -38,6 +45,10 @@ trait BaseSpec extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuit
 
   override def beforeAll: Unit = {
     startMockServer()
+  }
+
+  override def beforeEach(): Unit = {
+    resetMockServer()
   }
 
   override def afterAll: Unit = {

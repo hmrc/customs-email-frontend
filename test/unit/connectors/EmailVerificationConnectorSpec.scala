@@ -22,10 +22,12 @@ import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
+import play.api.http.Status
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestResponse, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -49,6 +51,8 @@ class EmailVerificationConnectorSpec extends PlaySpec
     reset(mockAuditable, mockAppConfig, mockHttpClient)
     doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
     when(mockAppConfig.emailVerificationWithContext).thenReturn("testUrl")
+    when(mockAppConfig.emailVerificationTemplateId).thenReturn("verifyEmailAddress")
+    when(mockAppConfig.emailVerificationLinkExpiryDuration).thenReturn("P3D")
   }
 
   "Calling getEmailVerificationState" when {
@@ -56,10 +60,10 @@ class EmailVerificationConnectorSpec extends PlaySpec
       "return an EmailVerified response" in {
         when(mockHttpClient.POST[JsObject, EmailVerificationStateResponse](
           meq("testUrl/verified-email-check"),
-          meq(Json.obj("email" -> "emailaddress")), any())(any(), any(), any[HeaderCarrier], any()))
+          meq(Json.obj("email" -> "email-address")), any())(any(), any(), any[HeaderCarrier], any()))
           .thenReturn(Future.successful(Right(EmailVerified)))
 
-        val result = connector.getEmailVerificationState("emailaddress").futureValue
+        val result = connector.getEmailVerificationState("email-address").futureValue
 
         result mustBe Right(EmailVerified)
       }
@@ -70,7 +74,7 @@ class EmailVerificationConnectorSpec extends PlaySpec
         when(mockHttpClient.POST[JsObject, EmailVerificationStateResponse](any(), any(), any())(any(), any(), any[HeaderCarrier], any()))
           .thenReturn(Future.successful(Right(EmailNotVerified)))
 
-        val result = connector.getEmailVerificationState("emailaddress").futureValue
+        val result = connector.getEmailVerificationState("email-address").futureValue
 
         result mustBe Right(EmailNotVerified)
       }
@@ -81,9 +85,50 @@ class EmailVerificationConnectorSpec extends PlaySpec
         when(mockHttpClient.POST[JsObject, EmailVerificationStateResponse](any(), any(), any())(any(), any(), any[HeaderCarrier], any()))
           .thenReturn(Future.successful(Left(EmailVerificationStateErrorResponse(500, "Internal Server Error"))))
 
-        val result = connector.getEmailVerificationState("emailaddress").futureValue
+        val result = connector.getEmailVerificationState("email-address").futureValue
 
         result mustBe Left(EmailVerificationStateErrorResponse(500, "Internal Server Error"))
+      }
+    }
+  }
+
+  "Calling createEmailVerificationRequest" when {
+    "the request is successful" should {
+      "return an EmailVerificationRequestSent" in {
+        when(mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](
+          meq("testUrl/verification-requests"),
+          meq(Json.obj("email" -> "email-address",
+            "templateId" -> "verifyEmailAddress",
+            "templateParameters" -> Json.obj(),
+            "linkExpiryDuration" -> "P3D",
+            "continueUrl" -> "test-continue-url")), any())(any(), any(), any[HeaderCarrier], any()))
+          .thenReturn(Future.successful(Right(EmailVerificationRequestSent)))
+
+        val result = connector.createEmailVerificationRequest("email-address", "test-continue-url").futureValue
+
+        result mustBe Right(EmailVerificationRequestSent)
+      }
+    }
+
+    "the email is already verified" should {
+      "return an EmailAlreadyVerified" in {
+        when(mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](any(), any(), any())(any(), any(), any[HeaderCarrier], any()))
+          .thenReturn(Future.successful(Right(EmailAlreadyVerified)))
+
+        val result = connector.createEmailVerificationRequest("email-address", "test-continue-url").futureValue
+
+        result mustBe Right(EmailAlreadyVerified)
+      }
+    }
+
+    "the request is not successful" should {
+      "return an Internal Server Error" in {
+        when(mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](any(), any(), any())(any(), any(), any[HeaderCarrier], any()))
+          .thenReturn(Future.successful(Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR, "Internal server error"))))
+
+        val result = connector.createEmailVerificationRequest("email-address", "test-continue-url").futureValue
+
+        result mustBe Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR, "Internal server error"))
       }
     }
   }
