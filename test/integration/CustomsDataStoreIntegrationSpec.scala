@@ -19,8 +19,6 @@ package integration
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{equalToJson, postRequestedFor, urlEqualTo}
 import org.scalatest.concurrent.ScalaFutures
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.NO_CONTENT
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
@@ -28,29 +26,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 class CustomsDataStoreIntegrationSpec extends IntegrationSpec with CustomsDataStoreService with ScalaFutures {
 
-  val Port: Int = sys.env.getOrElse("WIREMOCK_SERVICE_LOCATOR_PORT", "11111").toInt
-  val Host: String = "localhost"
   val eori = Eori("GB0123456789")
   val Email = "a@b.com"
-
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(
-      Map(
-        "microservice.services.tax-enrolments.host" -> Host,
-        "microservice.services.tax-enrolments.port" -> Port,
-        "microservice.services.tax-enrolments.context" -> "/tax-enrolments/subscriptions",
-        "microservice.services.customs-data-store.host" -> Host,
-        "microservice.services.customs-data-store.port" -> Port,
-        "microservice.services.customs-data-store.context" -> "/customs-data-store/graphql",
-        "microservice.services.subscription-display.host" -> Host,
-        "microservice.services.subscription-display.port" -> Port,
-        "microservice.services.subscription-display.context" -> "/subscriptions/subscriptiondisplay/v1",
-        "auditing.enabled" -> false,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
-      )
-    )
-    .build()
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private val expectedUrl = "/customs-data-store/graphql"

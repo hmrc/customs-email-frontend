@@ -14,37 +14,41 @@
  * limitations under the License.
  */
 
-package integration
+package unit.connectors
 
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
+import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import unit.controllers.ControllerSpec
 
 import scala.concurrent.Future
 
-class CustomsDataStoreConnectorSpec extends ControllerSpec with ScalaFutures {
+class CustomsDataStoreConnectorSpec extends PlaySpec with ScalaFutures with MockitoSugar {
 
   private val mockHttp = mock[HttpClient]
   private val mockAuditable = mock[Auditable]
-  implicit val hc = new HeaderCarrier()
-  val testConnector = new CustomsDataStoreConnector(appConfig, mockHttp, mockAuditable)
+  private val mockAppConfig = mock[AppConfig]
+  private implicit val hc = new HeaderCarrier()
+  val testConnector = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
 
   "CustomsDataStoreConnector" should {
     "successfully send a query request to customs data store and return the OK response" in {
       when(mockHttp.doPost(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(200)))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-      testConnector.storeEmailAddress(Eori("GB1234556789"), "emailaddress").futureValue.status shouldBe 200
+      testConnector.storeEmailAddress(Eori("GB1234556789"), "emailaddress").futureValue.status mustBe 200
     }
+
     "return the failure response from customs data store" in {
       when(mockHttp.doPost(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(400)))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-      testConnector.storeEmailAddress(Eori("someEori"), "someEmail").futureValue.status shouldBe 400
+      testConnector.storeEmailAddress(Eori("someEori"), "someEmail").futureValue.status mustBe 400
     }
   }
 }
