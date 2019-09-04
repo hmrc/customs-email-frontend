@@ -23,7 +23,6 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.NO_CONTENT
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
-import uk.gov.hmrc.customs.emailfrontend.domain.DataStoreRequest
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -57,7 +56,6 @@ class CustomsDataStoreIntegrationSpec extends IntegrationSpec with CustomsDataSt
   private val expectedUrl = "/customs-data-store/graphql"
   private lazy val customsDataStoreConnector = app.injector.instanceOf[CustomsDataStoreConnector]
 
-  private val dataStoreRequest = DataStoreRequest(eori.id, Email)
   private val dataStoreRequestQuery = s"""{"query" : "mutation {byEori(eoriHistory:{eori:\\"${eori.id}\\"}, notificationEmail:{address:\\"$Email\\"})}"}"""
 
   override def beforeAll: Unit = {
@@ -70,14 +68,14 @@ class CustomsDataStoreIntegrationSpec extends IntegrationSpec with CustomsDataSt
 
   "CustomsDataStoreConnector" should {
     "call customs data store service with correct url and payload" in {
-      customsDataStoreConnector.storeEmailAddress(dataStoreRequest).futureValue
+      customsDataStoreConnector.storeEmailAddress(eori, Email).futureValue
 
       WireMock.verify(postRequestedFor(urlEqualTo(expectedUrl)).withRequestBody(equalToJson(dataStoreRequestQuery)))
     }
 
     "return successful future with correct status when customs data store service returns good status(204)" in {
       returnCustomsDataStoreResponse(expectedUrl, dataStoreRequestQuery, NO_CONTENT)
-      customsDataStoreConnector.storeEmailAddress(dataStoreRequest).futureValue.status mustBe NO_CONTENT
+      customsDataStoreConnector.storeEmailAddress(eori, Email).futureValue.status mustBe NO_CONTENT
     }
   }
 }

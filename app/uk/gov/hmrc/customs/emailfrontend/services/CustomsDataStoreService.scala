@@ -21,7 +21,6 @@ import play.api.Logger
 import play.api.http.Status.OK
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
-import uk.gov.hmrc.customs.emailfrontend.domain.DataStoreRequest
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -31,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector)(implicit ec: ExecutionContext) {
 
   def storeEmail(enrolmentId: EnrolmentIdentifier, email: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    customsDataStoreConnector.storeEmailAddress(DataStoreRequest(Eori(enrolmentId).id, email)) map { response =>
+    customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email) map { response =>
       response.status match {
         case OK =>
           Logger.info("CustomsDataStore: data store request is successful")

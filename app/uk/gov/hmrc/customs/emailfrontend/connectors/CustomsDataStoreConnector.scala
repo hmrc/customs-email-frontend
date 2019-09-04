@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.domain.DataStoreRequest
+import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -33,11 +33,11 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
 
   private val url: String = appConfig.customsDataStoreUrl
 
-  def storeEmailAddress(dataStoreRequest: DataStoreRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    val query = s"""{"query" : "mutation {byEori(eoriHistory:{eori:\\"${dataStoreRequest.eori}\\"}, notificationEmail:{address:\\"${dataStoreRequest.email}\\"})}"}"""
+  def storeEmailAddress(eori: Eori, email: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    val query = s"""{"query" : "mutation {byEori(eoriHistory:{eori:\\"${eori.id}\\"}, notificationEmail:{address:\\"$email\\"})}"}"""
     val header: HeaderCarrier = hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.customsDataStoreToken}")))
 
-    val detail = Map("eori number" -> dataStoreRequest.eori, "emailAddress" -> dataStoreRequest.email)
+    val detail = Map("eori number" -> eori.id, "emailAddress" -> email)
     auditRequest("DataStoreEmailRequestSubmitted", detail)
 
     httpClient.doPost[JsValue](url, Json.parse(query), Seq("Content-Type" -> "application/json"))(implicitly, header)

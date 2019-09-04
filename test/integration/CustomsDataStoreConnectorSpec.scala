@@ -21,7 +21,7 @@ import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
-import uk.gov.hmrc.customs.emailfrontend.domain.DataStoreRequest
+import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import unit.controllers.ControllerSpec
@@ -39,12 +39,12 @@ class CustomsDataStoreConnectorSpec extends ControllerSpec with ScalaFutures {
     "successfully send a query request to customs data store and return the OK response" in {
       when(mockHttp.doPost(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(200)))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-      testConnector.storeEmailAddress(DataStoreRequest("eori", "emailaddress")).futureValue.status shouldBe 200
+      testConnector.storeEmailAddress(Eori("GB1234556789"), "emailaddress").futureValue.status shouldBe 200
     }
     "return the failure response from customs data store" in {
       when(mockHttp.doPost(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(400)))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-     testConnector.storeEmailAddress(DataStoreRequest("", "")).futureValue.status  shouldBe 400
+      testConnector.storeEmailAddress(Eori("someEori"), "someEmail").futureValue.status shouldBe 400
     }
   }
 }

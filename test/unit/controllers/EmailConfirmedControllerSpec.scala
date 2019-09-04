@@ -17,8 +17,8 @@
 package unit.controllers
 
 import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
-import org.mockito.Mockito.{times, verify}
+import org.mockito.Mockito.{times, verify, _}
+import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers.{status, _}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController
@@ -30,14 +30,17 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import scala.concurrent.Future
 
 
-class EmailConfirmedControllerSpec extends ControllerSpec {
+class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val view = app.injector.instanceOf[email_confirmed]
   private val mockEmailCacheService = mock[EmailCacheService]
   private val mockCustomsDataStoreService = mock[CustomsDataStoreService]
 
-
   private val controller = new EmailConfirmedController(fakeAction, view, mockCustomsDataStoreService, mockEmailCacheService, mcc)
+
+  override protected def beforeEach(): Unit = {
+    reset(mockCustomsDataStoreService)
+  }
 
   "EmailConfirmedController" should {
     "have a status of OK when email found in cache" in withAuthorisedUser() {
@@ -61,12 +64,11 @@ class EmailConfirmedControllerSpec extends ControllerSpec {
 
     "have a status of OK for user with no enrolments" in withAuthorisedUserWithoutEnrolments {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
-      when(mockCustomsDataStoreService.storeEmail(any(), any())(any())).thenReturn(Future.successful(HttpResponse(OK)))
 
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe OK
 
-      verify(mockCustomsDataStoreService, times(0))
+      verify(mockCustomsDataStoreService, times(0)).storeEmail(any(), any())(any[HeaderCarrier])
     }
   }
 }
