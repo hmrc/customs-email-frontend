@@ -17,11 +17,9 @@
 package integration.stubservices
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import play.api.libs.json.{JsValue, Json}
 import play.mvc.Http.HeaderNames.CONTENT_TYPE
 import play.mvc.Http.MimeTypes.JSON
 import play.mvc.Http.Status._
-import uk.gov.hmrc.http.HeaderCarrier
 
 object EmailVerificationStubService {
 
@@ -31,36 +29,34 @@ object EmailVerificationStubService {
 
   private val expectedPostUrl = "/email-verification/verification-requests"
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  val emailVerifiedCheckRequestJson: JsValue = Json.parse("""{"email": "john.doe@example.com"}""")
-
-  val emailVerifiedResponseJson: JsValue = Json.parse("""{"email": "john.doe@example.com"}""")
-
-  val emailVerificationNotFoundJson: JsValue = Json.parse(
+  private def verificationRequestJson(): String = {
     """{
-      |  "code": "EMAIL_NOT_FOUND_OR_NOT_VERIFIED",
-      |  "message":"Email not verified."
-      |}""".stripMargin
-  )
+      |"email":"test@example.com",
+      |"templateId" : "verifyEmailAddress",
+      |"templateParameters":{},
+      |"linkExpiryDuration":"P3D",
+      |"continueUrl":"/customs/test-continue-url"
+      |}
+    """.stripMargin
+  }
 
-  val internalServerErrorJson: JsValue = Json.parse(
+  val internalServerErrorResponse: String = {
     """{
       |  "code": "UNEXPECTED_ERROR",
       |  "message":"An unexpected error occurred."
       |}""".stripMargin
-  )
+  }
 
   def stubEmailVerified() = {
-    stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, emailVerifiedResponseJson.toString, OK)
+    stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, "", OK)
   }
 
   def stubEmailNotVerified() = {
-    stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, emailVerificationNotFoundJson.toString, NOT_FOUND)
+    stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, "", NOT_FOUND)
   }
 
   def stubEmailVerifiedInternalServerError() = {
-    stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, internalServerErrorJson.toString, INTERNAL_SERVER_ERROR)
+    stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, internalServerErrorResponse, INTERNAL_SERVER_ERROR)
   }
 
   def stubVerificationRequestSent()={
@@ -72,7 +68,7 @@ object EmailVerificationStubService {
   }
 
   def stubVerificationRequestError()={
-    stubVerificationRequest(expectedPostUrl, internalServerErrorJson.toString(),INTERNAL_SERVER_ERROR)
+    stubVerificationRequest(expectedPostUrl, internalServerErrorResponse, INTERNAL_SERVER_ERROR)
   }
 
   def stubTheVerifiedEmailResponse(url: String, response: String, status: Int): Unit = {
@@ -86,8 +82,9 @@ object EmailVerificationStubService {
     )
   }
 
-  def stubVerificationRequest(url: String, response: String,status: Int): Unit = {
+  def stubVerificationRequest(url: String, response: String, status: Int): Unit = {
     stubFor(post(urlMatching(url))
+      .withRequestBody(equalToJson(verificationRequestJson()))
       .willReturn(
         aResponse()
           .withBody(response)
