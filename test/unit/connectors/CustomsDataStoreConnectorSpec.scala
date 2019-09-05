@@ -38,7 +38,7 @@ class CustomsDataStoreConnectorSpec extends PlaySpec with ScalaFutures with Mock
   private val mockHttp = mock[HttpClient]
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
-  private implicit val hc = new HeaderCarrier()
+  private implicit val hc = HeaderCarrier()
 
   val testConnector = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
 
@@ -60,19 +60,24 @@ class CustomsDataStoreConnectorSpec extends PlaySpec with ScalaFutures with Mock
   "CustomsDataStoreConnector" should {
     "successfully send a query request to customs data store and return the OK response" in {
       when(mockHttp.doPost(
-        any(),
+        meq(url),
         meq(Json.parse(query)),
         meq(headers)
       )(any(), meq(header)))
         .thenReturn(Future.successful(HttpResponse(200)))
-        doNothing ().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-        testConnector.storeEmailAddress(testEori, testEmail).futureValue.status mustBe 200
+      doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
+      testConnector.storeEmailAddress(testEori, testEmail).futureValue.status mustBe 200
     }
 
     "return the failure response from customs data store" in {
-      when(mockHttp.doPost(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(400)))
+      when(mockHttp.doPost(
+        meq(url),
+        meq(Json.parse(query)),
+        meq(headers)
+      )(any(), meq(header)))
+        .thenReturn(Future.successful(HttpResponse(400)))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-      testConnector.storeEmailAddress(Eori("someEori"), "someEmail").futureValue.status mustBe 400
+      testConnector.storeEmailAddress(testEori, testEmail).futureValue.status mustBe 400
     }
   }
 }

@@ -31,7 +31,8 @@ import scala.concurrent.Future
 @Singleton
 class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable) {
 
-  private val url: String = appConfig.customsDataStoreUrl
+  private[connectors] lazy val url: String = appConfig.customsDataStoreUrl
+
 
   def storeEmailAddress(eori: Eori, email: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val query = s"""{"query" : "mutation {byEori(eoriHistory:{eori:\\"${eori.id}\\"}, notificationEmail:{address:\\"$email\\"})}"}"""
