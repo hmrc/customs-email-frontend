@@ -17,16 +17,35 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.Inject
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Ok
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
+import uk.gov.hmrc.customs.emailfrontend.model.Eori
+import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed)
-                                        (implicit override val messagesApi: MessagesApi) extends I18nSupport {
+import scala.concurrent.{ExecutionContext, Future}
 
-  def show: Action[AnyContent] = actions.auth { implicit request =>
-    Ok(view())
+class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed,
+                                         customsDataStoreService: CustomsDataStoreService,
+                                         emailCacheService: EmailCacheService,
+                                         mcc: MessagesControllerComponents)
+                                        (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+  extends FrontendController(mcc) with I18nSupport {
+
+  def show: Action[AnyContent] = actions.auth.async { implicit request =>
+    emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
+      _.fold {
+        Logger.warn("[EmailConfirmedController][show] - emailStatus cache none, user logged out")
+        Future.successful(Redirect(SignOutController.signOut()))
+      } {
+        emailStatus =>
+          request.user.eori.map(identifier => customsDataStoreService.storeEmail(identifier, emailStatus.email))
+          Future.successful(Ok(view()))
+      }
+    }
   }
 }

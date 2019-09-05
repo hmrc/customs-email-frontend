@@ -32,7 +32,6 @@ class Save4LaterCacheConfigSpec extends PlaySpec
 
   val save4LaterConfig = new Save4LaterCachingConfig(mockHttpClient,mockAppConfig)
 
-
   "Save4LaterCachingConfig" should {
     "configure the Caching Config" in {
       save4LaterConfig.baseUri mustBe mockAppConfig.save4LaterBaseUrl

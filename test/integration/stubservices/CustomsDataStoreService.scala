@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-package integration
+package integration.stubservices
 
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
-import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import com.github.tomakehurst.wiremock.client.WireMock._
+import play.mvc.Http.HeaderNames.CONTENT_TYPE
+import play.mvc.Http.MimeTypes.JSON
+import utils.WireMockRunner
 
-trait IntegrationSpec extends PlaySpec with ScalaFutures with Eventually with IntegrationPatience with BeforeAndAfterAll with GuiceOneAppPerSuite
+trait CustomsDataStoreService extends WireMockRunner {
+
+  def returnCustomsDataStoreResponse(url: String, request: String, status: Int): Unit = {
+    stubFor(post(urlEqualTo(url))
+      .withRequestBody(equalToJson(request))
+      .willReturn(
+        aResponse()
+          .withStatus(status)
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
+}

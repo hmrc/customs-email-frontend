@@ -34,10 +34,7 @@ import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmailCacheServiceSpec extends PlaySpec
-  with ScalaFutures
-  with MockitoSugar
-  with BeforeAndAfter {
+class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar with BeforeAndAfter {
 
   private val mockEmailCachingConfig = mock[Save4LaterCachingConfig]
   private val mockApplicationCrypto = mock[ApplicationCrypto]
@@ -48,11 +45,8 @@ class EmailCacheServiceSpec extends PlaySpec
   val data = Map(internalId -> jsonValue)
   val cacheMap = CacheMap(internalId,data)
 
-
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
-
-
 
   val service =  Mockito.spy( new EmailCacheService(mockEmailCachingConfig,mockApplicationCrypto) )
 
@@ -72,18 +66,16 @@ class EmailCacheServiceSpec extends PlaySpec
       val cache: CacheMap =  service.saveEmail(Some(internalId),emailStatus).futureValue
 
       cache mustBe cacheMap
-
     }
+
     "save Email throw IllegalStateException" in {
       val internalId = None
-      Mockito.doReturn(Future.successful(cacheMap),Future.successful(cacheMap))
-        .when(service.asInstanceOf[ShortLivedCache]).
+      Mockito.doReturn(Future.successful(cacheMap),Future.successful(cacheMap)).when(service.asInstanceOf[ShortLivedCache]).
         cache(any[String],any[String],any[EmailStatus])(any[HeaderCarrier],any[Writes[EmailStatus]],any[ExecutionContext])
       val status = intercept[IllegalStateException] {
         service.saveEmail(internalId, emailStatus).futureValue
       }
       status.getMessage mustBe "Auth InternalId Missing"
-
     }
 
     "fetch Email" in {
@@ -106,8 +98,5 @@ class EmailCacheServiceSpec extends PlaySpec
       }
       cachedEmailStatus.getMessage mustBe "Auth InternalId Missing"
     }
-
   }
-
-
 }

@@ -32,7 +32,6 @@ import unit.{AuthBuilder, FakeAction}
 
 import scala.concurrent.ExecutionContext
 
-
 trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder with OptionValues {
 
   implicit def materializer: Materializer = Play.materializer
@@ -64,5 +63,4 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
 
   def requestWithForm(data: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
     Request(FakeRequest("GET", "/").withCSRFToken, formUrlEncodedBody(data))
-
 }
