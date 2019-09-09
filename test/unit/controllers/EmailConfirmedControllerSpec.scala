@@ -16,6 +16,7 @@
 
 package unit.controllers
 
+import org.apache.http.client.HttpResponseException
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify, _}
 import org.scalatest.BeforeAndAfterEach
@@ -23,9 +24,9 @@ import play.api.test.Helpers.{status, _}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController
 import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
-import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService}
+import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
 
 import scala.concurrent.Future
 
@@ -35,21 +36,47 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private val view = app.injector.instanceOf[email_confirmed]
   private val mockEmailCacheService = mock[EmailCacheService]
   private val mockCustomsDataStoreService = mock[CustomsDataStoreService]
+  private val mockEmailVerificationService = mock[EmailVerificationService]
 
-  private val controller = new EmailConfirmedController(fakeAction, view, mockCustomsDataStoreService, mockEmailCacheService, mcc)
+  private val controller = new EmailConfirmedController(fakeAction, view, mockCustomsDataStoreService, mockEmailCacheService, mockEmailVerificationService, mcc)
 
   override protected def beforeEach(): Unit = {
-    reset(mockCustomsDataStoreService)
+    reset(mockCustomsDataStoreService, mockEmailVerificationService)
   }
 
   "EmailConfirmedController" should {
-    "have a status of OK when email found in cache" in withAuthorisedUser() {
+    "have a status of OK when email found in cache and email is verified" in withAuthorisedUser() {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
       when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
 
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe OK
+    }
+
+    "have a status of SEE_OTHER when email found in cache but email is not verified" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+      when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
+
+      val eventualResult = controller.show(request)
+      status(eventualResult) shouldBe SEE_OTHER
+
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/confirm-email-address")
+    }
+
+    "have a status of SEE_OTHER when email found in cache but isEmailVerified failed" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+      when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(None))
+
+      val eventualResult = controller.show(request)
+      status(eventualResult) shouldBe SEE_OTHER
+
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/confirm-email-address")
     }
 
     "have a status of SEE_OTHER for show method when email not found in cache" in withAuthorisedUser() {
@@ -63,6 +90,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
     "have a status of OK for user with no enrolments" in withAuthorisedUserWithoutEnrolments {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+      when(mockEmailVerificationService.isEmailVerified(any())(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
 
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe OK
