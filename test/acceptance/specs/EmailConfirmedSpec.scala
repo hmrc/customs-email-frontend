@@ -86,11 +86,12 @@ class EmailConfirmedSpec extends BaseSpec with SpecHelper {
 
       When("the user attempts to access 'Email confirmed' page")
       navigateTo(EmailConfirmedPage)
+      verifyEmailVerifiedIsCalled()
+      verifyCustomsDataStoreIsNotCalled()
 
       Then("the user should be on 'Verify email address' page")
       verifyCurrentPage(VerifyYourEmailAddressPage)
       assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
-      verifyEmailVerifiedIsCalled()
     }
 
   }

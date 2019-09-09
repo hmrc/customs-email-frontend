@@ -222,6 +222,10 @@ trait StubForWireMock {
     verify(1, postRequestedFor(customsDataStoreContextPath))
   }
 
+  def verifyCustomsDataStoreIsNotCalled(): Unit = {
+    verify(0, postRequestedFor(customsDataStoreContextPath))
+  }
+
   def verifyEmailVerifiedIsCalled(): Unit = {
     verify(1, postRequestedFor(verifiedEmailContextPath))
   }
