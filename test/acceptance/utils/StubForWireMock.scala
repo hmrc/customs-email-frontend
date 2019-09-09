@@ -17,6 +17,7 @@
 package acceptance.utils
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status
 import play.mvc.Http.HeaderNames.CONTENT_TYPE
@@ -29,6 +30,10 @@ trait StubForWireMock {
   val save4LaterGetUrl = s"/save4later/customs-email-frontend/$eoriNumber"
   val save4LaterPutUrl = s"/save4later/customs-email-frontend/$eoriNumber/data/email"
   val emailVerificationPostUrl = "/email-verification/verification-requests"
+  val encryptedEmail = "YKEtCuoQiCSDa7UDy8cs/mhnhVx31sNgNMJ3yXL47rLKc5P2y6Vk4Nsv4fn+OapA"
+
+
+  private val customsDataStoreContextPath: UrlPattern = urlMatching("/customs-data-store/graphql")
 
   private def authRequestJson(): String =
     """{
@@ -40,6 +45,20 @@ trait StubForWireMock {
       | "retrieve" : ["allEnrolments","internalId"]
       |}
     """.stripMargin
+
+  private val reponseEmailVerifiedBody =  s"""
+                                             |      {
+                                             |             "atomicId": { "id": "598830cf5e00005e00b3401e" },
+                                             |             "data": {
+                                             |               "email": "${encryptedEmail}"
+                                             |             },
+                                             |             "id": "internalId",
+                                             |             "modifiedDetails": {
+                                             |               "createdAt": { "date": 1502097615710 },
+                                             |               "lastUpdated": { "date": 1502189409725 }
+                                             |             }
+                                             |           }
+                                             |          """.stripMargin
 
   def authenticate(): StubMapping = {
     stubFor(post(urlEqualTo(authUrl))
@@ -112,6 +131,10 @@ trait StubForWireMock {
     stubVerificationRequest(emailVerificationPostUrl, Status.CREATED)
   }
 
+  def stubEmailAlreadyVerified(): Unit ={
+    stubVerificationRequest(emailVerificationPostUrl, Status.CONFLICT)
+  }
+
   def save4LaterWithNoData(): StubMapping = {
     stubFor(get(urlEqualTo(save4LaterGetUrl))
       .willReturn(
@@ -131,7 +154,6 @@ trait StubForWireMock {
   }
 
   def save4LaterWithData(): StubMapping = {
-    val encryptedEmail = "YKEtCuoQiCSDa7UDy8cs/mhnhVx31sNgNMJ3yXL47rLKc5P2y6Vk4Nsv4fn+OapA"
     stubFor(get(urlEqualTo(save4LaterGetUrl))
       .willReturn(
         aResponse()
@@ -139,5 +161,34 @@ trait StubForWireMock {
           .withBody(s"""{"data": {"email": "$encryptedEmail"}, "id": "1"}""".stripMargin)
       )
     )
+  }
+
+  def stubSave4LaterPUTEmailVerifiedResponse(): Unit = {
+    stubFor(put(urlMatching(save4LaterPutUrl)).withRequestBody(containing(s"$encryptedEmail"))
+      .willReturn(
+        aResponse()
+          .withBody("")
+          .withStatus(Status.OK)
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
+
+  def stubSave4LaterGETResponse(): Unit = {
+
+    stubFor(get(urlMatching(save4LaterGetUrl))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
+          .withBody(reponseEmailVerifiedBody)
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
+
+
+
+  def verifyCustomsDataStoreIsCalled(): Unit = {
+    verify(1, postRequestedFor(customsDataStoreContextPath))
   }
 }
