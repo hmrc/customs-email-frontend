@@ -21,9 +21,8 @@ import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
-import uk.gov.hmrc.customs.emailfrontend.model.Eori
-import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -32,6 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed,
                                          customsDataStoreService: CustomsDataStoreService,
                                          emailCacheService: EmailCacheService,
+                                         emailVerificationService: EmailVerificationService,
                                          mcc: MessagesControllerComponents)
                                         (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
@@ -43,8 +43,12 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
         Future.successful(Redirect(SignOutController.signOut()))
       } {
         emailStatus =>
-          request.user.eori.map(identifier => customsDataStoreService.storeEmail(identifier, emailStatus.email))
-          Future.successful(Ok(view()))
+          emailVerificationService.isEmailVerified(emailStatus.email).map {
+            case Some(true) =>
+              request.user.eori.map(identifier => customsDataStoreService.storeEmail(identifier, emailStatus.email))
+              Ok(view())
+            case _ => Redirect(VerifyYourEmailController.show())
+          }
       }
     }
   }
