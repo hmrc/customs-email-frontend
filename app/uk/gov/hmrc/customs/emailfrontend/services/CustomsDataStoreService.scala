@@ -30,6 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector)(implicit ec: ExecutionContext) {
 
   def storeEmail(enrolmentId: EnrolmentIdentifier, email: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+
     customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email) map { response =>
       response.status match {
         case OK =>

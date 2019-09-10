@@ -39,7 +39,8 @@ trait BaseSpec extends FeatureSpec
       "auditing.enabled" -> false,
       "microservice.services.auth.port" -> Constants.wireMockPort,
       "microservice.services.cachable.short-lived-cache.port" -> Constants.wireMockPort,
-      "microservice.services.email-verification.port" -> Constants.wireMockPort))
+      "microservice.services.email-verification.port" -> Constants.wireMockPort,
+      "microservice.services.customs-data-store.port" -> Constants.wireMockPort))
     .disable[com.kenshoo.play.metrics.PlayModule]
     .build()
 

@@ -17,6 +17,7 @@
 package acceptance.utils
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status
 import play.mvc.Http.HeaderNames.CONTENT_TYPE
@@ -29,6 +30,13 @@ trait StubForWireMock {
   val save4LaterGetUrl = s"/save4later/customs-email-frontend/$eoriNumber"
   val save4LaterPutUrl = s"/save4later/customs-email-frontend/$eoriNumber/data/email"
   val emailVerificationPostUrl = "/email-verification/verification-requests"
+  val verifiedEmailPostUrl = "/email-verification/verified-email-check"
+  val encryptedEmail = "YKEtCuoQiCSDa7UDy8cs/mhnhVx31sNgNMJ3yXL47rLKc5P2y6Vk4Nsv4fn+OapA"
+  val customsDataStoreGraphQl = "/customs-data-store/graphql"
+
+
+  private val customsDataStoreContextPath: UrlPattern = urlMatching(customsDataStoreGraphQl)
+  private val verifiedEmailContextPath: UrlPattern = urlMatching("/email-verification/verified-email-check")
 
   private def authRequestJson(): String =
     """{
@@ -86,6 +94,31 @@ trait StubForWireMock {
     )
   }
 
+  def authenticateGGUserAndReturnEoriEnrolment(): StubMapping = {
+    stubFor(post(urlEqualTo(authUrl))
+      .withRequestBody(equalToJson(authGGRequestJson()))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
+          .withBody(
+            s"""{"allEnrolments": [
+               |  {
+               | "key": "HMRC-CUS-ORG",
+               | "identifiers": [
+               |   {
+               |     "key": "EORINumber",
+               |     "value": "$eoriNumber"
+               |   }
+               | ]
+               |}
+               |],
+               |"internalId": "$eoriNumber"
+               |}
+              """.stripMargin)
+      )
+    )
+  }
+
   private def verificationRequestJson(): String = {
     """{
       |"email":"b@a.com",
@@ -95,6 +128,12 @@ trait StubForWireMock {
       |"continueUrl":"/customs-email-frontend/email-address-confirmed"
       |}
     """.stripMargin
+  }
+
+  private def verifiedEmailRequestJson(): String = {
+    """{
+      |"email" : "b@a.com"
+      |}""".stripMargin
   }
 
   private def stubVerificationRequest(url: String, status: Int): Unit = {
@@ -110,6 +149,10 @@ trait StubForWireMock {
 
   def stubVerificationRequestSent(): Unit = {
     stubVerificationRequest(emailVerificationPostUrl, Status.CREATED)
+  }
+
+  def stubEmailAlreadyVerified(): Unit = {
+    stubVerificationRequest(emailVerificationPostUrl, Status.CONFLICT)
   }
 
   def save4LaterWithNoData(): StubMapping = {
@@ -131,7 +174,6 @@ trait StubForWireMock {
   }
 
   def save4LaterWithData(): StubMapping = {
-    val encryptedEmail = "YKEtCuoQiCSDa7UDy8cs/mhnhVx31sNgNMJ3yXL47rLKc5P2y6Vk4Nsv4fn+OapA"
     stubFor(get(urlEqualTo(save4LaterGetUrl))
       .willReturn(
         aResponse()
@@ -139,5 +181,64 @@ trait StubForWireMock {
           .withBody(s"""{"data": {"email": "$encryptedEmail"}, "id": "1"}""".stripMargin)
       )
     )
+  }
+
+  def stubSave4LaterPUTEmailVerifiedResponse(): Unit = {
+    stubFor(put(urlMatching(save4LaterPutUrl)).withRequestBody(containing(s"$encryptedEmail"))
+      .willReturn(
+        aResponse()
+          .withBody("")
+          .withStatus(Status.OK)
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
+
+  def stubVerifiedEmailResponse(): Unit = {
+    stubFor(post(urlEqualTo(verifiedEmailPostUrl))
+      .withRequestBody(equalToJson(verifiedEmailRequestJson()))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
+          .withBody("")
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
+
+  def stubNotVerifiedEmailResponse(): Unit = {
+    stubFor(post(urlEqualTo(verifiedEmailPostUrl))
+      .withRequestBody(equalToJson(verifiedEmailRequestJson()))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.NOT_FOUND)
+          .withBody("")
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
+
+  def stubCustomsDataStoreOkResponse(): Unit = {
+    stubFor(post(urlEqualTo(customsDataStoreGraphQl))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
+          .withBody("")
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
+
+
+  def verifyCustomsDataStoreIsCalled(): Unit = {
+    verify(1, postRequestedFor(customsDataStoreContextPath))
+  }
+
+  def verifyCustomsDataStoreIsNotCalled(): Unit = {
+    verify(0, postRequestedFor(customsDataStoreContextPath))
+  }
+
+  def verifyEmailVerifiedIsCalled(): Unit = {
+    verify(1, postRequestedFor(verifiedEmailContextPath))
   }
 }
