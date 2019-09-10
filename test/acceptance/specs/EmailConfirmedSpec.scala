@@ -46,6 +46,7 @@ class EmailConfirmedSpec extends BaseSpec with SpecHelper {
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       stubEmailAlreadyVerified()
       stubVerifiedEmailResponse()
+      stubCustomsDataStoreOkResponse()
       clickContinue()
 
       Then("the user should be on 'Email confirmed' page")

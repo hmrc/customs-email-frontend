@@ -32,9 +32,10 @@ trait StubForWireMock {
   val emailVerificationPostUrl = "/email-verification/verification-requests"
   val verifiedEmailPostUrl = "/email-verification/verified-email-check"
   val encryptedEmail = "YKEtCuoQiCSDa7UDy8cs/mhnhVx31sNgNMJ3yXL47rLKc5P2y6Vk4Nsv4fn+OapA"
+  val customsDataStoreGraphQl = "/customs-data-store/graphql"
 
 
-  private val customsDataStoreContextPath: UrlPattern = urlMatching("/customs-data-store/graphql")
+  private val customsDataStoreContextPath: UrlPattern = urlMatching(customsDataStoreGraphQl)
   private val verifiedEmailContextPath: UrlPattern = urlMatching("/email-verification/verified-email-check")
 
   private def authRequestJson(): String =
@@ -211,6 +212,17 @@ trait StubForWireMock {
       .willReturn(
         aResponse()
           .withStatus(Status.NOT_FOUND)
+          .withBody("")
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
+
+  def stubCustomsDataStoreOkResponse(): Unit = {
+    stubFor(post(urlEqualTo(customsDataStoreGraphQl))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
           .withBody("")
           .withHeader(CONTENT_TYPE, JSON)
       )
