@@ -33,7 +33,6 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
 
   private[connectors] lazy val url: String = appConfig.customsDataStoreUrl
 
-
   def storeEmailAddress(eori: Eori, email: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val query = s"""{"query" : "mutation {byEori(eoriHistory:{eori:\\"${eori.id}\\"}, notificationEmail:{address:\\"$email\\"})}"}"""
     val header: HeaderCarrier = hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.customsDataStoreToken}")))
