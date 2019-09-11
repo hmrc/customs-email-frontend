@@ -4,7 +4,7 @@ import play.api.Logger
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
-import uk.gov.hmrc.auth.core.{Admin, AffinityGroup, CredentialRole, InsufficientEnrolments, User}
+import uk.gov.hmrc.auth.core.{Admin, AffinityGroup, CredentialRole, User}
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.model.AuthenticatedRequest
 
