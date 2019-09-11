@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
+import play.api.Logger
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
@@ -31,7 +32,11 @@ class EoriAction(implicit override val executionContext: ExecutionContext) exten
       case Some(eori: EnrolmentIdentifier) if eori.value.nonEmpty => Some(EoriRequest(request, Eori(eori)))
       case _ => None
     }
-
-    Future.successful((enrolmentToRequest(request.user.eori) orElse None) toRight Redirect(IneligibleUserController.show()))
+    Future.successful(
+      enrolmentToRequest(request.user.eori) orElse None toRight {
+        Logger.warn("Eori is missing in the request")
+        Redirect(IneligibleUserController.show())
+      }
+    )
   }
 }

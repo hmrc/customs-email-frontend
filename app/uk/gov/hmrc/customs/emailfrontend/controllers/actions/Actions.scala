@@ -32,6 +32,7 @@ trait Actions {
   def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest]
   def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest]
   def eori: ActionRefiner[AuthenticatedRequest, EoriRequest]
+  def isPermitted : ActionFilter[AuthenticatedRequest]
   def unauthorised: DefaultActionBuilder
 }
 
@@ -44,6 +45,8 @@ class ActionsImpl @Inject()(authConnector: AuthConnector, config: Configuration,
   override def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Left(GovernmentGateway), authConnector, config, environment, mcc.parsers.defaultBodyParser)
 
   override def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Right(Enrolment("HMRC-CUS-ORG")), authConnector, config, environment, bodyParser)
+
+  override def isPermitted: ActionFilter[AuthenticatedRequest] = new IsPermittedUser()
 
   override def eori: ActionRefiner[AuthenticatedRequest, EoriRequest] = new EoriAction()
 

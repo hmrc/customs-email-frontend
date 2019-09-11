@@ -18,9 +18,9 @@ package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
-import play.api.{Configuration, Environment}
+import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, credentialRole, internalId}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, InternalId, LoggedInUser}
@@ -35,7 +35,9 @@ class AuthAction(predicate: Either[AuthProvider, Enrolment],
                  override val config: Configuration,
                  override val env: Environment,
                  override val parser: BodyParser[AnyContent])(implicit val executionContext: ExecutionContext)
-  extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] with AuthorisedFunctions with AuthRedirects {
+  extends ActionBuilder[AuthenticatedRequest, AnyContent]
+    with ActionRefiner[Request, AuthenticatedRequest]
+    with AuthorisedFunctions with AuthRedirects {
 
   private lazy val ggSignInRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
 
@@ -43,10 +45,14 @@ class AuthAction(predicate: Either[AuthProvider, Enrolment],
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     authorised(predicate.fold(authProvider => AuthProviders(authProvider), enrolment => enrolment))
-      .retrieve(allEnrolments and internalId) {
-        case userAllEnrolments ~ Some(userInternalId) =>
-          Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments, InternalId(userInternalId)))))
-        case _ => Future.successful(Left(Redirect(IneligibleUserController.show())))
+      .retrieve(allEnrolments and internalId and affinityGroup and credentialRole) {
+        case userAllEnrolments ~ Some(userInternalId) ~ affinityGroup ~ credentialRole =>
+          Future.successful(Right(AuthenticatedRequest(request,
+            LoggedInUser(userAllEnrolments, InternalId(userInternalId),affinityGroup,credentialRole))))
+        case _ => {
+          Logger.warn("AuthAction[refine] internalId or allEnrolments is missing")
+          Future.successful(Left(Redirect(IneligibleUserController.show())))
+        }
       } recover withAuthOrRedirect(request)
   }
 
