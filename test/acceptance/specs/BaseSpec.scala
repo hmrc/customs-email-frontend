@@ -16,8 +16,8 @@
 
 package acceptance.specs
 
+import acceptance.utils.Configuration
 import acceptance.utils.Configuration.webDriver
-import acceptance.utils.{Configuration, StubForWireMock}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, FeatureSpec, GivenWhenThen}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
@@ -29,8 +29,7 @@ trait BaseSpec extends FeatureSpec
   with GuiceOneServerPerSuite
   with BeforeAndAfterAll
   with BeforeAndAfterEach
-  with WireMockRunner
-  with StubForWireMock {
+  with WireMockRunner {
 
   override lazy val port = Configuration.port
 

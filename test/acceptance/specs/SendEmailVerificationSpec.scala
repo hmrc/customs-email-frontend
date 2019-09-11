@@ -17,22 +17,26 @@
 package acceptance.specs
 
 import acceptance.pages.{CheckYourEmailAddressPage, StartPage, VerifyYourEmailAddressPage, WhatIsYourEmailPage}
-import acceptance.utils.SpecHelper
+import acceptance.utils.{SpecHelper, StubAuthClient, StubEmailVerification, StubSave4Later}
 
-class SendEmailVerificationSpec extends BaseSpec with SpecHelper {
+class SendEmailVerificationSpec extends BaseSpec
+  with SpecHelper
+  with StubAuthClient
+  with StubSave4Later
+  with StubEmailVerification {
 
   feature("Send email to user for verification") {
     scenario("user amends the email and submits for verification") {
       stubVerificationRequestSent()
       Given("the user has successfully logged in")
-        authenticate()
-        save4LaterWithNoData()
+        authenticate("111111111")
+        save4LaterWithNoData("111111111")
         navigateTo(StartPage)
         verifyCurrentPage(StartPage)
-        authenticateGG()
+        authenticateGG("111111111")
         clickOn(StartPage.emailLinkText)
       When("the user provides an email address to change")
-        save4LaterWithData()
+        save4LaterWithData("111111111")
         enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
         clickContinue()
       Then("the user should be on 'Check your email address' page")
