@@ -16,6 +16,13 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-case class Email(value: String)
+import play.api.libs.json.Reads
 
-case class YesNo(isYes: Option[Boolean])
+case class SubscriptionDisplayResponse(email: Option[String])
+
+object SubscriptionDisplayResponse {
+  implicit val etmpReads: Reads[SubscriptionDisplayResponse] = Reads[SubscriptionDisplayResponse] { json =>
+    (json \ "subscriptionDisplayResponse" \ "responseDetail" \ "contactInformation" \ "emailAddress")
+      .validateOpt[String].map(SubscriptionDisplayResponse.apply)
+  }
+}

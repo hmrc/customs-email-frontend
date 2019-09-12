@@ -64,5 +64,14 @@ class AppConfigSpec extends ControllerSpec {
     "have appName defined" in {
       appConfig.appName shouldBe "customs-email-frontend"
     }
+    "have customsHodsProxyBaseUrl defined" in {
+      appConfig.customsHodsProxyBaseUrl shouldBe "http://localhost:9832"
+    }
+    "have subscriptionDisplayContext defined" in {
+      appConfig.subscriptionDisplayContext shouldBe "subscription-display"
+    }
+    "have subscriptionDisplayUrl defined" in {
+      appConfig.subscriptionDisplayUrl shouldBe "http://localhost:9832/subscription-display"
+    }
   }
 }

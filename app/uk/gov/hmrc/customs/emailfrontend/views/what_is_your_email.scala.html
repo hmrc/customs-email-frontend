@@ -21,11 +21,11 @@
 @import views.html.helper._
 
 @this(main_template: main_template)
-@(emailForm: Form[Email])(implicit request: Request[_], messages: Messages)
+@(emailForm: Form[Email], email: String)(implicit request: Request[_], messages: Messages)
 
 @inputText(field: String, label: String, args: (Symbol, Any)*) = {
     @defining(Seq(
-        '_label -> messages("customs.emailfrontend.change-your-email.label")
+        '_label -> messages("customs.emailfrontend.change-your-email.label", email)
     ) ++ args) { args =>
         @helpers.input(
             emailForm(field),
@@ -33,6 +33,7 @@
         )
     }
 }
+
 
 @main_template(messages("customs.emailfrontend.change-your-email.title-and-heading")) {
 
