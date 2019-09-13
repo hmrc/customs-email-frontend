@@ -17,13 +17,14 @@
 package acceptance.specs
 
 import acceptance.pages.{CheckYourEmailAddressPage, StartPage, VerifyYourEmailAddressPage, WhatIsYourEmailPage}
-import acceptance.utils.{SpecHelper, StubAuthClient, StubEmailVerification, StubSave4Later}
+import acceptance.utils._
 
 class SendEmailVerificationSpec extends BaseSpec
   with SpecHelper
   with StubAuthClient
   with StubSave4Later
-  with StubEmailVerification {
+  with StubEmailVerification
+  with StubSubscriptionDisplay{
 
   feature("Send email to user for verification") {
     scenario("user amends the email and submits for verification") {
@@ -33,7 +34,8 @@ class SendEmailVerificationSpec extends BaseSpec
         save4LaterWithNoData("111111111")
         navigateTo(StartPage)
         verifyCurrentPage(StartPage)
-        authenticateGG("111111111")
+        authenticateGGUserAndReturnEoriEnrolment("111111111", "111111111")
+        stubSubscriptionDisplayOkResponse()
         clickOn(StartPage.emailLinkText)
       When("the user provides an email address to change")
         save4LaterWithData("111111111")

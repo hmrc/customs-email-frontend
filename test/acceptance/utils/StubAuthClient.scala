@@ -80,7 +80,7 @@ trait StubAuthClient {
     )
   }
 
-  def authenticateGGUserAndReturnEoriEnrolment(eoriNumber: String): StubMapping = {
+  def authenticateGGUserAndReturnEoriEnrolment(eoriNumber: String, internalId : String): StubMapping = {
     stubFor(post(urlEqualTo(authUrl))
       .withRequestBody(equalToJson(authGGRequestJson))
       .willReturn(
@@ -98,7 +98,7 @@ trait StubAuthClient {
                | ]
                |}
                |],
-               |"internalId": "$eoriNumber"
+               |"internalId": "$internalId"
                |}
               """.stripMargin)
       )

@@ -24,7 +24,8 @@ class EmailConfirmedSpec extends BaseSpec
   with StubSave4Later
   with StubAuthClient
   with StubEmailVerification
-  with StubCustomsDataStore {
+  with StubCustomsDataStore
+  with StubSubscriptionDisplay {
 
   feature("Show Email confirmed to user when the email address is verified") {
     scenario("Show email confirmed page without sending email verification link when user email address is verified") {
@@ -34,7 +35,8 @@ class EmailConfirmedSpec extends BaseSpec
       save4LaterWithNoData("123456789")
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
-      authenticateGGUserAndReturnEoriEnrolment("123456789")
+      stubSubscriptionDisplayOkResponse()
+      authenticateGGUserAndReturnEoriEnrolment("123456789" , "123456789")
       clickOn(StartPage.emailLinkText)
 
       When("the user provides an email address to change")
@@ -66,7 +68,8 @@ class EmailConfirmedSpec extends BaseSpec
       save4LaterWithNoData("123456789")
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
-      authenticateGGUserAndReturnEoriEnrolment("123456789")
+      stubSubscriptionDisplayOkResponse()
+      authenticateGGUserAndReturnEoriEnrolment("123456789" , "123456789")
       clickOn(StartPage.emailLinkText)
 
       When("the user provides an email address to change")
