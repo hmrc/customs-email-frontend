@@ -31,7 +31,7 @@ class ErrorHandlerSpec extends ViewSpec {
   private val errorHandler = new ErrorHandler(messagesApi, view)
 
   "standardErrorTemplate" should {
-    val result = Jsoup.parse(contentAsString(errorHandler.standardErrorTemplate("Some Title", "Some Heading", "Some Message Content")))
+    val result = Jsoup.parse(contentAsString(errorHandler.standardErrorTemplate("Some Title", "Some Heading", "Some Message Content")(request)))
 
     "have the correct title" in {
       result.title mustBe "Some Title"
