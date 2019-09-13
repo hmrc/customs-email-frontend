@@ -28,8 +28,8 @@ class CheckYourEmailViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[check_your_email]
   private val form: Form[YesNo] = Forms.confirmEmailForm
   private val formWithEmptyError: Form[YesNo] = Forms.confirmEmailForm.bind(Map("isYes" -> ""))
-  private val doc: Document = Jsoup.parse(contentAsString(view(form, "test@email.com")))
-  private val docWithEmptyError: Document = Jsoup.parse(contentAsString(view(formWithEmptyError, "test@email.com")))
+  private val doc: Document = Jsoup.parse(contentAsString(view.render(form, "test@email.com", request, messages)))
+  private val docWithEmptyError: Document = Jsoup.parse(contentAsString(view.render(formWithEmptyError, "test@email.com", request, messages)))
 
   "Confirm Email page" should {
     "have the correct title" in {

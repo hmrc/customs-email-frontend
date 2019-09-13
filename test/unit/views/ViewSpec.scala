@@ -31,7 +31,7 @@ import scala.concurrent.duration._
 
 trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite {
 
-  implicit val timeout: Timeout = 30.seconds
+  implicit val timeout: Timeout = 30 seconds
   private val messageApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit val messages: Messages = MessagesImpl(Lang("en"), messageApi)
   implicit val request: Request[String] = Request(FakeRequest("GET", "/").withCSRFToken, "")

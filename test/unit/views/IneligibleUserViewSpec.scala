@@ -25,7 +25,7 @@ class IneligibleUserViewSpec extends ViewSpec {
 
   private val view = app.injector.instanceOf[ineligible_user]
 
-  private val doc: Document = Jsoup.parse(contentAsString(view()))
+  private val doc: Document = Jsoup.parse(contentAsString(view.render(request, messages)))
 
   "IneligibleUser" should {
     "have the correct title" in {

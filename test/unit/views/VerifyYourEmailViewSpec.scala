@@ -45,12 +45,5 @@ class VerifyYourEmailSpec extends ViewSpec {
     }
   }
 
-  lazy val doc: Document = {
-    val email = "test@test.com"
-    val result = view(email)
-    Jsoup.parse(contentAsString(result))
-  }
-
+  lazy val doc: Document = Jsoup.parse(contentAsString(view.render("test@test.com", request, messages)))
 }
-
-

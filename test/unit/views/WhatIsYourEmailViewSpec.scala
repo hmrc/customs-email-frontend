@@ -30,10 +30,10 @@ class WhatIsYourEmailViewSpec extends ViewSpec {
   private val formWithEmptyError: Form[Email] = Forms.emailForm.bind(Map("email" -> ""))
   private val formWithWrongFormatError: Form[Email] = Forms.emailForm.bind(Map("email" -> "invalid"))
   private val formWithTooLongError: Form[Email] = Forms.emailForm.bind(Map("email" -> "abcdefghijklmnopqrstuvwxyz1234567890@abcdefghijklmnopqrstuvwxyz1234567890"))
-  private val doc: Document = Jsoup.parse(contentAsString(view(form)))
-  private val docWithEmptyError: Document = Jsoup.parse(contentAsString(view(formWithEmptyError)))
-  private val docWithWrongFormatError: Document = Jsoup.parse(contentAsString(view(formWithWrongFormatError)))
-  private val docWithTooLongError: Document = Jsoup.parse(contentAsString(view(formWithTooLongError)))
+  private val doc: Document = Jsoup.parse(contentAsString(view.render(form, request, messages)))
+  private val docWithEmptyError: Document = Jsoup.parse(contentAsString(view.render(formWithEmptyError, request, messages)))
+  private val docWithWrongFormatError: Document = Jsoup.parse(contentAsString(view.render(formWithWrongFormatError, request, messages)))
+  private val docWithTooLongError: Document = Jsoup.parse(contentAsString(view.render(formWithTooLongError, request, messages)))
 
   "Email page" should {
     "have the correct title" in {
@@ -63,5 +63,4 @@ class WhatIsYourEmailViewSpec extends ViewSpec {
       docWithTooLongError.getElementsByClass("error-message").text mustBe "The email address must be 50 characters or less"
     }
   }
-
 }

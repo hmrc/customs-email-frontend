@@ -23,7 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 
 class EmailConfirmedViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[email_confirmed]
-  private val doc: Document = Jsoup.parse(contentAsString(view()))
+  private val doc: Document = Jsoup.parse(contentAsString(view.render(request, messages)))
 
   "Confirm Email page" should {
     "have the correct title" in {
