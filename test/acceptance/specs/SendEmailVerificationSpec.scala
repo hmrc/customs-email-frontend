@@ -17,33 +17,39 @@
 package acceptance.specs
 
 import acceptance.pages.{CheckYourEmailAddressPage, StartPage, VerifyYourEmailAddressPage, WhatIsYourEmailPage}
-import acceptance.utils.SpecHelper
+import acceptance.utils._
 
-class SendEmailVerificationSpec extends BaseSpec with SpecHelper {
+class SendEmailVerificationSpec extends BaseSpec
+  with SpecHelper
+  with StubAuthClient
+  with StubSave4Later
+  with StubEmailVerification
+  with StubSubscriptionDisplay{
 
   feature("Send email to user for verification") {
     scenario("user amends the email and submits for verification") {
       stubVerificationRequestSent()
       Given("the user has successfully logged in")
-      authenticate()
-      save4LaterWithNoData()
-      navigateTo(StartPage)
-      verifyCurrentPage(StartPage)
-      authenticateGGUserAndReturnEoriEnrolment()
-      clickOn(StartPage.emailLinkText)
+        authenticate("111111111")
+        save4LaterWithNoData("111111111")
+        navigateTo(StartPage)
+        verifyCurrentPage(StartPage)
+        authenticateGGUserAndReturnEoriEnrolment("111111111", "111111111")
+        stubSubscriptionDisplayOkResponse()
+        clickOn(StartPage.emailLinkText)
       When("the user provides an email address to change")
-      save4LaterWithData()
-      enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
-      clickContinue()
+        save4LaterWithData("111111111")
+        enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
+        clickContinue()
       Then("the user should be on 'Check your email address' page")
-      verifyCurrentPage(CheckYourEmailAddressPage)
-      assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
+        verifyCurrentPage(CheckYourEmailAddressPage)
+        assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
       When("the user confirms to update the email address")
-      clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
-      clickContinue()
+        clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
+        clickContinue()
       Then("the user should be on 'Verify email address' page")
-      verifyCurrentPage(VerifyYourEmailAddressPage)
-      assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
+        verifyCurrentPage(VerifyYourEmailAddressPage)
+        assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
     }
   }
 }

@@ -22,27 +22,33 @@ import play.api.http.Status
 import play.mvc.Http.HeaderNames.CONTENT_TYPE
 import play.mvc.Http.MimeTypes.JSON
 
-trait StubCustomsDataStore {
+trait StubSubscriptionDisplay {
 
-  private val customsDataStoreGraphQl = "/customs-data-store/graphql"
+  private val subscriptionDisplay = "/subscription-display"
 
-  private val customsDataStoreContextPath: UrlPattern = urlMatching(customsDataStoreGraphQl)
+  private val subscriptionDisplayContextPath: UrlPattern = urlMatching(subscriptionDisplay)
 
-  def stubCustomsDataStoreOkResponse(): Unit = {
-    stubFor(post(urlEqualTo(customsDataStoreGraphQl))
+  private val subscriptionDisplayResponseJson: String =
+    """{
+        "subscriptionDisplayResponse": {
+        "responseDetail": {
+        "contactInformation": {
+        "emailAddress": "b@a.com",
+        "emailVerificationTimestamp": "2019-09-06T12:30:59Z"
+            }
+          }
+        }
+    }""".stripMargin
+
+  def stubSubscriptionDisplayOkResponse(): Unit = {
+    stubFor(get(urlPathEqualTo(s"$subscriptionDisplay"))
       .willReturn(
         aResponse()
           .withStatus(Status.OK)
+          .withBody(subscriptionDisplayResponseJson)
           .withHeader(CONTENT_TYPE, JSON)
       )
     )
   }
 
-  def verifyCustomsDataStoreIsCalled(): Unit = {
-    verify(1, postRequestedFor(customsDataStoreContextPath))
-  }
-
-  def verifyCustomsDataStoreIsNotCalled(): Unit = {
-    verify(0, postRequestedFor(customsDataStoreContextPath))
-  }
 }
