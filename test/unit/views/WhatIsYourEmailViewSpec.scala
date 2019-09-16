@@ -22,6 +22,7 @@ import play.api.data.Form
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms
 import uk.gov.hmrc.customs.emailfrontend.model.Email
+import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
 
 class WhatIsYourEmailViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[what_is_your_email]
