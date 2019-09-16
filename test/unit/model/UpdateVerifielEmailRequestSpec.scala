@@ -26,7 +26,7 @@ class UpdateVerifielEmailRequestSpec extends PlaySpec {
 
   val verifiedEmailRequestJson =
     Json.parse("""{
-                 |  "updateverifiedemailRequest": {
+                 |  "updateVerifiedEmailRequest": {
                  |    "requestCommon": {
                  |      "regime": "CDS",
                  |      "receiptDate": "2019-08-22T13:55:55Z",
@@ -43,20 +43,21 @@ class UpdateVerifielEmailRequestSpec extends PlaySpec {
     ).as[VerifiedEmailRequest]
 
 
+
   val requestCommon =  RequestCommon()
   val requestDetail = RequestDetail(IDType = "EORI",
     IDNumber = "GBXXXXXXXXXXXX",
     emailAddress = "mickey.mouse@disneyland.com",
     emailVerificationTimestamp = MDGDateFormat.dateFormat.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC()))
   val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon,requestDetail)
-  val verifiedEmailRequest = VerifiedEmailRequest(updateverifiedemailRequest=updateVerifiedEmailRequest)
+  val verifiedEmailRequest = VerifiedEmailRequest(updateVerifiedEmailRequest=updateVerifiedEmailRequest)
   "UpdateVerifiedEmailRequest" should {
 
     "parse the model to correct json format" in {
       val requestJosn = Json.toJson[VerifiedEmailRequest](verifiedEmailRequest)
-      requestJosn \ "updateverifiedemailRequest" \ "requestDetail" \ "emailAddress"  shouldBe JsDefined(JsString("mickey.mouse@disneyland.com"))
-      requestJosn \ "updateverifiedemailRequest" \ "requestDetail" \ "IDNumber"  shouldBe JsDefined(JsString("GBXXXXXXXXXXXX"))
-      requestJosn \ "updateverifiedemailRequest" \ "requestDetail" \ "IDType"  shouldBe JsDefined(JsString("EORI"))
+      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress"  shouldBe JsDefined(JsString("mickey.mouse@disneyland.com"))
+      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDNumber"  shouldBe JsDefined(JsString("GBXXXXXXXXXXXX"))
+      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDType"  shouldBe JsDefined(JsString("EORI"))
     }
 
   }

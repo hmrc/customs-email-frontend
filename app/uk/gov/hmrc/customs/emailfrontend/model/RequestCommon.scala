@@ -91,7 +91,7 @@ object UpdateVerifiedEmailRequest {
   implicit val formats = Json.format[UpdateVerifiedEmailRequest]
 }
 
-case class VerifiedEmailRequest(updateverifiedemailRequest: UpdateVerifiedEmailRequest)
+case class VerifiedEmailRequest(updateVerifiedEmailRequest: UpdateVerifiedEmailRequest)
 
 
 object VerifiedEmailRequest {
