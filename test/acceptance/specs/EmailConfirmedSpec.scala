@@ -28,19 +28,24 @@ class EmailConfirmedSpec extends BaseSpec
   with StubSubscriptionDisplay {
 
   feature("Show Email confirmed to user when the email address is verified") {
+
+    lazy val randomInternalId = generateRandomNumberString()
+    lazy val randomEoriNumber = "GB" + generateRandomNumberString()
+
     scenario("Show email confirmed page without sending email verification link when user email address is verified") {
 
       Given("the user has successfully logged in")
-      authenticate("123456789")
-      save4LaterWithNoData("123456789")
+      authenticate(randomInternalId, randomEoriNumber)
+      save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
-      stubSubscriptionDisplayOkResponse()
-      authenticateGGUserAndReturnEoriEnrolment("123456789" , "123456789")
+      stubSubscriptionDisplayOkResponse(randomEoriNumber)
+      authenticateGGUserAndReturnEoriEnrolment(randomEoriNumber, randomInternalId)
       clickOn(StartPage.emailLinkText)
+      verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
-      save4LaterWithData("123456789")
+      save4LaterWithData(randomInternalId)
       enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
       clickContinue()
 
@@ -64,16 +69,17 @@ class EmailConfirmedSpec extends BaseSpec
     scenario("Show verify your email page when user does not verify the email and tries to access the 'Email Confirmed' page") {
 
       Given("the user has successfully logged in")
-      authenticate("123456789")
-      save4LaterWithNoData("123456789")
+      authenticate(randomInternalId, randomEoriNumber)
+      save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
-      stubSubscriptionDisplayOkResponse()
-      authenticateGGUserAndReturnEoriEnrolment("123456789" , "123456789")
+      stubSubscriptionDisplayOkResponse(randomEoriNumber)
+      authenticateGGUserAndReturnEoriEnrolment(randomEoriNumber, randomInternalId)
       clickOn(StartPage.emailLinkText)
+      verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
-      save4LaterWithData("123456789")
+      save4LaterWithData(randomInternalId)
       enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
       clickContinue()
 

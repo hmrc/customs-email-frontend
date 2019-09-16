@@ -35,7 +35,7 @@ trait StubAuthClient {
       |}
     """.stripMargin
 
-  def authenticate(eoriNumber: String): StubMapping = {
+  def authenticate(internalId:String, eoriNumber: String): StubMapping = {
     stubFor(post(urlEqualTo(authUrl))
       .withRequestBody(equalToJson(authRequestJson))
       .willReturn(
@@ -53,7 +53,7 @@ trait StubAuthClient {
                | ]
                |}
                |],
-               |"internalId": "$eoriNumber"
+               |"internalId": "$internalId"
                |}
               """.stripMargin)
       )

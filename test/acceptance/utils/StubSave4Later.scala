@@ -22,12 +22,12 @@ import play.api.http.Status
 
 trait StubSave4Later {
 
-  private val save4LaterGetUrl = (eoriNumber: String) => s"/save4later/customs-email-frontend/$eoriNumber"
-  private val save4LaterPutUrl = (eoriNumber: String) => s"/save4later/customs-email-frontend/$eoriNumber/data/email"
+  private val save4LaterGetUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId"
+  private val save4LaterPutUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId/data/email"
   private val encryptedEmail = "YKEtCuoQiCSDa7UDy8cs/mhnhVx31sNgNMJ3yXL47rLKc5P2y6Vk4Nsv4fn+OapA" //encrypted value for b@a.com
 
-  def save4LaterWithNoData(eoriNumber: String): StubMapping = {
-    stubFor(get(urlEqualTo(save4LaterGetUrl(eoriNumber)))
+  def save4LaterWithNoData(internalId: String): StubMapping = {
+    stubFor(get(urlEqualTo(save4LaterGetUrl(internalId)))
       .willReturn(
         aResponse()
           .withStatus(Status.OK)
@@ -35,7 +35,7 @@ trait StubSave4Later {
       )
     )
 
-    stubFor(put(urlEqualTo(save4LaterPutUrl(eoriNumber)))
+    stubFor(put(urlEqualTo(save4LaterPutUrl(internalId)))
       .willReturn(
         aResponse()
           .withStatus(Status.OK)
@@ -44,8 +44,8 @@ trait StubSave4Later {
     )
   }
 
-  def save4LaterWithData(eoriNumber: String): StubMapping = {
-    stubFor(get(urlEqualTo(save4LaterGetUrl(eoriNumber)))
+  def save4LaterWithData(internalId: String): StubMapping = {
+    stubFor(get(urlEqualTo(save4LaterGetUrl(internalId)))
       .willReturn(
         aResponse()
           .withStatus(Status.OK)
