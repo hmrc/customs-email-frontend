@@ -23,10 +23,6 @@ import uk.gov.hmrc.customs.emailfrontend.model._
 
 class UpdateVerifiedEmailResponseSpec extends PlaySpec {
 
-
-
-
-
   "UpdateVerifiedEmailResponse" should {
 
     "parse the json to model VerifiedEmailResponse" in {
@@ -68,7 +64,6 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
         ).as[VerifiedEmailResponse]
 
     }
-
 
   }
 }
