@@ -35,7 +35,7 @@ class UpdateVerifiedEmailRequestSpec extends PlaySpec {
                  |    "requestDetail": {
                  |      "IDType": "EORI",
                  |      "IDNumber": "GB173822879792263",
-                 |      "emailAddress": "mickey.mouse@disneyland.com",
+                 |      "emailAddress": "test@email.com",
                  |      "emailVerificationTimestamp": "2019-08-22T13:55:55Z"
                  |    }
                  |  }
@@ -47,7 +47,7 @@ class UpdateVerifiedEmailRequestSpec extends PlaySpec {
   val requestCommon =  RequestCommon()
   val requestDetail = RequestDetail(IDType = "EORI",
     IDNumber = "GBXXXXXXXXXXXX",
-    emailAddress = "mickey.mouse@disneyland.com",
+    emailAddress = "test@email.com",
     emailVerificationTimestamp = MDGDateFormat.dateFormat.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC()))
   val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon,requestDetail)
   val verifiedEmailRequest = VerifiedEmailRequest(updateVerifiedEmailRequest=updateVerifiedEmailRequest)
@@ -55,7 +55,7 @@ class UpdateVerifiedEmailRequestSpec extends PlaySpec {
    "UpdateVerifiedEmailRequest" should {
     "parse the model to correct json format" in {
       val requestJosn = Json.toJson[VerifiedEmailRequest](verifiedEmailRequest)
-      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress"  shouldBe JsDefined(JsString("mickey.mouse@disneyland.com"))
+      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress"  shouldBe JsDefined(JsString("test@email.com"))
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDNumber"  shouldBe JsDefined(JsString("GBXXXXXXXXXXXX"))
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDType"  shouldBe JsDefined(JsString("EORI"))
     }

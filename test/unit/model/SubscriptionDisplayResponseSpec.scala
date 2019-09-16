@@ -28,7 +28,7 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
                  |  "subscriptionDisplayResponse": {
                  |    "responseDetail": {
                  |      "contactInformation": {
-                 |        "emailAddress": "mickey.mouse@disneyland.com",
+                 |        "emailAddress": "test@email.com",
                  |        "emailVerificationTimestamp": "2019-09-06T12:30:59Z"
                  |      }
                  |    }
@@ -51,7 +51,7 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
 
   "SubscriptionDisplayResponse Object" should {
     "contain email when present in response" in {
-      subscriptionDisplayResponse.email shouldBe Some("mickey.mouse@disneyland.com")
+      subscriptionDisplayResponse.email shouldBe Some("test@email.com")
     }
     "return None when eail is not present in response" in {
       noEmailSubscriptionDisplayResponse.email shouldBe None
