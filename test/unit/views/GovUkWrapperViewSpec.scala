@@ -33,7 +33,7 @@ class GovUkWrapperViewSpec extends ViewSpec {
       doc.body().getElementById("sign-out").text mustBe "Sign out"
     }
     "not have a Sign Out link when not signed in" in {
-      val doc = Jsoup.parse(contentAsString(view("title")))
+      val doc = Jsoup.parse(contentAsString(view("title")(request, messages)))
       doc.body.getElementById("sign-out") mustBe null
     }
   }
