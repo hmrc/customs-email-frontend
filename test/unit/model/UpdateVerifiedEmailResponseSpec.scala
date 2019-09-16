@@ -64,7 +64,7 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
           |}""".stripMargin
       ).as[VerifiedEmailResponse]
     }
-      "parse the json to model VerifiedEmailResponse when returnParameter is Nil" in {
+      "parse the json to model VerifiedEmailResponse when returnParameter is Nil should throw exception" in {
 
         intercept[IllegalArgumentException] {
           Json.parse("""{
