@@ -22,6 +22,7 @@ import java.util.UUID
 import org.joda.time.{DateTime, DateTimeZone}
 import org.joda.time.format.ISODateTimeFormat
 import play.api.libs.json.{JsError, JsResult, JsString, JsSuccess, JsValue, Json, Reads, Writes}
+
 trait CommonHeader {
 
   private def dateTimeWritesIsoUtc: Writes[DateTime] = new Writes[DateTime] {
@@ -52,13 +53,14 @@ case class RequestCommon(regime: String,
 
 case class RequestDetail(IDType: String,
                          IDNumber: String,
-                         emailAddress:String,
-                         emailVerificationTimestamp:String)
+                         emailAddress: String,
+                         emailVerificationTimestamp: String)
 
 
 object RandomUUIDGenerator {
   def generateUUIDAsString: String = UUID.randomUUID().toString.replace("-", "")
 }
+
 object MDGDateFormat {
   def dateFormat: DateTime = {
     new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC)
@@ -66,28 +68,33 @@ object MDGDateFormat {
 }
 
 object RequestCommon extends CommonHeader {
+
   import MDGDateFormat._
-  def apply(): RequestCommon =  RequestCommon("CDS",
-    receiptDate=dateFormat,
-    acknowledgementReference=RandomUUIDGenerator.generateUUIDAsString
+
+  def apply(): RequestCommon = RequestCommon("CDS",
+    receiptDate = dateFormat,
+    acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString
   )
 
 
   implicit val formats = Json.format[RequestCommon]
 
 }
-object RequestDetail{
+
+object RequestDetail {
   implicit val formats = Json.format[RequestDetail]
 }
-case class UpdateVerifiedEmailRequest(requestCommon: RequestCommon,requestDetail: RequestDetail)
 
-object UpdateVerifiedEmailRequest{
+case class UpdateVerifiedEmailRequest(requestCommon: RequestCommon, requestDetail: RequestDetail)
+
+object UpdateVerifiedEmailRequest {
   implicit val formats = Json.format[UpdateVerifiedEmailRequest]
 }
-case class VerifiedEmailRequest(updateverifiedemailRequest:UpdateVerifiedEmailRequest)
+
+case class VerifiedEmailRequest(updateverifiedemailRequest: UpdateVerifiedEmailRequest)
 
 
-object VerifiedEmailRequest{
+object VerifiedEmailRequest {
   implicit val formats = Json.format[VerifiedEmailRequest]
 }
 
