@@ -22,6 +22,8 @@ import org.openqa.selenium.{By, WebDriver, WebElement}
 import org.scalatest.{Assertion, Matchers}
 import org.scalatestplus.selenium.Page
 
+import scala.util.Random
+
 trait SpecHelper extends Matchers {
 
   lazy val webDriver: WebDriver = Configuration.webDriver
@@ -56,4 +58,7 @@ trait SpecHelper extends Matchers {
     waitForPresenceOfElement(locator)
     webDriver.findElement(locator).click()
   }
+
+  def generateRandomNumberString(): String = (1 to 10).map(_ => Random.nextInt(10)).mkString
+
 }

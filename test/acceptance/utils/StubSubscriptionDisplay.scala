@@ -26,7 +26,7 @@ trait StubSubscriptionDisplay {
 
   private val subscriptionDisplay = "/subscription-display"
 
-  private val subscriptionDisplayContextPath: UrlPattern = urlMatching(subscriptionDisplay)
+  private val subscriptionDisplayContextPath: UrlPattern = urlPathEqualTo(subscriptionDisplay)
 
   private val subscriptionDisplayResponseJson: String =
     """{
@@ -40,8 +40,11 @@ trait StubSubscriptionDisplay {
         }
     }""".stripMargin
 
-  def stubSubscriptionDisplayOkResponse(): Unit = {
+  def stubSubscriptionDisplayOkResponse(eoriNumber: String): Unit = {
     stubFor(get(urlPathEqualTo(s"$subscriptionDisplay"))
+      .withQueryParam("EORI", equalTo(eoriNumber))
+      .withQueryParam("regime", equalTo("CDS"))
+      .withQueryParam("acknowledgementReference", matching("[\\w]{32}"))
       .willReturn(
         aResponse()
           .withStatus(Status.OK)
@@ -49,5 +52,11 @@ trait StubSubscriptionDisplay {
           .withHeader(CONTENT_TYPE, JSON)
       )
     )
+  }
+
+  def verifySubscriptionDisplayIsCalled(times:Int, eoriNumber:String): Unit = {
+    verify(times, getRequestedFor(subscriptionDisplayContextPath).withQueryParam("EORI", equalTo(eoriNumber))
+      .withQueryParam("regime", equalTo("CDS"))
+      .withQueryParam("acknowledgementReference", matching("[\\w]{32}")))
   }
 }

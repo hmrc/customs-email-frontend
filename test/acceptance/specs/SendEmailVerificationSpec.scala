@@ -28,17 +28,21 @@ class SendEmailVerificationSpec extends BaseSpec
 
   feature("Send email to user for verification") {
     scenario("user amends the email and submits for verification") {
+      lazy val randomInternalId = generateRandomNumberString()
+      lazy val randomEoriNumber = "GB" + generateRandomNumberString()
+
       stubVerificationRequestSent()
       Given("the user has successfully logged in")
-        authenticate("111111111")
-        save4LaterWithNoData("111111111")
+        authenticate(randomInternalId, randomEoriNumber)
+        save4LaterWithNoData(randomInternalId)
         navigateTo(StartPage)
         verifyCurrentPage(StartPage)
-        authenticateGGUserAndReturnEoriEnrolment("111111111", "111111111")
-        stubSubscriptionDisplayOkResponse()
+        authenticateGGUserAndReturnEoriEnrolment(randomEoriNumber, randomInternalId)
+        stubSubscriptionDisplayOkResponse(randomEoriNumber)
         clickOn(StartPage.emailLinkText)
+        verifySubscriptionDisplayIsCalled(1,randomEoriNumber)
       When("the user provides an email address to change")
-        save4LaterWithData("111111111")
+        save4LaterWithData(randomInternalId)
         enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
         clickContinue()
       Then("the user should be on 'Check your email address' page")
