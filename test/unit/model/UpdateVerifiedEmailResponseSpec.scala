@@ -46,24 +46,22 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
 
     "parse the json to model VerifiedEmailResponse when status text is available" in {
 
-      Json.parse(
-        """{
-          |  "updateVerifiedEmailResponse": {
-          |    "responseCommon": {
-          |      "status": "OK",
-          |      "statusText": "004 - Duplicate Acknowledgement Reference",
-          |      "processingDate": "2016-08-17T19:33:47Z",
-          |      "returnParameters": [
-          |        {
-          |          "paramName": "POSITION",
-          |          "paramValue": "FAIL"
-          |        }
-          |      ]
-          |    }
-          |  }
-          |}""".stripMargin
-      ).as[VerifiedEmailResponse]
-    }
+        Json.parse("""{
+                     |  "updateVerifiedEmailResponse": {
+                     |    "responseCommon": {
+                     |      "status": "OK",
+                     |      "statusText": "004 - Duplicate Acknowledgement Reference",
+                     |      "processingDate": "2016-08-17T19:33:47Z",
+                     |      "returnParameters": [
+                     |        {
+                     |          "paramName": "POSITION",
+                     |          "paramValue": "FAIL"
+                     |        }
+                     |      ]
+                     |    }
+                     |  }
+                     |}""".stripMargin
+        ).as[VerifiedEmailResponse]
 
       "parse the json to model VerifiedEmailResponse when status text is available" in {
 
@@ -73,12 +71,18 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
                      |      "status": "OK",
                      |      "statusText": "004 - Duplicate Acknowledgement Reference",
                      |      "processingDate": "2016-08-17T19:33:47Z",
-                     |      "returnParameters": []
+                     |      "returnParameters": [
+                     |        {
+                     |          "paramName": "POSITION",
+                     |          "paramValue": "FAIL"
+                     |        }
+                     |      ]
                      |    }
                      |  }
                      |}""".stripMargin
         ).as[VerifiedEmailResponse]
-     }
 
+    }
 
+  }
 }
