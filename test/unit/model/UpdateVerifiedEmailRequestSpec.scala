@@ -21,7 +21,7 @@ import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsDefined, JsString, Json}
 import uk.gov.hmrc.customs.emailfrontend.model._
-class UpdateVerifielEmailRequestSpec extends PlaySpec {
+class UpdateVerifiedEmailRequestSpec extends PlaySpec {
 
 
   val verifiedEmailRequestJson =
@@ -51,8 +51,8 @@ class UpdateVerifielEmailRequestSpec extends PlaySpec {
     emailVerificationTimestamp = MDGDateFormat.dateFormat.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC()))
   val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon,requestDetail)
   val verifiedEmailRequest = VerifiedEmailRequest(updateVerifiedEmailRequest=updateVerifiedEmailRequest)
-  "UpdateVerifiedEmailRequest" should {
 
+   "UpdateVerifiedEmailRequest" should {
     "parse the model to correct json format" in {
       val requestJosn = Json.toJson[VerifiedEmailRequest](verifiedEmailRequest)
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress"  shouldBe JsDefined(JsString("mickey.mouse@disneyland.com"))

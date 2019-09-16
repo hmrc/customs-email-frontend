@@ -98,4 +98,32 @@ object VerifiedEmailRequest {
   implicit val formats = Json.format[VerifiedEmailRequest]
 }
 
+case class MessagingServiceParam(paramName: String, paramValue: String)
 
+object MessagingServiceParam {
+  implicit val formats = Json.format[MessagingServiceParam]
+
+  val positionParamName = "POSITION"
+  val Fail = "FAIL"
+  val formBundleIdParamName = "ETMPFORMBUNDLENUMBER"
+}
+
+case class ResponseCommon(status: String, statusText: Option[String], processingDate: String, returnParameters: List[MessagingServiceParam]) {
+  require(returnParameters.nonEmpty)
+}
+
+object ResponseCommon {
+  implicit val format = Json.format[ResponseCommon]
+}
+
+case class UpdateVerifiedEmailResponse(responseCommon: ResponseCommon)
+
+object UpdateVerifiedEmailResponse {
+  implicit val format = Json.format[UpdateVerifiedEmailResponse]
+}
+
+case class VerifiedEmailResponse(updateVerifiedEmailResponse: UpdateVerifiedEmailResponse)
+
+object VerifiedEmailResponse {
+  implicit val format = Json.format[VerifiedEmailResponse]
+}
