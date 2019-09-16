@@ -46,41 +46,40 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
 
     "parse the json to model VerifiedEmailResponse when status text is available" in {
 
-        Json.parse("""{
-                     |  "updateVerifiedEmailResponse": {
-                     |    "responseCommon": {
-                     |      "status": "OK",
-                     |      "statusText": "004 - Duplicate Acknowledgement Reference",
-                     |      "processingDate": "2016-08-17T19:33:47Z",
-                     |      "returnParameters": [
-                     |        {
-                     |          "paramName": "POSITION",
-                     |          "paramValue": "FAIL"
-                     |        }
-                     |      ]
-                     |    }
-                     |  }
-                     |}""".stripMargin
-        ).as[VerifiedEmailResponse]
+      Json.parse(
+        """{
+          |  "updateVerifiedEmailResponse": {
+          |    "responseCommon": {
+          |      "status": "OK",
+          |      "statusText": "004 - Duplicate Acknowledgement Reference",
+          |      "processingDate": "2016-08-17T19:33:47Z",
+          |      "returnParameters": [
+          |        {
+          |          "paramName": "POSITION",
+          |          "paramValue": "FAIL"
+          |        }
+          |      ]
+          |    }
+          |  }
+          |}""".stripMargin
+      ).as[VerifiedEmailResponse]
+    }
+      "parse the json to model VerifiedEmailResponse when returnParameter is Nil" in {
 
-      "parse the json to model VerifiedEmailResponse when status text is available" in {
+        intercept[IllegalArgumentException] {
+          Json.parse("""{
+                       |  "updateVerifiedEmailResponse": {
+                       |    "responseCommon": {
+                       |      "status": "OK",
+                       |      "statusText": "004 - Duplicate Acknowledgement Reference",
+                       |      "processingDate": "2016-08-17T19:33:47Z",
+                       |      "returnParameters": []
+                       |    }
+                       |  }
+                       |}""".stripMargin
+          ).as[VerifiedEmailResponse]
+        }
 
-        Json.parse("""{
-                     |  "updateVerifiedEmailResponse": {
-                     |    "responseCommon": {
-                     |      "status": "OK",
-                     |      "statusText": "004 - Duplicate Acknowledgement Reference",
-                     |      "processingDate": "2016-08-17T19:33:47Z",
-                     |      "returnParameters": [
-                     |        {
-                     |          "paramName": "POSITION",
-                     |          "paramValue": "FAIL"
-                     |        }
-                     |      ]
-                     |    }
-                     |  }
-                     |}""".stripMargin
-        ).as[VerifiedEmailResponse]
 
     }
 
