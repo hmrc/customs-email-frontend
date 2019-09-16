@@ -42,8 +42,8 @@ trait CommonHeader {
     }
   }
 
-  implicit val dateTimeReads = dateTimeReadsIso
-  implicit val dateTimeWrites = dateTimeWritesIsoUtc
+  implicit val dateTimeReads: Reads[DateTime] = dateTimeReadsIso
+  implicit val dateTimeWrites: Writes[DateTime] = dateTimeWritesIsoUtc
 }
 
 case class RequestCommon(regime: String,
