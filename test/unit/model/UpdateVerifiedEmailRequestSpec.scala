@@ -20,29 +20,9 @@ import org.joda.time.format.ISODateTimeFormat
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsDefined, JsString, Json}
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
 import uk.gov.hmrc.customs.emailfrontend.model._
 class UpdateVerifiedEmailRequestSpec extends PlaySpec {
-
-
-  val verifiedEmailRequestJson =
-    Json.parse("""{
-                 |  "updateVerifiedEmailRequest": {
-                 |    "requestCommon": {
-                 |      "regime": "CDS",
-                 |      "receiptDate": "2019-08-22T13:55:55Z",
-                 |      "acknowledgementReference": "16061ef4ea8740128ac49e9787d3d1f3"
-                 |    },
-                 |    "requestDetail": {
-                 |      "IDType": "EORI",
-                 |      "IDNumber": "GB173822879792263",
-                 |      "emailAddress": "test@email.com",
-                 |      "emailVerificationTimestamp": "2019-08-22T13:55:55Z"
-                 |    }
-                 |  }
-                 |}""".stripMargin
-    ).as[VerifiedEmailRequest]
-
-
 
   val requestCommon =  RequestCommon()
   val requestDetail = RequestDetail(IDType = "EORI",

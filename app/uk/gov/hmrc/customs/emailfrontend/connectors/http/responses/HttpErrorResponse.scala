@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.connectors.http.responses
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.customs.emailfrontend.model.UpdateVerifiedEmailResponse
+import uk.gov.hmrc.customs.emailfrontend.model.{UpdateVerifiedEmailRequest, UpdateVerifiedEmailResponse}
 
 sealed trait HttpErrorResponse
 case object NotFound extends HttpErrorResponse
@@ -30,4 +30,10 @@ case class VerifiedEmailResponse(updateVerifiedEmailResponse: UpdateVerifiedEmai
 
 object VerifiedEmailResponse {
   implicit val format = Json.format[VerifiedEmailResponse]
+}
+
+case class VerifiedEmailRequest(updateVerifiedEmailRequest: UpdateVerifiedEmailRequest)
+
+object VerifiedEmailRequest {
+  implicit val formats = Json.format[VerifiedEmailRequest]
 }
