@@ -76,9 +76,7 @@ object RequestCommon extends CommonHeader {
     acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString
   )
 
-
   implicit val formats = Json.format[RequestCommon]
-
 }
 
 object RequestDetail {
