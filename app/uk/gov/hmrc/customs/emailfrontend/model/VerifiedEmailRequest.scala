@@ -122,8 +122,3 @@ object UpdateVerifiedEmailResponse {
   implicit val format = Json.format[UpdateVerifiedEmailResponse]
 }
 
-case class VerifiedEmailResponse(updateVerifiedEmailResponse: UpdateVerifiedEmailResponse)
-
-object VerifiedEmailResponse {
-  implicit val format = Json.format[VerifiedEmailResponse]
-}
