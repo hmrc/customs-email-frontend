@@ -20,9 +20,9 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.model.UpdateVerifiedEmailResponse
 
 sealed trait HttpErrorResponse
-case object NotFoundResponse extends HttpErrorResponse
-case object BadRequestResponse extends HttpErrorResponse
-case object ServiceUnavailableResponse extends HttpErrorResponse
+case object NotFound extends HttpErrorResponse
+case object BadRequest extends HttpErrorResponse
+case object ServiceUnavailable extends HttpErrorResponse
 
 sealed trait HttpSuccessResponse
 
