@@ -24,6 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.customs.emailfrontend.model.UpdateVerifiedEmailRequest
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import scala.util.control.NonFatal
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -43,9 +44,9 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
       case _: NotFoundException => Left(NotFound)
       case _: BadRequestException => Left(BadRequest)
       case _: ServiceUnavailableException => Left(ServiceUnavailable)
-      case e: Throwable =>
+      case NonFatal(e) =>
         Logger.error(s"[UpdateVerifiedEmailConnector][updateVerifiedEmail] update-verified-email. url: $url, error: $e", e)
-        throw e
+        Left(UnhandledException)
     }
   }
 

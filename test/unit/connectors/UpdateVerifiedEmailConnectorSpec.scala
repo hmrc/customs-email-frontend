@@ -18,18 +18,17 @@ package unit.connectors
 
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{doNothing, reset, when}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, _}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Writes
-import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, NotFound, ServiceUnavailable, VerifiedEmailResponse}
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.customs.emailfrontend.model.{RequestCommon, RequestDetail, UpdateVerifiedEmailRequest, UpdateVerifiedEmailResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, MethodNotAllowedException, _}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,6 +45,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
   private val notFound = new NotFoundException("testMessage")
   private val badRequestException = new BadRequestException("testMessage")
   private val serviceUnavailableException = new ServiceUnavailableException("testMessage")
+  private val unhandledException = new MethodNotAllowedException("testMessage")
 
   private val mockUpdateVerifiedEmailResponse = mock[UpdateVerifiedEmailResponse]
 
@@ -111,13 +111,10 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
       when(mockHttpClient.PUT[UpdateVerifiedEmailRequest, VerifiedEmailResponse](
         meq("testUrl/update-verified-email"), any())
         (any[Writes[UpdateVerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.failed(new MethodNotAllowedException("testMessage")))
+        .thenReturn(Future.failed(unhandledException))
 
-      val result = intercept[MethodNotAllowedException] {
-        await(connector.updateVerifiedEmail(updateVerifiedEmailRequest))
-      }
-
-      result.getMessage mustBe "testMessage"
+      val result = connector.updateVerifiedEmail(updateVerifiedEmailRequest).futureValue
+      result mustBe Left(UnhandledException)
     }
   }
 }
