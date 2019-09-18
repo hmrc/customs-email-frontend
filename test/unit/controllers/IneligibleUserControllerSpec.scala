@@ -27,16 +27,9 @@ class IneligibleUserControllerSpec extends ControllerSpec {
 
   "IneligibleUserController" should {
 
-    "have a status of Unauthorised (401)" in withAuthorisedUserWithoutEnrolments {
+    "have a status of Unauthorised (401)" in withUnauthorisedUser {
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe UNAUTHORIZED
     }
-
-    "have a status of See Other (303) and redirect to Government Gateway" in withUnauthorisedUser {
-      val result = controller.show(request)
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) should contain("/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fcustoms-email-frontend%2Fstart&origin=customs-email-frontend")
-    }
-
   }
 }

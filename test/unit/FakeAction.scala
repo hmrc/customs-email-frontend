@@ -19,7 +19,6 @@ package unit
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.{Actions, AuthAction, EoriAction, UnauthorisedAction}
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EoriRequest}
@@ -37,8 +36,6 @@ class FakeAction(authConnector: AuthConnector, bodyParser: BodyParser[AnyContent
   override def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Right(Enrolment("HMRC-CUS-ORG")), authConnector, configuration, env, bodyParser)
 
   override def eori: ActionRefiner[AuthenticatedRequest, EoriRequest] = new EoriAction()
-
-  override def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Left(GovernmentGateway), authConnector, configuration, env, bodyParser)
 
   override def unauthorised: DefaultActionBuilder = new UnauthorisedAction(bodyParser)
 }
