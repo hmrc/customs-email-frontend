@@ -24,10 +24,10 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.customs.emailfrontend.model.UpdateVerifiedEmailRequest
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import scala.util.control.NonFatal
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.control.NonFatal
 
 class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpClient, audit: Auditable) {
 
@@ -37,7 +37,7 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
 
     val details = Map("requestDetail" -> request.requestDetail.toString, "requestCommon" -> request.requestCommon.toString)
     auditRequest(details)
-    http.PUT[UpdateVerifiedEmailRequest, VerifiedEmailResponse](url, request) map { resp =>
+    http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](url, VerifiedEmailRequest(request)) map { resp =>
       auditResponse(Map("responseCommon" -> resp.updateVerifiedEmailResponse.responseCommon.toString))
       Right(resp)
     } recover {
