@@ -59,4 +59,15 @@ trait StubAuthClient {
       )
     )
   }
+
+  def authenticateGGUserWithNoEnrolments(internalId: String): StubMapping = {
+    stubFor(post(urlEqualTo(authUrl))
+      .withRequestBody(equalToJson(authRequestJson))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
+          .withBody(s"""{"allEnrolments": [], "internalId": "$internalId"}""".stripMargin)
+      )
+    )
+  }
 }
