@@ -41,9 +41,9 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
       auditResponse(Map("responseCommon" -> resp.updateVerifiedEmailResponse.responseCommon.toString))
       Right(resp)
     } recover {
-      case e: NotFoundException => auditResponse(Map("HttpErrorResponse" -> e.message)); Left(NotFound)
-      case e: BadRequestException => auditResponse(Map("HttpErrorResponse" -> e.message)); Left(BadRequest)
-      case e: ServiceUnavailableException => auditResponse(Map("HttpErrorResponse" -> e.message)); Left(ServiceUnavailable)
+      case _: NotFoundException => Left(NotFound)
+      case _: BadRequestException => Left(BadRequest)
+      case _: ServiceUnavailableException => Left(ServiceUnavailable)
       case NonFatal(e) =>
         auditResponse(Map("HttpErrorResponse" -> e.getMessage))
         Logger.error(s"[UpdateVerifiedEmailConnector][updateVerifiedEmail] update-verified-email. url: $url, error: ${e.getMessage}")

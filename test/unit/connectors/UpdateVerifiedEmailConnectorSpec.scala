@@ -67,7 +67,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
   "Calling updateVerifiedEmail" should {
     "return Right with VerifiedEmailResponse when call was successful with OK" in {
       when(mockHttpClient.PUT[UpdateVerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), any())
+        meq("testUrl/update-verified-email"), meq(updateVerifiedEmailRequest))
         (any[Writes[UpdateVerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(verifiedEmailResponse))
 
@@ -77,7 +77,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
 
     "return Left with NotFound when call returned NotFoundException" in {
       when(mockHttpClient.PUT[UpdateVerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), any())
+        meq("testUrl/update-verified-email"), meq(updateVerifiedEmailRequest))
         (any[Writes[UpdateVerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(notFound))
 
@@ -87,7 +87,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
 
     "return Left with BadRequest when call returned BadRequestException" in {
       when(mockHttpClient.PUT[UpdateVerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), any())
+        meq("testUrl/update-verified-email"), meq(updateVerifiedEmailRequest))
         (any[Writes[UpdateVerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(badRequestException))
 
@@ -97,7 +97,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
 
     "return Left with ServiceUnavailable when call returned ServiceUnavailableException" in {
       when(mockHttpClient.PUT[UpdateVerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), any())
+        meq("testUrl/update-verified-email"), meq(updateVerifiedEmailRequest))
         (any[Writes[UpdateVerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(serviceUnavailableException))
 
@@ -105,9 +105,9 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
       result mustBe Left(ServiceUnavailable)
     }
 
-    "throw not handled exception" in {
+    "return Left with not handled exception" in {
       when(mockHttpClient.PUT[UpdateVerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), any())
+        meq("testUrl/update-verified-email"), meq(updateVerifiedEmailRequest))
         (any[Writes[UpdateVerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(unhandledException))
 
