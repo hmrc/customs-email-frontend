@@ -48,7 +48,7 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
 
   implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig)
 
-  val request: RequestHeader = FakeRequest("GET", "/").withCSRFToken
+  val request: Request[String] = Request(FakeRequest("GET", "/").withCSRFToken, "")
 
   implicit val cc: ControllerComponents = app.injector.instanceOf[ControllerComponents]
 
