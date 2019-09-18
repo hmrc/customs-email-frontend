@@ -17,11 +17,11 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import javax.inject.Inject
-import org.joda.time.format.ISODateTimeFormat
 import play.api.Logger
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
-import uk.gov.hmrc.customs.emailfrontend.model._
+import uk.gov.hmrc.customs.emailfrontend.model.MDGDateFormat._
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
+import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +34,7 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
       IDType = "EORI",
       IDNumber = eori,
       emailAddress = email,
-      emailVerificationTimestamp = MDGDateFormat.dateFormat.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC())
+      emailVerificationTimestamp = MDGDateFormat.dateFormat
     )
     val request = UpdateVerifiedEmailRequest(RequestCommon(), requestDetail)
 
@@ -50,7 +50,7 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
         )
         None
       case Left(res) =>
-        Logger.warn(s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with response: ${res.getClass}")
+        Logger.warn(s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with response: $res")
         None
     }
   }

@@ -37,15 +37,16 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
 
     val details = Map("requestDetail" -> request.requestDetail.toString, "requestCommon" -> request.requestCommon.toString)
     auditRequest(details)
-
     http.PUT[UpdateVerifiedEmailRequest, VerifiedEmailResponse](url, request) map { resp =>
+      auditResponse(Map("responseCommon" -> resp.updateVerifiedEmailResponse.responseCommon.toString))
       Right(resp)
     } recover {
-      case _: NotFoundException => Left(NotFound)
-      case _: BadRequestException => Left(BadRequest)
-      case _: ServiceUnavailableException => Left(ServiceUnavailable)
+      case e: NotFoundException => auditResponse(Map("HttpErrorResponse" -> e.message)); Left(NotFound)
+      case e: BadRequestException => auditResponse(Map("HttpErrorResponse" -> e.message)); Left(BadRequest)
+      case e: ServiceUnavailableException => auditResponse(Map("HttpErrorResponse" -> e.message)); Left(ServiceUnavailable)
       case NonFatal(e) =>
-        Logger.error(s"[UpdateVerifiedEmailConnector][updateVerifiedEmail] update-verified-email. url: $url, error: $e", e)
+        auditResponse(Map("HttpErrorResponse" -> e.getMessage))
+        Logger.error(s"[UpdateVerifiedEmailConnector][updateVerifiedEmail] update-verified-email. url: $url, error: ${e.getMessage}")
         Left(UnhandledException)
     }
   }
@@ -56,5 +57,13 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
       path = url,
       detail = detail,
       auditType = "UpdateVerifiedEmailRequest"
+    )
+
+  private def auditResponse(detail: Map[String, String])(implicit hc: HeaderCarrier): Unit =
+    audit.sendDataEvent(
+      transactionName = "UpdateVerifiedEmailResponseReceived",
+      path = url,
+      detail = detail,
+      auditType = "UpdateVerifiedEmailResponse"
     )
 }

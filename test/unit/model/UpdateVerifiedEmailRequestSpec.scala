@@ -16,28 +16,29 @@
 
 package unit.model
 
-import org.joda.time.format.ISODateTimeFormat
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsDefined, JsString, Json}
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
+import uk.gov.hmrc.customs.emailfrontend.model.MDGDateFormat._
 import uk.gov.hmrc.customs.emailfrontend.model._
+
 class UpdateVerifiedEmailRequestSpec extends PlaySpec {
 
-  val requestCommon =  RequestCommon()
+  val requestCommon = RequestCommon()
   val requestDetail = RequestDetail(IDType = "EORI",
     IDNumber = "GBXXXXXXXXXXXX",
     emailAddress = "test@email.com",
-    emailVerificationTimestamp = MDGDateFormat.dateFormat.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC()))
-  val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon,requestDetail)
-  val verifiedEmailRequest = VerifiedEmailRequest(updateVerifiedEmailRequest=updateVerifiedEmailRequest)
+    emailVerificationTimestamp = MDGDateFormat.dateFormat)
+  val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
+  val verifiedEmailRequest = VerifiedEmailRequest(updateVerifiedEmailRequest = updateVerifiedEmailRequest)
 
-   "UpdateVerifiedEmailRequest" should {
+  "UpdateVerifiedEmailRequest" should {
     "parse the model to correct json format" in {
       val requestJosn = Json.toJson[VerifiedEmailRequest](verifiedEmailRequest)
-      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress"  shouldBe JsDefined(JsString("test@email.com"))
-      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDNumber"  shouldBe JsDefined(JsString("GBXXXXXXXXXXXX"))
-      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDType"  shouldBe JsDefined(JsString("EORI"))
+      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress" shouldBe JsDefined(JsString("test@email.com"))
+      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDNumber" shouldBe JsDefined(JsString("GBXXXXXXXXXXXX"))
+      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDType" shouldBe JsDefined(JsString("EORI"))
     }
   }
 }

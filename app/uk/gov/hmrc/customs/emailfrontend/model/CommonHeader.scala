@@ -54,4 +54,6 @@ object MDGDateFormat {
   def dateFormat: DateTime = {
     new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC)
   }
+
+  implicit def currentDateInFormat(dateTime: DateTime): String = dateFormat.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC())
 }

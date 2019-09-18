@@ -27,7 +27,7 @@ import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
-import uk.gov.hmrc.customs.emailfrontend.model.{RequestCommon, RequestDetail, UpdateVerifiedEmailRequest, UpdateVerifiedEmailResponse}
+import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, MethodNotAllowedException, _}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -47,12 +47,10 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
   private val serviceUnavailableException = new ServiceUnavailableException("testMessage")
   private val unhandledException = new MethodNotAllowedException("testMessage")
 
-  private val mockUpdateVerifiedEmailResponse = mock[UpdateVerifiedEmailResponse]
-
   private val requestDetail = RequestDetail("idType", "idNumber", "test@email.com", "timestamp")
   private val requestCommon = RequestCommon()
 
-  private val verifiedEmailResponse = VerifiedEmailResponse(mockUpdateVerifiedEmailResponse)
+  private val verifiedEmailResponse = VerifiedEmailResponse(UpdateVerifiedEmailResponse(ResponseCommon("OK", None, "date", List(MessagingServiceParam("name", "value")))))
 
   private val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
 
@@ -67,7 +65,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
   }
 
   "Calling updateVerifiedEmail" should {
-    "return Right with VerifiedEmailResponse when call was succesfull with OK" in {
+    "return Right with VerifiedEmailResponse when call was successful with OK" in {
       when(mockHttpClient.PUT[UpdateVerifiedEmailRequest, VerifiedEmailResponse](
         meq("testUrl/update-verified-email"), any())
         (any[Writes[UpdateVerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
