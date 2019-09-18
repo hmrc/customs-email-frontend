@@ -21,7 +21,7 @@ import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments}
-import uk.gov.hmrc.customs.emailfrontend.controllers.actions.{Actions, AuthAction, EoriAction, UnauthorisedAction}
+import uk.gov.hmrc.customs.emailfrontend.controllers.actions.{Actions, AuthAction, EoriAction, IsPermittedUser, UnauthorisedAction}
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EoriRequest}
 
 import scala.concurrent.ExecutionContext
@@ -41,4 +41,6 @@ class FakeAction(authConnector: AuthConnector, bodyParser: BodyParser[AnyContent
   override def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Left(GovernmentGateway), authConnector, configuration, env, bodyParser)
 
   override def unauthorised: DefaultActionBuilder = new UnauthorisedAction(bodyParser)
+
+  override def isPermitted: ActionFilter[AuthenticatedRequest] = new IsPermittedUser()
 }
