@@ -16,15 +16,17 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
+import org.joda.time.DateTime
 import play.api.libs.json.Json
 
 
 case class RequestDetail(IDType: String,
                          IDNumber: String,
                          emailAddress: String,
-                         emailVerificationTimestamp: String)
+                         emailVerificationTimestamp: DateTime)
 
 object RequestDetail {
+  import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
   implicit val formats = Json.format[RequestDetail]
 }
 

@@ -19,8 +19,8 @@ package unit.model
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsDefined, JsString, Json}
+import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
-import uk.gov.hmrc.customs.emailfrontend.model.MDGDateFormat._
 import uk.gov.hmrc.customs.emailfrontend.model._
 
 class UpdateVerifiedEmailRequestSpec extends PlaySpec {

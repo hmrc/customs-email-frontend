@@ -16,6 +16,7 @@
 
 package unit.services
 
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -41,11 +42,12 @@ class UpdateVerifiedEmailServiceSpec extends PlaySpec with MockitoSugar with Bef
 
   private val eoriNumber = "GBXXXXXXXXXXXX"
   private val email = "test@email.com"
+  val dateTime = DateTime.now()
 
   private val bundleIdUpdateVerifiedEmailResponse = VerifiedEmailResponse(
-  UpdateVerifiedEmailResponse(ResponseCommon("OK", None, "processingDate", List(MessagingServiceParam(formBundleIdParamName, "testValue")))))
+  UpdateVerifiedEmailResponse(ResponseCommon("OK", None, dateTime, List(MessagingServiceParam(formBundleIdParamName, "testValue")))))
   private val businessErrorUpdateVerifiedEmailResponse = VerifiedEmailResponse(
-    UpdateVerifiedEmailResponse(ResponseCommon("OK", Some("004 - Duplicate Acknowledgement Reference"), "processingDate", List(MessagingServiceParam(positionParamName, Fail)))))
+    UpdateVerifiedEmailResponse(ResponseCommon("OK", Some("004 - Duplicate Acknowledgement Reference"), dateTime, List(MessagingServiceParam(positionParamName, Fail)))))
   private val serviceUnavailableResponse = ServiceUnavailable
 
   override protected def beforeEach(): Unit = {

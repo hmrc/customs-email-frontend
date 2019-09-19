@@ -24,10 +24,10 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.customs.emailfrontend.model.UpdateVerifiedEmailRequest
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.control.NonFatal
+import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
 
 class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpClient, audit: Auditable) {
 

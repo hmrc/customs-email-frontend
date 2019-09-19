@@ -17,10 +17,10 @@
 package uk.gov.hmrc.customs.emailfrontend.model
 
 import play.api.libs.json.Json
-
 case class UpdateVerifiedEmailResponse(responseCommon: ResponseCommon)
 
 object UpdateVerifiedEmailResponse {
+  import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
   implicit val format = Json.format[UpdateVerifiedEmailResponse]
 }
 

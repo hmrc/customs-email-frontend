@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.joda.time.DateTime
-import play.api.libs.json.Json
+import java.time.Clock
+import java.util.UUID
 
-case class ResponseCommon(status: String, statusText: Option[String], processingDate: DateTime, returnParameters: List[MessagingServiceParam]) {
-  require(returnParameters.nonEmpty)
-}
+import org.joda.time.format.ISODateTimeFormat
+import org.joda.time.{DateTime, DateTimeZone}
+import play.api.libs.json._
 
-object ResponseCommon{
-  import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
-  implicit val format = Json.format[ResponseCommon]
+
+object RandomUUIDGenerator {
+  def generateUUIDAsString: String = UUID.randomUUID().toString.replace("-", "")
 }
 

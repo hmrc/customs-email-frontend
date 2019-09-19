@@ -25,8 +25,8 @@ case class RequestCommon(regime: String,
                          acknowledgementReference: String)
 
 
-object RequestCommon extends CommonHeader {
-  import MDGDateFormat._
+object RequestCommon {
+  import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
 
   def apply(): RequestCommon = RequestCommon("CDS",
     receiptDate = dateFormat,

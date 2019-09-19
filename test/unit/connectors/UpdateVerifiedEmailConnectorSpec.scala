@@ -16,6 +16,7 @@
 
 package unit.connectors
 
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{doNothing, reset, when}
 import org.scalatest.BeforeAndAfter
@@ -31,6 +32,7 @@ import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, MethodNotAllowedException, _}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import play.api.test.Helpers._
+import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -47,11 +49,11 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
   private val badRequestException = new BadRequestException("testMessage")
   private val serviceUnavailableException = new ServiceUnavailableException("testMessage")
   private val unhandledException = new MethodNotAllowedException("testMessage")
-
-  private val requestDetail = RequestDetail("idType", "idNumber", "test@email.com", "timestamp")
+  val dateTime = DateTime.now()
+  private val requestDetail = RequestDetail("idType", "idNumber", "test@email.com", dateTime)
   private val requestCommon = RequestCommon()
 
-  private val verifiedEmailResponse = VerifiedEmailResponse(UpdateVerifiedEmailResponse(ResponseCommon("OK", None, "date", List(MessagingServiceParam("name", "value")))))
+  private val verifiedEmailResponse = VerifiedEmailResponse(UpdateVerifiedEmailResponse(ResponseCommon("OK", None, dateTime, List(MessagingServiceParam("name", "value")))))
 
   private val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
 

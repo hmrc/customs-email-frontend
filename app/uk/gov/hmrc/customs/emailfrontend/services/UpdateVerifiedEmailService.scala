@@ -18,8 +18,8 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import javax.inject.Inject
 import play.api.Logger
+import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
-import uk.gov.hmrc.customs.emailfrontend.model.MDGDateFormat._
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.HeaderCarrier
