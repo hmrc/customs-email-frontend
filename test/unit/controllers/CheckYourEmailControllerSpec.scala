@@ -82,7 +82,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email-address/create")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/change-email-address/create")
     }
   }
 

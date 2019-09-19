@@ -22,20 +22,22 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, SignOutController, WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
-import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
+import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
+import uk.gov.hmrc.customs.emailfrontend.views.html.{what_is_your_email, change_your_email}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_email,
+class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_email,
+                                          verifyView: what_is_your_email,
                                           emailCacheService: EmailCacheService,
                                           mcc: MessagesControllerComponents,
-                                          subscriptionDisplayConnector: SubscriptionDisplayConnector)
+                                          subscriptionDisplayConnector: SubscriptionDisplayConnector,
+                                          emailVerificationService: EmailVerificationService)
                                          (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
@@ -52,9 +54,18 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_e
   }
 
   def create: Action[AnyContent] = (actions.auth andThen actions.eori).async { implicit request =>
-    subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).map {
-      case SubscriptionDisplayResponse(Some(email)) => Ok(view(emailForm, email))
+    subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
+      case SubscriptionDisplayResponse(Some(email)) => {
+        emailVerificationService.isEmailVerified(email).map {
+          case Some(true) => Ok(view(emailForm, email))
+          case Some(false) => Redirect(WhatIsYourEmailController.verify())
+        }
+      }
     }
+  }
+
+  def verify: Action[AnyContent] = actions.auth { implicit request =>
+    Ok(verifyView(emailForm))
   }
 
   def submit: Action[AnyContent] = (actions.auth andThen actions.eori).async { implicit request =>

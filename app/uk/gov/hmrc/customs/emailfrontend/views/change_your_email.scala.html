@@ -21,7 +21,7 @@
 @import views.html.helper._
 
 @this(main_template: main_template)
-@(emailForm: Form[Email])(implicit request: Request[_], messages: Messages)
+@(emailForm: Form[Email], email: String)(implicit request: Request[_], messages: Messages)
 
 @inputText(field: String, label: String, args: (Symbol, Any)*) = {
     @defining(Seq(
@@ -35,18 +35,18 @@
 }
 
 
-@main_template(messages("customs.emailfrontend.what-is-your-email.title-and-heading")) {
+@main_template(messages("customs.emailfrontend.change-your-email.title-and-heading")) {
 
     @helpers.errorSummary(emailForm)
 
     @helper.form(WhatIsYourEmailController.submit(),'id -> "emailForm") {
         @CSRF.formField
 
-        <h1 class="heading-xlarge">@messages("customs.emailfrontend.what-is-your-email.title-and-heading")</h1>
+        <h1 class="heading-xlarge">@messages("customs.emailfrontend.change-your-email.title-and-heading")</h1>
 
         @inputText(
             "email",
-            messages("customs.emailfrontend.what-is-your-email.label")
+            messages("customs.emailfrontend.change-your-email.label", email)
         )
 
         <input class="button" type="submit" id="continue" value="@messages("customs.emailfrontend.continue-button")">
