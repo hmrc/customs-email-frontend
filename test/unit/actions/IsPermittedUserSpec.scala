@@ -40,9 +40,10 @@ class IsPermittedUserSpec extends PlaySpec with ScalaFutures {
     (Some(Organisation), Some(Admin), None),
     (Some(Organisation), Some(User), None),
     (Some(Organisation), Some(Assistant), Some(expectedResult)),
+    (Some(Organisation), Some(Assistant), Some(expectedResult)),
     (Some(Agent), Some(User), Some(expectedResult)),
     (Some(Individual), Some(User), None),
-    (Some(Organisation), Some(Assistant), Some(expectedResult))
+    (Some(Individual), Some(Admin), None)
   )
   val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GBXXXXXXXXXX")))
   val fakeRequest = FakeRequest()
