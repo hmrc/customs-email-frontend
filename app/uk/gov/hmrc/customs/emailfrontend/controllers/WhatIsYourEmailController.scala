@@ -41,7 +41,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
                                          (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = actions.auth.async { implicit request =>
+  def show: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
     emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
       _.fold {
         Logger.warn("[WhatIsYourEmailController][show] - emailStatus not found")
@@ -53,7 +53,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     }
   }
 
-  def create: Action[AnyContent] = (actions.auth andThen actions.eori).async { implicit request =>
+  def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
     subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
       case SubscriptionDisplayResponse(Some(email)) => {
         emailVerificationService.isEmailVerified(email).map {
@@ -64,11 +64,11 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     }
   }
 
-  def verify: Action[AnyContent] = actions.auth { implicit request =>
+  def verify: Action[AnyContent] = actions.authEnrolled { implicit request =>
     Ok(whatIsYourEmailView(emailForm))
   }
 
-  def submit: Action[AnyContent] = (actions.auth andThen actions.eori).async { implicit request =>
+  def submit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
     emailForm.bindFromRequest.fold(
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).map {

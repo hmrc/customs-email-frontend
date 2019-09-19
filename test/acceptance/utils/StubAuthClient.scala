@@ -35,7 +35,7 @@ trait StubAuthClient {
       |}
     """.stripMargin
 
-  def authenticate(internalId:String, eoriNumber: String): StubMapping = {
+  def authenticate(internalId: String, eoriNumber: String): StubMapping = {
     stubFor(post(urlEqualTo(authUrl))
       .withRequestBody(equalToJson(authRequestJson))
       .willReturn(
@@ -60,47 +60,13 @@ trait StubAuthClient {
     )
   }
 
-  private val authGGRequestJson: String =
-    """{
-      |"authorise" : [{
-      | "authProviders" : ["GovernmentGateway"]
-      |}],
-      | "retrieve" : ["allEnrolments","internalId"]
-      |}
-    """.stripMargin
-
-  def authenticateGG(eoriNumber: String): StubMapping = {
+  def authenticateGGUserWithNoEnrolments(internalId: String): StubMapping = {
     stubFor(post(urlEqualTo(authUrl))
-      .withRequestBody(equalToJson(authGGRequestJson))
+      .withRequestBody(equalToJson(authRequestJson))
       .willReturn(
         aResponse()
           .withStatus(Status.OK)
-          .withBody(s"""{"allEnrolments": [], "internalId": "$eoriNumber"}""".stripMargin)
-      )
-    )
-  }
-
-  def authenticateGGUserAndReturnEoriEnrolment(eoriNumber: String, internalId : String): StubMapping = {
-    stubFor(post(urlEqualTo(authUrl))
-      .withRequestBody(equalToJson(authGGRequestJson))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withBody(
-            s"""{"allEnrolments": [
-               |  {
-               | "key": "HMRC-CUS-ORG",
-               | "identifiers": [
-               |   {
-               |     "key": "EORINumber",
-               |     "value": "$eoriNumber"
-               |   }
-               | ]
-               |}
-               |],
-               |"internalId": "$internalId"
-               |}
-              """.stripMargin)
+          .withBody(s"""{"allEnrolments": [], "internalId": "$internalId"}""")
       )
     )
   }

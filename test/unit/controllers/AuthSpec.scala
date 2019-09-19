@@ -24,12 +24,11 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 
 class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
 
-  override protected def beforeEach(): Unit = resetAuthConnector()
-
   private val eori = Eori("ZZ123456789")
   private val ineligibleUrl = "/customs-email-frontend/ineligible"
 
   private val view = app.injector.instanceOf[start_page]
+
   val controller = new ApplicationController(fakeAction, view)
 
   "Accessing a controller that requires a user to be authorised" should {

@@ -41,7 +41,6 @@ class EmailConfirmedSpec extends BaseSpec
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubVerifiedEmailResponse()
-      authenticateGGUserAndReturnEoriEnrolment(randomEoriNumber, randomInternalId)
       clickOn(StartPage.emailLinkText)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
@@ -76,7 +75,6 @@ class EmailConfirmedSpec extends BaseSpec
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubVerifiedEmailResponse()
-      authenticateGGUserAndReturnEoriEnrolment(randomEoriNumber, randomInternalId)
       clickOn(StartPage.emailLinkText)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 

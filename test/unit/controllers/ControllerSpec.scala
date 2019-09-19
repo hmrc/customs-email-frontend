@@ -26,9 +26,12 @@ import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.FakeRequest
 import play.api.{Configuration, Environment, Mode, Play}
 import play.utils.OrderPreserving.groupBy
+import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.controllers.actions.ActionsImpl
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
-import unit.{AuthBuilder, FakeAction}
+import unit.AuthBuilder
 
 import scala.concurrent.ExecutionContext
 
@@ -56,7 +59,9 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
 
   implicit val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
-  val fakeAction = new FakeAction(mockAuthConnector, cc.parsers.defaultBodyParser)(cc.messagesApi, cc.executionContext)
+  val idsRetrievalResult: Option[AffinityGroup] ~ Option[String] = new ~(Option(AffinityGroup.Organisation), Option("userId"))
+
+  val fakeAction = new ActionsImpl(mockAuthConnector, config, env, mcc)
 
   private def formUrlEncodedBody(data: Seq[(String, String)]) =
     AnyContentAsFormUrlEncoded(groupBy(data)(_._1))
