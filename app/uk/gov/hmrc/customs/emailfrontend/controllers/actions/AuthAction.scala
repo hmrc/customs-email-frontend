@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthAction(predicate: Either[AuthProvider, Enrolment],
+class AuthAction(enrolment: Enrolment,
                  override val authConnector: AuthConnector,
                  override val config: Configuration,
                  override val env: Environment,
@@ -42,12 +42,11 @@ class AuthAction(predicate: Either[AuthProvider, Enrolment],
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-    authorised(predicate.fold(authProvider => AuthProviders(authProvider), enrolment => enrolment))
-      .retrieve(allEnrolments and internalId) {
-        case userAllEnrolments ~ Some(userInternalId) =>
-          Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments, InternalId(userInternalId)))))
-        case _ => Future.successful(Left(Redirect(IneligibleUserController.show())))
-      } recover withAuthOrRedirect(request)
+    authorised(enrolment).retrieve(allEnrolments and internalId) {
+      case userAllEnrolments ~ Some(userInternalId) =>
+        Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments, InternalId(userInternalId)))))
+      case _ => Future.successful(Left(Redirect(IneligibleUserController.show())))
+    } recover withAuthOrRedirect(request)
   }
 
   private def withAuthOrRedirect[A](implicit request: Request[_]): PartialFunction[Throwable, Either[Result, A]] = {

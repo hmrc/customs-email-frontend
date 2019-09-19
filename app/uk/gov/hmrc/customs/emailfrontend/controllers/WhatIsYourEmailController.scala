@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, SignOutController, WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
@@ -39,7 +39,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_e
                                          (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = actions.auth.async { implicit request =>
+  def show: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
     emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
       _.fold {
         Logger.warn("[WhatIsYourEmailController][show] - emailStatus not found")
@@ -51,13 +51,13 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_e
     }
   }
 
-  def create: Action[AnyContent] = (actions.auth andThen actions.eori).async { implicit request =>
+  def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
     subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).map {
       case SubscriptionDisplayResponse(Some(email)) => Ok(view(emailForm, email))
     }
   }
 
-  def submit: Action[AnyContent] = (actions.auth andThen actions.eori).async { implicit request =>
+  def submit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
     emailForm.bindFromRequest.fold(
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).map {

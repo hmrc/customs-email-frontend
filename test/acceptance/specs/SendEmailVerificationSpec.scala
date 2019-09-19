@@ -37,7 +37,6 @@ class SendEmailVerificationSpec extends BaseSpec
         save4LaterWithNoData(randomInternalId)
         navigateTo(StartPage)
         verifyCurrentPage(StartPage)
-        authenticateGGUserAndReturnEoriEnrolment(randomEoriNumber, randomInternalId)
         stubSubscriptionDisplayOkResponse(randomEoriNumber)
         clickOn(StartPage.emailLinkText)
         verifySubscriptionDisplayIsCalled(1,randomEoriNumber)

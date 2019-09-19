@@ -20,14 +20,13 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.Unauthorized
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
 
 @Singleton
 class IneligibleUserController @Inject()(actions: Actions, view: ineligible_user)(implicit override val messagesApi: MessagesApi) extends I18nSupport {
 
-  def show: Action[AnyContent] = actions.auth { implicit request =>
+  def show: Action[AnyContent] = actions.unauthorised { implicit request =>
     Unauthorized(view())
   }
 }
