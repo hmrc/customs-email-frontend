@@ -7,8 +7,10 @@ GET         /ineligible                                         uk.gov.hmrc.cust
 
 GET         /change-email-address                               uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.show
 GET         /change-email-address/create                        uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.create
-GET         /email-address/verify-email-address                 uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.verify
 POST        /change-email-address                               uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.submit
+
+GET         /email-address/verify-email-address                 uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.verify
+POST        /email-address/verify-email-address                 uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.verifySubmit
 
 GET         /check-email-address                                uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController.show
 POST        /check-email-address                                uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController.submit
