@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, SignOutController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
@@ -75,6 +75,17 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
           case SubscriptionDisplayResponse(Some(email)) => BadRequest(view(formWithErrors, email))
         }
       },
+      formData => {
+        emailCacheService.saveEmail(Some(request.user.internalId.id), EmailStatus(formData.value)).map {
+          _ => Redirect(routes.CheckYourEmailController.show())
+        }
+      }
+    )
+  }
+
+  def verifySubmit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+    emailForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(formWithErrors))),
       formData => {
         emailCacheService.saveEmail(Some(request.user.internalId.id), EmailStatus(formData.value)).map {
           _ => Redirect(routes.CheckYourEmailController.show())
