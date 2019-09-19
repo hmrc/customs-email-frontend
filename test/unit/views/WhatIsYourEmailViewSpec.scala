@@ -37,11 +37,11 @@ class WhatIsYourEmailViewSpec extends ViewSpec {
 
   "Email page" should {
     "have the correct title" in {
-      doc.title mustBe "What is your email address"
+      doc.title mustBe "What is your email address?"
     }
 
     "have the correct heading" in {
-      doc.getElementsByTag("h1").text mustBe "What is your email address"
+      doc.getElementsByTag("h1").text mustBe "What is your email address?"
     }
 
     "have the correct label" in {

@@ -122,11 +122,29 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       status(eventualResult) shouldBe BAD_REQUEST
     }
 
+
+
     "have a status of OK when the email is valid" in withAuthorisedUser() {
       when(mockEmailCacheService.saveEmail(any(), any())(any(), any())).thenReturn(Future.successful(cacheMap))
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "valid@email.com")
       val eventualResult = controller.submit(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-email-address")
+    }
+
+    "have a status of Bad Request for verifySubmit method when no email is provided in the form" in withAuthorisedUser() {
+      val eventualResult = controller.verifySubmit(request)
+
+      status(eventualResult) shouldBe BAD_REQUEST
+    }
+
+    "have a status of OK for verifyEmail method when the email is valid" in withAuthorisedUser() {
+      when(mockEmailCacheService.saveEmail(any(), any())(any(), any())).thenReturn(Future.successful(cacheMap))
+
+      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "valid@email.com")
+      val eventualResult = controller.verifySubmit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
       redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-email-address")
