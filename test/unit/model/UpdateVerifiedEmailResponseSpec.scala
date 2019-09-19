@@ -79,9 +79,6 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
                        |}""".stripMargin
           ).as[VerifiedEmailResponse]
         }
-
-
     }
-
   }
 }

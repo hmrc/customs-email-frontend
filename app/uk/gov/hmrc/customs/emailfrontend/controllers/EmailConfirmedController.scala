@@ -47,10 +47,11 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
         emailStatus =>
           emailVerificationService.isEmailVerified(emailStatus.email).flatMap {
             case Some(true) =>
-              updateVerifiedEmailService.updateVerifiedEmail(emailStatus.email, request.eori.id).map { _ =>
-                customsDataStoreService.storeEmail(
-                  EnrolmentIdentifier("EORINumber", request.eori.id), emailStatus.email)
-                Ok(view())
+              updateVerifiedEmailService.updateVerifiedEmail(emailStatus.email, request.eori.id).flatMap {
+                case Some(_) =>
+                  customsDataStoreService.storeEmail(
+                    EnrolmentIdentifier("EORINumber", request.eori.id), emailStatus.email)
+                  Future.successful(Ok(view()))
               }
             case _ => Future.successful(Redirect(VerifyYourEmailController.show()))
           }

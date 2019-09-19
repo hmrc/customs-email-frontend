@@ -22,7 +22,8 @@ import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.customs.emailfrontend.model.UpdateVerifiedEmailRequest
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.{ForbiddenException, _}
+import play.mvc.Http.Status._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -41,9 +42,9 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
       auditResponse(Map("responseCommon" -> resp.updateVerifiedEmailResponse.responseCommon.toString))
       Right(resp)
     } recover {
-      case _: NotFoundException => Left(NotFound)
-      case _: BadRequestException => Left(BadRequest)
-      case _: ServiceUnavailableException => Left(ServiceUnavailable)
+      case _: BadRequestException | Upstream4xxResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
+      case _: ForbiddenException | Upstream4xxResponse(_, FORBIDDEN, _, _) => Left(Forbidden)
+      case _: InternalServerException | Upstream5xxResponse(_, INTERNAL_SERVER_ERROR, _) => Left(ServiceUnavailable)
       case NonFatal(e) =>
         auditResponse(Map("HttpErrorResponse" -> e.getMessage))
         Logger.error(s"[UpdateVerifiedEmailConnector][updateVerifiedEmail] update-verified-email. url: $url, error: ${e.getMessage}")
