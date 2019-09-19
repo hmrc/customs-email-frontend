@@ -16,6 +16,7 @@
 
 package unit.connectors
 
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{doNothing, reset, when}
 import org.scalatest.BeforeAndAfter
@@ -51,12 +52,13 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
 
   private val badRequest = Upstream4xxResponse("testMessage", BAD_REQUEST, BAD_REQUEST)
   private val forbidden = Upstream4xxResponse("testMessage", FORBIDDEN, FORBIDDEN)
-  private val internalServerError =  Upstream5xxResponse("testMessage", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)
+  private val internalServerError = Upstream5xxResponse("testMessage", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)
 
-  private val requestDetail = RequestDetail("idType", "idNumber", "test@email.com", "timestamp")
+  val dateTime = DateTime.now()
+  private val requestDetail = RequestDetail("idType", "idNumber", "test@email.com", dateTime)
   private val requestCommon = RequestCommon()
 
-  private val verifiedEmailResponse = VerifiedEmailResponse(UpdateVerifiedEmailResponse(ResponseCommon("OK", None, "date", List(MessagingServiceParam("name", "value")))))
+  private val verifiedEmailResponse = VerifiedEmailResponse(UpdateVerifiedEmailResponse(ResponseCommon("OK", None, dateTime, List(MessagingServiceParam("name", "value")))))
 
   private val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
 
