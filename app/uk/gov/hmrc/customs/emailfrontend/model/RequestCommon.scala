@@ -18,6 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.model
 
 import org.joda.time.DateTime
 import play.api.libs.json.Json
+import uk.gov.hmrc.customs.emailfrontend.RandomUUIDGenerator
 
 
 case class RequestCommon(regime: String,
