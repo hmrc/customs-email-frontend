@@ -22,7 +22,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, credentialRole, internalId}
-import uk.gov.hmrc.auth.core.retrieve.{~ => R}
+import uk.gov.hmrc.auth.core.retrieve.{~ => Retrieve}
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -48,7 +48,7 @@ trait AuthBuilder {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
     val ag = Some(Organisation)
     val role = Some(Admin)
-    val retrieval = new R(userEnrollments , userInternalId).add(ag).add(role)
+    val retrieval = Retrieve(userEnrollments , userInternalId).add(ag).add(role)
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.successful(retrieval))
     test
@@ -58,7 +58,7 @@ trait AuthBuilder {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
     val ag = Some(Individual)
     val role = Some(User)
-    val retrieval = new R(userEnrollments , userInternalId).add(ag).add(role)
+    val retrieval =  Retrieve(userEnrollments , userInternalId).add(ag).add(role)
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.successful(retrieval))
     test
@@ -68,7 +68,7 @@ trait AuthBuilder {
   def withAuthorisedUserWithoutEnrolments(test: => Unit) {
     val ag = Some(Organisation)
     val role = Some(Admin)
-    val retrieval =  new R(Enrolments(Set.empty[Enrolment]), internId).add(ag).add(role)
+    val retrieval = Retrieve(Enrolments(Set.empty[Enrolment]), internId).add(ag).add(role)
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.successful(retrieval))
     test
@@ -96,9 +96,9 @@ trait AuthBuilder {
 }
 
 object Retrieval{
-  implicit class AddRetrievals[A,B,C](r:R[A,B]){
-    def add(c:C) = {
-       R(r,c)
+  implicit class AddRetrievals[A,B,C](r:Retrieve[A,B]){
+    def add(c:C): A Retrieve B Retrieve C = {
+      Retrieve(r,c)
     }
   }
 }
