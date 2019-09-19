@@ -48,6 +48,7 @@
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
     <meta http-equiv="refresh" content="900;url=/customs-email-frontend/signout" />
+    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/custom.css")" type="text/css">
 }
 
 @isLoggedIn = @{!request.session.isEmpty && request.session.get("userId").isDefined}
