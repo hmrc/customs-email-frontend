@@ -25,9 +25,9 @@ class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
 
     lazy val randomInternalId = generateRandomNumberString()
 
-    scenario("GG user having no CDS enrolments tries to amend email address") {
+    scenario("A user having no CDS enrolment tries to amend email address") {
 
-      Given("the GG user has no CDS enrolments")
+      Given("the user has no CDS enrolment")
       authenticateGGUserWithNoEnrolments(randomInternalId)
 
       When("the user accesses the start page")

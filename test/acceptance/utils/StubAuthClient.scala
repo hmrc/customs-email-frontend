@@ -66,7 +66,7 @@ trait StubAuthClient {
       .willReturn(
         aResponse()
           .withStatus(Status.OK)
-          .withBody(s"""{"allEnrolments": [], "internalId": "$internalId"}""".stripMargin)
+          .withBody(s"""{"allEnrolments": [], "internalId": "$internalId"}""")
       )
     )
   }
