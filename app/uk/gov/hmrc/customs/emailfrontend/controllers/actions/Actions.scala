@@ -39,7 +39,7 @@ class ActionsImpl @Inject()(authConnector: AuthConnector, config: Configuration,
 
   private def bodyParser = mcc.parsers.defaultBodyParser
 
-  override def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Right(Enrolment("HMRC-CUS-ORG")), authConnector, config, environment, bodyParser)
+  override def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Enrolment("HMRC-CUS-ORG"), authConnector, config, environment, bodyParser)
 
   override def eori: ActionRefiner[AuthenticatedRequest, EoriRequest] = new EoriAction()
 
