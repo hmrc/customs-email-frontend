@@ -85,7 +85,7 @@ trait StubEmailVerification {
     )
   }
 
-  def verifyEmailVerifiedIsCalled(): Unit = {
-    verify(1, postRequestedFor(verifiedEmailContextPath))
+  def verifyEmailVerifiedIsCalled(times:Int): Unit = {
+    verify(times, postRequestedFor(verifiedEmailContextPath))
   }
 }

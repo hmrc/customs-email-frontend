@@ -40,6 +40,7 @@ class EmailConfirmedSpec extends BaseSpec
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
+      stubVerifiedEmailResponse()
       authenticateGGUserAndReturnEoriEnrolment(randomEoriNumber, randomInternalId)
       clickOn(StartPage.emailLinkText)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
@@ -74,6 +75,7 @@ class EmailConfirmedSpec extends BaseSpec
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
+      stubVerifiedEmailResponse()
       authenticateGGUserAndReturnEoriEnrolment(randomEoriNumber, randomInternalId)
       clickOn(StartPage.emailLinkText)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
@@ -99,7 +101,7 @@ class EmailConfirmedSpec extends BaseSpec
 
       When("the user attempts to access 'Email confirmed' page")
       navigateTo(EmailConfirmedPage)
-      verifyEmailVerifiedIsCalled()
+      verifyEmailVerifiedIsCalled(2)
       verifyCustomsDataStoreIsNotCalled()
 
       Then("the user should be on 'Verify email address' page")

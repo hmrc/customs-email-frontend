@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_email,
-                                          verifyView: what_is_your_email,
+                                          whatIsYourEmailView: what_is_your_email,
                                           emailCacheService: EmailCacheService,
                                           mcc: MessagesControllerComponents,
                                           subscriptionDisplayConnector: SubscriptionDisplayConnector,
@@ -65,7 +65,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   }
 
   def verify: Action[AnyContent] = actions.auth { implicit request =>
-    Ok(verifyView(emailForm))
+    Ok(whatIsYourEmailView(emailForm))
   }
 
   def submit: Action[AnyContent] = (actions.auth andThen actions.eori).async { implicit request =>

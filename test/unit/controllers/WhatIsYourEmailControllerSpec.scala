@@ -98,6 +98,12 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       redirectLocation(eventualResult).value should endWith("/customs-email-frontend/ineligible")
     }
 
+    "have a status of OK for verify method" in withAuthorisedUser() {
+      val eventualResult = controller.verify(request)
+
+      status(eventualResult) shouldBe OK
+    }
+
     "have a status of Bad Request when no email is provided in the form" in withAuthorisedUser() {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
 

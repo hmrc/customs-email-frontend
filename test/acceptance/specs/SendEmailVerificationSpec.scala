@@ -39,6 +39,7 @@ class SendEmailVerificationSpec extends BaseSpec
         verifyCurrentPage(StartPage)
         authenticateGGUserAndReturnEoriEnrolment(randomEoriNumber, randomInternalId)
         stubSubscriptionDisplayOkResponse(randomEoriNumber)
+        stubVerifiedEmailResponse()
         clickOn(StartPage.emailLinkText)
         verifySubscriptionDisplayIsCalled(1,randomEoriNumber)
       When("the user provides an email address to change")
