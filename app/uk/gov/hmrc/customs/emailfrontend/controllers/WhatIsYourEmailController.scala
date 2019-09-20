@@ -55,12 +55,11 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
 
   def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
     subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
-      case SubscriptionDisplayResponse(Some(email)) => {
+      case SubscriptionDisplayResponse(Some(email)) =>
         emailVerificationService.isEmailVerified(email).map {
           case Some(true) => Ok(view(emailForm, email))
           case Some(false) => Redirect(WhatIsYourEmailController.verify())
         }
-      }
     }
   }
 
