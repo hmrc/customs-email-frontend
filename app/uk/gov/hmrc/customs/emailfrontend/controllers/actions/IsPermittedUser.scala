@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
-import play.api.Logger
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
@@ -34,12 +33,17 @@ class IsPermittedUser(implicit override val executionContext: ExecutionContext) 
     val credentialRole: Option[CredentialRole] = request.user.credentialRole
 
     (affinityGroup,credentialRole) match {
-      case(Some(Agent),_) => Future.successful(Some(Redirect(IneligibleUserController.show(Ineligible.IsAgent))))
-      case(Some(Organisation),Some(Admin) | Some(User)) => Future.successful(None)
-      case(Some(Organisation), _) => Future.successful(Some(Redirect(IneligibleUserController.show(Ineligible.NotAdmin))))
-      case _ => Future.successful(None)
+      case(Some(Agent),_) => toFutureResult(Some(Ineligible.IsAgent))
+      case(Some(Organisation),Some(Admin) | Some(User)) => toFutureResult(None)
+      case(Some(Organisation), _) => toFutureResult(Some(Ineligible.NotAdmin))
+      case _ => toFutureResult(None)
     }
 
   }
+
+  private def toFutureResult(result:Option[Ineligible.Value]): Future[Option[Result]] = {
+    Future.successful(result.map(i => Redirect(IneligibleUserController.show(i))))
+  }
+
 
 }
