@@ -30,7 +30,6 @@ package object emailfrontend {
   }
 
   object MDGDateFormat {
-    implicit def currentDateInFormat(dateTime: DateTime): String = dateFormat.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC())
 
     def dateFormat: DateTime = {
       new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC)
