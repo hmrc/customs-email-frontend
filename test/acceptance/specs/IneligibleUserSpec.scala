@@ -28,9 +28,7 @@ class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient wi
     scenario("A user having no CDS enrolment tries to amend email address") {
 
       Given("the user has no CDS enrolment")
-      authenticateGGUserWithNoEnrolments(randomInternalId)
-//      save4LaterWithData(randomInternalId)
-
+      authenticateGGUserWithError(randomInternalId, "InsufficientEnrolments")
 
       When("the user accesses the start page")
       navigateTo(StartPage)
