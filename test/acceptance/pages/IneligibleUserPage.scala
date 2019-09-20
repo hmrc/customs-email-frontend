@@ -24,3 +24,4 @@ class IneligibleUserPage extends BasePage {
 }
 
 object IneligibleUserPage extends IneligibleUserPage
+

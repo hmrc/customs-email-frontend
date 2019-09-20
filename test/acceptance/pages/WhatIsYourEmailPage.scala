@@ -27,3 +27,8 @@ class WhatIsYourEmailPage extends BasePage {
 }
 
 object WhatIsYourEmailPage extends WhatIsYourEmailPage
+
+object ChangeYourEmailAddressPage extends WhatIsYourEmailPage {
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/email-address/create"
+  override val title = "Change your email address for CDS"
+}
