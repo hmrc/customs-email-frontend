@@ -36,10 +36,6 @@
     }
 }
 
-@isLabelH1 = @{
-    elements.args.getOrElse('_isLabelH1, false).asInstanceOf[Boolean]
-}
-
 <div id="@elements.field.name-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
     <label for="@elements.field.name" class="form-label-bold">
         @elements.label

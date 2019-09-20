@@ -26,7 +26,7 @@ class StartPageViewSpec extends ViewSpec {
 
   private val eori = "AB123456789"
 
-  private val doc = Jsoup.parse(contentAsString(view(eori)))
+  private val doc = Jsoup.parse(contentAsString(view.render(eori, request, messages)))
 
   "Start page" should {
     "have the correct title" in {

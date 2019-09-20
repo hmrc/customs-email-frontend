@@ -20,10 +20,11 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
+import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
-import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
+import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
 import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -31,14 +32,17 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_email, emailCacheService: EmailCacheService, mcc: MessagesControllerComponents)
+class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_email,
+                                          emailCacheService: EmailCacheService,
+                                          mcc: MessagesControllerComponents,
+                                          subscriptionDisplayConnector: SubscriptionDisplayConnector)
                                          (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = actions.auth.async { implicit request =>
+  def show: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
     emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
       _.fold {
-        Logger.warn("[CheckYourEmailController][show] - emailStatus cache none, user logged out")
+        Logger.warn("[WhatIsYourEmailController][show] - emailStatus not found")
         Future.successful(Redirect(WhatIsYourEmailController.create()))
       } {
         _ =>
@@ -47,17 +51,21 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_e
     }
   }
 
-  def create: Action[AnyContent] = actions.auth { implicit request =>
-    Ok(view(emailForm))
+  def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+    subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).map {
+      case SubscriptionDisplayResponse(Some(email)) => Ok(view(emailForm, email))
+    }
   }
 
-  def submit: Action[AnyContent] = actions.auth.async { implicit request =>
+  def submit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
     emailForm.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(BadRequest(view(formWithErrors)))
+        subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).map {
+          case SubscriptionDisplayResponse(Some(email)) => BadRequest(view(formWithErrors, email))
+        }
       },
       formData => {
-        emailCacheService.saveEmail(Some(request.user.internalId.id), EmailStatus(formData.email)).map {
+        emailCacheService.saveEmail(Some(request.user.internalId.id), EmailStatus(formData.value)).map {
           _ => Redirect(routes.CheckYourEmailController.show())
         }
       }

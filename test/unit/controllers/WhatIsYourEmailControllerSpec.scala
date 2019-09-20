@@ -18,28 +18,37 @@ package unit.controllers
 
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers._
+import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
-import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, Eori, SubscriptionDisplayResponse}
 import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
 import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
 
-class WhatIsYourEmailControllerSpec extends ControllerSpec {
+class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val view = app.injector.instanceOf[what_is_your_email]
   private val mockEmailCacheService = mock[EmailCacheService]
+  private val mockSubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
 
-  val internalId = "InternalID"
-  val jsonValue = Json.toJson("emailStatus")
-  val data = Map(internalId -> jsonValue)
-  val cacheMap = CacheMap(internalId, data)
+  private val internalId = "InternalID"
+  private val jsonValue = Json.toJson("emailStatus")
+  private val data = Map(internalId -> jsonValue)
+  private val cacheMap = CacheMap(internalId, data)
+  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"))
 
-  private val controller = new WhatIsYourEmailController(fakeAction, view, mockEmailCacheService, mcc)
+  private val controller = new WhatIsYourEmailController(fakeAction, view, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector)
+
+  override protected def beforeEach(): Unit = {
+    reset(mockEmailCacheService, mockSubscriptionDisplayConnector)
+  }
 
   "WhatIsYourEmailController" should {
 
@@ -61,13 +70,24 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec {
       redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email-address/create")
     }
 
-    "have a status of OK for create method" in withAuthorisedUser() {
+    "have a status of OK for create method when email found in response" in withAuthorisedUser() {
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
+
       val eventualResult = controller.create(request)
 
       status(eventualResult) shouldBe OK
     }
 
-    "have a status of Bad Request when no email is provided" in withAuthorisedUser() {
+    "have a status of Redirect for create method when email found in response" in withAuthorisedUserWithoutEori {
+      val eventualResult = controller.create(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/ineligible")
+    }
+
+    "have a status of Bad Request when no email is provided in the form" in withAuthorisedUser() {
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
+
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
       val eventualResult = controller.submit(request)
 
@@ -75,6 +95,8 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec {
     }
 
     "have a status of Bad Request when the email is invalid" in withAuthorisedUser() {
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
+
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "invalidEmail")
       val eventualResult = controller.submit(request)
 

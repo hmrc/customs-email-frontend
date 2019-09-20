@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.model
+package acceptance.pages
 
-case class Email(value: String)
+import acceptance.utils.Configuration
 
-case class YesNo(isYes: Option[Boolean])
+class IneligibleUserPage extends BasePage {
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/ineligible"
+  override val title = "You cannot use this service"
+}
+
+object IneligibleUserPage extends IneligibleUserPage

@@ -19,28 +19,24 @@ package unit.views
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
+import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
 
-class EmailConfirmedViewSpec extends ViewSpec {
-  private val view = app.injector.instanceOf[email_confirmed]
-  private val doc: Document = Jsoup.parse(contentAsString(view.render(request, messages)))
+class ErrorTemplateSpec extends ViewSpec {
 
-  "Confirm Email page" should {
+  private val view = app.injector.instanceOf[error_template]
+
+  private val doc: Document = Jsoup.parse(contentAsString(
+    view.render("Some Title", "Some Heading", "Some Message Content", request, messages)))
+
+  "standardErrorTemplate" should {
     "have the correct title" in {
-      doc.title mustBe "Email address confirmed"
+      doc.title mustBe "Some Title"
     }
-
     "have the correct heading" in {
-      doc.getElementsByTag("h1").text mustBe "Email address confirmed"
+      doc.body.getElementsByTag("h1").text mustBe "Some Heading"
     }
-
-    "have the correct content" in {
-      doc.getElementById("info").text mustBe "Your email address for CDS has been changed."
-    }
-
-    "have the sign out button" in {
-      doc.getElementsByClass("button").text mustBe "Sign out"
-      doc.getElementsByClass("button").attr("href") mustBe "/customs-email-frontend/signout"
+    "have the correct message" in {
+      doc.body.getElementById("main-content").text mustBe "Some Message Content"
     }
   }
 }

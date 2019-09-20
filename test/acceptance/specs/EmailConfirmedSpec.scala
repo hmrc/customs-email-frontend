@@ -17,24 +17,34 @@
 package acceptance.specs
 
 import acceptance.pages._
-import acceptance.utils.SpecHelper
+import acceptance.utils._
 
-class EmailConfirmedSpec extends BaseSpec with SpecHelper {
-
+class EmailConfirmedSpec extends BaseSpec
+  with SpecHelper
+  with StubSave4Later
+  with StubAuthClient
+  with StubEmailVerification
+  with StubCustomsDataStore
+  with StubSubscriptionDisplay {
 
   feature("Show Email confirmed to user when the email address is verified") {
+
+    lazy val randomInternalId = generateRandomNumberString()
+    lazy val randomEoriNumber = "GB" + generateRandomNumberString()
+
     scenario("Show email confirmed page without sending email verification link when user email address is verified") {
 
       Given("the user has successfully logged in")
-      authenticate()
-      save4LaterWithNoData()
+      authenticate(randomInternalId, randomEoriNumber)
+      save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
-      authenticateGGUserAndReturnEoriEnrolment()
+      stubSubscriptionDisplayOkResponse(randomEoriNumber)
       clickOn(StartPage.emailLinkText)
+      verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
-      save4LaterWithData()
+      save4LaterWithData(randomInternalId)
       enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
       clickContinue()
 
@@ -58,15 +68,16 @@ class EmailConfirmedSpec extends BaseSpec with SpecHelper {
     scenario("Show verify your email page when user does not verify the email and tries to access the 'Email Confirmed' page") {
 
       Given("the user has successfully logged in")
-      authenticate()
-      save4LaterWithNoData()
+      authenticate(randomInternalId, randomEoriNumber)
+      save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
-      authenticateGGUserAndReturnEoriEnrolment()
+      stubSubscriptionDisplayOkResponse(randomEoriNumber)
       clickOn(StartPage.emailLinkText)
+      verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
-      save4LaterWithData()
+      save4LaterWithData(randomInternalId)
       enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
       clickContinue()
 
@@ -78,7 +89,6 @@ class EmailConfirmedSpec extends BaseSpec with SpecHelper {
       stubVerificationRequestSent()
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
-
 
       Then("the user should be on 'Verify email address' page")
       verifyCurrentPage(VerifyYourEmailAddressPage)
@@ -94,7 +104,5 @@ class EmailConfirmedSpec extends BaseSpec with SpecHelper {
       verifyCurrentPage(VerifyYourEmailAddressPage)
       assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
     }
-
   }
-
 }

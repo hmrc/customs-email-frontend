@@ -28,8 +28,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
-
 trait AuthBuilder {
 
   this: MockitoSugar =>

@@ -14,33 +14,28 @@
  * limitations under the License.
  */
 
-package unit.views
+package unit.config
 
 import org.jsoup.Jsoup
-import play.api.i18n.MessagesApi
-import play.api.test.Helpers.contentAsString
+import org.scalatest.concurrent.ScalaFutures
+import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
+import unit.controllers.ControllerSpec
 
-class ErrorHandlerSpec extends ViewSpec {
+class ErrorHandlerSpec extends ControllerSpec with ScalaFutures {
 
   private val view = app.injector.instanceOf[error_template]
 
-  implicit def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-
   private val errorHandler = new ErrorHandler(messagesApi, view)
 
-  "standardErrorTemplate" should {
-    val result = Jsoup.parse(contentAsString(errorHandler.standardErrorTemplate("Some Title", "Some Heading", "Some Message Content")))
-
-    "have the correct title" in {
-      result.title mustBe "Some Title"
-    }
-    "have the correct heading" in {
-      result.getElementsByTag("h1").text mustBe "Some Heading"
-    }
-    "have the correct message" in {
-      result.getElementById("main-content").text mustBe "Some Message Content"
+  "ErrorHandlerSpec" should {
+    "define standardErrorTemplate" in {
+      val result = errorHandler.standardErrorTemplate("title", "heading", "message")(request)
+      val doc = Jsoup.parse(contentAsString(result))
+      doc.title shouldBe "title"
+      doc.body.getElementsByTag("h1").text shouldBe "heading"
+      doc.body.getElementById("main-content").text shouldBe "message"
     }
   }
 }

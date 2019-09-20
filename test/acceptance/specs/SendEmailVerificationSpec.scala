@@ -17,22 +17,31 @@
 package acceptance.specs
 
 import acceptance.pages.{CheckYourEmailAddressPage, StartPage, VerifyYourEmailAddressPage, WhatIsYourEmailPage}
-import acceptance.utils.SpecHelper
+import acceptance.utils._
 
-class SendEmailVerificationSpec extends BaseSpec with SpecHelper {
+class SendEmailVerificationSpec extends BaseSpec
+  with SpecHelper
+  with StubAuthClient
+  with StubSave4Later
+  with StubEmailVerification
+  with StubSubscriptionDisplay{
 
   feature("Send email to user for verification") {
     scenario("user amends the email and submits for verification") {
+      lazy val randomInternalId = generateRandomNumberString()
+      lazy val randomEoriNumber = "GB" + generateRandomNumberString()
+
       stubVerificationRequestSent()
       Given("the user has successfully logged in")
-        authenticate()
-        save4LaterWithNoData()
+        authenticate(randomInternalId, randomEoriNumber)
+        save4LaterWithNoData(randomInternalId)
         navigateTo(StartPage)
         verifyCurrentPage(StartPage)
-        authenticateGG()
+        stubSubscriptionDisplayOkResponse(randomEoriNumber)
         clickOn(StartPage.emailLinkText)
+        verifySubscriptionDisplayIsCalled(1,randomEoriNumber)
       When("the user provides an email address to change")
-        save4LaterWithData()
+        save4LaterWithData(randomInternalId)
         enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
         clickContinue()
       Then("the user should be on 'Check your email address' page")

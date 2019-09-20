@@ -52,4 +52,9 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val customsDataStoreContext: String = config.get[String]("microservice.services.customs-data-store.context")
   val customsDataStoreUrl = s"$customsDataStoreBaseUrl$customsDataStoreContext"
   val customsDataStoreToken: String = config.get[String]("microservice.services.customs-data-store.token")
+
+  val customsHodsProxyBaseUrl: String = servicesConfig.baseUrl("customs-hods-proxy")
+
+  val subscriptionDisplayContext: String = config.get[String]("microservice.services.customs-hods-proxy.subscription-display.context")
+  val subscriptionDisplayUrl: String = s"$customsHodsProxyBaseUrl/$subscriptionDisplayContext"
 }
