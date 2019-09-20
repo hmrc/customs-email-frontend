@@ -43,12 +43,7 @@ package object emailfrontend {
 
     private def dateTimeReadsIso: Reads[DateTime] = new Reads[DateTime] {
       def reads(value: JsValue): JsResult[DateTime] = {
-        try {
           JsSuccess(ISODateTimeFormat.dateTimeParser.parseDateTime(value.as[String]))
-        }
-        catch {
-          case e: Exception => JsError(s"Could not parse '${value.toString()}' as an ISO date. Reason: $e")
-        }
       }
     }
 
