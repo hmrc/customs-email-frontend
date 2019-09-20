@@ -3,7 +3,6 @@
 GET         /start                                              uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController.show
 GET         /signout                                            uk.gov.hmrc.customs.emailfrontend.controllers.SignOutController.signOut
 
-GET         /ineligible                                         uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController.show
 
 GET         /email-address                                      uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.show
 GET         /email-address/create                               uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.create
@@ -15,3 +14,5 @@ POST        /check-email-address                                uk.gov.hmrc.cust
 GET         /confirm-email-address                              uk.gov.hmrc.customs.emailfrontend.controllers.VerifyYourEmailController.show
 
 GET         /email-address-confirmed                            uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController.show
+
+GET         /ineligible/:ineligible                               uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController.show(ineligible:Ineligible.Value)

@@ -22,10 +22,11 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, credentialRole, internalId}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
-import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, InternalId, LoggedInUser}
+import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Ineligible, InternalId, LoggedInUser}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
+
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.{Configuration, Environment, Logger}
 
@@ -46,13 +47,13 @@ class AuthAction(enrolment: Enrolment,
         Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments, InternalId(userInternalId),affinityGroup,credentialRole))))
       case _ => {
         Logger.warn("AuthAction[refine] internalId or allEnrolments is missing")
-        Future.successful(Left(Redirect(IneligibleUserController.show())))
+        Future.successful(Left(Redirect(IneligibleUserController.show(Ineligible.NoEnrolment))))
       }
     } recover withAuthOrRedirect(request)
   }
 
   private def withAuthOrRedirect[A](implicit request: Request[_]): PartialFunction[Throwable, Either[Result, A]] = {
     case _: NoActiveSession => Left(toGGLogin(continueUrl = ggSignInRedirectUrl))
-    case _: InsufficientEnrolments => Left(Redirect(IneligibleUserController.show()))
+    case _: InsufficientEnrolments => Left(Redirect(IneligibleUserController.show(Ineligible.NoEnrolment)))
   }
 }

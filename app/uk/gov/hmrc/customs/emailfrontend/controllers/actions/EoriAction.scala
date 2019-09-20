@@ -21,7 +21,7 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
-import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Eori, EoriRequest}
+import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Eori, EoriRequest, Ineligible}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,7 +35,7 @@ class EoriAction(implicit override val executionContext: ExecutionContext) exten
     Future.successful(
       enrolmentToRequest(request.user.eori) orElse None toRight {
         Logger.warn("Eori is missing in the request")
-        Redirect(IneligibleUserController.show())
+        Redirect(IneligibleUserController.show(Ineligible.NoEnrolment))
       }
     )
   }

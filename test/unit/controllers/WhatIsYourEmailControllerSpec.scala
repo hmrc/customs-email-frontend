@@ -82,7 +82,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.create(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/ineligible")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/ineligible/no-enrolment")
     }
 
     "have a status of Bad Request when no email is provided in the form" in withAuthorisedUser() {

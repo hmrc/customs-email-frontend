@@ -32,16 +32,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class IsPermittedUserSpec extends PlaySpec with ScalaFutures {
 
-  val responseHeader = ResponseHeader(303, Map("Location" -> "/customs-email-frontend/ineligible"))
-  val expectedResult = Result(responseHeader, HttpEntity.NoEntity)
+  def responseHeader(e:String) = ResponseHeader(303, Map("Location" -> s"/customs-email-frontend/ineligible/$e"))
+  val expectedResultNotAdmin = Result(responseHeader("not-admin"), HttpEntity.NoEntity)
+  val expectedResultIsAgent = Result(responseHeader("is-agent"), HttpEntity.NoEntity)
 
   val values = Table(
     ("affinityGroup", "role", "expected"),
     (Some(Organisation), Some(Admin), None),
     (Some(Organisation), Some(User), None),
-    (Some(Organisation), Some(Assistant), Some(expectedResult)),
-    (Some(Organisation), Some(Assistant), Some(expectedResult)),
-    (Some(Agent), Some(User), Some(expectedResult)),
+    (Some(Organisation), Some(Assistant), Some(expectedResultNotAdmin)),
+    (Some(Organisation), Some(Assistant), Some(expectedResultNotAdmin)),
+    (Some(Agent), Some(User), Some(expectedResultIsAgent)),
     (Some(Individual), Some(User), None),
     (Some(Individual), Some(Admin), None)
   )
