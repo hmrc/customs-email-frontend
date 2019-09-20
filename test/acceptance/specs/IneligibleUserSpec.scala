@@ -16,10 +16,10 @@
 
 package acceptance.specs
 
-import acceptance.pages.{IneligibleUserPage, StartPage}
+import acceptance.pages._
 import acceptance.utils._
 
-class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
+class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient with StubSave4Later {
 
   feature("Show ineligible user page for unauthorised users") {
 
@@ -29,12 +29,39 @@ class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
 
       Given("the user has no CDS enrolment")
       authenticateGGUserWithNoEnrolments(randomInternalId)
+//      save4LaterWithData(randomInternalId)
+
 
       When("the user accesses the start page")
       navigateTo(StartPage)
 
       Then("the user should not be allowed")
       verifyCurrentPage(IneligibleUserPage)
+
+      When("the user accesses the 'Change your email address page")
+      navigateTo(ChangeYourEmailAddressPage)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(IneligibleUserPage)
+
+      When("the user accesses the 'Check your email address' page")
+      navigateTo(CheckYourEmailAddressPage)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(IneligibleUserPage)
+
+      When("the user accesses the 'Email confirmed' page")
+      navigateTo(EmailConfirmedPage)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(IneligibleUserPage)
+
+      When("the user accesses the 'Verify email address' page")
+      navigateTo(VerifyYourEmailAddressPage)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(IneligibleUserPage)
+
     }
   }
 }
