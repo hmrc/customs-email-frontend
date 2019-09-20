@@ -19,7 +19,7 @@ package acceptance.specs
 import acceptance.pages._
 import acceptance.utils._
 
-class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient with StubSave4Later {
+class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
 
   feature("Show ineligible user page for unauthorised users") {
 
