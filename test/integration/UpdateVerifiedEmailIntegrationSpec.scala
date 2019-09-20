@@ -22,9 +22,8 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, Forbidden, ServiceUnavailable, VerifiedEmailResponse}
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Constants._
@@ -96,6 +95,16 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
       "return ServiceUnavailable response" in {
         UpdateVerifiedEmailStubService.stubServiceUnavailable()
         val expected = Left(ServiceUnavailable)
+        val result = connector.updateVerifiedEmail(request).futureValue
+
+        result mustBe expected
+      }
+    }
+
+    "service returned non fatal" should {
+      "return non unhandled response" in {
+        UpdateVerifiedEmailStubService.stubEmailUpdatedResponseWithStatus("", 502)
+        val expected = Left(UnhandledException)
         val result = connector.updateVerifiedEmail(request).futureValue
 
         result mustBe expected

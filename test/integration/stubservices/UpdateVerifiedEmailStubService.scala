@@ -23,7 +23,9 @@ import play.mvc.Http.Status._
 
 object UpdateVerifiedEmailStubService {
 
-  private val expectedUr = "/update-verified-email"
+  private val expectedUrl = "/update-verified-email"
+  private val updateVerifiedEmailContextPath = urlMatching(expectedUrl)
+
 
   val updateVerifiedEmailRequest: String = {
     """{
@@ -144,7 +146,7 @@ object UpdateVerifiedEmailStubService {
   }
 
   private def stubUpdateVerifiedEmailRequest(response: String, status: Int): Unit = {
-    stubFor(put(urlMatching(expectedUr))
+    stubFor(put(urlMatching(expectedUrl))
       .withRequestBody(equalToJson(verifiedEmailRequest))
       .willReturn(
         aResponse()
@@ -153,5 +155,20 @@ object UpdateVerifiedEmailStubService {
           .withHeader(CONTENT_TYPE, JSON)
       )
     )
+  }
+
+  def stubEmailUpdatedResponseWithStatus(response: String, status: Int): Unit = {
+    stubFor(put(urlMatching(expectedUrl))
+      .willReturn(
+        aResponse()
+          .withBody(response)
+          .withStatus(status)
+          .withHeader(CONTENT_TYPE, JSON)
+      )
+    )
+  }
+
+  def verifyUpdateVerifiedEmailIsCalled(times: Int): Unit = {
+    verify(times, putRequestedFor(updateVerifiedEmailContextPath))
   }
 }
