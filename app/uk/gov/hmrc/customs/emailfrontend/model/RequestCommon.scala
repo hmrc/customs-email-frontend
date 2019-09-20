@@ -27,12 +27,13 @@ case class RequestCommon(regime: String,
 
 
 object RequestCommon {
+
   import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
 
   def apply(): RequestCommon = RequestCommon("CDS",
     receiptDate = dateFormat,
     acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString
   )
+
   implicit val formats = Json.format[RequestCommon]
 }
-

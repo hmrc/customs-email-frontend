@@ -39,7 +39,6 @@ class UpdateVerifiedEmailRequestSpec extends PlaySpec {
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress" shouldBe JsDefined(JsString("test@email.com"))
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDNumber" shouldBe JsDefined(JsString("GBXXXXXXXXXXXX"))
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDType" shouldBe JsDefined(JsString("EORI"))
-      println(requestJosn)
     }
   }
 }
