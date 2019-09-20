@@ -34,14 +34,14 @@ class IsPermittedUser(implicit override val executionContext: ExecutionContext) 
 
     (affinityGroup,credentialRole) match {
       case(Some(Agent),_) => toFutureResult(Some(Ineligible.IsAgent))
-      case(Some(Organisation),Some(Admin) | Some(User)) => toFutureResult(None)
+      case(Some(Organisation),Some(Admin) | Some(User)) => toFutureResult()
       case(Some(Organisation), _) => toFutureResult(Some(Ineligible.NotAdmin))
-      case _ => toFutureResult(None)
+      case _ => toFutureResult()
     }
 
   }
 
-  private def toFutureResult(result:Option[Ineligible.Value]): Future[Option[Result]] = {
+  private def toFutureResult(result:Option[Ineligible.Value] = None): Future[Option[Result]] = {
     Future.successful(result.map(i => Redirect(IneligibleUserController.show(i))))
   }
 
