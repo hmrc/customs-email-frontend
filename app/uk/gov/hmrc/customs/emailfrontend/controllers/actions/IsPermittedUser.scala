@@ -33,9 +33,9 @@ class IsPermittedUser(implicit override val executionContext: ExecutionContext) 
     val credentialRole: Option[CredentialRole] = request.user.credentialRole
 
     (affinityGroup,credentialRole) match {
-      case(Some(Agent),_) => toFutureResult(Some(Ineligible.IsAgent))
       case(Some(Organisation),Some(Admin) | Some(User)) => toFutureResult()
       case(Some(Organisation), _) => toFutureResult(Some(Ineligible.NotAdmin))
+      case(Some(Agent),_) => toFutureResult(Some(Ineligible.IsAgent))
       case _ => toFutureResult()
     }
 
