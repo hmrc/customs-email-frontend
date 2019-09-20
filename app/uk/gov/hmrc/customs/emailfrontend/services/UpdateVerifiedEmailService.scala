@@ -20,6 +20,7 @@ import javax.inject.Inject
 import play.api.Logger
 import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,7 +37,7 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
       emailAddress = email,
       emailVerificationTimestamp = MDGDateFormat.dateFormat
     )
-    val request = UpdateVerifiedEmailRequest(RequestCommon(), requestDetail)
+    val request = VerifiedEmailRequest(UpdateVerifiedEmailRequest(RequestCommon(), requestDetail))
 
     updateVerifiedEmailConnector.updateVerifiedEmail(request).map {
       case Right(res) if res.updateVerifiedEmailResponse.responseCommon.returnParameters.exists(msp => msp.paramName == formBundleIdParamName) =>

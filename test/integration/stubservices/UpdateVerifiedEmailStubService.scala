@@ -26,24 +26,7 @@ object UpdateVerifiedEmailStubService {
   private val expectedUrl = "/update-verified-email"
   private val updateVerifiedEmailContextPath = urlMatching(expectedUrl)
 
-
-  val updateVerifiedEmailRequest: String = {
-    """{
-      |    "requestCommon": {
-      |      "regime": "CDS",
-      |      "receiptDate": "2019-08-22T13:55:55Z",
-      |      "acknowledgementReference": "16061ef4ea8740128ac49e9787d3d1f3"
-      |    },
-      |    "requestDetail": {
-      |      "IDType": "EORI",
-      |      "IDNumber": "GB173822879792263",
-      |      "emailAddress": "test@email.com",
-      |      "emailVerificationTimestamp": "2019-08-22T13:55:55Z"
-      |    }
-      |}""".stripMargin
-  }
-
-  private val verifiedEmailRequest: String = {
+  val verifiedEmailRequest: String = {
     """{
       |  "updateVerifiedEmailRequest": {
       |    "requestCommon": {

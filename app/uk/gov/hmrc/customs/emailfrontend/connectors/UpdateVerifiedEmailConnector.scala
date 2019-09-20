@@ -18,27 +18,31 @@ package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import javax.inject.Inject
 import play.api.Logger
+import play.mvc.Http.Status._
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
-import uk.gov.hmrc.customs.emailfrontend.model.UpdateVerifiedEmailRequest
 import uk.gov.hmrc.http.{ForbiddenException, _}
-import play.mvc.Http.Status._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.control.NonFatal
-import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
 
 class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpClient, audit: Auditable) {
 
   private[connectors] lazy val url: String = appConfig.updateVerifiedEmailUrl
 
-  def updateVerifiedEmail(request: UpdateVerifiedEmailRequest)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
+  def updateVerifiedEmail(request: VerifiedEmailRequest)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
 
-    val details = Map("requestDetail" -> request.requestDetail.toString, "requestCommon" -> request.requestCommon.toString)
+    val details = Map(
+      "requestDetail" -> request.updateVerifiedEmailRequest.requestDetail.toString,
+      "requestCommon" -> request.updateVerifiedEmailRequest.requestCommon.toString
+    )
+
     auditRequest(details)
-    http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](url, VerifiedEmailRequest(request)) map { resp =>
+
+    http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](url, request) map { resp =>
       auditResponse(Map("responseCommon" -> resp.updateVerifiedEmailResponse.responseCommon.toString))
       Right(resp)
     } recover {

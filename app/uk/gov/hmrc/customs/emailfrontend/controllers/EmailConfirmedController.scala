@@ -45,16 +45,16 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
         Future.successful(Redirect(SignOutController.signOut()))
       } {
         emailStatus =>
-          emailVerificationService.isEmailVerified(emailStatus.email).flatMap {
-            case Some(true) =>
-              updateVerifiedEmailService.updateVerifiedEmail(emailStatus.email, request.eori.id).flatMap {
-                case Some(_) =>
-                  customsDataStoreService.storeEmail(
-                    EnrolmentIdentifier("EORINumber", request.eori.id), emailStatus.email)
-                  Future.successful(Ok(view()))
-              }
-            case _ => Future.successful(Redirect(VerifyYourEmailController.show()))
+          def updateEmail = updateVerifiedEmailService.updateVerifiedEmail(emailStatus.email, request.eori.id).flatMap {
+            case Some(_) =>
+              customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), emailStatus.email)
+              Future.successful(Ok(view()))
           }
+
+          for {
+            verified <- emailVerificationService.isEmailVerified(emailStatus.email)
+            redirect <- if (verified.contains(true)) updateEmail else Future.successful(Redirect(VerifyYourEmailController.show()))
+          } yield redirect
       }
     }
   }

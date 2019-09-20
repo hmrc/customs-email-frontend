@@ -24,7 +24,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
-import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Constants._
 import utils.WireMockRunner
@@ -43,7 +42,7 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
   private lazy val connector = app.injector.instanceOf[UpdateVerifiedEmailConnector]
 
   private val verifiedEmailResponse = UpdateVerifiedEmailStubService.updatedVerifiedEmailResponse
-  private val request = Json.parse(UpdateVerifiedEmailStubService.updateVerifiedEmailRequest).as[UpdateVerifiedEmailRequest]
+  private val request = Json.parse(UpdateVerifiedEmailStubService.verifiedEmailRequest).as[VerifiedEmailRequest]
 
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -110,6 +109,5 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
         result mustBe expected
       }
     }
-
   }
 }

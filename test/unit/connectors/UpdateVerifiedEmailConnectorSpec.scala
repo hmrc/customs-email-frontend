@@ -60,7 +60,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
 
   private val verifiedEmailResponse = VerifiedEmailResponse(UpdateVerifiedEmailResponse(ResponseCommon("OK", None, dateTime, List(MessagingServiceParam("name", "value")))))
 
-  private val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
+  private val verifiedEmailRequest = VerifiedEmailRequest(UpdateVerifiedEmailRequest(requestCommon, requestDetail))
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -75,81 +75,81 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
   "Calling updateVerifiedEmail" should {
     "return Right with VerifiedEmailResponse when call was successful with OK" in {
       when(mockHttpClient.PUT[VerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), meq(VerifiedEmailRequest(updateVerifiedEmailRequest)))
+        meq("testUrl/update-verified-email"), meq(verifiedEmailRequest))
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(verifiedEmailResponse))
 
-      val result = connector.updateVerifiedEmail(updateVerifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
       result mustBe Right(verifiedEmailResponse)
     }
 
     "return Left with Forbidden when call returned NotFoundException" in {
       when(mockHttpClient.PUT[VerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), meq(VerifiedEmailRequest(updateVerifiedEmailRequest)))
+        meq("testUrl/update-verified-email"), meq(verifiedEmailRequest))
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(forbiddenException))
 
-      val result = connector.updateVerifiedEmail(updateVerifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
       result mustBe Left(Forbidden)
     }
 
     "return Left with Forbidden when call returned Upstream4xxResponse with 403" in {
       when(mockHttpClient.PUT[VerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), meq(VerifiedEmailRequest(updateVerifiedEmailRequest)))
+        meq("testUrl/update-verified-email"), meq(verifiedEmailRequest))
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(forbidden))
 
-      val result = connector.updateVerifiedEmail(updateVerifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
       result mustBe Left(Forbidden)
     }
 
     "return Left with BadRequest when call returned BadRequestException" in {
       when(mockHttpClient.PUT[VerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), meq(VerifiedEmailRequest(updateVerifiedEmailRequest)))
+        meq("testUrl/update-verified-email"), meq(verifiedEmailRequest))
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(badRequestException))
 
-      val result = connector.updateVerifiedEmail(updateVerifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
       result mustBe Left(BadRequest)
     }
 
     "return Left with BadRequest when call returned Upstream4xxResponse with 400" in {
       when(mockHttpClient.PUT[VerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), meq(VerifiedEmailRequest(updateVerifiedEmailRequest)))
+        meq("testUrl/update-verified-email"), meq(verifiedEmailRequest))
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(badRequest))
 
-      val result = connector.updateVerifiedEmail(updateVerifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
       result mustBe Left(BadRequest)
     }
 
     "return Left with ServiceUnavailable when call returned ServiceUnavailableException" in {
       when(mockHttpClient.PUT[VerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), meq(VerifiedEmailRequest(updateVerifiedEmailRequest)))
+        meq("testUrl/update-verified-email"), meq(verifiedEmailRequest))
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(internalServerException))
 
-      val result = connector.updateVerifiedEmail(updateVerifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
       result mustBe Left(ServiceUnavailable)
     }
 
     "return Left with ServiceUnavailable when call returned Upstream5xxResponse with 500" in {
       when(mockHttpClient.PUT[VerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), meq(VerifiedEmailRequest(updateVerifiedEmailRequest)))
+        meq("testUrl/update-verified-email"), meq(verifiedEmailRequest))
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(internalServerError))
 
-      val result = connector.updateVerifiedEmail(updateVerifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
       result mustBe Left(ServiceUnavailable)
     }
 
     "return Left with not handled exception" in {
       when(mockHttpClient.PUT[VerifiedEmailRequest, VerifiedEmailResponse](
-        meq("testUrl/update-verified-email"), meq(VerifiedEmailRequest(updateVerifiedEmailRequest)))
+        meq("testUrl/update-verified-email"), meq(verifiedEmailRequest))
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(unhandledException))
 
-      val result = await(connector.updateVerifiedEmail(updateVerifiedEmailRequest))
+      val result = await(connector.updateVerifiedEmail(verifiedEmailRequest))
       result mustBe Left(UnhandledException)
     }
   }

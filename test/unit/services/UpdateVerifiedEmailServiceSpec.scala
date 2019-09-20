@@ -24,7 +24,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{HttpErrorResponse, ServiceUnavailable, VerifiedEmailResponse}
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{HttpErrorResponse, ServiceUnavailable, VerifiedEmailRequest, VerifiedEmailResponse}
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.UpdateVerifiedEmailService
@@ -55,7 +55,7 @@ class UpdateVerifiedEmailServiceSpec extends PlaySpec with MockitoSugar with Bef
   }
 
   def mockGetEmailVerificationState(response: Either[HttpErrorResponse, VerifiedEmailResponse]): Unit =
-    when(mockConnector.updateVerifiedEmail(any[UpdateVerifiedEmailRequest])(any[HeaderCarrier])) thenReturn Future.successful(response)
+    when(mockConnector.updateVerifiedEmail(any[VerifiedEmailRequest])(any[HeaderCarrier])) thenReturn Future.successful(response)
 
   "Calling UpdateVerifiedEmailService updateVerifiedEmail" should {
     "return Some(true) when VerifiedEmailResponse returned with bundleId" in {
