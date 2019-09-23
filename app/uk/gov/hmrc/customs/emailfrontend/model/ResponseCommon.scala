@@ -24,7 +24,6 @@ case class ResponseCommon(status: String, statusText: Option[String], processing
 }
 
 object ResponseCommon{
-  import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
   implicit val format = Json.format[ResponseCommon]
 }
 

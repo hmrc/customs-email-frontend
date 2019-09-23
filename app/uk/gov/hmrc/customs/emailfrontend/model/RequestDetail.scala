@@ -25,6 +25,5 @@ case class RequestDetail(IDType: String,
                          emailVerificationTimestamp: DateTime)
 
 object RequestDetail {
-  import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
   implicit val formats = Json.format[RequestDetail]
 }
