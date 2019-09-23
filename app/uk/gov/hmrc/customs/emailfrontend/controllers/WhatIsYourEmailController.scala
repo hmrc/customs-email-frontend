@@ -41,7 +41,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
                                          (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
+  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
     emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
       _.fold {
         Logger.warn("[WhatIsYourEmailController][show] - emailStatus not found")

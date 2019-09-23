@@ -25,3 +25,19 @@ class IneligibleUserPage extends BasePage {
 
 object IneligibleUserPage extends IneligibleUserPage
 
+
+object InelidibleUserNotAdminPage extends IneligibleUserPage {
+
+  override val url: String = Configuration.frontendHost  + "/customs-email-frontend/ineligible/not-admin"
+
+  override val title = "You cannot use this service"
+}
+
+object InelidibleUserAgentPage extends IneligibleUserPage {
+
+  override val url: String = Configuration.frontendHost  + "/customs-email-frontend/ineligible/is-agent"
+
+  override val title = "You cannot use this service"
+}
+
+

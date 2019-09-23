@@ -96,7 +96,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe SEE_OTHER
 
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/ineligible")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/ineligible/no-enrolment")
 
       verify(mockCustomsDataStoreService, times(0)).storeEmail(any(), any())(any[HeaderCarrier])
       verify(mockEmailVerificationService, times(0)).isEmailVerified(any())(any[HeaderCarrier])

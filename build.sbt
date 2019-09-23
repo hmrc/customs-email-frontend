@@ -69,6 +69,7 @@ lazy val microservice = Project(appName, file("."))
     unitTestSettings,
     integrationTestSettings,
     acceptanceTestSettings,
+    routesImport ++= Seq("uk.gov.hmrc.customs.emailfrontend.model._"),
     resolvers += Resolver.jcenterRepo
   )
 

@@ -21,9 +21,10 @@ import acceptance.utils._
 
 class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
 
-  feature("Show ineligible user page for unauthorised users") {
+  lazy val randomEoriNumber = "GB" + generateRandomNumberString()
+  lazy val randomInternalId = generateRandomNumberString()
 
-    lazy val randomInternalId = generateRandomNumberString()
+  feature("Show ineligible user page for unauthorised users") {
 
     scenario("A user having no CDS enrolment tries to amend email address") {
 
@@ -61,5 +62,30 @@ class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
       verifyCurrentPage(IneligibleUserPage)
 
     }
+
+    scenario("A user with and assistant account tries to amend email") {
+
+      Given("the user has is an assistant on the account")
+      authenticate(randomInternalId, randomEoriNumber, "assistant")
+
+      When("the user accesses the start page")
+      navigateTo(StartPage)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(InelidibleUserNotAdminPage)
+    }
+
+    scenario("A user with an agent account tries to amend email") {
+
+      Given("the user is an agent on the account for an organisation")
+      authenticate(randomInternalId, randomEoriNumber, "user","agent")
+
+      When("the user accesses the start page")
+      navigateTo(StartPage)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(InelidibleUserAgentPage)
+    }
+
   }
 }

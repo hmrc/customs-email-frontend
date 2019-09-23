@@ -25,7 +25,7 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val eori = Eori("ZZ123456789")
-  private val ineligibleUrl = "/customs-email-frontend/ineligible"
+  private val ineligibleUrl = "/customs-email-frontend/ineligible/no-enrolment"
 
   private val view = app.injector.instanceOf[start_page]
 
