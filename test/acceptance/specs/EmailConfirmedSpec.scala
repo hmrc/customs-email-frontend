@@ -18,6 +18,7 @@ package acceptance.specs
 
 import acceptance.pages._
 import acceptance.utils._
+import integration.stubservices.UpdateVerifiedEmailStubService._
 
 class EmailConfirmedSpec extends BaseSpec
   with SpecHelper
@@ -56,6 +57,7 @@ class EmailConfirmedSpec extends BaseSpec
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       stubEmailAlreadyVerified()
       stubVerifiedEmailResponse()
+      stubEmailUpdatedResponseWithStatus(updatedVerifiedEmailResponse, 200)
       stubCustomsDataStoreOkResponse()
       clickContinue()
 
@@ -63,6 +65,7 @@ class EmailConfirmedSpec extends BaseSpec
       verifyCurrentPage(EmailConfirmedPage)
       assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedText)("Your email address for CDS has been changed.")
       verifyCustomsDataStoreIsCalled()
+      verifyUpdateVerifiedEmailIsCalled(1)
     }
 
     scenario("Show verify your email page when user does not verify the email and tries to access the 'Email Confirmed' page") {
@@ -99,6 +102,7 @@ class EmailConfirmedSpec extends BaseSpec
       navigateTo(EmailConfirmedPage)
       verifyEmailVerifiedIsCalled()
       verifyCustomsDataStoreIsNotCalled()
+      verifyUpdateVerifiedEmailIsCalled(0)
 
       Then("the user should be on 'Verify email address' page")
       verifyCurrentPage(VerifyYourEmailAddressPage)

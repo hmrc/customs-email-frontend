@@ -57,4 +57,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val subscriptionDisplayContext: String = config.get[String]("microservice.services.customs-hods-proxy.subscription-display.context")
   val subscriptionDisplayUrl: String = s"$customsHodsProxyBaseUrl/$subscriptionDisplayContext"
+
+  val updateVerifiedEmailContext: String = config.get[String]("microservice.services.customs-hods-proxy.update-verified-email.context")
+  val updateVerifiedEmailUrl: String = s"$customsHodsProxyBaseUrl/$updateVerifiedEmailContext"
 }
