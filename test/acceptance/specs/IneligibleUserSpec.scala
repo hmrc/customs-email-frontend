@@ -16,7 +16,7 @@
 
 package acceptance.specs
 
-import acceptance.pages.{IneligibleUserPage, StartPage}
+import acceptance.pages._
 import acceptance.utils._
 
 class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
@@ -28,13 +28,38 @@ class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
     scenario("A user having no CDS enrolment tries to amend email address") {
 
       Given("the user has no CDS enrolment")
-      authenticateGGUserWithNoEnrolments(randomInternalId)
+      authenticateGGUserWithError(randomInternalId, "InsufficientEnrolments")
 
       When("the user accesses the start page")
       navigateTo(StartPage)
 
       Then("the user should not be allowed")
       verifyCurrentPage(IneligibleUserPage)
+
+      When("the user accesses the 'Change your email address page")
+      navigateTo(ChangeYourEmailAddressPage)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(IneligibleUserPage)
+
+      When("the user accesses the 'Check your email address' page")
+      navigateTo(CheckYourEmailAddressPage)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(IneligibleUserPage)
+
+      When("the user accesses the 'Email confirmed' page")
+      navigateTo(EmailConfirmedPage)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(IneligibleUserPage)
+
+      When("the user accesses the 'Verify email address' page")
+      navigateTo(VerifyYourEmailAddressPage)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(IneligibleUserPage)
+
     }
   }
 }

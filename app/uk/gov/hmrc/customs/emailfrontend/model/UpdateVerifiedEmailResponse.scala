@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+package uk.gov.hmrc.customs.emailfrontend.model
 
-import acceptance.utils.Configuration
+import play.api.libs.json.Json
+case class UpdateVerifiedEmailResponse(responseCommon: ResponseCommon)
 
-class IneligibleUserPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/customs-email-frontend/ineligible"
-  override val title = "You cannot use this service"
+object UpdateVerifiedEmailResponse {
+  import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
+  implicit val format = Json.format[UpdateVerifiedEmailResponse]
 }
-
-object IneligibleUserPage extends IneligibleUserPage
 

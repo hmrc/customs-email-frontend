@@ -20,9 +20,10 @@ import javax.inject.Inject
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
-import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService}
+import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -32,23 +33,29 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
                                          customsDataStoreService: CustomsDataStoreService,
                                          emailCacheService: EmailCacheService,
                                          emailVerificationService: EmailVerificationService,
+                                         updateVerifiedEmailService: UpdateVerifiedEmailService,
                                          mcc: MessagesControllerComponents)
                                         (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
+  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted andThen actions.eori).async { implicit request =>
     emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
       _.fold {
         Logger.warn("[EmailConfirmedController][show] - emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
       } {
         emailStatus =>
-          emailVerificationService.isEmailVerified(emailStatus.email).map {
-            case Some(true) =>
-              request.user.eori.map(identifier => customsDataStoreService.storeEmail(identifier, emailStatus.email))
-              Ok(view())
-            case _ => Redirect(VerifyYourEmailController.show())
+          def updateEmail = updateVerifiedEmailService.updateVerifiedEmail(emailStatus.email, request.eori.id).flatMap {
+            case Some(_) =>
+              customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), emailStatus.email)
+              Future.successful(Ok(view()))
+            case None => ??? // TODO: no scenario ready to cover that case
           }
+
+          for {
+            verified <- emailVerificationService.isEmailVerified(emailStatus.email)
+            redirect <- if (verified.contains(true)) updateEmail else Future.successful(Redirect(VerifyYourEmailController.show()))
+          } yield redirect
       }
     }
   }

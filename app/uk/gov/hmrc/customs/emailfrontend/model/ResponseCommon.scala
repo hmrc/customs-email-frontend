@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+package uk.gov.hmrc.customs.emailfrontend.model
 
-import acceptance.utils.Configuration
+import org.joda.time.DateTime
+import play.api.libs.json.Json
 
-class IneligibleUserPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/customs-email-frontend/ineligible"
-  override val title = "You cannot use this service"
+case class ResponseCommon(status: String, statusText: Option[String], processingDate: DateTime, returnParameters: List[MessagingServiceParam]) {
+  require(returnParameters.nonEmpty)
 }
 
-object IneligibleUserPage extends IneligibleUserPage
+object ResponseCommon{
+  import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
+  implicit val format = Json.format[ResponseCommon]
+}
 
