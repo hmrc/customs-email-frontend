@@ -20,7 +20,7 @@ import acceptance.utils.Configuration
 import org.openqa.selenium.By
 
 class WhatIsYourEmailPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/customs-email-frontend/email-address"
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/change-email-address"
   override val title = "Change your email address for CDS"
 
   val emailTextFieldId: By = By.id("email")
@@ -29,6 +29,6 @@ class WhatIsYourEmailPage extends BasePage {
 object WhatIsYourEmailPage extends WhatIsYourEmailPage
 
 object ChangeYourEmailAddressPage extends WhatIsYourEmailPage {
-  override val url: String = Configuration.frontendHost + "/customs-email-frontend/email-address/create"
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/change-email-address/create"
   override val title = "Change your email address for CDS"
 }
