@@ -24,7 +24,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.OK
 import play.api.libs.json._
-import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Protected}
 import uk.gov.hmrc.customs.emailfrontend.DateFormatUtil
 import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
@@ -46,9 +45,9 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
   val data = Map(internalId -> jsonValue)
   val timestamp = DateFormatUtil.dateTime
   val cacheMap = CacheMap(internalId, data)
+  val successResponse = HttpResponse(OK)
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
-  implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
 
   val service = new EmailCacheService(mockEmailCachingConfig, mockApplicationCrypto)
 
@@ -119,11 +118,11 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
 
     "remove data" in {
       when(mockEmailCachingConfig.remove(meq(internalId))(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(HttpResponse(OK)))
+        .thenReturn(Future.successful(successResponse))
 
       val cache: HttpResponse = service.remove(Some(internalId)).futureValue
 
-      cache mustBe HttpResponse(OK)
+      cache mustBe successResponse
     }
 
     "remove throws IllegalStateException" in {
