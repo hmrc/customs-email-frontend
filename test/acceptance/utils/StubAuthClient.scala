@@ -36,31 +36,6 @@ trait StubAuthClient {
       |}
     """.stripMargin
 
-//  def authenticate(internalId: String, eoriNumber: String): StubMapping = {
-//    stubFor(post(urlEqualTo(authUrl))
-//      .withRequestBody(equalToJson(authRequestJson))
-//      .willReturn(
-//        aResponse()
-//          .withStatus(Status.OK)
-//          .withBody(
-//            s"""{"allEnrolments": [
-//               |  {
-//               | "key": "HMRC-CUS-ORG",
-//               | "identifiers": [
-//               |   {
-//               |     "key": "EORINumber",
-//               |     "value": "$eoriNumber"
-//               |   }
-//               | ]
-//               |}
-//               |],
-//               |"internalId": "$internalId" , "credentialRole": "Admin", "affinityGroup": "Organisation"
-//               |}
-//              """.stripMargin)
-//      )
-//    )
-//  }
-
   def authenticate(internalId: String, eoriNumber: String,credentialRole: String="Admin",affinityGroup:String="Organisation"): StubMapping = {
     stubFor(post(urlEqualTo(authUrl))
       .withRequestBody(equalToJson(authRequestJson))
