@@ -41,7 +41,6 @@ class IsPermittedUserSpec extends PlaySpec with ScalaFutures {
     (Some(Organisation), Some(Admin), None),
     (Some(Organisation), Some(User), None),
     (Some(Organisation), Some(Assistant), Some(expectedResultNotAdmin)),
-    (Some(Organisation), Some(Assistant), Some(expectedResultNotAdmin)),
     (Some(Agent), Some(User), Some(expectedResultIsAgent)),
     (Some(Individual), Some(User), None),
     (Some(Individual), Some(Admin), None)
