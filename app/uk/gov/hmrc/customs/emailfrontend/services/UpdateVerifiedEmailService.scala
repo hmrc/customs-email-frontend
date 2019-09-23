@@ -35,7 +35,7 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
       IDType = "EORI",
       IDNumber = eori,
       emailAddress = email,
-      emailVerificationTimestamp = DateFormatUtil.dateFormat
+      emailVerificationTimestamp = DateFormatUtil.dateTime
     )
     val request = VerifiedEmailRequest(UpdateVerifiedEmailRequest(RequestCommon(), requestDetail))
 

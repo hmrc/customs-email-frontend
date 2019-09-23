@@ -51,7 +51,7 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
 
   val emailKey = "email"
 
-  val timestampKey = "verified-timestamp"
+  val timestampKey = "timestamp"
 
   //ToDo need refactoring for internalId to be not optional for all the func here
   def saveEmail(internalId: Option[String], emailStatus: EmailStatus)

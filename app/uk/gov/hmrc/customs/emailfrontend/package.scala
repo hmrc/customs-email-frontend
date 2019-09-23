@@ -32,7 +32,7 @@ package object emailfrontend {
 
   object MDGDateFormat {
 
-    def dateFormat: DateTime = {
+    def dateTime: DateTime = {
       new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC)
     }
 

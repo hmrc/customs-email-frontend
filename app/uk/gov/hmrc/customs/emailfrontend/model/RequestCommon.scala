@@ -31,7 +31,7 @@ object RequestCommon {
   import uk.gov.hmrc.customs.emailfrontend.DateFormatUtil._
 
   def apply(): RequestCommon = RequestCommon("CDS",
-    receiptDate = dateFormat,
+    receiptDate = dateTime,
     acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString
   )
 

@@ -29,7 +29,7 @@ class UpdateVerifiedEmailRequestSpec extends PlaySpec {
   val requestDetail = RequestDetail(IDType = "EORI",
     IDNumber = "GBXXXXXXXXXXXX",
     emailAddress = "test@email.com",
-    emailVerificationTimestamp = DateFormatUtil.dateFormat)
+    emailVerificationTimestamp = DateFormatUtil.dateTime)
   val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
   val verifiedEmailRequest = VerifiedEmailRequest(updateVerifiedEmailRequest = updateVerifiedEmailRequest)
 
