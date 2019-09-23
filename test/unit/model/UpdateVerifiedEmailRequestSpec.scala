@@ -18,8 +18,8 @@ package unit.model
 
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.{JsDefined, JsString, Json}
-import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat
+import play.api.libs.json._
+import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
 import uk.gov.hmrc.customs.emailfrontend.model._
 
@@ -29,7 +29,7 @@ class UpdateVerifiedEmailRequestSpec extends PlaySpec {
   val requestDetail = RequestDetail(IDType = "EORI",
     IDNumber = "GBXXXXXXXXXXXX",
     emailAddress = "test@email.com",
-    emailVerificationTimestamp = MDGDateFormat.dateFormat)
+    emailVerificationTimestamp = DateTimeUtil.dateTime)
   val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
   val verifiedEmailRequest = VerifiedEmailRequest(updateVerifiedEmailRequest = updateVerifiedEmailRequest)
 

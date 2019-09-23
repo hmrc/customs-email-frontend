@@ -28,10 +28,10 @@ case class RequestCommon(regime: String,
 
 object RequestCommon {
 
-  import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
+  import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
 
   def apply(): RequestCommon = RequestCommon("CDS",
-    receiptDate = dateFormat,
+    receiptDate = dateTime,
     acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString
   )
 

@@ -17,14 +17,19 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.Inject
+import org.joda.time.DateTime
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
+import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
+import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil.dateTime
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, EoriRequest}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,18 +50,28 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
         Future.successful(Redirect(SignOutController.signOut()))
       } {
         emailStatus =>
-          def updateEmail = updateVerifiedEmailService.updateVerifiedEmail(emailStatus.email, request.eori.id).flatMap {
-            case Some(_) =>
-              customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), emailStatus.email)
-              Future.successful(Ok(view()))
-            case None => ??? // TODO: no scenario ready to cover that case
-          }
-
           for {
             verified <- emailVerificationService.isEmailVerified(emailStatus.email)
-            redirect <- if (verified.contains(true)) updateEmail else Future.successful(Redirect(VerifyYourEmailController.show()))
+            redirect <- if (verified.contains(true)) updateEmail(emailStatus) else Future.successful(Redirect(VerifyYourEmailController.show()))
           } yield redirect
       }
     }
+  }
+
+  private[this] def updateEmail(emailStatus: EmailStatus)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
+    updateVerifiedEmailService.updateVerifiedEmail(emailStatus.email, request.eori.id).flatMap {
+      case Some(_) =>
+        saveTimeStamp(DateTimeUtil.dateTime)
+        customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), emailStatus.email)
+        Future.successful(Ok(view()))
+      case None => ??? // TODO: no scenario ready to cover that case
+    }
+  }
+
+  private[this] def saveTimeStamp(timestamp: DateTime)(implicit request: EoriRequest[AnyContent]): Future[CacheMap] = {
+    for {
+      _ <- emailCacheService.remove(Some(request.user.internalId.id))
+      savedTimestamp <- emailCacheService.saveTimeStamp(Some(request.user.internalId.id), timestamp)
+    } yield savedTimestamp
   }
 }

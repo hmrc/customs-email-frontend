@@ -17,12 +17,13 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import javax.inject.{Inject, Singleton}
+import org.joda.time.DateTime
 import play.api.Logger
 import uk.gov.hmrc.crypto.{ApplicationCrypto, CompositeSymmetricCrypto}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache, ShortLivedHttpCaching}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,11 +51,30 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
 
   val emailKey = "email"
 
+  val timestampKey = "timestamp"
+
+  //ToDo need refactoring for internalId to be not optional for all the func here
   def saveEmail(internalId: Option[String], emailStatus: EmailStatus)
                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
     val id = internalId.getOrElse(throw new IllegalStateException("Auth InternalId Missing"))
     Logger.info("saving email address to save 4 later")
     cache[EmailStatus](id, emailKey, emailStatus)
+  }
+
+  def saveTimeStamp(internalId: Option[String], verifiedEmailTimestamp: DateTime)
+               (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
+    import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
+    val id = internalId.getOrElse(throw new IllegalStateException("Auth InternalId Missing"))
+    Logger.info("saving verified email time stamp to save 4 later")
+    cache[DateTime](id, timestampKey, verifiedEmailTimestamp)
+  }
+
+  //ToDo remove this func once we have non-optional internalId and call `remove` directly from ShortLivedCache
+  def remove(internalId: Option[String])
+            (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
+    val id = internalId.getOrElse(throw new IllegalStateException("Auth InternalId Missing"))
+    Logger.info("removing cached date from save 4 later")
+    remove(id)
   }
 
   def fetchEmail(internalId: Option[String])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailStatus]] = {

@@ -18,7 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import javax.inject.Inject
 import play.api.Logger
-import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat
+import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
@@ -35,7 +35,7 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
       IDType = "EORI",
       IDNumber = eori,
       emailAddress = email,
-      emailVerificationTimestamp = MDGDateFormat.dateFormat
+      emailVerificationTimestamp = DateTimeUtil.dateTime
     )
     val request = VerifiedEmailRequest(UpdateVerifiedEmailRequest(RequestCommon(), requestDetail))
 
