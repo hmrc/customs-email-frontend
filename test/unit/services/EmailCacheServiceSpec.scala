@@ -25,7 +25,7 @@ import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.OK
 import play.api.libs.json._
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Protected}
-import uk.gov.hmrc.customs.emailfrontend.DateFormatUtil
+import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, Save4LaterCachingConfig}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -43,7 +43,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
   val emailStatus = EmailStatus("test@test.com")
   val jsonValue = Json.toJson(emailStatus)
   val data = Map(internalId -> jsonValue)
-  val timestamp = DateFormatUtil.dateTime
+  val timestamp = DateTimeUtil.dateTime
   val cacheMap = CacheMap(internalId, data)
   val successResponse = HttpResponse(OK)
 
@@ -93,6 +93,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       }
 
       cachedEmailStatus.getMessage mustBe "Auth InternalId Missing"
+
       verifyNoMoreInteractions(mockEmailCachingConfig)
     }
 

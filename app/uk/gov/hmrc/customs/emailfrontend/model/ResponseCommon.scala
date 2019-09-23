@@ -27,7 +27,7 @@ case class ResponseCommon(status: String,
 }
 
 object ResponseCommon{
-  import uk.gov.hmrc.customs.emailfrontend.DateFormatUtil._
+  import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
   implicit val format = Json.format[ResponseCommon]
 }
 

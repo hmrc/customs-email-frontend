@@ -63,7 +63,7 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
 
   def saveTimeStamp(internalId: Option[String], verifiedEmailTimestamp: DateTime)
                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
-    import uk.gov.hmrc.customs.emailfrontend.DateFormatUtil._
+    import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
     val id = internalId.getOrElse(throw new IllegalStateException("Auth InternalId Missing"))
     Logger.info("saving verified email time stamp to save 4 later")
     cache[DateTime](id, timestampKey, verifiedEmailTimestamp)

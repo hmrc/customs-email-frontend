@@ -22,7 +22,8 @@ import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
-import uk.gov.hmrc.customs.emailfrontend.DateFormatUtil.dateTime
+import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
+import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil.dateTime
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, EoriRequest}
@@ -60,7 +61,7 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
   private[this] def updateEmail(emailStatus: EmailStatus)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
     updateVerifiedEmailService.updateVerifiedEmail(emailStatus.email, request.eori.id).flatMap {
       case Some(_) =>
-        saveTimeStamp(dateTime)
+        saveTimeStamp(DateTimeUtil.dateTime)
         customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), emailStatus.email)
         Future.successful(Ok(view()))
       case None => ??? // TODO: no scenario ready to cover that case

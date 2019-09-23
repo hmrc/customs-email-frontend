@@ -28,7 +28,7 @@ case class RequestCommon(regime: String,
 
 object RequestCommon {
 
-  import uk.gov.hmrc.customs.emailfrontend.DateFormatUtil._
+  import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
 
   def apply(): RequestCommon = RequestCommon("CDS",
     receiptDate = dateTime,

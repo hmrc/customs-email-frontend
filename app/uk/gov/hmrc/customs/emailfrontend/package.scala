@@ -21,7 +21,7 @@ import java.util.UUID
 
 import org.joda.time.{DateTime, DateTimeZone}
 import org.joda.time.format.ISODateTimeFormat
-import play.api.libs.json.{JsError, JsResult, JsString, JsSuccess, JsValue, Reads, Writes}
+import play.api.libs.json._
 import uk.gov.hmrc.auth.core.retrieve.{~ => Retrieve}
 
 package object emailfrontend {
@@ -30,7 +30,7 @@ package object emailfrontend {
     def generateUUIDAsString: String = UUID.randomUUID().toString.replace("-", "")
   }
 
-  object MDGDateFormat {
+  object DateTimeUtil {
 
     def dateTime: DateTime = {
       new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC)
