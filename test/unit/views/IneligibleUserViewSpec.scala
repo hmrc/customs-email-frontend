@@ -40,7 +40,7 @@ class IneligibleUserViewSpec extends ViewSpec {
     }
     "have the correct message no cds enrolment" in {
       doc.body.getElementById("info1").text mustBe "You must be enrolled to CDS to use this service."
-      doc.body.getElementById("info2").text mustBe ""
+      doc.body.getElementById("info2").text mustBe "You signed in to Government Gateway with CDS enrolled account."
     }
   }
 

@@ -42,11 +42,6 @@ object Ineligible extends Enumeration {
         case NotAdmin => "not-admin"
       }
   }
-  def apply(journey: String): Ineligible.Value = journey match {
-    case "no-enrolment" => NoEnrolment
-    case "is-agent" => IsAgent
-    case "not-admin" => NotAdmin
-  }
 
   implicit def queryBindable(implicit pathBindable: PathBindable[Ineligible.Value]): QueryStringBindable[Ineligible.Value] = new QueryStringBindable[Ineligible.Value] {
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Ineligible.Value]] =

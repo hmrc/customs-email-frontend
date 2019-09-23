@@ -34,7 +34,7 @@ customs.emailfrontend.timeout.keep-alive-button=Get another 15 minutes
 customs.emailfrontend.timeout.sign-out-button=Sign out now
 
 customs.emailfrontend.you-cant-use-service-NoEnrolment.hint1=You must be enrolled to CDS to use this service.
-customs.emailfrontend.you-cant-use-service-NoEnrolment.hint2=
+customs.emailfrontend.you-cant-use-service-NoEnrolment.hint2=You signed in to Government Gateway with CDS enrolled account.
 customs.emailfrontend.you-cant-use-service-IsAgent.hint1=You signed in to Government Gateway with an agent services account.
 customs.emailfrontend.you-cant-use-service-IsAgent.hint2=You need to sign in with the Government Gateway for the organisation or individual that is applying for an EORI number.
 customs.emailfrontend.you-cant-use-service-NotAdmin.hint1=You signed in to Government Gateway as a standard user. To apply for an EORI number you must be an administrator user.

@@ -22,7 +22,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 
 class IneligibleSpec extends WordSpec with MustMatchers with EitherValues with OptionValues {
 
-  "Journey" must {
+  "Ineligible" must {
 
     val pathBindable = implicitly[PathBindable[Ineligible.Value]]
     val queryBindable = implicitly[QueryStringBindable[Ineligible.Value]]
