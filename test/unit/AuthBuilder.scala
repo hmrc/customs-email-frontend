@@ -32,7 +32,7 @@ trait AuthBuilder {
 
   this: MockitoSugar =>
 
-  import Retrieval._
+  import uk.gov.hmrc.customs.emailfrontend.Retrieval._
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
@@ -90,14 +90,6 @@ trait AuthBuilder {
     test
   }
 
-
 }
 
-object Retrieval{
-  implicit class AddRetrievals[A,B,C](r:Retrieve[A,B]){
-    def add(c:C): A Retrieve B Retrieve C = {
-      Retrieve(r,c)
-    }
-  }
-}
 

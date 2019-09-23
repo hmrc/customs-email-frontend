@@ -22,6 +22,7 @@ import java.util.UUID
 import org.joda.time.{DateTime, DateTimeZone}
 import org.joda.time.format.ISODateTimeFormat
 import play.api.libs.json.{JsError, JsResult, JsString, JsSuccess, JsValue, Reads, Writes}
+import uk.gov.hmrc.auth.core.retrieve.{~ => Retrieve}
 
 package object emailfrontend {
 
@@ -50,6 +51,14 @@ package object emailfrontend {
     implicit val dateTimeReads: Reads[DateTime] = dateTimeReadsIso
     implicit val dateTimeWrites: Writes[DateTime] = dateTimeWritesIsoUtc
 
+  }
+
+  object Retrieval{
+    implicit class AddRetrievals[A,B,C](r:Retrieve[A,B]){
+      def add(c:C): A Retrieve B Retrieve C = {
+        Retrieve(r,c)
+      }
+    }
   }
 
 
