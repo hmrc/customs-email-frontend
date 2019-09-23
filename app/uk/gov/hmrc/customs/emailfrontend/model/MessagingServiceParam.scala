@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+package uk.gov.hmrc.customs.emailfrontend.model
 
-import acceptance.utils.Configuration
+import play.api.libs.json.Json
 
-class IneligibleUserPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/customs-email-frontend/ineligible"
-  override val title = "You cannot use this service"
+
+case class MessagingServiceParam(paramName: String, paramValue: String)
+
+object MessagingServiceParam {
+  implicit val formats = Json.format[MessagingServiceParam]
+
+  val positionParamName = "POSITION"
+  val Fail = "FAIL"
+  val formBundleIdParamName = "ETMPFORMBUNDLENUMBER"
 }
 
-object IneligibleUserPage extends IneligibleUserPage
+
 

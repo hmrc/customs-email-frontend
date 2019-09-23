@@ -70,4 +70,14 @@ trait StubAuthClient {
       )
     )
   }
+
+  def authenticateGGUserWithError(internalId: String, reason: String): StubMapping = {
+    stubFor(post(urlEqualTo(authUrl))
+      .withRequestBody(equalToJson(authRequestJson))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.UNAUTHORIZED).withHeader("WWW-Authenticate", s"""MDTP detail="$reason"""")
+      )
+    )
+  }
 }
