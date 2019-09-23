@@ -49,6 +49,7 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
             case Some(_) =>
               customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), emailStatus.email)
               Future.successful(Ok(view()))
+            case None => ??? // TODO: no scenario ready to cover that case
           }
 
           for {
