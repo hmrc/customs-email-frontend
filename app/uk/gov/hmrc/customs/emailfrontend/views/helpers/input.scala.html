@@ -14,18 +14,19 @@
  * limitations under the License.
  *@
 
-@(field: play.api.data.Field, args: (Symbol, Any)*)(implicit lang: Messages)
+@(field: play.api.data.Field, args: (Symbol, Any)*)(implicit messages: Messages)
 
 @import play.api.i18n._
 @import views.html.helper._
 
 @elements = @{
-    FieldElements(field.id, field, null, args.toMap, lang)
+    FieldElements(field.id, field, null, args.toMap, messages)
 }
 
-@allErrors = @{elements.errors ++ args.flatMap {
-    case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
-    case _ => Seq.empty
+@allErrors = @{
+    elements.errors ++ args.flatMap {
+        case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
+        case _ => Seq.empty
     }
 }
 
@@ -36,21 +37,58 @@
     }
 }
 
-<div id="@elements.field.name-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
-    <label for="@elements.field.name" class="form-label-bold">
-        @elements.label
-        @allErrors.map { error => <span class="error-message">@lang(error)</span> }
-    </label>
+@isLabelH1 = @{
+    elements.args.getOrElse('_isLabelH1, false).asInstanceOf[Boolean]
+}
 
+<div id="@elements.field.name-outer" class="form-group @if(!isLabelH1 && allErrors.nonEmpty) {form-group-error}">
+    @if(isLabelH1) {
+    <h1>
+        }
+        <label for="@elements.field.name" @if(!isLabelH1) {class="form-label-bold"}>
+            @if(isLabelH1) {
+            <span class="heading-large">@elements.label</span>
+            }
 
-    <div class="suggestions-input-container">
-        <input type="text" @outputAttributes(elements)(
-        'spellcheck -> "spellcheck",
-        'ariahaspopup -> "aria-haspopup",
-        'ariaowns -> "aria-owns")
-        name="@elements.field.name"
-        id="@elements.field.name"
-        class="form-control @if(allErrors.nonEmpty) {form-control-error}"
-        value="@elements.field.value" />
+            @if(isLabelH1 && allErrors.nonEmpty) {
+            <div class="form-group-error">
+            }
+                @if(!isLabelH1) {
+                    @elements.label
+                }
+                @if(elements.args.get('_hintText)) {
+                    <span class="form-hint" id="@(field.id)-hint">@elements.args.get('_hintText)</span>
+                }
+                @if(allErrors.nonEmpty) {
+                    @allErrors.map { error => <span class="error-message">@messages(error)</span> }
+                }
+            @if(isLabelH1 && allErrors.nonEmpty) {
+            </div>
+            }
+        </label>
+        @if(isLabelH1) {
+    </h1>
+    }
+    @if(isLabelH1 && allErrors.nonEmpty) {
+    <div class="form-group-error">
+        }
+        <div class="suggestions-input-container">
+            <input
+            type="text"
+            @outputAttributes(elements)(
+            'autocomplete -> "autocomplete",
+            'spellcheck -> "spellcheck",
+            'ariaautocomplete -> "aria-autocomplete",
+            'ariahaspopup -> "aria-haspopup",
+            'ariaowns -> "aria-owns")
+            name="@elements.field.name"
+            id="@elements.field.name"
+            class="form-control @if(allErrors.nonEmpty) {form-control-error}"
+            value="@elements.field.value" />
+
+        </div>
+
+        @if(isLabelH1 && allErrors.nonEmpty) {
     </div>
+    }
 </div>

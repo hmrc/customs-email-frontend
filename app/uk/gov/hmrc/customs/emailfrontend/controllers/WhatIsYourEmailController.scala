@@ -25,17 +25,19 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
-import uk.gov.hmrc.customs.emailfrontend.views.html.what_is_your_email
+import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
+import uk.gov.hmrc.customs.emailfrontend.views.html.{change_your_email, what_is_your_email}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_email,
+class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_email,
+                                          whatIsYourEmailView: what_is_your_email,
                                           emailCacheService: EmailCacheService,
                                           mcc: MessagesControllerComponents,
-                                          subscriptionDisplayConnector: SubscriptionDisplayConnector)
+                                          subscriptionDisplayConnector: SubscriptionDisplayConnector,
+                                          emailVerificationService: EmailVerificationService)
                                          (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
@@ -52,9 +54,17 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_e
   }
 
   def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
-    subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).map {
-      case SubscriptionDisplayResponse(Some(email)) => Ok(view(emailForm, email))
+    subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
+      case SubscriptionDisplayResponse(Some(email)) =>
+        emailVerificationService.isEmailVerified(email).map {
+          case Some(true) => Ok(view(emailForm, email))
+          case Some(false) => Redirect(WhatIsYourEmailController.verify())
+        }
     }
+  }
+
+  def verify: Action[AnyContent] = actions.authEnrolled { implicit request =>
+    Ok(whatIsYourEmailView(emailForm))
   }
 
   def submit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
@@ -64,6 +74,17 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: what_is_your_e
           case SubscriptionDisplayResponse(Some(email)) => BadRequest(view(formWithErrors, email))
         }
       },
+      formData => {
+        emailCacheService.saveEmail(Some(request.user.internalId.id), EmailStatus(formData.value)).map {
+          _ => Redirect(routes.CheckYourEmailController.show())
+        }
+      }
+    )
+  }
+
+  def verifySubmit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+    emailForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(formWithErrors))),
       formData => {
         emailCacheService.saveEmail(Some(request.user.internalId.id), EmailStatus(formData.value)).map {
           _ => Redirect(routes.CheckYourEmailController.show())

@@ -14,32 +14,34 @@
  * limitations under the License.
  */
 
-package unit.views.emaila
+package unit.views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_your_email
-import unit.views.ViewSpec
 
-class VerifyYourEmailSpec extends ViewSpec {
+class VerifyYourEmailViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[verify_your_email]
 
   "What Is Your Email Address page" should {
     "display correct title" in {
       doc.title must startWith("Verify your email address")
     }
+
     "have the correct h1 text" in {
       doc.body.getElementsByTag("h1").text() mustBe "Verify your email address"
     }
+
     "have the correct class on the h1" in {
       doc.body.getElementsByTag("h1").hasClass("heading-large") mustBe true
     }
 
     "have an change your email address 'text' and change email link" in {
       doc.body.getElementById("p2").text() mustBe "You can change your email address if it is not correct."
-      doc.body.getElementById("p2").select("a[href]").attr("href") mustBe "/customs-email-frontend/email-address"
+      doc.body.getElementById("p2").select("a[href]").attr("href") mustBe "/customs-email-frontend/change-email-address"
     }
+
     "have an link send it again" in {
       doc.body.getElementById("p3").select("a[href]").attr("href") mustBe "/customs-email-frontend/check-email-address"
     }

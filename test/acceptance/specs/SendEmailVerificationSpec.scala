@@ -38,6 +38,7 @@ class SendEmailVerificationSpec extends BaseSpec
         navigateTo(StartPage)
         verifyCurrentPage(StartPage)
         stubSubscriptionDisplayOkResponse(randomEoriNumber)
+        stubVerifiedEmailResponse()
         clickOn(StartPage.emailLinkText)
         verifySubscriptionDisplayIsCalled(1,randomEoriNumber)
       When("the user provides an email address to change")
