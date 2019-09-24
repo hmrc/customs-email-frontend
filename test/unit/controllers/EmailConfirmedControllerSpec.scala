@@ -50,16 +50,32 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
   "EmailConfirmedController" should {
     "have a status of OK when email found in cache and email is verified" in withAuthorisedUser() {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+      when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(true)))
       when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
       when(mockEmailCacheService.saveTimeStamp(meq(InternalId("internalId")), any[DateTime])(any(), any())).thenReturn(Future.successful(CacheMap("internalId", Map())))
       when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(OK)))
-      when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
-      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(true)))
 
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe OK
+    }
+
+    "have a status of OK when email found in cache, email is verified and saving timestamp fails" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+      when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(true)))
+      when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.failed(new InternalServerException("")))
+      when(mockEmailCacheService.saveTimeStamp(meq(InternalId("internalId")), any[DateTime])(any(), any())).thenReturn(Future.failed(new InternalServerException("")))
+      when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(OK)))
+
+      val eventualResult = controller.show(request)
+      status(eventualResult) shouldBe OK
+
+      verify(mockCustomsDataStoreService, times(1)).storeEmail(any(), any())(any[HeaderCarrier])
     }
 
     "have a status of SEE_OTHER when email found in cache but email is not verified" in withAuthorisedUser() {
