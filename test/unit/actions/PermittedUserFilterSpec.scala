@@ -25,12 +25,12 @@ import play.api.mvc.{ResponseHeader, Result}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IsPermittedUser
+import uk.gov.hmrc.customs.emailfrontend.controllers.actions.PermittedUserFilter
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, InternalId, LoggedInUser}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class IsPermittedUserSpec extends PlaySpec with ScalaFutures {
+class PermittedUserFilterSpec extends PlaySpec with ScalaFutures {
 
   def responseHeader(e:String) = ResponseHeader(303, Map("Location" -> s"/customs-email-frontend/ineligible/$e"))
   val expectedResultNotAdmin = Result(responseHeader("not-admin"), HttpEntity.NoEntity)
@@ -51,7 +51,7 @@ class IsPermittedUserSpec extends PlaySpec with ScalaFutures {
 
   "IsPermittedUser" should {
     "allow the user" in {
-      val isPermittedUser = new IsPermittedUser()
+      val isPermittedUser = new PermittedUserFilter()
       forAll(values) { (affinityGroup, role, expected) =>
         val user = LoggedInUser(userEnrollments, internalId, affinityGroup, role)
         val authenticatedRequest = AuthenticatedRequest(fakeRequest, user)
