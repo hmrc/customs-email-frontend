@@ -72,7 +72,7 @@ class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
       navigateTo(StartPage)
 
       Then("the user should not be allowed")
-      verifyCurrentPage(InelidibleUserNotAdminPage)
+      verifyCurrentPage(IneligibleUserNotAdminPage)
     }
 
     scenario("A user with an agent account tries to amend email") {
@@ -84,7 +84,7 @@ class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
       navigateTo(StartPage)
 
       Then("the user should not be allowed")
-      verifyCurrentPage(InelidibleUserAgentPage)
+      verifyCurrentPage(IneligibleUserAgentPage)
     }
 
   }
