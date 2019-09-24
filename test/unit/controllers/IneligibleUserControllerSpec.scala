@@ -18,6 +18,7 @@ package unit.controllers
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController
+import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
 
 class IneligibleUserControllerSpec extends ControllerSpec {
@@ -28,7 +29,7 @@ class IneligibleUserControllerSpec extends ControllerSpec {
   "IneligibleUserController" should {
 
     "have a status of Unauthorised (401)" in withUnauthorisedUser {
-      val eventualResult = controller.show(request)
+      val eventualResult = controller.show(Ineligible.NoEnrolment).apply(request)
       status(eventualResult) shouldBe UNAUTHORIZED
     }
   }

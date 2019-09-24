@@ -19,12 +19,15 @@ package uk.gov.hmrc.customs.emailfrontend.model
 import org.joda.time.DateTime
 import play.api.libs.json.Json
 
-case class ResponseCommon(status: String, statusText: Option[String], processingDate: DateTime, returnParameters: List[MessagingServiceParam]) {
+case class ResponseCommon(status: String,
+                          statusText: Option[String],
+                          processingDate: DateTime,
+                          returnParameters: List[MessagingServiceParam]) {
   require(returnParameters.nonEmpty)
 }
 
 object ResponseCommon{
-  import uk.gov.hmrc.customs.emailfrontend.MDGDateFormat._
+  import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
   implicit val format = Json.format[ResponseCommon]
 }
 

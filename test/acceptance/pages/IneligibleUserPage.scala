@@ -19,9 +19,21 @@ package acceptance.pages
 import acceptance.utils.Configuration
 
 class IneligibleUserPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/customs-email-frontend/ineligible"
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/ineligible/no-enrolment"
   override val title = "You cannot use this service"
 }
 
 object IneligibleUserPage extends IneligibleUserPage
+
+
+object IneligibleUserNotAdminPage extends IneligibleUserPage {
+  override val url: String = Configuration.frontendHost  + "/customs-email-frontend/ineligible/not-admin"
+  override val title = "You cannot use this service"
+}
+
+object IneligibleUserAgentPage extends IneligibleUserPage {
+  override val url: String = Configuration.frontendHost  + "/customs-email-frontend/ineligible/is-agent"
+  override val title = "You cannot use this service"
+}
+
 

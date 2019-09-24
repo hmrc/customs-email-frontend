@@ -17,12 +17,13 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import javax.inject.{Inject, Singleton}
+import org.joda.time.DateTime
 import play.api.Logger
 import uk.gov.hmrc.crypto.{ApplicationCrypto, CompositeSymmetricCrypto}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId}
 import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache, ShortLivedHttpCaching}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,16 +51,29 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
 
   val emailKey = "email"
 
-  def saveEmail(internalId: Option[String], emailStatus: EmailStatus)
+  val timestampKey = "timestamp"
+
+  def saveEmail(internalId: InternalId, emailStatus: EmailStatus)
                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
-    val id = internalId.getOrElse(throw new IllegalStateException("Auth InternalId Missing"))
     Logger.info("saving email address to save 4 later")
-    cache[EmailStatus](id, emailKey, emailStatus)
+    cache[EmailStatus](internalId.id, emailKey, emailStatus)
   }
 
-  def fetchEmail(internalId: Option[String])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailStatus]] = {
-    val id = internalId.getOrElse(throw new IllegalStateException("Auth InternalId Missing"))
-    Logger.info("calling save 4 later to retrieve email")
-    fetchAndGetEntry[EmailStatus](id, emailKey)
+  def saveTimeStamp(internalId: InternalId, verifiedEmailTimestamp: DateTime)
+               (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
+    import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
+    Logger.info("saving verified email time stamp to save 4 later")
+    cache[DateTime](internalId.id, timestampKey, verifiedEmailTimestamp)
+  }
+
+  def remove(internalId: InternalId)
+            (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
+    Logger.info("removing cached data from save 4 later")
+    remove(internalId.id)
+  }
+
+  def fetchEmail(internalId:InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailStatus]] = {
+    Logger.info("retrieving cached email from save 4 later")
+    fetchAndGetEntry[EmailStatus](internalId.id, emailKey)
   }
 }

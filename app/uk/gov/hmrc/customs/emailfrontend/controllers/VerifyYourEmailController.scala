@@ -34,8 +34,8 @@ class VerifyYourEmailController @Inject()(actions: Actions,
                                           mcc: MessagesControllerComponents)(implicit override val messagesApi: MessagesApi, ex: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
-    emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
+  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
+    emailCacheService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[CheckYourEmailController][show] - emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))

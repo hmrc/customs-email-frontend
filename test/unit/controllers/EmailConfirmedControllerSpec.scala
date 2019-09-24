@@ -16,19 +16,20 @@
 
 package unit.controllers
 
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify, _}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers.{status, _}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController
-import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}
-
 
 class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
@@ -47,16 +48,37 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
   }
 
   "EmailConfirmedController" should {
-    "have a status of OK when email found in cache and email is verified" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
-      when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(OK)))
-      when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
-      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(true)))
+    "have a status of OK " when {
+      "email found in cache, email is verified and update verified email is successful" in withAuthorisedUser() {
+        when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+        when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(true)))
+        when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+        when(mockEmailCacheService.saveTimeStamp(meq(InternalId("internalId")), any[DateTime])(any(), any())).thenReturn(Future.successful(CacheMap("internalId", Map())))
+        when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(HttpResponse(OK)))
 
-      val eventualResult = controller.show(request)
-      status(eventualResult) shouldBe OK
+        val eventualResult = controller.show(request)
+        status(eventualResult) shouldBe OK
+      }
+
+
+      "email found in cache, email is verified and update verified email is successful but saving timestamp fails" in withAuthorisedUser() {
+        when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+        when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(true)))
+        when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.failed(new InternalServerException("")))
+        when(mockEmailCacheService.saveTimeStamp(meq(InternalId("internalId")), any[DateTime])(any(), any())).thenReturn(Future.failed(new InternalServerException("")))
+        when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(HttpResponse(OK)))
+
+        val eventualResult = controller.show(request)
+        status(eventualResult) shouldBe OK
+
+        verify(mockCustomsDataStoreService, times(1)).storeEmail(any(), any())(any[HeaderCarrier])
+      }
     }
 
     "have a status of SEE_OTHER when email found in cache but email is not verified" in withAuthorisedUser() {
@@ -96,12 +118,26 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe SEE_OTHER
 
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/ineligible")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/ineligible/no-enrolment")
 
       verify(mockCustomsDataStoreService, times(0)).storeEmail(any(), any())(any[HeaderCarrier])
       verify(mockEmailVerificationService, times(0)).isEmailVerified(any())(any[HeaderCarrier])
       verify(mockEmailCacheService, times(0)).fetchEmail(any())(any[HeaderCarrier], any[ExecutionContext])
       verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any())(any[HeaderCarrier])
+    }
+
+    "not save time stamp for verified email" when {
+      "remove email from save4later is not successful" in withAuthorisedUser() {
+        when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+        when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(true)))
+        when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.failed(new InternalServerException("Failed to remove")))
+        val eventualResult = controller.show(request)
+        status(eventualResult) shouldBe OK
+
+        verify(mockEmailCacheService, times(0)).saveTimeStamp(any(), any())(any[HeaderCarrier], any[ExecutionContext])
+      }
     }
   }
 }

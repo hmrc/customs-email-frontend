@@ -19,6 +19,7 @@ package acceptance.utils
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status
+import uk.gov.hmrc.auth.core.CredentialRole
 
 trait StubAuthClient {
 
@@ -31,11 +32,11 @@ trait StubAuthClient {
       | "identifiers" : [],
       | "state" : "Activated"
       |}],
-      | "retrieve" : ["allEnrolments","internalId"]
+      | "retrieve" : ["allEnrolments","internalId","affinityGroup","credentialRole"]
       |}
     """.stripMargin
 
-  def authenticate(internalId: String, eoriNumber: String): StubMapping = {
+  def authenticate(internalId: String, eoriNumber: String,credentialRole: String="Admin",affinityGroup:String="Organisation"): StubMapping = {
     stubFor(post(urlEqualTo(authUrl))
       .withRequestBody(equalToJson(authRequestJson))
       .willReturn(
@@ -53,7 +54,7 @@ trait StubAuthClient {
                | ]
                |}
                |],
-               |"internalId": "$internalId"
+               |"internalId": "$internalId" , "credentialRole": "$credentialRole", "affinityGroup": "$affinityGroup"
                |}
               """.stripMargin)
       )

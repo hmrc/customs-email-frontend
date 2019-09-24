@@ -19,21 +19,60 @@ package unit.views
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
 
 class IneligibleUserViewSpec extends ViewSpec {
 
   private val view = app.injector.instanceOf[ineligible_user]
 
-  private val doc: Document = Jsoup.parse(contentAsString(view.render(request, messages)))
+  private val doc: Document = Jsoup.parse(contentAsString(view.render(Ineligible.NoEnrolment, request, messages)))
 
-  "IneligibleUser" should {
+  "IneligibleUser with no cds enrolment" should {
+     val doc: Document = Jsoup.parse(contentAsString(view.render(Ineligible.NoEnrolment, request, messages)))
+
     "have the correct title" in {
       doc.title mustBe "You cannot use this service"
     }
 
     "have the correct heading" in {
-      doc.body.getElementsByTag("h1").text mustBe "You must be enrolled to CDS to use this service"
+      doc.body.getElementsByTag("h1").text mustBe "You cannot use this service"
+    }
+    "have the correct message no cds enrolment" in {
+      doc.body.getElementById("info1").text mustBe "You must be enrolled to CDS to use this service."
+      doc.body.getElementById("info2").text mustBe "You signed in to Government Gateway with CDS enrolled account."
+    }
+  }
+
+  "IneligibleUser with Agent account" should {
+    val doc: Document = Jsoup.parse(contentAsString(view.render(Ineligible.IsAgent, request, messages)))
+
+    "have the correct title" in {
+      doc.title mustBe "You cannot use this service"
+    }
+
+    "have the correct heading" in {
+      doc.body.getElementsByTag("h1").text mustBe "You cannot use this service"
+    }
+    "have the correct message no cds enrolment" in {
+      doc.body.getElementById("info1").text mustBe "You signed in to Government Gateway with an agent services account."
+      doc.body.getElementById("info2").text mustBe "You need to sign in with the Government Gateway for the organisation or individual that is applying for an EORI number."
+    }
+  }
+
+  "IneligibleUser for Organisation and not an Admin" should {
+    val doc: Document = Jsoup.parse(contentAsString(view.render(Ineligible.NotAdmin, request, messages)))
+
+    "have the correct title" in {
+      doc.title mustBe "You cannot use this service"
+    }
+
+    "have the correct heading" in {
+      doc.body.getElementsByTag("h1").text mustBe "You cannot use this service"
+    }
+    "have the correct message no cds enrolment" in {
+      doc.body.getElementById("info1").text mustBe "You signed in to Government Gateway as a standard user. To apply for an EORI number you must be an administrator user."
+      doc.body.getElementById("info2").text mustBe "Contact the person who set up your Government Gateway."
     }
   }
 }
