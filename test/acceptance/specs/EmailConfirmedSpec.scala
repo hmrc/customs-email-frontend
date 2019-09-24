@@ -65,6 +65,7 @@ class EmailConfirmedSpec extends BaseSpec
       Then("the user should be on 'Email confirmed' page")
       verifyCurrentPage(EmailConfirmedPage)
       assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedText)("Your email address for CDS has been changed.")
+      verifyEmailVerifiedIsCalled(2)
       verifyCustomsDataStoreIsCalled()
       verifyUpdateVerifiedEmailIsCalled(1)
     }
