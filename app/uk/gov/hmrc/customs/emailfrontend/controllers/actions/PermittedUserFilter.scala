@@ -25,25 +25,22 @@ import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Ineligible
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsPermittedUser(implicit override val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
+class PermittedUserFilter(implicit override val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
 
   def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = {
 
     val affinityGroup: Option[AffinityGroup] = request.user.affinityGroup
     val credentialRole: Option[CredentialRole] = request.user.credentialRole
 
-    (affinityGroup,credentialRole) match {
+    (affinityGroup, credentialRole) match {
       case(Some(Organisation),Some(Admin) | Some(User)) => toFutureResult()
       case(Some(Organisation), _) => toFutureResult(Some(Ineligible.NotAdmin))
       case(Some(Agent),_) => toFutureResult(Some(Ineligible.IsAgent))
-      case _ => toFutureResult()
+      case _ => toFutureResult() //ToDo handle case for affinityGroup and credentialRole having None values
     }
-
   }
 
   private def toFutureResult(result:Option[Ineligible.Value] = None): Future[Option[Result]] = {
     Future.successful(result.map(i => Redirect(IneligibleUserController.show(i))))
   }
-
-
 }

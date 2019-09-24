@@ -42,7 +42,7 @@ class ActionsImpl @Inject()(authConnector: AuthConnector, config: Configuration,
 
   override def authEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(Enrolment("HMRC-CUS-ORG"), authConnector, config, environment, bodyParser)
 
-  override def isPermitted: ActionFilter[AuthenticatedRequest] = new IsPermittedUser()
+  override def isPermitted: ActionFilter[AuthenticatedRequest] = new PermittedUserFilter()
 
   override def eori: ActionRefiner[AuthenticatedRequest, EoriRequest] = new EoriAction()
 
