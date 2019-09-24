@@ -38,8 +38,8 @@ trait StubCustomsDataStore {
     )
   }
 
-  def verifyCustomsDataStoreIsCalled(): Unit = {
-    verify(1, postRequestedFor(customsDataStoreContextPath))
+  def verifyCustomsDataStoreIsCalled(times: Int): Unit = {
+    verify(times, postRequestedFor(customsDataStoreContextPath))
   }
 
   def verifyCustomsDataStoreIsNotCalled(): Unit = {
