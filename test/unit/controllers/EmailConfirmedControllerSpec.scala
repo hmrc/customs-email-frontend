@@ -51,7 +51,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "have a status of OK when email found in cache and email is verified" in withAuthorisedUser() {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
       when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
-      when(mockEmailCacheService.saveTimeStamp(any[InternalId], any[DateTime])(any(), any())).thenReturn(Future.successful(CacheMap("internalId", Map())))
+      when(mockEmailCacheService.saveTimeStamp(meq(InternalId("internalId")), any[DateTime])(any(), any())).thenReturn(Future.successful(CacheMap("internalId", Map())))
       when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(OK)))
       when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
