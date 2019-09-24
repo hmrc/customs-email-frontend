@@ -35,7 +35,7 @@ class VerifyYourEmailController @Inject()(actions: Actions,
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
-    emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
+    emailCacheService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[CheckYourEmailController][show] - emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))

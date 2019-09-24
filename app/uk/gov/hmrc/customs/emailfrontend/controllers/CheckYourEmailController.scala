@@ -39,7 +39,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
-    emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
+    emailCacheService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[CheckYourEmailController][show] - emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
@@ -51,7 +51,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
   }
 
   def submit: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
-    emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
+    emailCacheService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[CheckYourEmailController][submit] - emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
@@ -76,7 +76,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
           "[CheckYourEmailController][sendVerification] - " +
             "Unable to send email verification request. Service responded with 'already verified'"
         )
-        emailCacheService.saveEmail(Some(internalId.id), EmailStatus(email, isVerified = true)).map { _ =>
+        emailCacheService.saveEmail(internalId, EmailStatus(email, isVerified = true)).map { _ =>
           Redirect(EmailConfirmedController.show())
         }
       case None => throw new IllegalStateException("CreateEmailVerificationRequest Failed")

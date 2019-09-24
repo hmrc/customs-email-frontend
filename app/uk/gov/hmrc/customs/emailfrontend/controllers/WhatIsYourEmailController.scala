@@ -42,7 +42,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
-    emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
+    emailCacheService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[WhatIsYourEmailController][show] - emailStatus not found")
         Future.successful(Redirect(WhatIsYourEmailController.create()))
@@ -75,7 +75,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         }
       },
       formData => {
-        emailCacheService.saveEmail(Some(request.user.internalId.id), EmailStatus(formData.value)).map {
+        emailCacheService.saveEmail(request.user.internalId, EmailStatus(formData.value)).map {
           _ => Redirect(routes.CheckYourEmailController.show())
         }
       }
@@ -86,7 +86,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     emailForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(formWithErrors))),
       formData => {
-        emailCacheService.saveEmail(Some(request.user.internalId.id), EmailStatus(formData.value)).map {
+        emailCacheService.saveEmail(request.user.internalId, EmailStatus(formData.value)).map {
           _ => Redirect(routes.CheckYourEmailController.show())
         }
       }

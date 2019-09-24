@@ -23,7 +23,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
-import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil.dateTime
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, EoriRequest}
@@ -44,7 +43,7 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted andThen actions.eori).async { implicit request =>
-    emailCacheService.fetchEmail(Some(request.user.internalId.id)) flatMap {
+    emailCacheService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[EmailConfirmedController][show] - emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
@@ -70,8 +69,8 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
 
   private[this] def saveTimeStamp(timestamp: DateTime)(implicit request: EoriRequest[AnyContent]): Future[CacheMap] = {
     for {
-      _ <- emailCacheService.remove(Some(request.user.internalId.id))
-      savedTimestamp <- emailCacheService.saveTimeStamp(Some(request.user.internalId.id), timestamp)
+      _ <- emailCacheService.remove(request.user.internalId)
+      savedTimestamp <- emailCacheService.saveTimeStamp(request.user.internalId, timestamp)
     } yield savedTimestamp
   }
 }
