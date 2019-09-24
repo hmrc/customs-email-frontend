@@ -27,6 +27,7 @@ import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.{change_your_email, what_is_your_email}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,7 +49,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         Future.successful(Redirect(WhatIsYourEmailController.create()))
       } {
         _ =>
-          Future.successful(Redirect(CheckYourEmailController.show()))
+          redirectAccordingToTimestamp(request.user.internalId)
       }
     }
   }
@@ -59,7 +60,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         emailVerificationService.isEmailVerified(email).map {
           case Some(true) => Ok(view(emailForm, email))
           case Some(false) => Redirect(WhatIsYourEmailController.verify())
-          //ToDo handle case for None value
+          case None => ??? //ToDo redirect to retry page
         }
     }
   }
@@ -92,5 +93,12 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         }
       }
     )
+  }
+
+  private[this] def redirectAccordingToTimestamp(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Result] = {
+    emailCacheService.emailVerificationStatus(internalId).map {
+      case VerificationInProgress => ??? //ToDo not ready yet
+      case _ => Redirect(CheckYourEmailController.show())
+    }
   }
 }

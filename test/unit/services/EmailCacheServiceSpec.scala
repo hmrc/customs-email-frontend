@@ -76,8 +76,6 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       cachedEmailStatus mustBe Some(emailStatus)
     }
 
-
-
     "save timestamp" in {
       when(mockEmailCachingConfig.cache(meq(internalId.id), meq("timestamp"), meq(Protected(timestamp)))(any[HeaderCarrier],
         any(), any[ExecutionContext])).thenReturn(Future.successful(cacheMap))
@@ -95,6 +93,11 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       val cache: HttpResponse = service.remove(internalId).futureValue
 
       cache mustBe successResponse
+    }
+
+    "emailVerificationStatus" in {
+      when(mockEmailCachingConfig.remove(meq(internalId.id))(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(successResponse))
     }
 
   }

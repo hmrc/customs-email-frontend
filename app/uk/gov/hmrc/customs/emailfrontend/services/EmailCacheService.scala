@@ -22,6 +22,7 @@ import play.api.Logger
 import uk.gov.hmrc.crypto.{ApplicationCrypto, CompositeSymmetricCrypto}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId}
+import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache, ShortLivedHttpCaching}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -60,10 +61,24 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
   }
 
   def saveTimeStamp(internalId: InternalId, verifiedEmailTimestamp: DateTime)
-               (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
+                   (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
+
     import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
     Logger.info("saving verified email time stamp to save 4 later")
     cache[DateTime](internalId.id, timestampKey, verifiedEmailTimestamp)
+  }
+
+  private def fetchTimeStamp(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[DateTime]] = {
+    import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
+    Logger.info("calling save 4 later to retrieve timestamp")
+    fetchAndGetEntry[DateTime](internalId.id, timestampKey)
+  }
+
+  def emailVerificationStatus(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailVerificationStatus] = {
+    fetchTimeStamp(internalId).map {
+      case Some(date) => if (date.isBefore(DateTime.now.minusDays(1))) VerificationCompleted else VerificationInProgress
+      case None => VerificationNotDetermined
+    }
   }
 
   def remove(internalId: InternalId)
