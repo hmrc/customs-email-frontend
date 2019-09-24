@@ -21,7 +21,7 @@ import org.joda.time.DateTime
 import play.api.Logger
 import uk.gov.hmrc.crypto.{ApplicationCrypto, CompositeSymmetricCrypto}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId}
 import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache, ShortLivedHttpCaching}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -53,33 +53,27 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
 
   val timestampKey = "timestamp"
 
-  //ToDo need refactoring for internalId to be not optional for all the func here
-  def saveEmail(internalId: Option[String], emailStatus: EmailStatus)
+  def saveEmail(internalId: InternalId, emailStatus: EmailStatus)
                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
-    val id = internalId.getOrElse(throw new IllegalStateException("Auth InternalId Missing"))
     Logger.info("saving email address to save 4 later")
-    cache[EmailStatus](id, emailKey, emailStatus)
+    cache[EmailStatus](internalId.id, emailKey, emailStatus)
   }
 
-  def saveTimeStamp(internalId: Option[String], verifiedEmailTimestamp: DateTime)
+  def saveTimeStamp(internalId: InternalId, verifiedEmailTimestamp: DateTime)
                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
     import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
-    val id = internalId.getOrElse(throw new IllegalStateException("Auth InternalId Missing"))
     Logger.info("saving verified email time stamp to save 4 later")
-    cache[DateTime](id, timestampKey, verifiedEmailTimestamp)
+    cache[DateTime](internalId.id, timestampKey, verifiedEmailTimestamp)
   }
 
-  //ToDo remove this func once we have non-optional internalId and call `remove` directly from ShortLivedCache
-  def remove(internalId: Option[String])
+  def remove(internalId: InternalId)
             (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
-    val id = internalId.getOrElse(throw new IllegalStateException("Auth InternalId Missing"))
     Logger.info("removing cached date from save 4 later")
-    remove(id)
+    remove(internalId.id)
   }
 
-  def fetchEmail(internalId: Option[String])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailStatus]] = {
-    val id = internalId.getOrElse(throw new IllegalStateException("Auth InternalId Missing"))
+  def fetchEmail(internalId:InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailStatus]] = {
     Logger.info("calling save 4 later to retrieve email")
-    fetchAndGetEntry[EmailStatus](id, emailKey)
+    fetchAndGetEntry[EmailStatus](internalId.id, emailKey)
   }
 }

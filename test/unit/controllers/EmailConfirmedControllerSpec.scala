@@ -23,7 +23,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers.{status, _}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController
-import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -50,8 +50,8 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
   "EmailConfirmedController" should {
     "have a status of OK when email found in cache and email is verified" in withAuthorisedUser() {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
-      when(mockEmailCacheService.remove(meq(Some("internalId")))(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
-      when(mockEmailCacheService.saveTimeStamp(meq(Some("internalId")), any[DateTime])(any(), any())).thenReturn(Future.successful(CacheMap("testId", Map())))
+      when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockEmailCacheService.saveTimeStamp(any[InternalId], any[DateTime])(any(), any())).thenReturn(Future.successful(CacheMap("internalId", Map())))
       when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(OK)))
       when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
@@ -113,8 +113,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
         when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
         when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
-        when(mockEmailCacheService.remove(meq(Some("internalId")))(any(), any())).thenReturn(Future.failed(new InternalServerException("Failed to remove")))
-
+        when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.failed(new InternalServerException("Failed to remove")))
         val eventualResult = controller.show(request)
         status(eventualResult) shouldBe OK
 
