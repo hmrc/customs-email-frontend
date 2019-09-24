@@ -122,5 +122,10 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
 
       cacheVerificationStatus mustBe VerificationNotDetermined
     }
+    "emailVerificationStatus" in {
+      when(mockEmailCachingConfig.remove(meq(internalId.id))(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(successResponse))
+    }
+
   }
 }
