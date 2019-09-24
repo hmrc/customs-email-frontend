@@ -54,9 +54,9 @@ class IneligibleUserViewSpec extends ViewSpec {
     "have the correct heading" in {
       doc.body.getElementsByTag("h1").text mustBe "You cannot use this service"
     }
-    "have the correct message no cds enrolment" in {
+    "have the correct message for an Agent" in {
       doc.body.getElementById("info1").text mustBe "You signed in to Government Gateway with an agent services account."
-      doc.body.getElementById("info2").text mustBe "You need to sign in with the Government Gateway for the organisation or individual that is applying for an EORI number."
+      doc.body.getElementById("info2").text mustBe "You need to sign in with the Government Gateway for the organisation or individual that is changing their email for CDS."
     }
   }
 
@@ -70,8 +70,8 @@ class IneligibleUserViewSpec extends ViewSpec {
     "have the correct heading" in {
       doc.body.getElementsByTag("h1").text mustBe "You cannot use this service"
     }
-    "have the correct message no cds enrolment" in {
-      doc.body.getElementById("info1").text mustBe "You signed in to Government Gateway as a standard user. To apply for an EORI number you must be an administrator user."
+    "have the correct message an Assistant account" in {
+      doc.body.getElementById("info1").text mustBe "You signed in to Government Gateway as a standard user. To change your email for CDS you must be an administrator user."
       doc.body.getElementById("info2").text mustBe "Contact the person who set up your Government Gateway."
     }
   }
