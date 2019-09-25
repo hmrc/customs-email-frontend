@@ -74,6 +74,17 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-email-address")
     }
 
+
+    "have a status of SEE_OTHER for show method when email found in cache and email status is VerificationInProgress" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchEmail(any())( any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@email"))))
+      when(mockEmailCacheService.emailVerificationStatus(any())(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(VerificationInProgress))
+
+      val eventualResult = controller.show(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
+    }
+
     "have a status of SEE_OTHER for show method when email not found in cache" in withAuthorisedUser() {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
 

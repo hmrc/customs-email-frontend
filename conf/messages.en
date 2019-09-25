@@ -42,3 +42,7 @@ customs.emailfrontend.you-cant-use-service-IsAgent.hint2=You need to sign in wit
 customs.emailfrontend.you-cant-use-service-NotAdmin.hint1=You signed in to Government Gateway as a standard user. To change your email for CDS you must be an administrator user.
 customs.emailfrontend.you-cant-use-service-NotAdmin.hint2=Contact the person who set up your Government Gateway.
 customs.emailfrontend.you-cant-use-service.heading=You cannot use this service
+
+#verification in progress
+customs.emailfrontend.verification-in-progress.title-and-heading=You cannot change your email address
+customs.emailfrontend.verification-in-progress.info=You recently changed your email address to {0}. If you need to change this again, you will need to try again in 24 hours.

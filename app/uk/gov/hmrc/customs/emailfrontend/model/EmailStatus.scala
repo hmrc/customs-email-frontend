@@ -19,8 +19,8 @@ package uk.gov.hmrc.customs.emailfrontend.model
 import play.api.libs.json.Json
 
 
-case class EmailStatus(email:String,isVerified:Boolean = false)
+case class EmailStatus(email: String, isVerified: Boolean = false)
 
-object EmailStatus{
+object EmailStatus {
   implicit val jsonFormat = Json.format[EmailStatus]
 }
