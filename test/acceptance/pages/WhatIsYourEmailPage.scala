@@ -19,9 +19,7 @@ package acceptance.pages
 import acceptance.utils.Configuration
 import org.openqa.selenium.By
 
-class EmailPage extends BasePage {
-  override val title: String = ""
-  override val url: String = ""
+abstract class EmailPage extends BasePage {
   val emailTextFieldId: By = By.id("email")
 }
 

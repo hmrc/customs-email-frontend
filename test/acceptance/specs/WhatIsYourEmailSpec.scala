@@ -32,7 +32,7 @@ class WhatIsYourEmailSpec extends BaseSpec
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario("Show 'What is your email' page when subscription display response email is not verified") {
+    scenario("Show 'What is your email' page when email is not verified") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
@@ -41,7 +41,7 @@ class WhatIsYourEmailSpec extends BaseSpec
       verifyCurrentPage(StartPage)
 
 
-      When("the subscription display returns an email which is not verified")
+      When("the user email is not verified")
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubNotVerifiedEmailResponse()
       clickOn(StartPage.emailLinkText)
