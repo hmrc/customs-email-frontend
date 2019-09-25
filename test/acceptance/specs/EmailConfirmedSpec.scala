@@ -47,6 +47,7 @@ class EmailConfirmedSpec extends BaseSpec
 
       When("the user provides an email address to change")
       save4LaterWithData(randomInternalId)
+      verifyCurrentPage(ChangeYourEmailAddressPage)
       enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
       clickContinue()
 
@@ -66,7 +67,7 @@ class EmailConfirmedSpec extends BaseSpec
       verifyCurrentPage(EmailConfirmedPage)
       assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedText)("Your email address for CDS has been changed.")
       verifyEmailVerifiedIsCalled(2)
-      verifyCustomsDataStoreIsCalled()
+      verifyCustomsDataStoreIsCalled(1)
       verifyUpdateVerifiedEmailIsCalled(1)
     }
 
@@ -84,6 +85,7 @@ class EmailConfirmedSpec extends BaseSpec
 
       When("the user provides an email address to change")
       save4LaterWithData(randomInternalId)
+      verifyCurrentPage(ChangeYourEmailAddressPage)
       enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
       clickContinue()
 
