@@ -88,7 +88,7 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
   }
 
   def fetchEmail(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailStatus]] = {
-    Logger.info("calling save 4 later to retrieve email")
+    Logger.info("retrieving cached email from save 4 later")
     fetchAndGetEntry[EmailStatus](internalId.id, emailKey)
   }
 }
