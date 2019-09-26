@@ -70,11 +70,11 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
 
   private def fetchTimeStamp(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[DateTime]] = {
     import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
-    Logger.info("calling save 4 later to retrieve timestamp")
+    Logger.info("retrieving cached timestamp from save 4 later")
     fetchAndGetEntry[DateTime](internalId.id, timestampKey)
   }
 
-  def emailVerificationStatus(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailAmendmentStatus] = {
+  def emailAmendmentStatus(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailAmendmentStatus] = {
     fetchTimeStamp(internalId).map {
       case Some(date) => if (date.isBefore(DateTime.now.minusDays(1))) AmendmentCompleted else AmendmentInProgress
       case None => AmendmentNotDetermined

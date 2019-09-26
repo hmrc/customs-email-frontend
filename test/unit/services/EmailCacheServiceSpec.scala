@@ -100,7 +100,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
         .thenReturn(Future.successful(Some(Protected(timestamp.minusDays(2)))))
 
-      val cacheVerificationStatus = service.emailVerificationStatus(internalId).futureValue
+      val cacheVerificationStatus = service.emailAmendmentStatus(internalId).futureValue
 
       cacheVerificationStatus mustBe AmendmentCompleted
     }
@@ -109,7 +109,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
         .thenReturn(Future.successful(Some(Protected(timestamp))))
 
-      val cacheVerificationStatus = service.emailVerificationStatus(internalId).futureValue
+      val cacheVerificationStatus = service.emailAmendmentStatus(internalId).futureValue
 
       cacheVerificationStatus mustBe AmendmentInProgress
     }
@@ -118,7 +118,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
         .thenReturn(Future.successful(None))
 
-      val cacheVerificationStatus = service.emailVerificationStatus(internalId).futureValue
+      val cacheVerificationStatus = service.emailAmendmentStatus(internalId).futureValue
 
       cacheVerificationStatus mustBe AmendmentNotDetermined
     }
