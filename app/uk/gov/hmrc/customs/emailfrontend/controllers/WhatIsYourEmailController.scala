@@ -43,15 +43,36 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
-    emailCacheService.fetchEmail(request.user.internalId) flatMap {
-      _.fold {
-        Logger.warn("[WhatIsYourEmailController][show] - emailStatus not found")
-        Future.successful(Redirect(WhatIsYourEmailController.create()))
-      } {
-        _ =>
-          redirectAccordingToTimestamp(request.user.internalId)
+    emailCacheService.emailAmendmentStatus(request.user.internalId) flatMap {
+      case AmendmentNotDetermined | AmendmentCompleted => {
+        emailCacheService.fetchEmail(request.user.internalId) flatMap {
+          _.fold {
+            Logger.warn("[WhatIsYourEmailController][show] - emailStatus not found")
+            Future.successful(Redirect(WhatIsYourEmailController.create()))
+          } {
+            _ =>
+              Future.successful(Redirect(WhatIsYourEmailController.create()))
+//              emailVerificationService.isEmailVerified(x.email).map {
+//                case Some(true) => EmailConfirmControll
+//                case Some(false) => Redirect(WhatIsYourEmailController.verify())
+//                case None => ??? //ToDo redirect to retry page
+//              }
+          }
+        }
+
       }
+      case AmendmentInProgress => Future.successful(Redirect(AmendmentInProgressController.show()))
+
     }
+//    emailCacheService.fetchEmail(request.user.internalId) flatMap {
+//      _.fold {
+//        Logger.warn("[WhatIsYourEmailController][show] - emailStatus not found")
+//        Future.successful(Redirect(WhatIsYourEmailController.create()))
+//      } {
+//        _ =>
+//          redirectAccordingToTimestamp(request.user.internalId)
+//      }
+//    }
   }
 
   def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
