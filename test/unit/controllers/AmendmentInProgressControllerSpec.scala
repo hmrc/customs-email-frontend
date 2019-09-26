@@ -19,7 +19,7 @@ package unit.controllers
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.emailfrontend.controllers.VerificationInProgressController
+import uk.gov.hmrc.customs.emailfrontend.controllers.AmendmentInProgressController
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
 import uk.gov.hmrc.customs.emailfrontend.views.html.verification_in_progress
@@ -27,11 +27,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class VerificationInProgressControllerSpec extends ControllerSpec {
+class AmendmentInProgressControllerSpec extends ControllerSpec {
 
   private val view = app.injector.instanceOf[verification_in_progress]
   private val mockEmailCacheService = mock[EmailCacheService]
-  private val controller = new VerificationInProgressController(fakeAction, view, mockEmailCacheService, mcc)
+  private val controller = new AmendmentInProgressController(fakeAction, view, mockEmailCacheService, mcc)
 
   "VerificationInProgressController" should {
     "have a status of SEE_OTHER when the email status is not found " in withAuthorisedUser() {

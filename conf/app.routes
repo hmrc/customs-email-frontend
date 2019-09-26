@@ -22,4 +22,4 @@ GET         /email-address-confirmed                            uk.gov.hmrc.cust
 
 GET         /ineligible/:ineligible                             uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController.show(ineligible:Ineligible.Value)
 
-GET         /cannot-change-email                                uk.gov.hmrc.customs.emailfrontend.controllers.VerificationInProgressController.show
+GET         /cannot-change-email                                uk.gov.hmrc.customs.emailfrontend.controllers.AmendmentInProgressController.show

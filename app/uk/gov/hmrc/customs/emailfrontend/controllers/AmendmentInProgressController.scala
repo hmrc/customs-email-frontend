@@ -28,11 +28,11 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.ExecutionContext
 
-class VerificationInProgressController @Inject()(actions: Actions,
-                                                 view: verification_in_progress,
-                                                 emailCacheService: EmailCacheService,
-                                                 mcc: MessagesControllerComponents)
-                                                (implicit override val messagesApi: MessagesApi, ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+class AmendmentInProgressController @Inject()(actions: Actions,
+                                              view: verification_in_progress,
+                                              emailCacheService: EmailCacheService,
+                                              mcc: MessagesControllerComponents)
+                                             (implicit override val messagesApi: MessagesApi, ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
 

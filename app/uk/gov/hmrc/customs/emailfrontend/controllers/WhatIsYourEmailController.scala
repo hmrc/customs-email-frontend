@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, VerificationInProgressController, WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, AmendmentInProgressController,  WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
@@ -97,7 +97,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
 
   private[this] def redirectAccordingToTimestamp(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Result] = {
     emailCacheService.emailVerificationStatus(internalId).map {
-      case AmendmentInProgress => Redirect(VerificationInProgressController.show())
+      case AmendmentInProgress => Redirect(AmendmentInProgressController.show())
       case _ => Redirect(CheckYourEmailController.show())
     }
   }
