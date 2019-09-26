@@ -97,7 +97,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
 
   private[this] def redirectAccordingToTimestamp(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Result] = {
     emailCacheService.emailVerificationStatus(internalId).map {
-      case VerificationInProgress => Redirect(VerificationInProgressController.show())
+      case AmendmentInProgress => Redirect(VerificationInProgressController.show())
       case _ => Redirect(CheckYourEmailController.show())
     }
   }

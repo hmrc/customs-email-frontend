@@ -102,7 +102,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
 
       val cacheVerificationStatus = service.emailVerificationStatus(internalId).futureValue
 
-      cacheVerificationStatus mustBe VerificationCompleted
+      cacheVerificationStatus mustBe AmendmentCompleted
     }
 
     "fetch timestamp and return verificationInProgress" in {
@@ -111,7 +111,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
 
       val cacheVerificationStatus = service.emailVerificationStatus(internalId).futureValue
 
-      cacheVerificationStatus mustBe VerificationInProgress
+      cacheVerificationStatus mustBe AmendmentInProgress
     }
 
     "fetch timestamp and return verificationNotDetermined" in {
@@ -120,7 +120,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
 
       val cacheVerificationStatus = service.emailVerificationStatus(internalId).futureValue
 
-      cacheVerificationStatus mustBe VerificationNotDetermined
+      cacheVerificationStatus mustBe AmendmentNotDetermined
     }
     "emailVerificationStatus" in {
       when(mockEmailCachingConfig.remove(meq(internalId.id))(any[HeaderCarrier], any[ExecutionContext]))

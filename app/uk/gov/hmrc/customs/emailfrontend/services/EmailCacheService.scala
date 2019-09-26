@@ -74,10 +74,10 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
     fetchAndGetEntry[DateTime](internalId.id, timestampKey)
   }
 
-  def emailVerificationStatus(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailVerificationStatus] = {
+  def emailVerificationStatus(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailAmendmentStatus] = {
     fetchTimeStamp(internalId).map {
-      case Some(date) => if (date.isBefore(DateTime.now.minusDays(1))) VerificationCompleted else VerificationInProgress
-      case None => VerificationNotDetermined
+      case Some(date) => if (date.isBefore(DateTime.now.minusDays(1))) AmendmentCompleted else AmendmentInProgress
+      case None => AmendmentNotDetermined
     }
   }
 

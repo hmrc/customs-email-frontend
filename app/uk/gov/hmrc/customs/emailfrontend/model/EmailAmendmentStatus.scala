@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-sealed trait EmailVerificationStatus
+sealed trait EmailAmendmentStatus
 
-object VerificationInProgress extends EmailVerificationStatus
+object AmendmentInProgress extends EmailAmendmentStatus
 
-object VerificationCompleted extends EmailVerificationStatus
+object AmendmentCompleted extends EmailAmendmentStatus
 
-object VerificationNotDetermined extends EmailVerificationStatus
+object AmendmentNotDetermined extends EmailAmendmentStatus
 
