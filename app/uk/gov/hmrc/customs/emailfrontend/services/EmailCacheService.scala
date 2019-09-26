@@ -22,6 +22,7 @@ import play.api.Logger
 import uk.gov.hmrc.crypto.{ApplicationCrypto, CompositeSymmetricCrypto}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId}
+import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache, ShortLivedHttpCaching}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -60,10 +61,24 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
   }
 
   def saveTimeStamp(internalId: InternalId, verifiedEmailTimestamp: DateTime)
-               (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
+                   (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
+
     import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
     Logger.info("saving verified email time stamp to save 4 later")
     cache[DateTime](internalId.id, timestampKey, verifiedEmailTimestamp)
+  }
+
+  private def fetchTimeStamp(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[DateTime]] = {
+    import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
+    Logger.info("retrieving cached timestamp from save 4 later")
+    fetchAndGetEntry[DateTime](internalId.id, timestampKey)
+  }
+
+  def emailAmendmentStatus(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailAmendmentStatus] = {
+    fetchTimeStamp(internalId).map {
+      case Some(date) => if (date.isBefore(DateTime.now.minusDays(1))) AmendmentCompleted else AmendmentInProgress
+      case None => AmendmentNotDetermined
+    }
   }
 
   def remove(internalId: InternalId)
@@ -72,7 +87,7 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
     remove(internalId.id)
   }
 
-  def fetchEmail(internalId:InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailStatus]] = {
+  def fetchEmail(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailStatus]] = {
     Logger.info("retrieving cached email from save 4 later")
     fetchAndGetEntry[EmailStatus](internalId.id, emailKey)
   }

@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import play.api.libs.json.Json
+sealed trait EmailAmendmentStatus
 
+object AmendmentInProgress extends EmailAmendmentStatus
 
-case class EmailStatus(email: String, isVerified: Boolean = false)
+object AmendmentCompleted extends EmailAmendmentStatus
 
-object EmailStatus {
-  implicit val jsonFormat = Json.format[EmailStatus]
-}
+object AmendmentNotDetermined extends EmailAmendmentStatus
+

@@ -16,6 +16,7 @@
 
 package unit.services
 
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
@@ -26,7 +27,7 @@ import play.api.http.Status.OK
 import play.api.libs.json._
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Protected}
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId}
+import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, Save4LaterCachingConfig}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -39,17 +40,17 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
   private val mockEmailCachingConfig = mock[Save4LaterCachingConfig]
   private val mockApplicationCrypto = mock[ApplicationCrypto]
 
-  val internalId = InternalId("internalID")
-  val emailStatus = EmailStatus("test@test.com")
-  val jsonValue = Json.toJson(emailStatus)
-  val data = Map(internalId.id -> jsonValue)
-  val timestamp = DateTimeUtil.dateTime
-  val cacheMap = CacheMap(internalId.id, data)
-  val successResponse = HttpResponse(OK)
+  private val internalId = InternalId("internalID")
+  private val emailStatus = EmailStatus("test@test.com")
+  private val jsonValue = Json.toJson(emailStatus)
+  private val data = Map(internalId.id -> jsonValue)
+  private val timestamp = DateTimeUtil.dateTime
+  private val cacheMap = CacheMap(internalId.id, data)
+  private val successResponse = HttpResponse(OK)
 
-  implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+  private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
 
-  val service = new EmailCacheService(mockEmailCachingConfig, mockApplicationCrypto)
+  private val service = new EmailCacheService(mockEmailCachingConfig, mockApplicationCrypto)
 
   before {
     reset(mockEmailCachingConfig, mockApplicationCrypto)
@@ -76,8 +77,6 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       cachedEmailStatus mustBe Some(emailStatus)
     }
 
-
-
     "save timestamp" in {
       when(mockEmailCachingConfig.cache(meq(internalId.id), meq("timestamp"), meq(Protected(timestamp)))(any[HeaderCarrier],
         any(), any[ExecutionContext])).thenReturn(Future.successful(cacheMap))
@@ -95,6 +94,37 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       val cache: HttpResponse = service.remove(internalId).futureValue
 
       cache mustBe successResponse
+    }
+
+    "fetch timestamp and return amendmentCompleted" in {
+      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
+        .thenReturn(Future.successful(Some(Protected(timestamp.minusDays(2)))))
+
+      val cacheVerificationStatus = service.emailAmendmentStatus(internalId).futureValue
+
+      cacheVerificationStatus mustBe AmendmentCompleted
+    }
+
+    "fetch timestamp and return amendmentInProgress" in {
+      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
+        .thenReturn(Future.successful(Some(Protected(timestamp))))
+
+      val cacheVerificationStatus = service.emailAmendmentStatus(internalId).futureValue
+
+      cacheVerificationStatus mustBe AmendmentInProgress
+    }
+
+    "fetch timestamp and return amendmentNotDetermined" in {
+      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
+        .thenReturn(Future.successful(None))
+
+      val cacheVerificationStatus = service.emailAmendmentStatus(internalId).futureValue
+
+      cacheVerificationStatus mustBe AmendmentNotDetermined
+    }
+    "emailAmendmentStatus" in {
+      when(mockEmailCachingConfig.remove(meq(internalId.id))(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(successResponse))
     }
 
   }
