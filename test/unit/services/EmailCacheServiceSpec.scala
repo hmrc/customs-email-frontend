@@ -96,7 +96,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       cache mustBe successResponse
     }
 
-    "fetch timestamp and return verificationCompleted" in {
+    "fetch timestamp and return amendmentCompleted" in {
       when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
         .thenReturn(Future.successful(Some(Protected(timestamp.minusDays(2)))))
 
@@ -105,7 +105,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       cacheVerificationStatus mustBe AmendmentCompleted
     }
 
-    "fetch timestamp and return verificationInProgress" in {
+    "fetch timestamp and return amendmentInProgress" in {
       when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
         .thenReturn(Future.successful(Some(Protected(timestamp))))
 
@@ -114,7 +114,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       cacheVerificationStatus mustBe AmendmentInProgress
     }
 
-    "fetch timestamp and return verificationNotDetermined" in {
+    "fetch timestamp and return amendmentNotDetermined" in {
       when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
         .thenReturn(Future.successful(None))
 
@@ -122,7 +122,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
 
       cacheVerificationStatus mustBe AmendmentNotDetermined
     }
-    "emailVerificationStatus" in {
+    "emailAmendmentStatus" in {
       when(mockEmailCachingConfig.remove(meq(internalId.id))(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(successResponse))
     }

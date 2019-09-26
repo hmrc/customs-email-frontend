@@ -18,15 +18,15 @@ package unit.views
 
 import org.jsoup.Jsoup
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.emailfrontend.views.html.verification_in_progress
+import uk.gov.hmrc.customs.emailfrontend.views.html.amendment_in_progress
 
-class VerificationInProgressViewSpec extends ViewSpec {
+class AmendmentInProgressViewSpec extends ViewSpec {
 
-  private val view = app.injector.instanceOf[verification_in_progress]
+  private val view = app.injector.instanceOf[amendment_in_progress]
 
   private val doc = Jsoup.parse(contentAsString(view.render("test@email.com", request, messages)))
 
-  "Verification In Progress page" should {
+  "Amendment In Progress page" should {
     "have a correct title" in {
       doc.title mustBe "You cannot change your email address"
     }
@@ -44,5 +44,4 @@ class VerificationInProgressViewSpec extends ViewSpec {
       doc.getElementsByClass("button").attr("href") mustBe "/customs-email-frontend/signout"
     }
   }
-
 }

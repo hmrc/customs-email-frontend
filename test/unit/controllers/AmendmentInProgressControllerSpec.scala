@@ -22,18 +22,18 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.AmendmentInProgressController
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
-import uk.gov.hmrc.customs.emailfrontend.views.html.verification_in_progress
+import uk.gov.hmrc.customs.emailfrontend.views.html.amendment_in_progress
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmendmentInProgressControllerSpec extends ControllerSpec {
 
-  private val view = app.injector.instanceOf[verification_in_progress]
+  private val view = app.injector.instanceOf[amendment_in_progress]
   private val mockEmailCacheService = mock[EmailCacheService]
   private val controller = new AmendmentInProgressController(fakeAction, view, mockEmailCacheService, mcc)
 
-  "VerificationInProgressController" should {
+  "AmendmentInProgressController" should {
     "have a status of SEE_OTHER when the email status is not found " in withAuthorisedUser() {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
 
@@ -41,7 +41,6 @@ class AmendmentInProgressControllerSpec extends ControllerSpec {
 
       status(eventualResult) shouldBe SEE_OTHER
       redirectLocation(eventualResult).value should endWith("/customs-email-frontend/signout")
-
     }
 
     "have a status of OK when email found in cache and verification in progress" in withAuthorisedUser() {
@@ -50,8 +49,6 @@ class AmendmentInProgressControllerSpec extends ControllerSpec {
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe OK
-
     }
   }
-
 }

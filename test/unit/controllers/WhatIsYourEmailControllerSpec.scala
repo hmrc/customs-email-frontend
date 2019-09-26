@@ -54,7 +54,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   "WhatIsYourEmailController" should {
 
-    "have a status of SEE_OTHER for show method when email found in cache and email status is VerificationCompleted" in withAuthorisedUser() {
+    "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentCompleted" in withAuthorisedUser() {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@email"))))
       when(mockEmailCacheService.emailVerificationStatus(any())(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(AmendmentCompleted))
 
@@ -64,7 +64,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-email-address")
     }
 
-    "have a status of SEE_OTHER for show method when email found in cache and email status is VerificationNotDetermined" in withAuthorisedUser() {
+    "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentNotDetermined" in withAuthorisedUser() {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@email"))))
       when(mockEmailCacheService.emailVerificationStatus(any())(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(AmendmentNotDetermined))
 
@@ -75,7 +75,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
 
-    "have a status of SEE_OTHER for show method when email found in cache and email status is VerificationInProgress" in withAuthorisedUser() {
+    "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentInProgress" in withAuthorisedUser() {
       when(mockEmailCacheService.fetchEmail(any())( any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@email"))))
       when(mockEmailCacheService.emailVerificationStatus(any())(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(AmendmentInProgress))
 
