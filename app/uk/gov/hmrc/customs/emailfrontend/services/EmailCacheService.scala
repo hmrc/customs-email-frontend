@@ -75,9 +75,11 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
   }
 
   def emailAmendmentStatus(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailAmendmentStatus] = {
-    fetchTimeStamp(internalId).map {
-      case Some(date) => println(s" ******************** THIS IS THE DATE $date") ; if (date.isBefore(DateTime.now.minusDays(1))) AmendmentCompleted else AmendmentInProgress
-      case None => println("************************** IT NOT DETERMIND !!!!"); AmendmentNotDetermined
+    fetchTimeStamp(internalId).flatMap {
+      case Some(date) => if (date.isBefore(DateTime.now.minusDays(1))) {
+        remove(internalId).map(_ => AmendmentCompleted )
+      } else Future.successful(AmendmentInProgress)
+      case None => Future.successful(AmendmentNotDetermined)
     }
   }
 

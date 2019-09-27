@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, AmendmentInProgressController,  WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, AmendmentInProgressController,  WhatIsYourEmailController,EmailConfirmedController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
@@ -43,37 +43,49 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
-    emailCacheService.emailAmendmentStatus(request.user.internalId) flatMap {
-      case AmendmentNotDetermined | AmendmentCompleted => {
-        emailCacheService.fetchEmail(request.user.internalId) flatMap {
-          _.fold {
-            Logger.warn("[WhatIsYourEmailController][show] - emailStatus not found")
-            Future.successful(Redirect(WhatIsYourEmailController.create()))
-          } {
-            _ =>
-              Future.successful(Redirect(WhatIsYourEmailController.create()))
-//              emailVerificationService.isEmailVerified(x.email).map {
-//                case Some(true) => EmailConfirmControll
-//                case Some(false) => Redirect(WhatIsYourEmailController.verify())
-//                case None => ??? //ToDo redirect to retry page
-//              }
-          }
-        }
-
-      }
-      case AmendmentInProgress => Future.successful(Redirect(AmendmentInProgressController.show()))
-
+    for {
+     status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
+     result <- redirectBasedOnAmendmentStatus(status)
+    }yield {
+      result
     }
-//    emailCacheService.fetchEmail(request.user.internalId) flatMap {
-//      _.fold {
-//        Logger.warn("[WhatIsYourEmailController][show] - emailStatus not found")
-//        Future.successful(Redirect(WhatIsYourEmailController.create()))
-//      } {
-//        _ =>
-//          redirectAccordingToTimestamp(request.user.internalId)
-//      }
-//    }
   }
+
+  private def redirectBasedOnAmendmentStatus(amendmentStatus: EmailAmendmentStatus)
+                                            (implicit request: AuthenticatedRequest[AnyContent],
+                                             hc: HeaderCarrier,
+                                             executionContext: ExecutionContext):Future[Result]= {
+    amendmentStatus match {
+      case AmendmentInProgress => {
+        Logger.warn("[WhatIsYourEmailController][show] - AmendmentInProgress")
+        Future.successful(Redirect(AmendmentInProgressController.show()))
+      }
+      case AmendmentNotDetermined | AmendmentCompleted => {
+        Logger.warn("[WhatIsYourEmailController][show] - AmendmentNotDetermined")
+        redirectBasedOnEmailStatus
+      }
+    }
+  }
+
+
+  private def redirectBasedOnEmailStatus(implicit request: AuthenticatedRequest[AnyContent],
+                                         hc: HeaderCarrier,
+                                         executionContext: ExecutionContext): Future[Result] = {
+    emailCacheService.fetchEmail(request.user.internalId) flatMap {
+      _.fold {
+        Logger.warn("[WhatIsYourEmailController][show] - email not found")
+        Future.successful(Redirect(WhatIsYourEmailController.create()))
+      } {
+        emailStatus =>
+          emailVerificationService.isEmailVerified(emailStatus.email).map {
+            case Some(true) => Redirect(EmailConfirmedController.show())
+            case Some(false) => Redirect(WhatIsYourEmailController.verify())
+            case None => ??? //ToDo redirect to retry page  Email Service is down or any other errors
+          }
+      }
+    }
+  }
+
 
   def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
     subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
