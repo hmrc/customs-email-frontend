@@ -67,7 +67,6 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       cache mustBe cacheMap
     }
 
-
     "fetch Email" in {
       when(mockEmailCachingConfig.fetchAndGetEntry[Protected[EmailStatus]](meq(internalId.id), meq("email"))(any[HeaderCarrier], any(), any[ExecutionContext]))
         .thenReturn(Future.successful(Some(Protected(emailStatus))))
@@ -86,6 +85,14 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       cache mustBe cacheMap
     }
 
+    "fetch timestamp" in {
+      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
+        .thenReturn(Future.successful(Some(Protected(timestamp))))
+
+      val cachedTimestamp = service.fetchTimeStamp(internalId).futureValue
+
+      cachedTimestamp mustBe Some(timestamp)
+    }
 
     "remove data" in {
       when(mockEmailCachingConfig.remove(meq(internalId.id))(any[HeaderCarrier], any[ExecutionContext]))
@@ -124,10 +131,6 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
 
       cacheVerificationStatus mustBe AmendmentNotDetermined
     }
-    "emailAmendmentStatus" in {
-      when(mockEmailCachingConfig.remove(meq(internalId.id))(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(successResponse))
-    }
-
   }
 }
+
