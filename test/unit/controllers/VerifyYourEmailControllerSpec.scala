@@ -16,6 +16,7 @@
 
 package unit.controllers
 
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
@@ -35,6 +36,7 @@ class VerifyYourEmailControllerSpec extends ControllerSpec {
 
   "VerifyYourEmailController" should {
     "redirect to sign out page when no email found in cache" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
 
       val eventualResult = controller.show(request)
@@ -44,11 +46,21 @@ class VerifyYourEmailControllerSpec extends ControllerSpec {
     }
 
     "return status OK when email found in cache" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("testEmail"))))
 
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe OK
+    }
+
+    "have a status of SEE_OTHER when user clicks browser back on the successful request or uses already complete bookmarked request within 24 hours" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(Some(DateTime.now())))
+
+      val eventualResult = controller.show(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
     }
   }
 }
