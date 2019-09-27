@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{AmendmentInProgressController, EmailConfirmedController, WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{EmailConfirmedController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
@@ -47,17 +47,6 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
       result <- redirectBasedOnAmendmentStatus(status)(redirectBasedOnEmailStatus)
     } yield result
   }
-
-//  private def redirectBasedOnAmendmentStatus(amendmentStatus: EmailAmendmentStatus)
-//                                            (implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
-//    amendmentStatus match {
-//      case AmendmentInProgress =>
-//        Logger.warn("[WhatIsYourEmailController][show] - AmendmentInProgress")
-//        Future.successful(Redirect(AmendmentInProgressController.show()))
-//      case AmendmentNotDetermined | AmendmentCompleted =>
-//        Logger.warn("[WhatIsYourEmailController][show] - AmendmentNotDetermined")
-//        redirectBasedOnEmailStatus
-//    }
 
   private def redirectBasedOnEmailStatus(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     emailCacheService.fetchEmail(request.user.internalId) flatMap {

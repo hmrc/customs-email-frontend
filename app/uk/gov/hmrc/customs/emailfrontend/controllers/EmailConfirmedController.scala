@@ -20,12 +20,12 @@ import javax.inject.Inject
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{AmendmentInProgressController, SignOutController, VerifyYourEmailController}
-import uk.gov.hmrc.customs.emailfrontend.model.{AmendmentCompleted, AmendmentInProgress, AmendmentNotDetermined, AuthenticatedRequest, EmailAmendmentStatus, EmailStatus, EoriRequest}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, EoriRequest}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.http.cache.client.CacheMap

@@ -17,13 +17,14 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import play.api.Logger
-import play.api.mvc.{Result, Results}
+import play.api.mvc.Result
+import play.api.mvc.Results._
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.AmendmentInProgressController
 import uk.gov.hmrc.customs.emailfrontend.model._
 
 import scala.concurrent.Future
 
-trait AmendmentStatusController extends Results{
+trait AmendmentStatusController{
 
    def redirectBasedOnAmendmentStatus(amendmentStatus: EmailAmendmentStatus)
                                      (redirectBasedOnEmailStatus: => Future[Result]): Future[Result] =

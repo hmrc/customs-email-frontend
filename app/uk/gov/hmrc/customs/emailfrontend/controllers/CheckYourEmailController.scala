@@ -21,9 +21,9 @@ import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{AmendmentInProgressController, EmailConfirmedController, SignOutController, VerifyYourEmailController, WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{EmailConfirmedController, SignOutController, VerifyYourEmailController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
-import uk.gov.hmrc.customs.emailfrontend.model.{AmendmentCompleted, AmendmentInProgress, AmendmentNotDetermined, AuthenticatedRequest, EmailAmendmentStatus, EmailStatus, EoriRequest, InternalId, YesNo}
+import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EmailStatus, InternalId, YesNo}
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 import uk.gov.hmrc.http.HeaderCarrier
