@@ -99,6 +99,8 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
     "fetch timestamp and return amendmentCompleted" in {
       when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
         .thenReturn(Future.successful(Some(Protected(timestamp.minusDays(2)))))
+      when(mockEmailCachingConfig.remove(meq(internalId.id))(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(successResponse))
 
       val cacheVerificationStatus = service.emailAmendmentStatus(internalId).futureValue
 

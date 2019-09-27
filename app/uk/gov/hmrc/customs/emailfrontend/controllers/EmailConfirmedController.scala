@@ -69,7 +69,6 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
 
   private[this] def saveTimeStamp(timestamp: DateTime)(implicit request: EoriRequest[AnyContent]): Future[CacheMap] = {
     for {
-     // _ <- emailCacheService.remove(request.user.internalId)
       savedTimestamp <- emailCacheService.saveTimeStamp(request.user.internalId, timestamp)
     } yield savedTimestamp
   }
