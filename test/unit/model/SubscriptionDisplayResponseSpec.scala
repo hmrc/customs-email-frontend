@@ -16,10 +16,10 @@
 
 package unit.model
 
+import org.scalatest.Matchers._
+import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
-import org.scalatestplus.play.PlaySpec
-import org.scalatest.Matchers._
 
 class SubscriptionDisplayResponseSpec extends PlaySpec {
 

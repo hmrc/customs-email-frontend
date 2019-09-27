@@ -24,6 +24,8 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Writes
+import play.api.test.Helpers._
+import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
@@ -31,8 +33,6 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, MethodNotAllowedException, _}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import play.api.test.Helpers._
-import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
 
 import scala.concurrent.{ExecutionContext, Future}
 
