@@ -24,7 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.model._
 
 import scala.concurrent.Future
 
-trait AmendmentStatusController{
+trait DetermineRouteController{
 
    def redirectBasedOnAmendmentStatus(amendmentStatus: EmailAmendmentStatus)
                                      (redirectBasedOnEmailStatus: => Future[Result]): Future[Result] =

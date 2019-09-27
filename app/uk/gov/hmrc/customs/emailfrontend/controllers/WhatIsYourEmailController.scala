@@ -39,7 +39,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
                                           subscriptionDisplayConnector: SubscriptionDisplayConnector,
                                           emailVerificationService: EmailVerificationService)
                                          (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with AmendmentStatusController {
+  extends FrontendController(mcc) with I18nSupport with DetermineRouteController {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
     for {

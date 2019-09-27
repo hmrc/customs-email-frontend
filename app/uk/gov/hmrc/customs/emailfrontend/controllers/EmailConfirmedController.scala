@@ -40,7 +40,7 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
                                          updateVerifiedEmailService: UpdateVerifiedEmailService,
                                          mcc: MessagesControllerComponents)
                                         (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with AmendmentStatusController {
+  extends FrontendController(mcc) with I18nSupport with DetermineRouteController {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted andThen actions.eori).async { implicit request =>
     for{
