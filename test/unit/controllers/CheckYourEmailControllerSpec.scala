@@ -16,6 +16,7 @@
 
 package unit.controllers
 
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
@@ -40,6 +41,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
   "ConfirmEmailController" should {
 
     "have a status of OK when email found in cache" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@test.com"))))
 
       val eventualResult = controller.show(request)
@@ -48,6 +50,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
     }
 
     "have a status of SEE_OTHER when email not found in cache on show" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
 
       val eventualResult = controller.show(request)
@@ -57,6 +60,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
     }
 
     "have a status of SEE_OTHER when email not found in cache on submit" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "")
@@ -67,6 +71,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
     }
 
     "have a status of BAD_REQUEST when no selection is provided" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@test.com"))))
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "")
@@ -76,6 +81,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
     }
 
     "have a status of SEE_OTHER when no is selected" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@test.com"))))
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "false")
@@ -84,11 +90,22 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       status(eventualResult) shouldBe SEE_OTHER
       redirectLocation(eventualResult).value should endWith("/customs-email-frontend/change-email-address/create")
     }
+
+    "have a status of SEE_OTHER when user clicks back on the successful request or uses already complete bookmarked request within 24 hours" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(Some(DateTime.now())))
+
+      val eventualResult = controller.show(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
+    }
+
   }
 
   "ConfirmEmailController on submit with yes selected" should {
 
     "redirect to Verify Your Email  page when email yet not verified" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@test.com"))))
       when(mockEmailCacheService.saveEmail(any(), any())(any(), any())).thenReturn(Future.successful(CacheMap("testId", Map())))
       when(mockEmailVerificationService.createEmailVerificationRequest(any(), any())(any())).thenReturn(Future.successful(Some(false)))
@@ -101,6 +118,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
     }
 
     "redirect to Email Confirmed page when email already verified" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@test.com"))))
       when(mockEmailVerificationService.createEmailVerificationRequest(any(), any())(any())).thenReturn(Future.successful(Some(true)))
 
@@ -112,6 +130,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
     }
 
     "throw exception when createEmailVerificationRequest failed" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@test.com"))))
       when(mockEmailVerificationService.createEmailVerificationRequest(any(), any())(any())).thenReturn(Future.successful(None))
 

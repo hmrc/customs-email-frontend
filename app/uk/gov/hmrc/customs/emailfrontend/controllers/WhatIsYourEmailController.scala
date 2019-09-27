@@ -39,25 +39,25 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
                                           subscriptionDisplayConnector: SubscriptionDisplayConnector,
                                           emailVerificationService: EmailVerificationService)
                                          (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with I18nSupport with AmendmentStatusController {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
     for {
       status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
-      result <- redirectBasedOnAmendmentStatus(status)
+      result <- redirectBasedOnAmendmentStatus(status)(redirectBasedOnEmailStatus)
     } yield result
   }
 
-  private def redirectBasedOnAmendmentStatus(amendmentStatus: EmailAmendmentStatus)
-                                            (implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
-    amendmentStatus match {
-      case AmendmentInProgress =>
-        Logger.warn("[WhatIsYourEmailController][show] - AmendmentInProgress")
-        Future.successful(Redirect(AmendmentInProgressController.show()))
-      case AmendmentNotDetermined | AmendmentCompleted =>
-        Logger.warn("[WhatIsYourEmailController][show] - AmendmentNotDetermined")
-        redirectBasedOnEmailStatus
-    }
+//  private def redirectBasedOnAmendmentStatus(amendmentStatus: EmailAmendmentStatus)
+//                                            (implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
+//    amendmentStatus match {
+//      case AmendmentInProgress =>
+//        Logger.warn("[WhatIsYourEmailController][show] - AmendmentInProgress")
+//        Future.successful(Redirect(AmendmentInProgressController.show()))
+//      case AmendmentNotDetermined | AmendmentCompleted =>
+//        Logger.warn("[WhatIsYourEmailController][show] - AmendmentNotDetermined")
+//        redirectBasedOnEmailStatus
+//    }
 
   private def redirectBasedOnEmailStatus(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     emailCacheService.fetchEmail(request.user.internalId) flatMap {

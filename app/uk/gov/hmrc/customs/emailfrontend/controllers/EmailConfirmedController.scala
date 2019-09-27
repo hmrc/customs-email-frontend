@@ -20,12 +20,12 @@ import javax.inject.Inject
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, EoriRequest}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{AmendmentInProgressController, SignOutController, VerifyYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.model.{AmendmentCompleted, AmendmentInProgress, AmendmentNotDetermined, AuthenticatedRequest, EmailAmendmentStatus, EmailStatus, EoriRequest}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -40,9 +40,19 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
                                          updateVerifiedEmailService: UpdateVerifiedEmailService,
                                          mcc: MessagesControllerComponents)
                                         (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with I18nSupport with AmendmentStatusController {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted andThen actions.eori).async { implicit request =>
+    for{
+      status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
+      result <- redirectBasedOnAmendmentStatus(status)(redirectBasedOnEmailStatus)
+    } yield {
+      result
+    }
+
+  }
+
+  private def redirectBasedOnEmailStatus(implicit request: EoriRequest[AnyContent]): Future[Result] ={
     emailCacheService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[EmailConfirmedController][show] - emailStatus cache none, user logged out")

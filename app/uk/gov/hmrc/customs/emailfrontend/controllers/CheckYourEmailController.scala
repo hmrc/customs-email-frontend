@@ -21,9 +21,9 @@ import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{EmailConfirmedController, SignOutController, VerifyYourEmailController, WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{AmendmentInProgressController, EmailConfirmedController, SignOutController, VerifyYourEmailController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId, YesNo}
+import uk.gov.hmrc.customs.emailfrontend.model.{AmendmentCompleted, AmendmentInProgress, AmendmentNotDetermined, AuthenticatedRequest, EmailAmendmentStatus, EmailStatus, EoriRequest, InternalId, YesNo}
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,9 +36,18 @@ class CheckYourEmailController @Inject()(actions: Actions,
                                          emailVerificationService: EmailVerificationService,
                                          mcc: MessagesControllerComponents,
                                          emailCacheService: EmailCacheService)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with I18nSupport with AmendmentStatusController {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
+    for{
+      status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
+      result <- redirectBasedOnAmendmentStatus(status)(redirectBasedOnEmailStatus)
+    } yield {
+      result
+    }
+  }
+
+  private def redirectBasedOnEmailStatus(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] ={
     emailCacheService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[CheckYourEmailController][show] - emailStatus cache none, user logged out")
@@ -49,6 +58,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
       }
     }
   }
+
 
   def submit: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
     emailCacheService.fetchEmail(request.user.internalId) flatMap {
