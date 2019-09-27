@@ -68,17 +68,10 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
     cache[DateTime](internalId.id, timestampKey, verifiedEmailTimestamp)
   }
 
-  private def fetchTimeStamp(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[DateTime]] = {
+  def fetchTimeStamp(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[DateTime]] = {
     import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
     Logger.info("retrieving cached timestamp from save 4 later")
     fetchAndGetEntry[DateTime](internalId.id, timestampKey)
-  }
-
-  def emailAmendmentStatus(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailAmendmentStatus] = {
-    fetchTimeStamp(internalId).map {
-      case Some(date) => if (date.isBefore(DateTime.now.minusDays(1))) AmendmentCompleted else AmendmentInProgress
-      case None => AmendmentNotDetermined
-    }
   }
 
   def remove(internalId: InternalId)
@@ -90,5 +83,19 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
   def fetchEmail(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailStatus]] = {
     Logger.info("retrieving cached email from save 4 later")
     fetchAndGetEntry[EmailStatus](internalId.id, emailKey)
+  }
+}
+
+
+object EmailCacheService{
+  implicit class EmailCacheServiceHelper(emailCacheService: EmailCacheService){
+    def emailAmendmentStatus(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailAmendmentStatus] = {
+      emailCacheService.fetchTimeStamp(internalId).flatMap {
+        case Some(date) => if (date.isBefore(DateTime.now.minusDays(1))) {
+          emailCacheService.remove(internalId).map(_ => AmendmentCompleted )
+        } else Future.successful(AmendmentInProgress)
+        case None => Future.successful(AmendmentNotDetermined)
+      }
+    }
   }
 }

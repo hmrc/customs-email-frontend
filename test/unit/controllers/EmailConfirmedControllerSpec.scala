@@ -126,18 +126,5 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any())(any[HeaderCarrier])
     }
 
-    "not save time stamp for verified email" when {
-      "remove email from save4later is not successful" in withAuthorisedUser() {
-        when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
-        when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
-        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
-          .thenReturn(Future.successful(Some(true)))
-        when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.failed(new InternalServerException("Failed to remove")))
-        val eventualResult = controller.show(request)
-        status(eventualResult) shouldBe OK
-
-        verify(mockEmailCacheService, times(0)).saveTimeStamp(any(), any())(any[HeaderCarrier], any[ExecutionContext])
-      }
-    }
   }
 }

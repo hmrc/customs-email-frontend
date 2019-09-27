@@ -22,12 +22,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, AmendmentInProgressController,  WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{AmendmentInProgressController, EmailConfirmedController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.{change_your_email, what_is_your_email}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,16 +42,37 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
+    for {
+      status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
+      result <- redirectBasedOnAmendmentStatus(status)
+    } yield result
+  }
+
+  private def redirectBasedOnAmendmentStatus(amendmentStatus: EmailAmendmentStatus)
+                                            (implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
+    amendmentStatus match {
+      case AmendmentInProgress =>
+        Logger.warn("[WhatIsYourEmailController][show] - AmendmentInProgress")
+        Future.successful(Redirect(AmendmentInProgressController.show()))
+      case AmendmentNotDetermined | AmendmentCompleted =>
+        Logger.warn("[WhatIsYourEmailController][show] - AmendmentNotDetermined")
+        redirectBasedOnEmailStatus
+    }
+
+  private def redirectBasedOnEmailStatus(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     emailCacheService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
-        Logger.warn("[WhatIsYourEmailController][show] - emailStatus not found")
+        Logger.warn("[WhatIsYourEmailController][show] - email not found")
         Future.successful(Redirect(WhatIsYourEmailController.create()))
       } {
-        _ =>
-          redirectAccordingToTimestamp(request.user.internalId)
+        emailStatus =>
+          emailVerificationService.isEmailVerified(emailStatus.email).map {
+            case Some(true) => Redirect(EmailConfirmedController.show())
+            case Some(false) => Redirect(WhatIsYourEmailController.verify())
+            case None => ??? //ToDo redirect to retry page  Email Service is down or any other errors
+          }
       }
     }
-  }
 
   def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
     subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
@@ -93,12 +113,5 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         }
       }
     )
-  }
-
-  private[this] def redirectAccordingToTimestamp(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Result] = {
-    emailCacheService.emailAmendmentStatus(internalId).map {
-      case AmendmentInProgress => Redirect(AmendmentInProgressController.show())
-      case _ => Redirect(CheckYourEmailController.show())
-    }
   }
 }
