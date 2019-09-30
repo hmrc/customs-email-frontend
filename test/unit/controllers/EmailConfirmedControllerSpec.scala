@@ -51,6 +51,8 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "have a status of OK " when {
       "email found in cache, email is verified and update verified email is successful" in withAuthorisedUser() {
         when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+        when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+
         when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
         when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
@@ -66,6 +68,8 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
       "email found in cache, email is verified and update verified email is successful but saving timestamp fails" in withAuthorisedUser() {
         when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+        when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+
         when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
         when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
@@ -83,6 +87,8 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
     "have a status of SEE_OTHER when email found in cache but email is not verified" in withAuthorisedUser() {
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+
       when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(OK)))
       when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
@@ -94,6 +100,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "have a status of SEE_OTHER when email found in cache but isEmailVerified failed" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
       when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(OK)))
@@ -106,6 +113,8 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "have a status of SEE_OTHER for show method when email not found in cache" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+
       when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
 
       val eventualResult = controller.show(request)
@@ -113,6 +122,14 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       status(eventualResult) shouldBe SEE_OTHER
       redirectLocation(eventualResult).value should endWith("/customs-email-frontend/signout")
     }
+
+    "have a status of SEE_OTHER for show method user retry's the same request(user click back on successful request or refreshes the browser)" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(Some(DateTime.now())))
+      val eventualResult = controller.show(request)
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
+    }
+
 
     "have a status of OK for user with no enrolments" in withAuthorisedUserWithoutEnrolments {
       val eventualResult = controller.show(request)

@@ -19,7 +19,6 @@ package acceptance.utils
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status
-import uk.gov.hmrc.auth.core.CredentialRole
 
 trait StubAuthClient {
 

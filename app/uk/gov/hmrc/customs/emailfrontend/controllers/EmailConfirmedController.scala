@@ -40,9 +40,19 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
                                          updateVerifiedEmailService: UpdateVerifiedEmailService,
                                          mcc: MessagesControllerComponents)
                                         (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with I18nSupport with DetermineRouteController {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted andThen actions.eori).async { implicit request =>
+    for{
+      status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
+      result <- redirectBasedOnAmendmentStatus(status)(redirectBasedOnEmailStatus)
+    } yield {
+      result
+    }
+
+  }
+
+  private def redirectBasedOnEmailStatus(implicit request: EoriRequest[AnyContent]): Future[Result] ={
     emailCacheService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[EmailConfirmedController][show] - emailStatus cache none, user logged out")
