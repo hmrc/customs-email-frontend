@@ -19,7 +19,7 @@ package acceptance.specs
 import acceptance.pages._
 import acceptance.utils._
 
-class WhatIsYourEmailSpec extends BaseSpec
+class WhatIsYourEmailSpec extends AcceptanceTestSpec
   with SpecHelper
   with StubSave4Later
   with StubAuthClient

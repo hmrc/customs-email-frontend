@@ -19,7 +19,7 @@ package acceptance.specs
 import acceptance.pages.{CheckYourEmailAddressPage, StartPage, VerifyYourEmailAddressPage, WhatIsYourEmailPage}
 import acceptance.utils._
 
-class SendEmailVerificationSpec extends BaseSpec
+class SendEmailVerificationSpec extends AcceptanceTestSpec
   with SpecHelper
   with StubAuthClient
   with StubSave4Later

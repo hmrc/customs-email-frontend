@@ -20,7 +20,7 @@ import acceptance.pages._
 import acceptance.utils._
 import integration.stubservices.UpdateVerifiedEmailStubService._
 
-class EmailConfirmedSpec extends BaseSpec
+class EmailConfirmedSpec extends AcceptanceTestSpec
   with SpecHelper
   with StubSave4Later
   with StubAuthClient

@@ -19,7 +19,7 @@ package acceptance.specs
 import acceptance.pages._
 import acceptance.utils._
 
-class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
+class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAuthClient {
 
   lazy val randomEoriNumber = "GB" + generateRandomNumberString()
   lazy val randomInternalId = generateRandomNumberString()
