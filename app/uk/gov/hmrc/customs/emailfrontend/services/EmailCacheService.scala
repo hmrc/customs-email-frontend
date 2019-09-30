@@ -17,12 +17,13 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import javax.inject.{Inject, Singleton}
-import org.joda.time.DateTime
 import play.api.Logger
+import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.crypto.{ApplicationCrypto, CompositeSymmetricCrypto}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId}
-import uk.gov.hmrc.customs.emailfrontend.model._
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{AmendmentInProgressController, SignOutController}
+import uk.gov.hmrc.customs.emailfrontend.model.{InternalId, _}
 import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache, ShortLivedHttpCaching}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -52,49 +53,33 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
 
   val emailKey = "email"
 
-  val timestampKey = "timestamp"
-
-  def saveEmail(internalId: InternalId, emailStatus: EmailStatus)
-               (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
-    Logger.info("saving email address to save 4 later")
-    cache[EmailStatus](internalId.id, emailKey, emailStatus)
-  }
-
-  def saveTimeStamp(internalId: InternalId, verifiedEmailTimestamp: DateTime)
-                   (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
-
-    import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
-    Logger.info("saving verified email time stamp to save 4 later")
-    cache[DateTime](internalId.id, timestampKey, verifiedEmailTimestamp)
-  }
-
-  def fetchTimeStamp(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[DateTime]] = {
-    import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
-    Logger.info("retrieving cached timestamp from save 4 later")
-    fetchAndGetEntry[DateTime](internalId.id, timestampKey)
-  }
-
   def remove(internalId: InternalId)
             (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
     Logger.info("removing cached data from save 4 later")
     remove(internalId.id)
   }
 
-  def fetchEmail(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailStatus]] = {
-    Logger.info("retrieving cached email from save 4 later")
-    fetchAndGetEntry[EmailStatus](internalId.id, emailKey)
+  def save(internalId: InternalId, cachedData: CachedData)
+          (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
+    Logger.info("saving email address and timestamp to save 4 later")
+    cache[CachedData](internalId.id, emailKey, cachedData)
+  }
+
+  def fetch(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[CachedData]] = {
+    Logger.info("retrieving email address and timestamp from save 4 later")
+    fetchAndGetEntry[CachedData](internalId.id, emailKey)
   }
 }
 
+object EmailCacheService {
 
-object EmailCacheService{
-  implicit class EmailCacheServiceHelper(emailCacheService: EmailCacheService){
-    def emailAmendmentStatus(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailAmendmentStatus] = {
-      emailCacheService.fetchTimeStamp(internalId).flatMap {
-        case Some(date) => if (date.isBefore(DateTime.now.minusDays(1))) {
-          emailCacheService.remove(internalId).map(_ => AmendmentCompleted )
-        } else Future.successful(AmendmentInProgress)
-        case None => Future.successful(AmendmentNotDetermined)
+  implicit class EmailCacheServiceHelper(emailCacheService: EmailCacheService) {
+
+    def emailAmendmentData(internalId: InternalId)(redirectBasedOnEmailStatus: String => Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext) = {
+      emailCacheService.fetch(internalId).flatMap {
+        case Some(data) if data.amendmentInProgress => Future.successful(Redirect(AmendmentInProgressController.show()))
+        case Some(CachedData(email, _)) => redirectBasedOnEmailStatus(email)
+        case _ => Future.successful(Redirect(SignOutController.signOut()))
       }
     }
   }

@@ -35,14 +35,13 @@ class AmendmentInProgressController @Inject()(actions: Actions,
                                              (implicit override val messagesApi: MessagesApi, ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
-
-    emailCacheService.fetchEmail(request.user.internalId) map {
+    emailCacheService.fetch(request.user.internalId) map {
       _.fold {
         Logger.warn("[AmendmentInProgressController][show] - emailStatus not found")
         Redirect(SignOutController.signOut())
       } {
-        emailStatus =>
-          Ok(view(emailStatus.email))
+        cachedData =>
+          Ok(view(cachedData.email))
       }
     }
   }

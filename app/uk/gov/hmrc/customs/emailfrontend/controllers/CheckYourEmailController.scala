@@ -23,7 +23,7 @@ import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{EmailConfirmedController, SignOutController, VerifyYourEmailController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
-import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EmailStatus, InternalId, YesNo}
+import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,43 +36,29 @@ class CheckYourEmailController @Inject()(actions: Actions,
                                          emailVerificationService: EmailVerificationService,
                                          mcc: MessagesControllerComponents,
                                          emailCacheService: EmailCacheService)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with DetermineRouteController {
+  extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
-    for{
-      status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
-      result <- redirectBasedOnAmendmentStatus(status)(redirectBasedOnEmailStatus)
-    } yield {
-      result
-    }
+    emailCacheService.emailAmendmentData(request.user.internalId)(redirectWithEmail)
   }
 
-  private def redirectBasedOnEmailStatus(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] ={
-    emailCacheService.fetchEmail(request.user.internalId) flatMap {
-      _.fold {
-        Logger.warn("[CheckYourEmailController][show] - emailStatus cache none, user logged out")
-        Future.successful(Redirect(SignOutController.signOut()))
-      } {
-        emailStatus =>
-          Future.successful(Ok(view(confirmEmailForm, emailStatus.email)))
-      }
-    }
+  private def redirectWithEmail(email: String)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
+    Future.successful(Ok(view(confirmEmailForm, email)))
   }
-
 
   def submit: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
-    emailCacheService.fetchEmail(request.user.internalId) flatMap {
+    emailCacheService.fetch(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[CheckYourEmailController][submit] - emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
       } {
-        emailStatus =>
+        cachedData =>
           confirmEmailForm.bindFromRequest.fold(
             formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, emailStatus.email)))
+              Future.successful(BadRequest(view(formWithErrors, cachedData.email)))
             },
             formData =>
-              locationByAnswer(request.user.internalId, formData, emailStatus.email)
+              locationByAnswer(request.user.internalId, formData, cachedData.email)
           )
       }
     }
@@ -86,7 +72,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
           "[CheckYourEmailController][sendVerification] - " +
             "Unable to send email verification request. Service responded with 'already verified'"
         )
-        emailCacheService.saveEmail(internalId, EmailStatus(email, isVerified = true)).map { _ =>
+        emailCacheService.save(internalId, CachedData(email, None)).map { _ =>
           Redirect(EmailConfirmedController.show())
         }
       case None => throw new IllegalStateException("CreateEmailVerificationRequest Failed")

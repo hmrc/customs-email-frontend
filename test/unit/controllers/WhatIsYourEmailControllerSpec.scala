@@ -28,8 +28,8 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
 import uk.gov.hmrc.customs.emailfrontend.views.html._
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
@@ -56,9 +56,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   "WhatIsYourEmailController" should {
 
     "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentCompleted" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(Some(DateTime.now().minusDays(2))))
-      when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(CachedData("abc@def.com", Some(DateTime.now().minusDays(2))))))
 
       val eventualResult = controller.show(request)
 
@@ -67,8 +65,8 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentNotDetermined and email is not in cache" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
@@ -77,8 +75,8 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentNotDetermined or AmendmentComplete  and email is in cache and is verified" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@email"))))
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(CachedData("abc@def.com", None))))
+
       when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
 
       val eventualResult = controller.show(request)
@@ -88,8 +86,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     }
     "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentNotDetermined or AmendmentComplete  and email is in cache and is not verified" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@email"))))
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(CachedData("abc@def.com", None))))
       when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
 
       val eventualResult = controller.show(request)
@@ -101,8 +98,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
 
     "have a status of SEE_OTHER for show method when email found in cache and Amendment status is AmendmentInProgress" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchEmail(any())( any(), any())).thenReturn(Future.successful(Some(EmailStatus("test@email"))))
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(Some(DateTime.now())))
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(CachedData("abc@def.com", Some(DateTime.now())))))
 
       val eventualResult = controller.show(request)
 
@@ -111,8 +107,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for show method when Amendment status AmendmentNotDetermined or AmendmentComplete  and email not found in cache " in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
@@ -160,14 +155,14 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of OK for verify method" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(CachedData("abc@def.com", None))))
 
       val eventualResult = controller.verify(request)
 
       status(eventualResult) shouldBe OK
     }
     "have a status of SEE_OTHER for verify method when the bookmark url is used and user already complete success amend email journey " in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(Some(DateTime.now())))
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(CachedData("abc@def.com", Some(DateTime.now())))))
 
       val eventualResult = controller.verify(request)
       redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
@@ -194,7 +189,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
 
     "have a status of OK when the email is valid" in withAuthorisedUser() {
-      when(mockEmailCacheService.saveEmail(any(), any())(any(), any())).thenReturn(Future.successful(cacheMap))
+      when(mockEmailCacheService.save(any(), any())(any(), any())).thenReturn(Future.successful(cacheMap))
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "valid@email.com")
       val eventualResult = controller.submit(request)
@@ -210,7 +205,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of OK for verifyEmail method when the email is valid" in withAuthorisedUser() {
-      when(mockEmailCacheService.saveEmail(any(), any())(any(), any())).thenReturn(Future.successful(cacheMap))
+      when(mockEmailCacheService.save(any(), any())(any(), any())).thenReturn(Future.successful(cacheMap))
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "valid@email.com")
       val eventualResult = controller.verifySubmit(request)
