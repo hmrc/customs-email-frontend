@@ -120,6 +120,8 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of OK for create method when verified email found in response" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
       when(mockEmailVerificationService.isEmailVerified(meq(someSubscriptionDisplayResponse.email.get))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
 
@@ -128,7 +130,19 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       status(eventualResult) shouldBe OK
     }
 
+    "have a status of SEE_OTHER for create method when the bookmark url is used and user already complete success amend email journey" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(Some(DateTime.now())))
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
+      when(mockEmailVerificationService.isEmailVerified(meq(someSubscriptionDisplayResponse.email.get))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
+
+      val eventualResult = controller.create(request)
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
+
+    }
+
     "have a status of SEE_OTHER for create method when unverified email found in response" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
       when(mockEmailVerificationService.isEmailVerified(meq(someSubscriptionDisplayResponse.email.get))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
 
