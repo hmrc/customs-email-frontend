@@ -64,6 +64,16 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     }
 
   def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+
+    for {
+      status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
+      result <- redirectBasedOnAmendmentStatus(status)(redirectBaseOnEmailStatusAndSubscriptionDisplay)
+    } yield result
+
+  }
+
+
+  private def redirectBaseOnEmailStatusAndSubscriptionDisplay(implicit request: EoriRequest[AnyContent]): Future[Result] = {
     subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
       case SubscriptionDisplayResponse(Some(email)) =>
         emailVerificationService.isEmailVerified(email).map {
@@ -73,7 +83,6 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         }
     }
   }
-
 
   def verify: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
     for {
