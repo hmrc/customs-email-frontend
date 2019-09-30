@@ -60,7 +60,7 @@ class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper{
       navigateTo(VerifyYourEmailAddressPage)
       verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
       navigateTo(WhatIsYourEmailPage)
-//      verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
+      verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
 
     }
   }

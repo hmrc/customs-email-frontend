@@ -24,7 +24,6 @@ class EmailConfirmedPage extends BasePage {
   override val title = "Email address confirmed"
 
   val verifyEmailConfirmedText: By = By.id("info")
-  val signOutId: By = By.id("sign-out")
 }
 
 object EmailConfirmedPage extends EmailConfirmedPage
