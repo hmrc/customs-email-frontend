@@ -19,14 +19,11 @@ package acceptance.pages
 import acceptance.utils.Configuration
 import org.openqa.selenium.By
 
-class EmailConfirmedPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/customs-email-frontend/email-address-confirmed"
-  override val title = "Email address confirmed"
-
-  val verifyEmailConfirmedText: By = By.id("info")
-  val signOutId: By = By.id("sign-out")
+class YouCannotChangeYourEmailAddressPage extends BasePage {
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/cannot-change-email"
+  override val title = "You cannot change your email address"
 }
 
-object EmailConfirmedPage extends EmailConfirmedPage
+object YouCannotChangeYourEmailAddressPage extends YouCannotChangeYourEmailAddressPage
 
 

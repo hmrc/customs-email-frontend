@@ -18,13 +18,26 @@ package acceptance.utils
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import org.joda.time.format.ISODateTimeFormat
 import play.api.http.Status
+import play.api.libs.json.Json
+import uk.gov.hmrc.crypto.CompositeSymmetricCrypto.aes
+import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
+import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
+import uk.gov.hmrc.customs.emailfrontend.model.EmailStatus
 
 trait StubSave4Later {
 
+  private val crypto: CompositeSymmetricCrypto = aes("fqpLDZ4smuDsekHkeEBlCA==", Seq.empty)
+
   private val save4LaterGetUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId"
   private val save4LaterPutUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId/data/email"
-  private val encryptedEmail = "YKEtCuoQiCSDa7UDy8cs/mhnhVx31sNgNMJ3yXL47rLKc5P2y6Vk4Nsv4fn+OapA" //encrypted value for b@a.com
+  private val emailVerified = EmailStatus("b@a.com")
+  private val emailVerifiedJson = Json.toJson(emailVerified).toString()
+  private val today =  DateTimeUtil.dateTime.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC())
+
+  private val encryptedTimeStamp = encrypt(today)
+  private val encryptedEmail = encrypt(emailVerifiedJson) //encrypted value for b@a.com
 
   def save4LaterWithNoData(internalId: String): StubMapping = {
     stubFor(get(urlEqualTo(save4LaterGetUrl(internalId)))
@@ -53,4 +66,21 @@ trait StubSave4Later {
       )
     )
   }
+
+
+  def encrypt(str: String): String = crypto.encrypt(PlainText(str)).value
+
+
+
+  def save4LaterWithTimeStamp(internalId: String): StubMapping = {
+    stubFor(get(urlEqualTo(save4LaterGetUrl(internalId)))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
+          .withBody(s"""{"data": {"email": "$encryptedEmail", "timestamp": "$encryptedTimeStamp"}, "id": "1"}""")
+      )
+    )
+  }
+
+
 }

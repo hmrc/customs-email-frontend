@@ -7,7 +7,8 @@ val appName = "customs-email-frontend"
 
 lazy val AcceptanceTest = config("acceptance") extend (Test)
 lazy val IntegrationTest = config("it") extend Test
-lazy val testConfig = Seq(AcceptanceTest, IntegrationTest, Test)
+lazy val EndToEndTest = config("endtoend") extend Test
+lazy val testConfig = Seq(EndToEndTest, AcceptanceTest, IntegrationTest, Test)
 
 lazy val commonSettings: Seq[Setting[_]] = scalaSettings ++
   publishingSettings ++
@@ -44,6 +45,16 @@ lazy val acceptanceTestSettings =
       addTestReportOption(AcceptanceTest, "acceptance-test-reports")
     )
 
+lazy val endtoendTestSettings =
+  inConfig(EndToEndTest)(Defaults.testTasks) ++
+    Seq(
+      testOptions in EndToEndTest := Seq(Tests.Filter(filterTestsOnPackageName("endtoend"))),
+      testOptions in EndToEndTest += Tests.Argument(TestFrameworks.ScalaTest, "-oD"),
+      fork in EndToEndTest := false,
+      parallelExecution in EndToEndTest := false,
+      addTestReportOption(EndToEndTest, "endtoend-test-reports")
+    )
+
 lazy val scoverageSettings = {
   import scoverage.ScoverageKeys
   Seq(ScoverageKeys.coverageExcludedPackages := List("<empty>",
@@ -69,6 +80,7 @@ lazy val microservice = Project(appName, file("."))
     unitTestSettings,
     integrationTestSettings,
     acceptanceTestSettings,
+    endtoendTestSettings,
     routesImport ++= Seq("uk.gov.hmrc.customs.emailfrontend.model._"),
     resolvers += Resolver.jcenterRepo
   )

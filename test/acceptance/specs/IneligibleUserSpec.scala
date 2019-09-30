@@ -63,7 +63,7 @@ class IneligibleUserSpec extends BaseSpec with SpecHelper with StubAuthClient {
 
     }
 
-    scenario("A user with and assistant account tries to amend email") {
+    scenario("A user with an assistant account tries to amend email") {
 
       Given("the user has is an assistant on the account")
       authenticate(randomInternalId, randomEoriNumber, "assistant")
