@@ -146,9 +146,18 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of OK for verify method" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+
       val eventualResult = controller.verify(request)
 
       status(eventualResult) shouldBe OK
+    }
+    "have a status of SEE_OTHER for verify method when the bookmark url is used and user already complete success amend email journey " in withAuthorisedUser() {
+      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(Some(DateTime.now())))
+
+      val eventualResult = controller.verify(request)
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
+
     }
 
     "have a status of Bad Request when no email is provided in the form" in withAuthorisedUser() {
