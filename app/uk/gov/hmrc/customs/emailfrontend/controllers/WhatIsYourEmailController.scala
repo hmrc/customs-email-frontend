@@ -74,8 +74,12 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     }
   }
 
-  def verify: Action[AnyContent] = actions.authEnrolled { implicit request =>
-    Ok(whatIsYourEmailView(emailForm))
+
+  def verify: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
+    for {
+      status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
+      result <- redirectBasedOnAmendmentStatus(status)(Future.successful(Ok(whatIsYourEmailView(emailForm))))
+    } yield result
   }
 
   def submit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
