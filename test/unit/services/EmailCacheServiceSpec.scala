@@ -41,8 +41,8 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
 
   private val internalId = InternalId("internalID")
   private val timestamp = DateTimeUtil.dateTime
-  private val cachedData = EmailDetails("test@test.com", Some(timestamp))
-  private val jsonValue = Json.toJson(cachedData)
+  private val emailDetails = EmailDetails("test@test.com", Some(timestamp))
+  private val jsonValue = Json.toJson(emailDetails)
   private val data = Map(internalId.id -> jsonValue)
 
   private val cacheMap = CacheMap(internalId.id, data)
@@ -59,21 +59,21 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
   "EmailCacheService for ShortLivedCache" should {
 
     "save" in {
-      when(mockEmailCachingConfig.cache(meq(internalId.id), meq("email"), meq(Protected(cachedData)))(any[HeaderCarrier],
+      when(mockEmailCachingConfig.cache(meq(internalId.id), meq("emailDetails"), meq(Protected(emailDetails)))(any[HeaderCarrier],
         any(), any[ExecutionContext])).thenReturn(Future.successful(cacheMap))
 
-      val cache: CacheMap = service.save(internalId, cachedData).futureValue
+      val cache: CacheMap = service.save(internalId, emailDetails).futureValue
 
       cache mustBe cacheMap
     }
 
     "fetch" in {
-      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[EmailDetails]](meq(internalId.id), meq("email"))(any[HeaderCarrier], any(), any[ExecutionContext]))
-        .thenReturn(Future.successful(Some(Protected(cachedData))))
+      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[EmailDetails]](meq(internalId.id), meq("emailDetails"))(any[HeaderCarrier], any(), any[ExecutionContext]))
+        .thenReturn(Future.successful(Some(Protected(emailDetails))))
 
       val cachedEmailStatus = service.fetch(internalId).futureValue
 
-      cachedEmailStatus mustBe Some(cachedData)
+      cachedEmailStatus mustBe Some(emailDetails)
     }
 
     "remove data" in {

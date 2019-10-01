@@ -51,7 +51,7 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
 
   override def shortLiveCache: ShortLivedHttpCaching = caching
 
-  val emailKey = "email"
+  val emailDetailsKey = "emailDetails"
 
   def remove(internalId: InternalId)
             (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
@@ -59,15 +59,15 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
     remove(internalId.id)
   }
 
-  def save(internalId: InternalId, cachedData: EmailDetails)
+  def save(internalId: InternalId, emailDetails: EmailDetails)
           (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
     Logger.info("saving email address and timestamp to save 4 later")
-    cache[EmailDetails](internalId.id, emailKey, cachedData)
+    cache[EmailDetails](internalId.id, emailDetailsKey, emailDetails)
   }
 
   def fetch(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailDetails]] = {
     Logger.info("retrieving email address and timestamp from save 4 later")
-    fetchAndGetEntry[EmailDetails](internalId.id, emailKey)
+    fetchAndGetEntry[EmailDetails](internalId.id, emailDetailsKey)
   }
 }
 

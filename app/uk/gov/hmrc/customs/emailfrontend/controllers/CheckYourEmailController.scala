@@ -52,13 +52,13 @@ class CheckYourEmailController @Inject()(actions: Actions,
         Logger.warn("[CheckYourEmailController][submit] - emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
       } {
-        cachedData =>
+        emailDetails =>
           confirmEmailForm.bindFromRequest.fold(
             formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, cachedData.email)))
+              Future.successful(BadRequest(view(formWithErrors, emailDetails.email)))
             },
             formData =>
-              locationByAnswer(request.user.internalId, formData, cachedData.email)
+              locationByAnswer(request.user.internalId, formData, emailDetails.email)
           )
       }
     }

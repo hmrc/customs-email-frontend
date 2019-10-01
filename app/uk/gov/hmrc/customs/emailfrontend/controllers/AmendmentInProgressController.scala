@@ -40,8 +40,8 @@ class AmendmentInProgressController @Inject()(actions: Actions,
         Logger.warn("[AmendmentInProgressController][show] - emailStatus not found")
         Redirect(SignOutController.signOut())
       } {
-        cachedData =>
-          Ok(view(cachedData.email))
+        emailDetails =>
+          Ok(view(emailDetails.email))
       }
     }
   }
