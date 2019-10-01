@@ -61,10 +61,17 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         case SubscriptionDisplayResponse(Some(email)) =>
           emailVerificationService.isEmailVerified(email).map {
             case Some(true) => Ok(view(emailForm, email)) //TODO is this correct
-            case Some(false) => Ok(whatIsYourEmailView(emailForm))
+            case Some(false) => Redirect(WhatIsYourEmailController.verify())
             case None => ??? //ToDo redirect to retry page
           }
       }
+    }
+  }
+
+  def verify: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+    emailCacheService.fetch(request.user.internalId).flatMap {
+      case Some(data) if data.amendmentInProgress => Future.successful(Redirect(AmendmentInProgressController.show()))
+      case _ => Future.successful(Ok(whatIsYourEmailView(emailForm)))
     }
   }
 
