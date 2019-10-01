@@ -95,7 +95,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email-address/verify-email-address")
+      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-email-address")
 
     }
 
