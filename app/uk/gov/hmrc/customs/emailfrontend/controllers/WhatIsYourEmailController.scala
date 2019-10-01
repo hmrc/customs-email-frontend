@@ -43,7 +43,8 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
-    emailCacheService.emailAmendmentData(request.user.internalId)(redirectBasedOnEmailStatus, WhatIsYourEmailController.create())
+    emailCacheService.emailAmendmentData(request.user.internalId)(redirectBasedOnEmailStatus,
+      Future.successful(Redirect(WhatIsYourEmailController.create())))
   }
 
   private def redirectBasedOnEmailStatus(email: String)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
@@ -55,24 +56,23 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   }
 
   def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
-    emailCacheService.fetch(request.user.internalId).flatMap {
-      case Some(data) if data.amendmentInProgress => Future.successful(Redirect(AmendmentInProgressController.show()))
-      case _ => subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
-        case SubscriptionDisplayResponse(Some(email)) =>
-          emailVerificationService.isEmailVerified(email).map {
-            case Some(true) => Ok(view(emailForm, email)) //TODO is this correct
-            case Some(false) => Redirect(WhatIsYourEmailController.verify())
-            case None => ??? //ToDo redirect to retry page
-          }
-      }
+    emailCacheService.emailAmendmentData(request.user.internalId)(_ => Future.successful(Redirect(CheckYourEmailController.show())), subscriptionDisplay)
+  }
+
+  private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) = {
+    subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
+      case SubscriptionDisplayResponse(Some(email)) =>
+        emailVerificationService.isEmailVerified(email).map {
+          case Some(true) => Ok(view(emailForm, email)) //TODO is this correct
+          case Some(false) => Redirect(WhatIsYourEmailController.verify())
+          case None => ??? //ToDo redirect to retry page
+        }
     }
   }
 
   def verify: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
-    emailCacheService.fetch(request.user.internalId).flatMap {
-      case Some(data) if data.amendmentInProgress => Future.successful(Redirect(AmendmentInProgressController.show()))
-      case _ => Future.successful(Ok(whatIsYourEmailView(emailForm)))
-    }
+    emailCacheService.emailAmendmentData(request.user.internalId)(email => Future.successful(Redirect(CheckYourEmailController.show())),
+      Future.successful(Ok(whatIsYourEmailView(emailForm))))
   }
 
   def submit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>

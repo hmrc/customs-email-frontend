@@ -42,7 +42,7 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted andThen actions.eori).async { implicit request =>
-     emailCacheService.emailAmendmentData(request.user.internalId)(redirectBasedOnEmailStatus, SignOutController.signOut())
+     emailCacheService.emailAmendmentData(request.user.internalId)(redirectBasedOnEmailStatus, Future.successful(Redirect(SignOutController.signOut())))
   }
 
   private def redirectBasedOnEmailStatus(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
