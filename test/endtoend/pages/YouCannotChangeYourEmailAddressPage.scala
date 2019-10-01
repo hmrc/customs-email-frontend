@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+package endtoend.pages
 
-import org.openqa.selenium.By
-import org.scalatestplus.selenium.Page
+import endtoend.utils.Configuration
 
-trait BasePage extends Page {
-  val title : String
-  val signOutId: By = By.id("sign-out")
-
+class YouCannotChangeYourEmailAddressPage extends BasePage {
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/cannot-change-email"
+  override val title = "You cannot change your email address"
 }
+
+object YouCannotChangeYourEmailAddressPage extends YouCannotChangeYourEmailAddressPage
+
+

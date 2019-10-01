@@ -20,7 +20,7 @@ import acceptance.pages._
 import acceptance.utils._
 import integration.stubservices.UpdateVerifiedEmailStubService._
 
-class EmailConfirmedSpec extends BaseSpec
+class EmailConfirmedSpec extends AcceptanceTestSpec
   with SpecHelper
   with StubSave4Later
   with StubAuthClient
@@ -69,6 +69,101 @@ class EmailConfirmedSpec extends BaseSpec
       verifyEmailVerifiedIsCalled(2)
       verifyCustomsDataStoreIsCalled(1)
       verifyUpdateVerifiedEmailIsCalled(1)
+    }
+
+    scenario("Show 'Email confirmed' page when user returns to the service after verifying the email address but could not successfully update the email address") {
+
+      Given("the user has successfully logged in")
+      authenticate(randomInternalId, randomEoriNumber)
+      save4LaterWithNoData(randomInternalId)
+      navigateTo(StartPage)
+      verifyCurrentPage(StartPage)
+      stubSubscriptionDisplayOkResponse(randomEoriNumber)
+      stubVerifiedEmailResponse()
+      clickOn(StartPage.emailLinkText)
+      verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
+
+      When("the user provides an email address to change")
+      save4LaterWithData(randomInternalId)
+      verifyCurrentPage(ChangeYourEmailAddressPage)
+      enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
+      clickContinue()
+
+      Then("the user should be on 'Check your email address' page")
+      verifyCurrentPage(CheckYourEmailAddressPage)
+      assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
+
+      When("the user confirms to update the email address")
+      stubVerificationRequestSent()
+      clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
+      clickContinue()
+
+      Then("the user should be on 'Verify email address' page")
+      verifyCurrentPage(VerifyYourEmailAddressPage)
+      assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
+
+      When("the user returns to the service after confirming the email address but was unsuccessful to update")
+      authenticate(randomInternalId, randomEoriNumber)
+      save4LaterWithData(randomInternalId)
+      stubVerifiedEmailResponse()
+      stubEmailUpdatedResponseWithStatus(updatedVerifiedEmailResponse, 200)
+      stubCustomsDataStoreOkResponse()
+      navigateTo(StartPage)
+      verifyCurrentPage(StartPage)
+      clickOn(StartPage.emailLinkText)
+
+      Then("the user should be on 'Email confirmed' page upon successfully updating the email")
+      verifyCurrentPage(EmailConfirmedPage)
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedText)("Your email address for CDS has been changed.")
+      verifyCustomsDataStoreIsCalled(1)
+      verifyUpdateVerifiedEmailIsCalled(1)
+    }
+
+    scenario("Show 'Check your email' page when user returns to the service without verifying the email address") {
+
+      Given("the user has successfully logged in")
+      authenticate(randomInternalId, randomEoriNumber)
+      save4LaterWithNoData(randomInternalId)
+      navigateTo(StartPage)
+      verifyCurrentPage(StartPage)
+      stubSubscriptionDisplayOkResponse(randomEoriNumber)
+      stubVerifiedEmailResponse()
+      clickOn(StartPage.emailLinkText)
+      verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
+
+      When("the user provides an email address to change")
+      save4LaterWithData(randomInternalId)
+      verifyCurrentPage(ChangeYourEmailAddressPage)
+      enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
+      clickContinue()
+
+      Then("the user should be on 'Check your email address' page")
+      verifyCurrentPage(CheckYourEmailAddressPage)
+      assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
+
+      When("the user confirms to update the email address")
+      stubVerificationRequestSent()
+      clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
+      clickContinue()
+
+      Then("the user should be on 'Verify email address' page")
+      verifyCurrentPage(VerifyYourEmailAddressPage)
+      assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
+
+      When("the user returns to the service without confirming the email address")
+      authenticate(randomInternalId, randomEoriNumber)
+      save4LaterWithData(randomInternalId)
+      stubNotVerifiedEmailResponse()
+      navigateTo(StartPage)
+      verifyCurrentPage(StartPage)
+      clickOn(StartPage.emailLinkText)
+
+      Then("the user should be on 'Check your email address' page")
+      verifyCurrentPage(CheckYourEmailAddressPage)
+      assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
+      verifyCustomsDataStoreIsCalled(0)
+      verifyUpdateVerifiedEmailIsCalled(0)
+      verifyEmailVerifiedIsCalled(2)
     }
 
     scenario("Show verify your email page when user does not verify the email and tries to access the 'Email Confirmed' page") {

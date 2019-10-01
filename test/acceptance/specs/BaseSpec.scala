@@ -24,13 +24,9 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import utils.{Constants, WireMockRunner}
 
-trait BaseSpec extends FeatureSpec
-  with GivenWhenThen
-  with GuiceOneServerPerSuite
-  with BeforeAndAfterAll
-  with BeforeAndAfterEach
-  with WireMockRunner {
+trait BaseSpec extends FeatureSpec with GivenWhenThen
 
+trait AcceptanceTestSpec extends BaseSpec with GuiceOneServerPerSuite with BeforeAndAfterAll with BeforeAndAfterEach with WireMockRunner{
   override lazy val port = Configuration.port
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()

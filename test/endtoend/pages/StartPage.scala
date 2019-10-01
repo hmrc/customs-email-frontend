@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+package endtoend.pages
 
+import endtoend.utils.Configuration
 import org.openqa.selenium.By
-import org.scalatestplus.selenium.Page
 
-trait BasePage extends Page {
-  val title : String
-  val signOutId: By = By.id("sign-out")
+class StartPage extends BasePage {
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/start"
+  override val title = "Hello from customs-email-frontend"
 
+  val emailLinkText: By = By.linkText("Let's do this!")
 }
+
+object StartPage extends StartPage

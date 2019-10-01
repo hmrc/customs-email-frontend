@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+package endtoend.pages
 
 import org.openqa.selenium.By
 import org.scalatestplus.selenium.Page
@@ -22,5 +22,4 @@ import org.scalatestplus.selenium.Page
 trait BasePage extends Page {
   val title : String
   val signOutId: By = By.id("sign-out")
-
 }

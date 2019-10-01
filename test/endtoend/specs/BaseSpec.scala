@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+package endtoend.specs
 
-import org.openqa.selenium.By
-import org.scalatestplus.selenium.Page
+import org.scalatest.{FeatureSpec, GivenWhenThen}
 
-trait BasePage extends Page {
-  val title : String
-  val signOutId: By = By.id("sign-out")
+trait BaseSpec extends FeatureSpec with GivenWhenThen
 
-}
+trait EndToEndTestSpec extends BaseSpec

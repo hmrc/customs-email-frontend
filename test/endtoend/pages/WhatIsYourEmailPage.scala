@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+package endtoend.pages
 
+import endtoend.utils.Configuration
 import org.openqa.selenium.By
-import org.scalatestplus.selenium.Page
 
-trait BasePage extends Page {
-  val title : String
-  val signOutId: By = By.id("sign-out")
+abstract class EmailPage extends BasePage {
+  val emailTextFieldId: By = By.id("email")
+}
 
+object WhatIsYourEmailPage extends EmailPage {
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/email-address/verify-email-address"
+  override val title = "What is your email address?"
+}
+
+object ChangeYourEmailAddressPage extends EmailPage {
+  override val url: String = Configuration.frontendHost + "/customs-email-frontend/change-email-address/create"
+  override val title = "Change your email address for CDS"
 }
