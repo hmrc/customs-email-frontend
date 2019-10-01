@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.AmendmentInProgressController
-import uk.gov.hmrc.customs.emailfrontend.model.{CachedData, InternalId}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
 import uk.gov.hmrc.customs.emailfrontend.views.html.amendment_in_progress
 import uk.gov.hmrc.http.HeaderCarrier
@@ -45,7 +45,7 @@ class AmendmentInProgressControllerSpec extends ControllerSpec {
     }
 
     "have a status of OK when email found in cache and verification in progress" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(meq(InternalId("internalId")))(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(Some(CachedData("test@email.com", Some(DateTime.now())))))
+      when(mockEmailCacheService.fetch(meq(InternalId("internalId")))(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(Some(EmailDetails("test@email.com", Some(DateTime.now())))))
 
       val eventualResult = controller.show(request)
 

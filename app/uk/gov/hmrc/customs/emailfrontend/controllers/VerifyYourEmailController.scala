@@ -20,6 +20,7 @@ import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
 import uk.gov.hmrc.customs.emailfrontend.model.AuthenticatedRequest
 import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_your_email
@@ -34,7 +35,7 @@ class VerifyYourEmailController @Inject()(actions: Actions,
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
-    emailCacheService.emailAmendmentData(request.user.internalId)(redirectWithEmail)
+    emailCacheService.emailAmendmentData(request.user.internalId)(redirectWithEmail, SignOutController.signOut())
   }
 
   private def redirectWithEmail(email: String)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {

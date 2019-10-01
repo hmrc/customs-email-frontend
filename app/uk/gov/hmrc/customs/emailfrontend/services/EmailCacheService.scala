@@ -18,11 +18,11 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
+import play.api.mvc.{Call, Result}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, CompositeSymmetricCrypto}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{AmendmentInProgressController, SignOutController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.AmendmentInProgressController
 import uk.gov.hmrc.customs.emailfrontend.model.{InternalId, _}
 import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache, ShortLivedHttpCaching}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -59,15 +59,15 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
     remove(internalId.id)
   }
 
-  def save(internalId: InternalId, cachedData: CachedData)
+  def save(internalId: InternalId, cachedData: EmailDetails)
           (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
     Logger.info("saving email address and timestamp to save 4 later")
-    cache[CachedData](internalId.id, emailKey, cachedData)
+    cache[EmailDetails](internalId.id, emailKey, cachedData)
   }
 
-  def fetch(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[CachedData]] = {
+  def fetch(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailDetails]] = {
     Logger.info("retrieving email address and timestamp from save 4 later")
-    fetchAndGetEntry[CachedData](internalId.id, emailKey)
+    fetchAndGetEntry[EmailDetails](internalId.id, emailKey)
   }
 }
 
@@ -75,11 +75,12 @@ object EmailCacheService {
 
   implicit class EmailCacheServiceHelper(emailCacheService: EmailCacheService) {
 
-    def emailAmendmentData(internalId: InternalId)(redirectBasedOnEmailStatus: String => Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext) = {
+    def emailAmendmentData(internalId: InternalId)(redirectBasedOnEmailStatus: String => Future[Result], noEmail: Call)(implicit hc: HeaderCarrier, executionContext: ExecutionContext) = {
       emailCacheService.fetch(internalId).flatMap {
         case Some(data) if data.amendmentInProgress => Future.successful(Redirect(AmendmentInProgressController.show()))
-        case Some(CachedData(email, _)) => redirectBasedOnEmailStatus(email)
-        case _ => Future.successful(Redirect(SignOutController.signOut()))
+        case Some(EmailDetails(email, Some(_))) => emailCacheService.remove(internalId).flatMap(_ => redirectBasedOnEmailStatus(email))
+        case Some(EmailDetails(email, None)) => redirectBasedOnEmailStatus(email)
+        case _ => Future.successful(Redirect(noEmail))
       }
     }
   }

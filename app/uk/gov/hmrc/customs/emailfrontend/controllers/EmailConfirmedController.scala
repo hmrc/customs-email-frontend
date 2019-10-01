@@ -23,8 +23,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.VerifyYourEmailController
-import uk.gov.hmrc.customs.emailfrontend.model.{CachedData, EoriRequest}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, EoriRequest}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -42,7 +42,7 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted andThen actions.eori).async { implicit request =>
-     emailCacheService.emailAmendmentData(request.user.internalId)(redirectBasedOnEmailStatus)
+     emailCacheService.emailAmendmentData(request.user.internalId)(redirectBasedOnEmailStatus, SignOutController.signOut())
   }
 
   private def redirectBasedOnEmailStatus(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
@@ -55,16 +55,10 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
   private[this] def updateEmail(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
     updateVerifiedEmailService.updateVerifiedEmail(email, request.eori.id).flatMap {
       case Some(_) =>
-        saveTimeStamp(email, DateTimeUtil.dateTime)
+        emailCacheService.save(request.user.internalId, EmailDetails(email, Some(DateTimeUtil.dateTime)))
         customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), email)
         Future.successful(Ok(view()))
       case None => ??? // TODO: no scenario ready to cover that case
     }
-  }
-
-  private[this] def saveTimeStamp(email: String, timestamp: DateTime)(implicit request: EoriRequest[AnyContent]): Future[CacheMap] = {
-    for {
-      savedTimestamp <- emailCacheService.save(request.user.internalId, CachedData(email, Some(timestamp)))
-    } yield savedTimestamp
   }
 }
