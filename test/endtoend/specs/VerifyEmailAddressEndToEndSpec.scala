@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package endtoend
+package endtoend.specs
 
-import acceptance.pages._
-import acceptance.specs.EndToEndTestSpec
-import acceptance.utils.SpecHelper
+import endtoend.pages._
+import endtoend.utils.SpecHelper
+
 
 class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper{
 
