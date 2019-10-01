@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{EmailConfirmedController, WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{EmailConfirmedController, WhatIsYourEmailController,CheckYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
@@ -57,7 +57,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         emailStatus =>
           emailVerificationService.isEmailVerified(emailStatus.email).map {
             case Some(true) => Redirect(EmailConfirmedController.show())
-            case Some(false) => Redirect(WhatIsYourEmailController.verify())
+            case Some(false) => Redirect(CheckYourEmailController.show())
             case None => ??? //ToDo redirect to retry page  Email Service is down or any other errors
           }
       }
@@ -77,7 +77,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
       case SubscriptionDisplayResponse(Some(email)) =>
         emailVerificationService.isEmailVerified(email).map {
-          case Some(true) => Ok(view(emailForm, email))
+          case Some(true) => Ok(view(emailForm, email)) //TODO is this correct
           case Some(false) => Redirect(WhatIsYourEmailController.verify())
           case None => ??? //ToDo redirect to retry page
         }
