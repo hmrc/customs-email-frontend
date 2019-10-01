@@ -78,7 +78,7 @@ object EmailCacheService {
     def emailAmendmentData(internalId: InternalId)(redirectBasedOnEmailStatus: String => Future[Result], noEmail: Call)(implicit hc: HeaderCarrier, executionContext: ExecutionContext) = {
       emailCacheService.fetch(internalId).flatMap {
         case Some(data) if data.amendmentInProgress => Future.successful(Redirect(AmendmentInProgressController.show()))
-        case Some(EmailDetails(email, Some(_))) => emailCacheService.remove(internalId).flatMap(_ => redirectBasedOnEmailStatus(email))
+        case Some(EmailDetails(_, Some(_))) => emailCacheService.remove(internalId).map(_ => Redirect(noEmail))
         case Some(EmailDetails(email, None)) => redirectBasedOnEmailStatus(email)
         case _ => Future.successful(Redirect(noEmail))
       }
