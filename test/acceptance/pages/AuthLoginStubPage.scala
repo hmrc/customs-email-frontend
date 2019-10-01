@@ -51,8 +51,8 @@ class AuthLoginStubPage extends BasePage with SpecHelper{
     selectCredentialRole.selectByValue(credentialRole)
 
     enterText(redirectUrlName)(Configuration.forCurrentEnv {
-      case QA => "http://auth-login-stub.public.mdtp"
-      case DEV => "https://www.development.tax.service.gov.uk"
+      case QA => "/customs-email-frontend/start"
+      case DEV => "/customs-email-frontend/start"
       case LOCAL => "http://localhost:9898/customs-email-frontend/start"
     })
 
