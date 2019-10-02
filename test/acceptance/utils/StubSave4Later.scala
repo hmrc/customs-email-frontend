@@ -18,12 +18,10 @@ package acceptance.utils
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import org.joda.time.format.ISODateTimeFormat
 import play.api.http.Status
 import play.api.libs.json.Json
 import uk.gov.hmrc.crypto.CompositeSymmetricCrypto.aes
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
-import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 
 trait StubSave4Later {
@@ -34,7 +32,6 @@ trait StubSave4Later {
   private val save4LaterPutUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId/data/emailDetails"
   private val emailVerified = EmailDetails("b@a.com", None)
   private val emailVerifiedJson = Json.toJson(emailVerified).toString()
-  private val today =  DateTimeUtil.dateTime.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC())
 
   private val encryptedEmail = encrypt(emailVerifiedJson)
 

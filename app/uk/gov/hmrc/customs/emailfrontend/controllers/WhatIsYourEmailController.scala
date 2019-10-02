@@ -43,7 +43,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
-    emailCacheService.emailAmendmentData(request.user.internalId)(redirectBasedOnEmailStatus,
+    emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectBasedOnEmailStatus,
       Future.successful(Redirect(WhatIsYourEmailController.create())))
   }
 
@@ -56,7 +56,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   }
 
   def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
-    emailCacheService.emailAmendmentData(request.user.internalId)(_ => Future.successful(Redirect(CheckYourEmailController.show())), subscriptionDisplay)
+    emailCacheService.routeBasedOnAmendment(request.user.internalId)(_ => Future.successful(Redirect(CheckYourEmailController.show())), subscriptionDisplay)
   }
 
   private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) = {
@@ -71,7 +71,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   }
 
   def verify: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
-    emailCacheService.emailAmendmentData(request.user.internalId)(_ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
+    emailCacheService.routeBasedOnAmendment(request.user.internalId)(_ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
       Future.successful(Ok(whatIsYourEmailView(emailForm))))
   }
 

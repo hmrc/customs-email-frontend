@@ -39,7 +39,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
-    emailCacheService.emailAmendmentData(request.user.internalId)(redirectWithEmail, Future.successful(Redirect(SignOutController.signOut())))
+    emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectWithEmail, Future.successful(Redirect(SignOutController.signOut())))
   }
 
   private def redirectWithEmail(email: String)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {

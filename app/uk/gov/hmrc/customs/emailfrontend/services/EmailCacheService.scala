@@ -75,7 +75,7 @@ object EmailCacheService {
 
   implicit class EmailCacheServiceHelper(emailCacheService: EmailCacheService) {
 
-    def emailAmendmentData(internalId: InternalId)(redirectBasedOnEmailStatus: String => Future[Result], noEmail: Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext) = {
+    def routeBasedOnAmendment(internalId: InternalId)(redirectBasedOnEmailStatus: String => Future[Result], noEmail: Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext) = {
       emailCacheService.fetch(internalId).flatMap {
         case Some(data) if data.amendmentInProgress => {
           Logger.info("email amendment in-progress")
