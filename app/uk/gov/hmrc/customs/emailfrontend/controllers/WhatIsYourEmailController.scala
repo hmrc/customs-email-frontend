@@ -60,7 +60,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   }
 
   private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) = {
-    subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
+    subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email)) =>
         emailVerificationService.isEmailVerified(email).map {
           case Some(true) => Ok(view(emailForm, email)) //TODO is this correct
@@ -78,7 +78,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   def submit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
     emailForm.bindFromRequest.fold(
       formWithErrors => {
-        subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).map {
+        subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
           case SubscriptionDisplayResponse(Some(email)) => BadRequest(view(formWithErrors, email))
         }
       },
