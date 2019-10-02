@@ -63,7 +63,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email)) =>
         emailVerificationService.isEmailVerified(email).map {
-          case Some(true) => Ok(view(emailForm, email)) //TODO is this correct
+          case Some(true) => Ok(view(emailForm, email))
           case Some(false) => Redirect(WhatIsYourEmailController.verify())
           case None => ??? //ToDo redirect to retry page
         }
