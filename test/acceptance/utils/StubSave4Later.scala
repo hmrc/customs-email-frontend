@@ -61,7 +61,7 @@ trait StubSave4Later {
       .willReturn(
         aResponse()
           .withStatus(Status.OK)
-          .withBody(s"""{"data": {"email": "$encryptedEmail"}, "id": "1"}""".stripMargin)
+          .withBody(s"""{"data": {"emailDetails": "$encryptedEmail"}, "id": "$internalId"}""".stripMargin)
       )
     )
   }
