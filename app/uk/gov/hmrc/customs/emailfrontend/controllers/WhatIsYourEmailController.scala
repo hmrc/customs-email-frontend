@@ -19,10 +19,11 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{EmailConfirmedController, WhatIsYourEmailController,CheckYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{AmendmentInProgressController, CheckYourEmailController, EmailConfirmedController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
@@ -39,67 +40,50 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
                                           subscriptionDisplayConnector: SubscriptionDisplayConnector,
                                           emailVerificationService: EmailVerificationService)
                                          (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with DetermineRouteController {
+  extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
-    for {
-      status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
-      result <- redirectBasedOnAmendmentStatus(status)(redirectBasedOnEmailStatus)
-    } yield result
+    emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectBasedOnEmailStatus,
+      Future.successful(Redirect(WhatIsYourEmailController.create())))
   }
 
-  private def redirectBasedOnEmailStatus(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
-    emailCacheService.fetchEmail(request.user.internalId) flatMap {
-      _.fold {
-        Logger.warn("[WhatIsYourEmailController][show] - email not found")
-        Future.successful(Redirect(WhatIsYourEmailController.create()))
-      } {
-        emailStatus =>
-          emailVerificationService.isEmailVerified(emailStatus.email).map {
-            case Some(true) => Redirect(EmailConfirmedController.show())
-            case Some(false) => Redirect(CheckYourEmailController.show())
-            case None => ??? //ToDo redirect to retry page  Email Service is down or any other errors
-          }
-      }
+  private def redirectBasedOnEmailStatus(email: String)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
+    emailVerificationService.isEmailVerified(email).map {
+      case Some(true) => Redirect(EmailConfirmedController.show())
+      case Some(false) => Redirect(CheckYourEmailController.show())
+      case None => ??? //ToDo redirect to retry page  Email Service is down or any other errors
     }
+  }
 
   def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
-
-    for {
-      status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
-      result <- redirectBasedOnAmendmentStatus(status)(redirectBaseOnEmailStatusAndSubscriptionDisplay)
-    } yield result
-
+    emailCacheService.routeBasedOnAmendment(request.user.internalId)(_ => Future.successful(Redirect(CheckYourEmailController.show())), subscriptionDisplay)
   }
 
-
-  private def redirectBaseOnEmailStatusAndSubscriptionDisplay(implicit request: EoriRequest[AnyContent]): Future[Result] = {
-    subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).flatMap {
+  private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) = {
+    subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email)) =>
         emailVerificationService.isEmailVerified(email).map {
-          case Some(true) => Ok(view(emailForm, email)) //TODO is this correct
+          case Some(true) => Ok(view(emailForm, email))
           case Some(false) => Redirect(WhatIsYourEmailController.verify())
           case None => ??? //ToDo redirect to retry page
         }
     }
   }
 
-  def verify: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
-    for {
-      status <- emailCacheService.emailAmendmentStatus(request.user.internalId)
-      result <- redirectBasedOnAmendmentStatus(status)(Future.successful(Ok(whatIsYourEmailView(emailForm))))
-    } yield result
+  def verify: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+    emailCacheService.routeBasedOnAmendment(request.user.internalId)(_ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
+      Future.successful(Ok(whatIsYourEmailView(emailForm))))
   }
 
   def submit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
     emailForm.bindFromRequest.fold(
       formWithErrors => {
-        subscriptionDisplayConnector.subscriptionDisplay(Eori(request.eori.id)).map {
+        subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
           case SubscriptionDisplayResponse(Some(email)) => BadRequest(view(formWithErrors, email))
         }
       },
       formData => {
-        emailCacheService.saveEmail(request.user.internalId, EmailStatus(formData.value)).map {
+        emailCacheService.save(request.user.internalId, EmailDetails(formData.value, None)).map {
           _ => Redirect(routes.CheckYourEmailController.show())
         }
       }
@@ -110,7 +94,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     emailForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(formWithErrors))),
       formData => {
-        emailCacheService.saveEmail(request.user.internalId, EmailStatus(formData.value)).map {
+        emailCacheService.save(request.user.internalId, EmailDetails(formData.value, None)).map {
           _ => Redirect(routes.CheckYourEmailController.show())
         }
       }

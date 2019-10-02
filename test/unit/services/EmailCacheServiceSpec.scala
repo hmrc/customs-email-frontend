@@ -16,7 +16,6 @@
 
 package unit.services
 
-import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
@@ -41,10 +40,11 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
   private val mockApplicationCrypto = mock[ApplicationCrypto]
 
   private val internalId = InternalId("internalID")
-  private val emailStatus = EmailStatus("test@test.com")
-  private val jsonValue = Json.toJson(emailStatus)
-  private val data = Map(internalId.id -> jsonValue)
   private val timestamp = DateTimeUtil.dateTime
+  private val emailDetails = EmailDetails("test@test.com", Some(timestamp))
+  private val jsonValue = Json.toJson(emailDetails)
+  private val data = Map(internalId.id -> jsonValue)
+
   private val cacheMap = CacheMap(internalId.id, data)
   private val successResponse = HttpResponse(OK)
 
@@ -58,40 +58,22 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
 
   "EmailCacheService for ShortLivedCache" should {
 
-    "save Email" in {
-      when(mockEmailCachingConfig.cache(meq(internalId.id), meq("email"), meq(Protected(emailStatus)))(any[HeaderCarrier],
+    "save" in {
+      when(mockEmailCachingConfig.cache(meq(internalId.id), meq("emailDetails"), meq(Protected(emailDetails)))(any[HeaderCarrier],
         any(), any[ExecutionContext])).thenReturn(Future.successful(cacheMap))
 
-      val cache: CacheMap = service.saveEmail(internalId, emailStatus).futureValue
+      val cache: CacheMap = service.save(internalId, emailDetails).futureValue
 
       cache mustBe cacheMap
     }
 
-    "fetch Email" in {
-      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[EmailStatus]](meq(internalId.id), meq("email"))(any[HeaderCarrier], any(), any[ExecutionContext]))
-        .thenReturn(Future.successful(Some(Protected(emailStatus))))
+    "fetch" in {
+      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[EmailDetails]](meq(internalId.id), meq("emailDetails"))(any[HeaderCarrier], any(), any[ExecutionContext]))
+        .thenReturn(Future.successful(Some(Protected(emailDetails))))
 
-      val cachedEmailStatus = service.fetchEmail(internalId).futureValue
+      val cachedEmailStatus = service.fetch(internalId).futureValue
 
-      cachedEmailStatus mustBe Some(emailStatus)
-    }
-
-    "save timestamp" in {
-      when(mockEmailCachingConfig.cache(meq(internalId.id), meq("timestamp"), meq(Protected(timestamp)))(any[HeaderCarrier],
-        any(), any[ExecutionContext])).thenReturn(Future.successful(cacheMap))
-
-      val cache: CacheMap = service.saveTimeStamp(internalId, timestamp).futureValue
-
-      cache mustBe cacheMap
-    }
-
-    "fetch timestamp" in {
-      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
-        .thenReturn(Future.successful(Some(Protected(timestamp))))
-
-      val cachedTimestamp = service.fetchTimeStamp(internalId).futureValue
-
-      cachedTimestamp mustBe Some(timestamp)
+      cachedEmailStatus mustBe Some(emailDetails)
     }
 
     "remove data" in {
@@ -102,35 +84,5 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
 
       cache mustBe successResponse
     }
-
-    "fetch timestamp and return amendmentCompleted" in {
-      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
-        .thenReturn(Future.successful(Some(Protected(timestamp.minusDays(2)))))
-      when(mockEmailCachingConfig.remove(meq(internalId.id))(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(successResponse))
-
-      val cacheVerificationStatus = service.emailAmendmentStatus(internalId).futureValue
-
-      cacheVerificationStatus mustBe AmendmentCompleted
-    }
-
-    "fetch timestamp and return amendmentInProgress" in {
-      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
-        .thenReturn(Future.successful(Some(Protected(timestamp))))
-
-      val cacheVerificationStatus = service.emailAmendmentStatus(internalId).futureValue
-
-      cacheVerificationStatus mustBe AmendmentInProgress
-    }
-
-    "fetch timestamp and return amendmentNotDetermined" in {
-      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[DateTime]](meq(internalId.id), meq("timestamp"))(any[HeaderCarrier], any(), any[ExecutionContext]))
-        .thenReturn(Future.successful(None))
-
-      val cacheVerificationStatus = service.emailAmendmentStatus(internalId).futureValue
-
-      cacheVerificationStatus mustBe AmendmentNotDetermined
-    }
   }
 }
-

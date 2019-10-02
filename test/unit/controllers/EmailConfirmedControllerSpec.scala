@@ -23,7 +23,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers.{status, _}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailStatus, InternalId}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -50,14 +50,13 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
   "EmailConfirmedController" should {
     "have a status of OK " when {
       "email found in cache, email is verified and update verified email is successful" in withAuthorisedUser() {
-        when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
-        when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
+        when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("abc@def.com", None))))
 
         when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
         when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
         when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
-        when(mockEmailCacheService.saveTimeStamp(meq(InternalId("internalId")), any[DateTime])(any(), any())).thenReturn(Future.successful(CacheMap("internalId", Map())))
+        when(mockEmailCacheService.save(meq(InternalId("internalId")), any[EmailDetails])(any(), any())).thenReturn(Future.successful(CacheMap("internalId", Map())))
         when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(HttpResponse(OK)))
 
@@ -67,14 +66,11 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
 
       "email found in cache, email is verified and update verified email is successful but saving timestamp fails" in withAuthorisedUser() {
-        when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
-        when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
-
+        when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("abc@def.com", None))))
         when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
         when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
-        when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.failed(new InternalServerException("")))
-        when(mockEmailCacheService.saveTimeStamp(meq(InternalId("internalId")), any[DateTime])(any(), any())).thenReturn(Future.failed(new InternalServerException("")))
+        when(mockEmailCacheService.save(meq(InternalId("internalId")), meq(EmailDetails("abc@def.com", None)))(any(), any())).thenReturn(Future.failed(new InternalServerException("")))
         when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(HttpResponse(OK)))
 
@@ -86,9 +82,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "have a status of SEE_OTHER when email found in cache but email is not verified" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
-
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("abc@def.com", None))))
       when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(OK)))
       when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
@@ -100,8 +94,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "have a status of SEE_OTHER when email found in cache but isEmailVerified failed" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(Some(EmailStatus("abc@def.com"))))
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("abc@def.com", None))))
       when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(OK)))
       when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(None))
@@ -113,9 +106,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "have a status of SEE_OTHER for show method when email not found in cache" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(None))
-
-      when(mockEmailCacheService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
 
       val eventualResult = controller.show(request)
 
@@ -124,7 +115,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "have a status of SEE_OTHER for show method user retry's the same request(user click back on successful request or refreshes the browser)" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetchTimeStamp(any())(any(), any())).thenReturn(Future.successful(Some(DateTime.now())))
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("abc@def.com", Some(DateTime.now())))))
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe SEE_OTHER
       redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
@@ -139,9 +130,8 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
       verify(mockCustomsDataStoreService, times(0)).storeEmail(any(), any())(any[HeaderCarrier])
       verify(mockEmailVerificationService, times(0)).isEmailVerified(any())(any[HeaderCarrier])
-      verify(mockEmailCacheService, times(0)).fetchEmail(any())(any[HeaderCarrier], any[ExecutionContext])
+      verify(mockEmailCacheService, times(0)).fetch(any())(any[HeaderCarrier], any[ExecutionContext])
       verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any())(any[HeaderCarrier])
     }
-
   }
 }

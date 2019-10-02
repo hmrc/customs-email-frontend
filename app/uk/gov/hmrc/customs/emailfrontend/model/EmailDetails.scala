@@ -16,11 +16,17 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-sealed trait EmailAmendmentStatus
+import org.joda.time.DateTime
+import play.api.libs.json.Json
 
-object AmendmentInProgress extends EmailAmendmentStatus
+case class EmailDetails(email: String, timestamp: Option[DateTime]) {
+  lazy val amendmentInProgress = timestamp match {
+    case Some(date) => !date.isBefore(DateTime.now.minusDays(1))
+    case None => false
+  }
+}
 
-object AmendmentCompleted extends EmailAmendmentStatus
-
-object AmendmentNotDetermined extends EmailAmendmentStatus
-
+object EmailDetails {
+  import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
+  implicit val jsonFormat = Json.format[EmailDetails]
+}
