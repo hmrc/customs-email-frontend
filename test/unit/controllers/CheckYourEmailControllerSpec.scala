@@ -26,6 +26,7 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.{Await, Future}
@@ -78,6 +79,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
 
     "have a status of SEE_OTHER when no is selected" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("abc@def.com", None))))
+      when(mockEmailCacheService.remove(any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "false")
       val eventualResult = controller.submit(request)

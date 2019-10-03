@@ -137,10 +137,10 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "have a status of SEE_OTHER for create method when email found in cache with no timestamp" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("test@email", None))))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
+
       val eventualResult = controller.create(request)
 
-      status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/check-email-address")
+      status(eventualResult) shouldBe OK
     }
 
     "have a status of SEE_OTHER for create method when the bookmark url is used and user already completed success amend email journey" in withAuthorisedUser() {
