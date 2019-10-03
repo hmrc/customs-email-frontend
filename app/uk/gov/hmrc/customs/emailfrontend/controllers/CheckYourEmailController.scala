@@ -81,6 +81,6 @@ class CheckYourEmailController @Inject()(actions: Actions,
 
   private def locationByAnswer(internalId: InternalId, confirmEmail: YesNo, email: String)(implicit request: Request[AnyContent]): Future[Result] = confirmEmail.isYes match {
     case Some(true) => submitNewDetails(internalId, email)
-    case _ => Future.successful(Redirect(WhatIsYourEmailController.create()))
+    case _ => emailCacheService.remove(internalId).flatMap(_ => Future.successful(Redirect(WhatIsYourEmailController.create())))
   }
 }

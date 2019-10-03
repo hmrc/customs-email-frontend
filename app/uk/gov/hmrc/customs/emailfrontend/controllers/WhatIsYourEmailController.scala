@@ -56,7 +56,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   }
 
   def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
-    emailCacheService.routeBasedOnAmendment(request.user.internalId)(_ => Future.successful(Redirect(CheckYourEmailController.show())), subscriptionDisplay)
+    emailCacheService.routeBasedOnAmendment(request.user.internalId)(email => Future.successful(Ok(view(emailForm, email))), subscriptionDisplay)
   }
 
   private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) = {
