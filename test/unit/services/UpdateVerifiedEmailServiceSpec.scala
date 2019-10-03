@@ -67,7 +67,7 @@ class UpdateVerifiedEmailServiceSpec extends PlaySpec with MockitoSugar with Bef
     "return None when VerifiedEmailResponse returned without bundleId" in {
       mockGetEmailVerificationState(Right(businessErrorUpdateVerifiedEmailResponse))
 
-      service.updateVerifiedEmail(email, eoriNumber).futureValue mustBe None
+      service.updateVerifiedEmail(email, eoriNumber).futureValue mustBe Some(false)
     }
 
     "return None when HttpErrorResponse returned" in {
