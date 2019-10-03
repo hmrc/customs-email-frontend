@@ -47,9 +47,9 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
-      save4LaterWithData(randomInternalId)
+      save4LaterWithData(randomInternalId)(emailDetails)
       verifyCurrentPage(ChangeYourEmailAddressPage)
-      enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
+      enterText(ChangeYourEmailAddressPage.emailTextFieldId)("b@a.com")
       clickContinue()
 
       Then("the user should be on 'Check your email address' page")
@@ -85,7 +85,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
-      save4LaterWithData(randomInternalId)
+      save4LaterWithData(randomInternalId)(emailDetails)
       verifyCurrentPage(ChangeYourEmailAddressPage)
       enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
       clickContinue()
@@ -105,7 +105,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
 
       When("the user returns to the service after confirming the email address but was unsuccessful to update")
       authenticate(randomInternalId, randomEoriNumber)
-      save4LaterWithData(randomInternalId)
+      save4LaterWithData(randomInternalId)(emailDetails)
       stubVerifiedEmailResponse()
       stubEmailUpdatedResponseWithStatus(updatedVerifiedEmailResponse, 200)
       stubCustomsDataStoreOkResponse()
@@ -133,7 +133,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
-      save4LaterWithData(randomInternalId)
+      save4LaterWithData(randomInternalId)(emailDetails)
       verifyCurrentPage(ChangeYourEmailAddressPage)
       enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
       clickContinue()
@@ -153,7 +153,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
 
       When("the user returns to the service without confirming the email address")
       authenticate(randomInternalId, randomEoriNumber)
-      save4LaterWithData(randomInternalId)
+      save4LaterWithData(randomInternalId)(emailDetails)
       stubNotVerifiedEmailResponse()
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
@@ -180,7 +180,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
-      save4LaterWithData(randomInternalId)
+      save4LaterWithData(randomInternalId)(emailDetails)
       verifyCurrentPage(ChangeYourEmailAddressPage)
       enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
       clickContinue()

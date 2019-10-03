@@ -41,7 +41,6 @@ class WhatIsYourEmailSpec extends AcceptanceTestSpec
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
 
-
       When("the user email is not verified")
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubNotVerifiedEmailResponse()

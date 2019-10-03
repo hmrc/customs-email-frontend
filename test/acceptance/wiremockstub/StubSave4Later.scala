@@ -18,6 +18,7 @@ package acceptance.wiremockstub
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import org.joda.time.DateTime
 import play.api.http.Status
 import play.api.libs.json.Json
 import uk.gov.hmrc.crypto.CompositeSymmetricCrypto.aes
@@ -30,10 +31,11 @@ trait StubSave4Later {
 
   private val save4LaterGetUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId"
   private val save4LaterPutUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId/data/emailDetails"
-  private val emailVerified = EmailDetails("b@a.com", None)
-  private val emailVerifiedJson = Json.toJson(emailVerified).toString()
+  val emailDetails = EmailDetails("b@a.com", None)
+  val emailDetailsWithTimestamp = EmailDetails("b@a.com", Some(DateTime.now().minusHours(12)))
+  val emailDetailsWithTimestampOver24Hours = EmailDetails("b@a.com", Some(DateTime.now().minusHours(25)))
 
-  private val encryptedEmail = encrypt(emailVerifiedJson)
+  private def encryptEmailDetails : EmailDetails => String = emailDetails => encrypt(Json.toJson(emailDetails).toString())
 
   def save4LaterWithNoData(internalId: String): StubMapping = {
     stubFor(get(urlEqualTo(save4LaterGetUrl(internalId)))
@@ -53,16 +55,23 @@ trait StubSave4Later {
     )
   }
 
-  def save4LaterWithData(internalId: String): StubMapping = {
+  def encrypt(str: String): String = crypto.encrypt(PlainText(str)).value
+
+  def save4LaterWithData(internalId: String)(emailDetails: EmailDetails): StubMapping = {
     stubFor(get(urlEqualTo(save4LaterGetUrl(internalId)))
       .willReturn(
         aResponse()
           .withStatus(Status.OK)
-          .withBody(s"""{"data": {"emailDetails": "$encryptedEmail"}, "id": "$internalId"}""".stripMargin)
+          .withBody(s"""{"data": {"emailDetails": "${encryptEmailDetails(emailDetails)}"}, "id": "$internalId"}""".stripMargin)
+      )
+    )
+
+    stubFor(delete(urlEqualTo(save4LaterGetUrl(internalId)))
+      .willReturn(
+        aResponse()
+          .withStatus(Status.OK)
       )
     )
   }
-
-  def encrypt(str: String): String = crypto.encrypt(PlainText(str)).value
 
 }

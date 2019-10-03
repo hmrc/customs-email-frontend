@@ -25,6 +25,7 @@ class CheckYourEmailAddressPage extends BasePage {
 
   val emailAddressId: By = By.id("cya-answer-id")
   val yesEmailAddressCss : By = By.cssSelector("#isYes-true")
+  val noEmailAddressCss : By = By.cssSelector("#isYes-false")
 }
 
 object CheckYourEmailAddressPage extends CheckYourEmailAddressPage
