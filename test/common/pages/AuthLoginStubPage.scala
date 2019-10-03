@@ -21,10 +21,10 @@ import org.openqa.selenium.By
 import org.openqa.selenium.support.ui.Select
 import utils.{Configuration, SpecHelper}
 
-class AuthLoginStubPage extends BasePage with SpecHelper{
+class AuthLoginStubPage extends BasePage with SpecHelper {
 
   override val url: String = Configuration.forCurrentEnv {
-    case QA => "http://auth-login-stub.public.mdtp"
+    case QA => "https://www.qa.tax.service.gov.uk"
     case DEV => "https://www.development.tax.service.gov.uk"
     case LOCAL => "http://localhost:9949"
   } + "/auth-login-stub/gg-sign-in"
@@ -50,12 +50,7 @@ class AuthLoginStubPage extends BasePage with SpecHelper{
     val selectCredentialRole = new Select(credentialRoleDropDown)
     selectCredentialRole.selectByValue(credentialRole)
 
-    enterText(redirectUrlName)(Configuration.forCurrentEnv {
-      case QA => "/manage-email-cds/start"
-      case DEV => "/manage-email-cds/start"
-      case LOCAL => "http://localhost:9898/manage-email-cds/start"
-    })
-
+    enterText(redirectUrlName)(Configuration.frontendHost + "/manage-email-cds/start")
     enterText(enrolmentKey)("HMRC-CUS-ORG")
     enterText(identifierName)("EORINumber")
     enterText(identifierValue)("ZZ123456789000")

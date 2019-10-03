@@ -16,12 +16,12 @@
 
 package acceptance.specs
 
-import acceptance.wiremockstub.Configuration.webDriver
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, FeatureSpec, GivenWhenThen}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import utils.{Configuration, Constants, WireMockRunner}
+import utils.Configuration.webDriver
 
 trait AcceptanceTestSpec extends FeatureSpec
   with GivenWhenThen
