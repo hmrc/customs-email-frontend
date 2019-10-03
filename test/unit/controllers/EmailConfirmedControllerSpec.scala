@@ -122,19 +122,14 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       redirectLocation(eventualResult).value should endWith("/manage-email-cds/cannot-change-email")
     }
 
-    "have a status of SEE_OTHER for show method when save email is failed with Error 400 or 500" in withAuthorisedUser() {
+    "show 'there is a problem with the service page' when save email is failed with Error 400 or 500" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("abc@def.com", None))))
-
-
       when(mockEmailVerificationService.isEmailVerified(any())(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(None))
 
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe OK
-
-      //      redirectLocation(eventualResult).value should endWith("")
-
     }
 
 
