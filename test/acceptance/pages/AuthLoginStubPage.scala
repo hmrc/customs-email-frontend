@@ -51,9 +51,9 @@ class AuthLoginStubPage extends BasePage with SpecHelper{
     selectCredentialRole.selectByValue(credentialRole)
 
     enterText(redirectUrlName)(Configuration.forCurrentEnv {
-      case QA => "/customs-email-frontend/start"
-      case DEV => "/customs-email-frontend/start"
-      case LOCAL => "http://localhost:9898/customs-email-frontend/start"
+      case QA => "/manage-email-cds/start"
+      case DEV => "/manage-email-cds/start"
+      case LOCAL => "http://localhost:9898/manage-email-cds/start"
     })
 
     enterText(enrolmentKey)("HMRC-CUS-ORG")

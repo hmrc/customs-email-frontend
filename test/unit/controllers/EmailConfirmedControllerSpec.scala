@@ -90,7 +90,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe SEE_OTHER
 
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/confirm-email-address")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/confirm-email-address")
     }
 
     "have a status of SEE_OTHER when email found in cache but isEmailVerified failed" in withAuthorisedUser() {
@@ -102,7 +102,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe SEE_OTHER
 
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/confirm-email-address")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/confirm-email-address")
     }
 
     "have a status of SEE_OTHER for show method when email not found in cache" in withAuthorisedUser() {
@@ -111,14 +111,14 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/signout")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/signout")
     }
 
     "have a status of SEE_OTHER for show method user retry's the same request(user click back on successful request or refreshes the browser)" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("abc@def.com", Some(DateTime.now())))))
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/cannot-change-email")
     }
 
 
@@ -126,7 +126,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe SEE_OTHER
 
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/ineligible/no-enrolment")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/ineligible/no-enrolment")
 
       verify(mockCustomsDataStoreService, times(0)).storeEmail(any(), any())(any[HeaderCarrier])
       verify(mockEmailVerificationService, times(0)).isEmailVerified(any())(any[HeaderCarrier])

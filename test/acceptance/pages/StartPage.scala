@@ -20,7 +20,7 @@ import acceptance.utils.Configuration
 import org.openqa.selenium.By
 
 class StartPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/customs-email-frontend/start"
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/start"
   override val title = "Hello from customs-email-frontend"
 
   val emailLinkText: By = By.linkText("Let's do this!")

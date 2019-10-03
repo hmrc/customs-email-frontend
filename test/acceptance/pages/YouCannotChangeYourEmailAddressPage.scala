@@ -20,7 +20,7 @@ import acceptance.utils.Configuration
 import org.openqa.selenium.By
 
 class YouCannotChangeYourEmailAddressPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/customs-email-frontend/cannot-change-email"
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/cannot-change-email"
   override val title = "You cannot change your email address"
 }
 

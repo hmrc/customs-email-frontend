@@ -42,7 +42,7 @@ class VerifyYourEmailControllerSpec extends ControllerSpec {
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/signout")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/signout")
     }
 
     "return status OK when email found in cache" in withAuthorisedUser() {
@@ -59,7 +59,7 @@ class VerifyYourEmailControllerSpec extends ControllerSpec {
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/cannot-change-email")
     }
   }
 }

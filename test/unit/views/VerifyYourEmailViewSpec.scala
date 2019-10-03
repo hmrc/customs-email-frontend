@@ -39,11 +39,11 @@ class VerifyYourEmailViewSpec extends ViewSpec {
 
     "have an change your email address 'text' and change email link" in {
       doc.body.getElementById("p2").text() mustBe "You can change your email address if it is not correct."
-      doc.body.getElementById("p2").select("a[href]").attr("href") mustBe "/customs-email-frontend/change-email-address"
+      doc.body.getElementById("p2").select("a[href]").attr("href") mustBe "/manage-email-cds/change-email-address"
     }
 
     "have an link send it again" in {
-      doc.body.getElementById("p3").select("a[href]").attr("href") mustBe "/customs-email-frontend/check-email-address"
+      doc.body.getElementById("p3").select("a[href]").attr("href") mustBe "/manage-email-cds/check-email-address"
     }
   }
 

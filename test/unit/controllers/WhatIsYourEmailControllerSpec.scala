@@ -63,7 +63,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/change-email-address/create")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/change-email-address/create")
     }
 
     "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentNotDetermined and email is not in cache" in withAuthorisedUser() {
@@ -72,7 +72,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/change-email-address/create")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/change-email-address/create")
 
     }
 
@@ -83,7 +83,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email-address-confirmed")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/email-address-confirmed")
 
     }
     "have a status of SEE_OTHER for show method when email found in cache with no timestamp and email is not verified" in withAuthorisedUser() {
@@ -93,7 +93,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-email-address")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/check-email-address")
     }
 
     "have a status of SEE_OTHER for show method when email found in cache with timestamp for AmendmentInProgress" in withAuthorisedUser() {
@@ -102,7 +102,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/cannot-change-email")
     }
 
     "have a status of SEE_OTHER for show method email is not found in cache " in withAuthorisedUser() {
@@ -110,7 +110,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/change-email-address/create")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/change-email-address/create")
     }
 
     "have a status of OK for create method when verified email found in subscription display response" in withAuthorisedUser() {
@@ -131,7 +131,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.create(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email-address/verify-email-address")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/email-address/verify-email-address")
     }
 
     "have a status of SEE_OTHER for create method when email found in cache with no timestamp" in withAuthorisedUser() {
@@ -140,7 +140,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.create(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-email-address")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/check-email-address")
     }
 
     "have a status of SEE_OTHER for create method when the bookmark url is used and user already completed success amend email journey" in withAuthorisedUser() {
@@ -149,7 +149,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       when(mockEmailVerificationService.isEmailVerified(meq(someSubscriptionDisplayResponse.email.get))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
 
       val eventualResult = controller.create(request)
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/cannot-change-email")
     }
 
     "have a status of OK for create method when unverified email found in subscription display response" in withAuthorisedUser() {
@@ -160,14 +160,14 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.create(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email-address/verify-email-address")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/email-address/verify-email-address")
     }
 
     "have a status of Redirect for create method for unauthorised user" in withAuthorisedUserWithoutEori {
       val eventualResult = controller.create(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/ineligible/no-enrolment")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/ineligible/no-enrolment")
     }
 
     "have a status of OK for verify method" in withAuthorisedUser() {
@@ -190,7 +190,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("test@email", Some(DateTime.now())))))
 
       val eventualResult = controller.verify(request)
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/cannot-change-email")
     }
 
     "have a status of Bad Request when no email is provided in the form" in withAuthorisedUser() {
@@ -218,7 +218,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-email-address")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/check-email-address")
     }
 
     "have a status of Bad Request for verifySubmit method when no email is provided in the form" in withAuthorisedUser() {
@@ -234,7 +234,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.verifySubmit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/check-email-address")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/check-email-address")
     }
   }
 }

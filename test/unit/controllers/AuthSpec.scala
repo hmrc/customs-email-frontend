@@ -25,7 +25,7 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val eori = Eori("ZZ123456789")
-  private val ineligibleUrl = "/customs-email-frontend/ineligible/no-enrolment"
+  private val ineligibleUrl = "/manage-email-cds/ineligible/no-enrolment"
 
   private val view = app.injector.instanceOf[start_page]
 
@@ -64,7 +64,7 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
     "not allow a logged out user to access the page" in withUnauthorisedUser {
       val result = controller.show(request)
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) should contain("/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fcustoms-email-frontend%2Fstart&origin=customs-email-frontend")
+      redirectLocation(result) should contain("/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fmanage-email-cds%2Fstart&origin=customs-email-frontend")
     }
   }
 

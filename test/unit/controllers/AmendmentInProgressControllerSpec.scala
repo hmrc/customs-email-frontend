@@ -41,7 +41,7 @@ class AmendmentInProgressControllerSpec extends ControllerSpec {
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/signout")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/signout")
     }
 
     "have a status of OK when email found in cache and verification in progress" in withAuthorisedUser() {

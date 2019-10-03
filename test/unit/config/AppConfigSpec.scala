@@ -32,7 +32,7 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.assetsPrefix shouldBe "https://www.development.tax.service.gov.uk/assets/3.4.0"
     }
     "have ggSignInRedirectUrl defined" in {
-      appConfig.ggSignInRedirectUrl shouldBe "http://localhost:9898/customs-email-frontend/start"
+      appConfig.ggSignInRedirectUrl shouldBe "http://localhost:9898/manage-email-cds/start"
     }
     "have analyticsToken defined" in {
       appConfig.analyticsToken shouldBe "N/A"

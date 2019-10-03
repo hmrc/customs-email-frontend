@@ -33,7 +33,7 @@ trait StubEmailVerification {
       |"templateId" : "verifyEmailAddress",
       |"templateParameters":{},
       |"linkExpiryDuration":"P3D",
-      |"continueUrl":"/customs-email-frontend/email-address-confirmed"
+      |"continueUrl":"/manage-email-cds/email-address-confirmed"
       |}
     """.stripMargin
   }

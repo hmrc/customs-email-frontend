@@ -28,8 +28,8 @@ trait StubSave4Later {
 
   private val crypto: CompositeSymmetricCrypto = aes("fqpLDZ4smuDsekHkeEBlCA==", Seq.empty)
 
-  private val save4LaterGetUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId"
-  private val save4LaterPutUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId/data/emailDetails"
+  private val save4LaterGetUrl = (internalId: String) => s"/save4later/manage-email-cds/$internalId"
+  private val save4LaterPutUrl = (internalId: String) => s"/save4later/manage-email-cds/$internalId/data/emailDetails"
   private val emailVerified = EmailDetails("b@a.com", None)
   private val emailVerifiedJson = Json.toJson(emailVerified).toString()
 

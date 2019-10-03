@@ -41,7 +41,7 @@ class AmendmentInProgressViewSpec extends ViewSpec {
 
     "have the sign out button" in {
       doc.getElementsByClass("button").text mustBe "Sign out"
-      doc.getElementsByClass("button").attr("href") mustBe "/customs-email-frontend/signout"
+      doc.getElementsByClass("button").attr("href") mustBe "/manage-email-cds/signout"
     }
   }
 }

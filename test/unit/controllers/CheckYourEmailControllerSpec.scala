@@ -54,7 +54,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/signout")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/signout")
     }
 
     "have a status of SEE_OTHER when email not found in cache on submit" in withAuthorisedUser() {
@@ -64,7 +64,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/signout")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/signout")
     }
 
     "have a status of BAD_REQUEST when no selection is provided" in withAuthorisedUser() {
@@ -83,7 +83,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/change-email-address/create")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/change-email-address/create")
     }
 
     "have a status of SEE_OTHER when user clicks back on the successful request or uses already complete bookmarked request within 24 hours" in withAuthorisedUser() {
@@ -92,7 +92,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/cannot-change-email")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/cannot-change-email")
     }
 
   }
@@ -108,7 +108,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/email-address-confirmed")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/email-address-confirmed")
     }
 
     "redirect to Email Confirmed page when email already verified" in withAuthorisedUser() {
@@ -119,7 +119,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/customs-email-frontend/confirm-email-address")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/confirm-email-address")
     }
 
     "throw exception when createEmailVerificationRequest failed" in withAuthorisedUser() {
