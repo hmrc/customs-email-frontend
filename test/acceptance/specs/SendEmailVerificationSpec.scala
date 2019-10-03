@@ -16,8 +16,9 @@
 
 package acceptance.specs
 
-import acceptance.pages.{CheckYourEmailAddressPage, StartPage, VerifyYourEmailAddressPage, WhatIsYourEmailPage}
-import acceptance.utils._
+import common.pages.{CheckYourEmailAddressPage, StartPage, VerifyYourEmailAddressPage, WhatIsYourEmailPage}
+import acceptance.wiremockstub._
+import utils.SpecHelper
 
 class SendEmailVerificationSpec extends AcceptanceTestSpec
   with SpecHelper

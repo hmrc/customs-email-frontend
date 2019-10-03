@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package endtoend.pages
+package common.pages
 
-import endtoend.utils.Configuration
 import org.openqa.selenium.By
+import utils.Configuration
 
 class CheckYourEmailAddressPage extends BasePage {
   override val url: String = Configuration.frontendHost + "/manage-email-cds/check-email-address"

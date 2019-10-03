@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package endtoend.pages
+package common.pages
 
-import endtoend.utils.Configuration
 import org.openqa.selenium.By
+import utils.Configuration
 
-class EmailConfirmedPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address-confirmed"
-  override val title = "Email address confirmed"
+class StartPage extends BasePage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/start"
+  override val title = "Hello from customs-email-frontend"
 
-  val verifyEmailConfirmedText: By = By.id("info")
+  val emailLinkText: By = By.linkText("Let's do this!")
 }
 
-object EmailConfirmedPage extends EmailConfirmedPage
-
-
+object StartPage extends StartPage

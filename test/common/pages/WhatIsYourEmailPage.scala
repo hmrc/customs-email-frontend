@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package endtoend.pages
+package common.pages
 
-import endtoend.utils.Configuration
 import org.openqa.selenium.By
+import utils.Configuration
 
-class VerifyYourEmailAddressPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/confirm-email-address"
-  override val title = "Verify your email address"
-
-  val verifyEmailId: By = By.id("p1")
+abstract class EmailPage extends BasePage {
+  val emailTextFieldId: By = By.id("email")
 }
 
-object VerifyYourEmailAddressPage extends VerifyYourEmailAddressPage
+object WhatIsYourEmailPage extends EmailPage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address/verify-email-address"
+  override val title = "What is your email address?"
+}
+
+object ChangeYourEmailAddressPage extends EmailPage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/change-email-address/create"
+  override val title = "Change your email address for CDS"
+}

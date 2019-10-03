@@ -16,9 +16,10 @@
 
 package acceptance.specs
 
-import acceptance.pages._
-import acceptance.utils._
+import common.pages._
+import acceptance.wiremockstub._
 import integration.stubservices.UpdateVerifiedEmailStubService._
+import utils.SpecHelper
 
 class EmailConfirmedSpec extends AcceptanceTestSpec
   with SpecHelper

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package endtoend.pages
+package common.pages
 
-import endtoend.utils.Configuration
+import utils.Configuration
 
 class YouCannotChangeYourEmailAddressPage extends BasePage {
   override val url: String = Configuration.frontendHost + "/manage-email-cds/cannot-change-email"

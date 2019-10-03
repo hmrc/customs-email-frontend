@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+package utils
 
-import acceptance.utils.Configuration
-import org.openqa.selenium.By
+object TestEnvironment extends Enumeration {
 
-class EmailConfirmedPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address-confirmed"
-  override val title = "Email address confirmed"
+  type TestEnvironment = Value
 
-  val verifyEmailConfirmedText: By = By.id("info")
+  val DEV = Value("dev")
+  val QA = Value("qa")
+  val LOCAL = Value("local")
+
+  def withNameEither(s: String): Either[String, Value] = values.find(_.toString.toLowerCase == s.toLowerCase) match {
+    case None => Left(s"Environment name $s is incorrect")
+    case Some(v) => Right(v)
+  }
+
 }
-
-object EmailConfirmedPage extends EmailConfirmedPage
-
-

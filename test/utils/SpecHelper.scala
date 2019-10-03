@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package acceptance.utils
+package utils
 
-import acceptance.pages.BasePage
+import common.pages.BasePage
 import org.openqa.selenium.support.ui.{ExpectedConditions, WebDriverWait}
 import org.openqa.selenium.{By, WebDriver, WebElement}
 import org.scalatest.{Assertion, Matchers}

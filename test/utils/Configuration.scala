@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package acceptance.utils
+package utils
 
-import acceptance.utils.TestEnvironment._
+import TestEnvironment._
 import org.openqa.selenium.WebDriver
 import uk.gov.hmrc.webdriver.SingletonDriver
 

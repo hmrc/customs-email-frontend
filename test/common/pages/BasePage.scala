@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package acceptance.utils
+package common.pages
 
-object TestEnvironment extends Enumeration {
+import org.openqa.selenium.By
+import org.scalatestplus.selenium.Page
 
-  type TestEnvironment = Value
-
-  val DEV = Value("dev")
-  val QA = Value("qa")
-  val LOCAL = Value("local")
-
-  def withNameEither(s: String): Either[String, Value] = values.find(_.toString.toLowerCase == s.toLowerCase) match {
-    case None => Left(s"Environment name $s is incorrect")
-    case Some(v) => Right(v)
-  }
-
+trait BasePage extends Page {
+  val title : String
+  val signOutId: By = By.id("sign-out")
 }
