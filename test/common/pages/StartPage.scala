@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package endtoend.pages
+package common.pages
 
-import endtoend.utils.Configuration
+import org.openqa.selenium.By
+import utils.Configuration
 
-class YouCannotChangeYourEmailAddressPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/cannot-change-email"
-  override val title = "You cannot change your email address"
+class StartPage extends BasePage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/start"
+  override val title = "Hello from customs-email-frontend"
+
+  val emailLinkText: By = By.linkText("Let's do this!")
 }
 
-object YouCannotChangeYourEmailAddressPage extends YouCannotChangeYourEmailAddressPage
-
-
+object StartPage extends StartPage

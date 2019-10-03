@@ -16,11 +16,11 @@
 
 package endtoend.specs
 
-import endtoend.pages._
-import endtoend.utils.SpecHelper
+import common.pages._
+import utils.SpecHelper
 
 
-class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper{
+class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
 
   feature("Amend email address") {
 

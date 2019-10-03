@@ -16,8 +16,9 @@
 
 package acceptance.specs
 
-import acceptance.pages._
-import acceptance.utils._
+import common.pages._
+import acceptance.wiremockstub._
+import utils.SpecHelper
 
 class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAuthClient {
 

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package acceptance.pages
+package common.pages
 
-import acceptance.utils.Configuration
-import org.openqa.selenium.By
+import utils.Configuration
 
-class EmailConfirmedPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address-confirmed"
-  override val title = "Email address confirmed"
-
-  val verifyEmailConfirmedText: By = By.id("info")
+class YouCannotChangeYourEmailAddressPage extends BasePage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/cannot-change-email"
+  override val title = "You cannot change your email address"
 }
 
-object EmailConfirmedPage extends EmailConfirmedPage
+object YouCannotChangeYourEmailAddressPage extends YouCannotChangeYourEmailAddressPage
 
 

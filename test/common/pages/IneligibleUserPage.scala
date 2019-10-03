@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
-package endtoend.pages
+package common.pages
 
-import endtoend.utils.Configuration
+import utils.Configuration
 
-class IneligibleUserPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/ineligible/no-enrolment"
+abstract class IneligibleUserPage extends BasePage {
   override val title = "You cannot use this service"
 }
 
-object IneligibleUserPage extends IneligibleUserPage
-
+object IneligibleUserPage extends IneligibleUserPage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/ineligible/no-enrolment"
+}
 
 object IneligibleUserNotAdminPage extends IneligibleUserPage {
   override val url: String = Configuration.frontendHost  + "/manage-email-cds/ineligible/not-admin"
-  override val title = "You cannot use this service"
 }
 
 object IneligibleUserAgentPage extends IneligibleUserPage {
   override val url: String = Configuration.frontendHost  + "/manage-email-cds/ineligible/is-agent"
-  override val title = "You cannot use this service"
 }
 
 

@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package endtoend.utils
+package common.pages
 
-object TestEnvironment extends Enumeration {
+import org.openqa.selenium.By
+import utils.Configuration
 
-  type TestEnvironment = Value
+abstract class EmailPage extends BasePage {
+  val emailTextFieldId: By = By.id("email")
+}
 
-  val DEV = Value("dev")
-  val QA = Value("qa")
-  val LOCAL = Value("local")
+object WhatIsYourEmailPage extends EmailPage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address/verify-email-address"
+  override val title = "What is your email address?"
+}
 
-  def withNameEither(s: String): Either[String, Value] = values.find(_.toString.toLowerCase == s.toLowerCase) match {
-    case None => Left(s"Environment name $s is incorrect")
-    case Some(v) => Right(v)
-  }
-
+object ChangeYourEmailAddressPage extends EmailPage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/change-email-address/create"
+  override val title = "Change your email address for CDS"
 }

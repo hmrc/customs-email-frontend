@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package endtoend.pages
+package common.pages
 
 import org.openqa.selenium.By
 import org.scalatestplus.selenium.Page

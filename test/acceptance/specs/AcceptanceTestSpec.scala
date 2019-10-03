@@ -16,17 +16,19 @@
 
 package acceptance.specs
 
-import acceptance.utils.Configuration
-import acceptance.utils.Configuration.webDriver
+import acceptance.wiremockstub.Configuration.webDriver
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, FeatureSpec, GivenWhenThen}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import utils.{Constants, WireMockRunner}
+import utils.{Configuration, Constants, WireMockRunner}
 
-trait BaseSpec extends FeatureSpec with GivenWhenThen
-
-trait AcceptanceTestSpec extends BaseSpec with GuiceOneServerPerSuite with BeforeAndAfterAll with BeforeAndAfterEach with WireMockRunner{
+trait AcceptanceTestSpec extends FeatureSpec
+  with GivenWhenThen
+  with GuiceOneServerPerSuite
+  with BeforeAndAfterAll
+  with BeforeAndAfterEach
+  with WireMockRunner {
   override lazy val port = Configuration.port
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()

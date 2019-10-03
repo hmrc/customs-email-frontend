@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package acceptance.utils
+package acceptance.wiremockstub
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping

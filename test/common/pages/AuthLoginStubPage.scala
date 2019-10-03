@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package endtoend.pages
+package common.pages
 
-import endtoend.utils.TestEnvironment._
-import endtoend.utils.{Configuration, SpecHelper}
+import utils.TestEnvironment._
 import org.openqa.selenium.By
 import org.openqa.selenium.support.ui.Select
+import utils.{Configuration, SpecHelper}
 
 class AuthLoginStubPage extends BasePage with SpecHelper{
 
