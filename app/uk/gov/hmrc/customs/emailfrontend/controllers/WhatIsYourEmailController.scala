@@ -27,14 +27,16 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{AmendmentInProgress
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{change_your_email, what_is_your_email}
+import uk.gov.hmrc.customs.emailfrontend.views.html._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.control.NonFatal
 
 @Singleton
 class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_email,
                                           whatIsYourEmailView: what_is_your_email,
+                                          problemWithServiceView: problem_with_this_service,
                                           emailCacheService: EmailCacheService,
                                           mcc: MessagesControllerComponents,
                                           subscriptionDisplayConnector: SubscriptionDisplayConnector,
@@ -67,7 +69,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
           case Some(false) => Redirect(WhatIsYourEmailController.verify())
           case None => ??? //ToDo redirect to retry page
         }
-    }
+    } recover { handleNonFatalException() }
   }
 
   def verify: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
@@ -80,7 +82,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
           case SubscriptionDisplayResponse(Some(email)) => BadRequest(view(formWithErrors, email))
-        }
+        } recover { handleNonFatalException() }
       },
       formData => {
         emailCacheService.save(request.user.internalId, EmailDetails(formData.value, None)).map {
@@ -99,5 +101,12 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         }
       }
     )
+  }
+
+  private def handleNonFatalException()(implicit request: EoriRequest[AnyContent]): PartialFunction[Throwable, Result]  = {
+    case NonFatal(e) => {
+      Logger.error(s"Subscription display failed with ${e.getMessage}")
+      Ok(problemWithServiceView())
+    }
   }
 }

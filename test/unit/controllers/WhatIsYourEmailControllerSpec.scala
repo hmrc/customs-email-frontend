@@ -29,7 +29,7 @@ import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
 import uk.gov.hmrc.customs.emailfrontend.views.html._
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
 
 import scala.concurrent.Future
 
@@ -37,6 +37,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private val view = app.injector.instanceOf[change_your_email]
   private val verifyView = app.injector.instanceOf[what_is_your_email]
+  private val problemWithServiceView = app.injector.instanceOf[problem_with_this_service]
   private val mockEmailCacheService = mock[EmailCacheService]
   private val mockSubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
   private val mockEmailVerificationService = mock[EmailVerificationService]
@@ -47,7 +48,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val cacheMap = CacheMap(internalId, data)
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"))
 
-  private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService)
+  private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, problemWithServiceView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService)
 
   override protected def beforeEach(): Unit = {
     reset(mockEmailCacheService, mockSubscriptionDisplayConnector, mockEmailVerificationService)
@@ -163,6 +164,16 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       redirectLocation(eventualResult).value should endWith("/manage-email-cds/email-address/verify-email-address")
     }
 
+    "show 'there is a problem with the service' page when subscription display is failed" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.failed(new HttpException("Failed", BAD_REQUEST)))
+
+      val eventualResult = controller.create(request)
+
+      status(eventualResult) shouldBe OK
+      contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
+    }
+
     "have a status of Redirect for create method for unauthorised user" in withAuthorisedUserWithoutEori {
       val eventualResult = controller.create(request)
 
@@ -219,6 +230,16 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
       status(eventualResult) shouldBe SEE_OTHER
       redirectLocation(eventualResult).value should endWith("/manage-email-cds/check-email-address")
+    }
+
+    "show 'there is a problem with the service' page when subscription display is failed for submit" in withAuthorisedUser() {
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.failed(new HttpException("Failed", BAD_REQUEST)))
+
+      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
+      val eventualResult = controller.submit(request)
+
+      status(eventualResult) shouldBe OK
+      contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 
     "have a status of Bad Request for verifySubmit method when no email is provided in the form" in withAuthorisedUser() {
