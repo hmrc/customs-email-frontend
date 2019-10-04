@@ -20,7 +20,7 @@ import acceptance.wiremockstub.{StubAuthClient, StubSave4Later, StubSubscription
 import common.pages.{StartPage, ThereIsAProblemWithTheServicePage}
 import utils.SpecHelper
 
-class ProblemWithTheServiceSpec
+class FetchEmailSpec
   extends AcceptanceTestSpec
     with SpecHelper
     with StubAuthClient
@@ -69,7 +69,7 @@ class ProblemWithTheServiceSpec
     scenario("User should see 'There is a problem with the service' when there is an error in processing the request") {
 
       Given("user is on the 'Start' page")
-      authenticate(randomInternalId, randomEoriNumber) 
+      authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)

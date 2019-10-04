@@ -90,68 +90,40 @@ trait StubSubscriptionDisplay {
       |}
       |"""
 
-
-  def stubSubscriptionDisplayOkResponse(eoriNumber: String): Unit = {
+  private def stubSubscriptionDisplay(eoriNumber: String, status: Int, subscriptionDisplayResponse: String): Unit = {
     stubFor(get(urlPathEqualTo(s"$subscriptionDisplay"))
       .withQueryParam("EORI", equalTo(eoriNumber))
       .withQueryParam("regime", equalTo("CDS"))
       .withQueryParam("acknowledgementReference", matching("[\\w]{32}"))
       .willReturn(
         aResponse()
-          .withStatus(Status.OK)
+          .withStatus(status)
           .withBody(subscriptionDisplayResponseJson)
           .withHeader(CONTENT_TYPE, JSON)
       )
     )
   }
 
+  def stubSubscriptionDisplayOkResponse(eoriNumber: String): Unit = {
+    stubSubscriptionDisplay(eoriNumber, Status.OK, subscriptionDisplayResponseJson)
+  }
+
   def stubSubscriptionDisplayBadRequestResponse(eoriNumber: String): Unit = {
-    stubFor(get(urlPathEqualTo(s"$subscriptionDisplay"))
-      .withQueryParam("EORI", equalTo(eoriNumber))
-      .withQueryParam("regime", equalTo("CDS"))
-      .withQueryParam("acknowledgementReference", matching("[\\w]{32}"))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.BAD_REQUEST)
-          .withBody(subscriptionDisplay400ResponseJson)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
-    )
+    stubSubscriptionDisplay(eoriNumber, Status.BAD_REQUEST, subscriptionDisplay400ResponseJson)
   }
 
   def stubSubscriptionDisplayNotFoundResponse(eoriNumber: String): Unit = {
-    stubFor(get(urlPathEqualTo(s"$subscriptionDisplay"))
-      .withQueryParam("EORI", equalTo(eoriNumber))
-      .withQueryParam("regime", equalTo("CDS"))
-      .withQueryParam("acknowledgementReference", matching("[\\w]{32}"))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.NOT_FOUND)
-          .withBody(subscriptionDisplay404ResponseJson)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
-    )
+    stubSubscriptionDisplay(eoriNumber, Status.NOT_FOUND, subscriptionDisplay404ResponseJson)
   }
-
 
   def stubSubscriptionDisplayInternalServerResponse(eoriNumber: String): Unit = {
-    stubFor(get(urlPathEqualTo(s"$subscriptionDisplay"))
-      .withQueryParam("EORI", equalTo(eoriNumber))
-      .withQueryParam("regime", equalTo("CDS"))
-      .withQueryParam("acknowledgementReference", matching("[\\w]{32}"))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.INTERNAL_SERVER_ERROR)
-          .withBody(subscriptionDisplay500ResponseJson)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
-    )
+    stubSubscriptionDisplay(eoriNumber, Status.INTERNAL_SERVER_ERROR, subscriptionDisplay500ResponseJson)
   }
-
 
   def verifySubscriptionDisplayIsCalled(times:Int, eoriNumber:String): Unit = {
     verify(times, getRequestedFor(subscriptionDisplayContextPath).withQueryParam("EORI", equalTo(eoriNumber))
       .withQueryParam("regime", equalTo("CDS"))
       .withQueryParam("acknowledgementReference", matching("[\\w]{32}")))
   }
+
 }
