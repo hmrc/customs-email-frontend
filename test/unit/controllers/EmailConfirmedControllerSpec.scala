@@ -130,6 +130,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe OK
+      contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 
 
