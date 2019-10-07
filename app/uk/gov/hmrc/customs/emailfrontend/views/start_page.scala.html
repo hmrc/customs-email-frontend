@@ -17,7 +17,7 @@
 @import partials.main_template
 
 @this(main_template: main_template)
-@(eori: String)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @sidebarLinks = @{
     "<div class='govuk-related-items'>" +
@@ -34,7 +34,7 @@
     "</div>"
 }
 
-@main_template(messages("customs.emailfrontend.start.title-and-heading"), Some(Html(sidebarLinks))) {
+@main_template(messages("customs.emailfrontend.start.title-and-heading"), Some(Html(sidebarLinks)), timeout = false) {
     <h1 class="heading-xlarge">@messages("customs.emailfrontend.start.title-and-heading")</h1>
 
     <p id="bulletP">@messages("customs.emailfrontend.start.bullet-intro")</p>
@@ -45,9 +45,9 @@
      <li id="b3">@messages("customs.emailfrontend.start.bullet3")</li>
     </ul>
 
-    <h2 class="heading-medium">@messages("customs.emailfrontend.start.before-start")</h2>
+    <h2 class="heading-medium" id="start-before">@messages("customs.emailfrontend.start.before-start")</h2>
 
-    <p id="beforeStartS">@messages("customs.emailfrontend.start.before-start.p1")</p>
+    <p id="beforeStart">@messages("customs.emailfrontend.start.before-start.p1")</p>
 
     <a class="button button--get-started" href='change-email-address' role="button">@messages("customs.emailfrontend.start.button")</a>
 }

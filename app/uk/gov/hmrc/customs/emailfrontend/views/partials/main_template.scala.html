@@ -22,7 +22,8 @@
   contentHeader: Option[Html] = None,
   bodyClasses: Option[String] = None,
   mainClass: Option[String] = None,
-  scriptElem: Option[Html] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages)
+  scriptElem: Option[Html] = None,
+  timeout: Boolean = true)(mainContent: Html)(implicit request : Request[_], messages: Messages)
 
 @serviceInfoContent = {}
 
@@ -36,18 +37,23 @@
 @keepAliveText={@messages("customs.emailfrontend.timeout.keep-alive-button")}
 @signoutText={@messages("customs.emailfrontend.timeout.sign-out-button")}
 
-@exScripts = @{scriptElem.getOrElse("") +
-s"""<script type='text/javascript'>
-        window.GOVUK.timeoutDialog({
-           timeout: 900,
-           countdown: 300,
-           message: '$message',
-           keepAliveUrl: '/customs-email-frontend/',
-           signOutUrl: '/customs-email-frontend/signout',
-           keepAliveButtonText: '$keepAliveText',
-           signOutButtonText: '$signoutText',
-        });
-</script>"""
+@exScripts = @{
+    if(timeout) {
+        scriptElem.getOrElse("") +
+        s"""<script type='text/javascript'>
+                window.GOVUK.timeoutDialog({
+                   timeout: 900,
+                   countdown: 300,
+                   message: '$message',
+                   keepAliveUrl: '/customs-email-frontend/',
+                   signOutUrl: '/customs-email-frontend/signout',
+                   keepAliveButtonText: '$keepAliveText',
+                   signOutButtonText: '$signoutText',
+                });
+        </script>"""
+    } else {
+        scriptElem.getOrElse("") + ""
+    }
 }
 
 @govuk_wrapper(title = title,
