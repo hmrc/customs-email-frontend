@@ -18,9 +18,19 @@ package common.pages
 
 import utils.Configuration
 
-class ThereIsAProblemWithTheServicePage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/change-email-address/create"
+abstract class ThereIsAProblemWithTheServicePage extends BasePage {
   override val title = "Sorry, there is a problem with the service"
 }
 
-object ThereIsAProblemWithTheServicePage extends ThereIsAProblemWithTheServicePage
+object FetchEmailThereIsAProblemWithTheServicePage extends ThereIsAProblemWithTheServicePage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/change-email-address/create"
+}
+
+object EmailNotSavedThereIsAProblemWithTheServicePage extends ThereIsAProblemWithTheServicePage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address-confirmed"
+}
+
+
+
+
+
