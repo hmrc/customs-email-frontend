@@ -22,7 +22,7 @@ import acceptance.wiremockstub._
 import utils.SpecHelper
 
 
-class EmailVerifcationErrorSpec extends AcceptanceTestSpec
+class UpdateEmailErrorSpec extends AcceptanceTestSpec
   with SpecHelper
   with StubSave4Later
   with StubAuthClient
@@ -31,12 +31,12 @@ class EmailVerifcationErrorSpec extends AcceptanceTestSpec
   with StubSubscriptionDisplay
   with StubUpdateVerifiedEmail {
 
-  feature("Show Email confirmed to user when the email address is verified") {
+    feature("Problem with the service spec") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario("Show email confirmed page without sending email verification link when user email address is verified") {
+    scenario("The user attempted to verify their email from their recived email but encounters a 400 error") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
@@ -64,8 +64,40 @@ class EmailVerifcationErrorSpec extends AcceptanceTestSpec
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
       Then("the user should be on 'Sorry, there is a problem with the service' page")
-     // verifyCurrentPage(EmailConfirmedPage)
-      // assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedText)("Sorry, there is a problem with the service")
+      verifyCurrentPage(EmailVerificationThereIsAProblemWithTheServicePage)
+
     }
-  }
+      scenario("The user attempted to verify their email from their recived email but encounters a 500 error") {
+
+        Given("the user has successfully logged in")
+        authenticate(randomInternalId, randomEoriNumber)
+        save4LaterWithNoData(randomInternalId)
+        navigateTo(StartPage)
+        verifyCurrentPage(StartPage)
+        stubSubscriptionDisplayOkResponse(randomEoriNumber)
+
+        clickOn(StartPage.emailLinkText)
+        verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
+
+        When("the user provides an email address to change")
+        save4LaterWithData(randomInternalId)(emailDetails)
+        enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
+        clickContinue()
+
+        Then("the user should be on 'Check your email address' page")
+        verifyCurrentPage(CheckYourEmailAddressPage)
+        assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
+
+        When("the user confirms to update the email address")
+        stubEmailAlreadyVerified()
+        stubVerifiedEmailResponse()
+        stubServiceUnavailable()
+        clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
+        clickContinue()
+        Then("the user should be on 'Sorry, there is a problem with the service' page")
+        verifyCurrentPage(EmailVerificationThereIsAProblemWithTheServicePage)
+      }
+
+
+    }
 }
