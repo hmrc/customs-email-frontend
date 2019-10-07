@@ -25,63 +25,75 @@ class SendEmailVerificationSpec extends AcceptanceTestSpec
   with StubAuthClient
   with StubSave4Later
   with StubEmailVerification
-  with StubSubscriptionDisplay{
+  with StubSubscriptionDisplay {
 
   val randomInternalId = generateRandomNumberString()
   val randomEoriNumber = "GB" + generateRandomNumberString()
 
   feature("Send email to user for verification") {
+
     scenario("organisation user amends the email and submits for verification") {
 
-      stubVerificationRequestSent()
       Given("the user has successfully logged in")
-        authenticate(randomInternalId, randomEoriNumber)
-        save4LaterWithNoData(randomInternalId)
-        navigateTo(StartPage)
-        verifyCurrentPage(StartPage)
-        stubSubscriptionDisplayOkResponse(randomEoriNumber)
-        stubVerifiedEmailResponse()
-        clickOn(StartPage.emailLinkText)
-        verifySubscriptionDisplayIsCalled(1,randomEoriNumber)
-      When("the user provides an email address to change")
-        save4LaterWithData(randomInternalId)(emailDetails)
-        enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
-        clickContinue()
-      Then("the user should be on 'Check your email address' page")
-        verifyCurrentPage(CheckYourEmailAddressPage)
-        assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
-      When("the user confirms to update the email address")
-        clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
-        clickContinue()
-      Then("the user should be on 'Verify email address' page")
-        verifyCurrentPage(VerifyYourEmailAddressPage)
-        assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
-    }
-
-    scenario("individual user amends the email and submits for verification") {
-
-      stubVerificationRequestSent()
-      Given("the user has successfully logged in")
-      authenticate(randomInternalId, randomEoriNumber,affinityGroup="Individual")
+      authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
+      stubVerifiedEmailResponse()
       clickOn(StartPage.emailLinkText)
-      verifySubscriptionDisplayIsCalled(1,randomEoriNumber)
+      verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
+
       When("the user provides an email address to change")
       save4LaterWithData(randomInternalId)(emailDetails)
       enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
       clickContinue()
+
       Then("the user should be on 'Check your email address' page")
       verifyCurrentPage(CheckYourEmailAddressPage)
       assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
+      stubVerificationRequestSent()
+      stubNotVerifiedEmailResponse()
+
       When("the user confirms to update the email address")
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
+
       Then("the user should be on 'Verify email address' page")
       verifyCurrentPage(VerifyYourEmailAddressPage)
       assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
     }
-}
+
+    scenario("individual user amends the email and submits for verification") {
+
+      Given("the user has successfully logged in")
+      authenticate(randomInternalId, randomEoriNumber, affinityGroup = "Individual")
+      save4LaterWithNoData(randomInternalId)
+      navigateTo(StartPage)
+      verifyCurrentPage(StartPage)
+      stubSubscriptionDisplayOkResponse(randomEoriNumber)
+      stubVerifiedEmailResponse()
+      clickOn(StartPage.emailLinkText)
+      verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
+
+      When("the user provides an email address to change")
+      save4LaterWithData(randomInternalId)(emailDetails)
+      enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
+      clickContinue()
+
+      Then("the user should be on 'Check your email address' page")
+      verifyCurrentPage(CheckYourEmailAddressPage)
+      assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
+      stubVerificationRequestSent()
+      stubNotVerifiedEmailResponse()
+
+      When("the user confirms to update the email address")
+      clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
+      clickContinue()
+
+      Then("the user should be on 'Verify email address' page")
+      verifyCurrentPage(VerifyYourEmailAddressPage)
+      assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
+    }
+  }
 }
