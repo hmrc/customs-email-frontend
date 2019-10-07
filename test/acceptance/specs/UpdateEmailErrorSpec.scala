@@ -31,12 +31,12 @@ class UpdateEmailErrorSpec extends AcceptanceTestSpec
   with StubSubscriptionDisplay
   with StubUpdateVerifiedEmail {
 
-    feature("Problem with the service spec") {
+    feature("Problem with the service spec, 400/500 error SUB22") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario("The user attempted to verify their email from their recived email but encounters a 400 error") {
+    scenario("The user attempted to verify their email from their received email but encounters a error") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
@@ -64,10 +64,10 @@ class UpdateEmailErrorSpec extends AcceptanceTestSpec
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
       Then("the user should be on 'Sorry, there is a problem with the service' page")
-      verifyCurrentPage(EmailVerificationThereIsAProblemWithTheServicePage)
-
+      verifyCurrentPage(EmailNotSavedThereIsAProblemWithTheServicePage)
     }
-      scenario("The user attempted to verify their email from their recived email but encounters a 500 error") {
+
+      scenario("The user attempted to verify their email from their received email but encounters a 500 error") {
 
         Given("the user has successfully logged in")
         authenticate(randomInternalId, randomEoriNumber)
@@ -95,7 +95,7 @@ class UpdateEmailErrorSpec extends AcceptanceTestSpec
         clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
         clickContinue()
         Then("the user should be on 'Sorry, there is a problem with the service' page")
-        verifyCurrentPage(EmailVerificationThereIsAProblemWithTheServicePage)
+        verifyCurrentPage(EmailNotSavedThereIsAProblemWithTheServicePage)
       }
 
 

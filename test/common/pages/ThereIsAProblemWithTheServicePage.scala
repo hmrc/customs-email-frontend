@@ -26,7 +26,7 @@ object FetchEmailThereIsAProblemWithTheServicePage extends ThereIsAProblemWithTh
   override val url: String = Configuration.frontendHost + "/manage-email-cds/change-email-address/create"
 }
 
-object EmailVerificationThereIsAProblemWithTheServicePage extends ThereIsAProblemWithTheServicePage {
+object EmailNotSavedThereIsAProblemWithTheServicePage extends ThereIsAProblemWithTheServicePage {
   override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address-confirmed"
 }
 
