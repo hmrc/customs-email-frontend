@@ -117,21 +117,20 @@ trait StubUpdateVerifiedEmail {
     stubUpdateVerifiedEmailRequest(okResponse, OK)
   }
 
-  def stubBadRequest() = {
+  def stubUpdateVerifiedBadRequest() = {
     stubUpdateVerifiedEmailRequest(badRequestResponse, BAD_REQUEST)
   }
 
-  def stubServiceUnavailable() = {
+  def stubUpdateVerifiedServiceUnavailable() = {
     stubUpdateVerifiedEmailRequest(serviceUnavailableResponse, INTERNAL_SERVER_ERROR)
   }
 
-  def stubForbidden() = {
+  def stubUpdateVerifiedForbidden() = {
     stubUpdateVerifiedEmailRequest(forbiddenResponse, FORBIDDEN)
   }
 
   private def stubUpdateVerifiedEmailRequest(response: String, status: Int): Unit = {
     stubFor(put(urlMatching(expectedUrl))
-      .withRequestBody(equalToJson(verifiedEmailRequest))
       .willReturn(
         aResponse()
           .withBody(response)

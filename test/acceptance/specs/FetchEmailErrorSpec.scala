@@ -20,14 +20,14 @@ import acceptance.wiremockstub.{StubAuthClient, StubSave4Later, StubSubscription
 import common.pages.{StartPage, FetchEmailThereIsAProblemWithTheServicePage}
 import utils.SpecHelper
 
-class FetchEmailSpec
+class FetchEmailErrorSpec
   extends AcceptanceTestSpec
     with SpecHelper
     with StubAuthClient
     with StubSave4Later
     with StubSubscriptionDisplay {
 
-  feature("Problem with the service spec") {
+  feature("Show 'There is a problem with the service' page when user tries to the email") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
