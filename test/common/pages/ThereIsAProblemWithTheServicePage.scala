@@ -16,16 +16,21 @@
 
 package common.pages
 
-import org.openqa.selenium.By
 import utils.Configuration
 
-class CheckYourEmailAddressPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/check-email-address"
-  override val title = "Check your email address"
-
-  val emailAddressId: By = By.id("cya-answer-id")
-  val yesEmailAddressCss : By = By.cssSelector("#isYes-true")
-  val noEmailAddressCss : By = By.cssSelector("#isYes-false")
+abstract class ThereIsAProblemWithTheServicePage extends BasePage {
+  override val title = "Sorry, there is a problem with the service"
 }
 
-object CheckYourEmailAddressPage extends CheckYourEmailAddressPage
+object FetchEmailThereIsAProblemWithTheServicePage extends ThereIsAProblemWithTheServicePage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/change-email-address/create"
+}
+
+object EmailNotSavedThereIsAProblemWithTheServicePage extends ThereIsAProblemWithTheServicePage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address-confirmed"
+}
+
+
+
+
+

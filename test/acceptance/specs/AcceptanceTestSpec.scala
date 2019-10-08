@@ -52,6 +52,7 @@ trait AcceptanceTestSpec extends FeatureSpec
 
   override def afterAll: Unit = {
     stopMockServer()
-    sys.addShutdownHook(webDriver.quit())
   }
+
+  sys.addShutdownHook(webDriver.quit())
 }
