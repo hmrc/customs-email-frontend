@@ -32,7 +32,7 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
       Given("the user has no CDS enrolment")
       authenticateGGUserWithError(randomInternalId, "InsufficientEnrolments")
 
-      When("the user accesses the 'What is your email?' page")
+      When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
 
       Then("the user should not be allowed")
@@ -69,7 +69,7 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
       Given("the user has is an assistant on the account")
       authenticate(randomInternalId, randomEoriNumber, "assistant")
 
-      When("the user accesses the 'What is your email?' page")
+      When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
 
       Then("the user should not be allowed")
@@ -81,7 +81,7 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
       Given("the user is an agent on the account for an organisation")
       authenticate(randomInternalId, randomEoriNumber, "user","agent")
 
-      When("the user accesses the 'What is your email?' page")
+      When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
 
       Then("the user should not be allowed")
