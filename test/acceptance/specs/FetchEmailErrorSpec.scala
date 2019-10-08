@@ -17,17 +17,17 @@
 package acceptance.specs
 
 import acceptance.wiremockstub.{StubAuthClient, StubSave4Later, StubSubscriptionDisplay}
-import common.pages.{StartPage, ThereIsAProblemWithTheServicePage}
+import common.pages.{StartPage, FetchEmailThereIsAProblemWithTheServicePage}
 import utils.SpecHelper
 
-class FetchEmailSpec
+class FetchEmailErrorSpec
   extends AcceptanceTestSpec
     with SpecHelper
     with StubAuthClient
     with StubSave4Later
     with StubSubscriptionDisplay {
 
-  feature("Problem with the service spec") {
+  feature("Show 'There is a problem with the service' page when user tries to the email") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
@@ -46,7 +46,7 @@ class FetchEmailSpec
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       Then("the user should be on 'There is a problem with the service' page")
-      verifyCurrentPage(ThereIsAProblemWithTheServicePage)
+      verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
     }
 
     scenario("User should see 'There is a problem with the service' when data could not be found") {
@@ -63,7 +63,7 @@ class FetchEmailSpec
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       Then("the user should be on 'There is a problem with the service' page")
-      verifyCurrentPage(ThereIsAProblemWithTheServicePage)
+      verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
     }
 
     scenario("User should see 'There is a problem with the service' when there is an error in processing the request") {
@@ -80,7 +80,7 @@ class FetchEmailSpec
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       Then("the user should be on 'There is a problem with the service' page")
-      verifyCurrentPage(ThereIsAProblemWithTheServicePage)
+      verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
     }
   }
 }

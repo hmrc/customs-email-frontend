@@ -18,7 +18,6 @@ package acceptance.specs
 
 import common.pages._
 import acceptance.wiremockstub._
-import integration.stubservices.UpdateVerifiedEmailStubService._
 import utils.SpecHelper
 
 class EmailConfirmedSpec extends AcceptanceTestSpec
@@ -27,7 +26,8 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
   with StubAuthClient
   with StubEmailVerification
   with StubCustomsDataStore
-  with StubSubscriptionDisplay {
+  with StubSubscriptionDisplay
+  with StubUpdateVerifiedEmail {
 
   feature("Show Email confirmed to user when the email address is verified") {
 
