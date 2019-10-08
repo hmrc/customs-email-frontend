@@ -24,8 +24,7 @@
 
 @main_template(messages("customs.emailfrontend.verify-email.title")) {
 
-<div class="column-two-thirds">
-    <a href="javascript:history.back()" id="back" class="link-back js-visible">@Messages("customs.emailfrontend.back")</a>
+
 
     @helper.form(CheckYourEmailController.submit()) {
 
@@ -47,6 +46,5 @@
         </div>
     }
 
-</div>
 }
 

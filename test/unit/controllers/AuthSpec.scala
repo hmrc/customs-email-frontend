@@ -25,7 +25,7 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.{ApplicationController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, SubscriptionDisplayResponse}
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{change_your_email, start_page, what_is_your_email}
+import uk.gov.hmrc.customs.emailfrontend.views.html.{change_your_email, start_page, what_is_your_email, problem_with_this_service}
 
 import scala.concurrent.Future
 
@@ -35,6 +35,7 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val view = app.injector.instanceOf[change_your_email]
   private val verifyView = app.injector.instanceOf[what_is_your_email]
+  private val problemWithServiceView = app.injector.instanceOf[problem_with_this_service]
   private val mockEmailCacheService = mock[EmailCacheService]
   private val mockSubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
   private val mockEmailVerificationService = mock[EmailVerificationService]
@@ -45,7 +46,7 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
   //private val cacheMap = CacheMap(internalId, data)
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"))
 
-  private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService)
+  private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, problemWithServiceView,mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService )
   when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
 
   "Accessing a controller that requires a user to be authorised" should {

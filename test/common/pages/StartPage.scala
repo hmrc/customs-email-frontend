@@ -21,9 +21,9 @@ import utils.Configuration
 
 class StartPage extends BasePage {
   override val url: String = Configuration.frontendHost + "/manage-email-cds/start"
-  override val title = "Hello from customs-email-frontend"
+  override val title = "Manage your email address for the Customs Declaration Service"
 
-  val emailLinkText: By = By.linkText("Let's do this!")
+  val emailLinkText: By = By.linkText("Start now")
 }
 
 object StartPage extends StartPage

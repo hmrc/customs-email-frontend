@@ -27,7 +27,6 @@ class IneligibleUserControllerSpec extends ControllerSpec {
   private val controller = new IneligibleUserController(fakeAction, view)
 
   "IneligibleUserController" should {
-
     "have a status of Unauthorised (401)" in withUnauthorisedUser {
       val eventualResult = controller.show(Ineligible.NoEnrolment).apply(request)
       status(eventualResult) shouldBe UNAUTHORIZED
