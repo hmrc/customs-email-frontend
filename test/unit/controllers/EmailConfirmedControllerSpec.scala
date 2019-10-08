@@ -133,6 +133,16 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 
+    "show 'there is a problem with the service page' when save email returns 200 with no form bundle id param" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("abc@def.com", None))))
+      when(mockEmailVerificationService.isEmailVerified(any())(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(false)))
+
+      val eventualResult = controller.show(request)
+      status(eventualResult) shouldBe OK
+      contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
+    }
 
     "have a status of OK for user with no enrolments" in withAuthorisedUserWithoutEnrolments {
       val eventualResult = controller.show(request)
