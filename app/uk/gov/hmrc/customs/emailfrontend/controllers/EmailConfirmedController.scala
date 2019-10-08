@@ -60,7 +60,7 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
         emailCacheService.save(request.user.internalId, EmailDetails(email, Some(DateTimeUtil.dateTime)))
         customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), email)
         Future.successful(Ok(view()))
-      case Some(false) => ??? // TODO: no scenario ready to cover that case
+      case Some(false) => Future.successful(Ok(problemWithThisServiceView()))
       case None => Future.successful(Ok(problemWithThisServiceView()))
     }
   }
