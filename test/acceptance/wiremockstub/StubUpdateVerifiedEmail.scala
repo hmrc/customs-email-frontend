@@ -113,6 +113,24 @@ trait StubUpdateVerifiedEmail {
       |}""".stripMargin
   }
 
+  private val failResponse200: String = {
+    """{
+      |  "updateVerifiedEmailResponse": {
+      |    "responseCommon": {
+      |      "status": "OK",
+      |      "statusText": "003 - Request could not be processed",
+      |      "processingDate": "2016-08-17T19:33:47Z",
+      |      "returnParameters": [
+      |        {
+      |          "paramName": "POSITION",
+      |          "paramValue": "FAIL"
+      |        }
+      |      ]
+      |    }
+      |  }
+      |}""".stripMargin
+  }
+
   def stubEmailUpdated(okResponse: String) = {
     stubUpdateVerifiedEmailRequest(okResponse, OK)
   }
@@ -123,6 +141,10 @@ trait StubUpdateVerifiedEmail {
 
   def stubUpdateVerifiedServiceUnavailable() = {
     stubUpdateVerifiedEmailRequest(serviceUnavailableResponse, INTERNAL_SERVER_ERROR)
+  }
+
+  def stubUpdateVerified200FailResponse() = {
+    stubUpdateVerifiedEmailRequest(failResponse200, OK)
   }
 
   def stubUpdateVerifiedForbidden() = {
