@@ -34,7 +34,7 @@ class VerifyYourEmailViewSpec extends ViewSpec {
     }
 
     "have the correct class on the h1" in {
-      doc.body.getElementsByTag("h1").hasClass("heading-large") mustBe true
+      doc.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
     }
 
     "have an change your email address 'text' and change email link" in {

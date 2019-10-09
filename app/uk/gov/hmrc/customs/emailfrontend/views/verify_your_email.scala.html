@@ -24,14 +24,13 @@
 
 @main_template(messages("customs.emailfrontend.verify-email.title")) {
 
-<div class="column-two-thirds">
-    <a href="javascript:history.back()" id="back" class="link-back js-visible">@Messages("customs.emailfrontend.back")</a>
+
 
     @helper.form(CheckYourEmailController.submit()) {
 
         @CSRF.formField
 
-        <h1 class="heading-large">@messages("customs.emailfrontend.verify-email.title")</h1>
+        <h1 class="heading-xlarge">@messages("customs.emailfrontend.verify-email.title")</h1>
 
         <p id="p1"> @Html(messages("customs.emailfrontend.verify-email.para1", email)) </p>
 
@@ -47,6 +46,5 @@
         </div>
     }
 
-</div>
 }
 

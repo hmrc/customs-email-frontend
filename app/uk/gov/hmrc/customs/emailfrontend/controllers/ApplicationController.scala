@@ -23,11 +23,11 @@ import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 
-@Singleton
+@Singleton 
 class ApplicationController @Inject()(actions: Actions, view: start_page)(implicit override val messagesApi: MessagesApi) extends I18nSupport {
 
-  def show: Action[AnyContent] = ( actions.authEnrolled andThen actions.isPermitted andThen actions.eori) { implicit request =>
-    Ok(view(request.eori.id))
+  def show: Action[AnyContent] = (actions.unauthorised) { implicit request =>
+    Ok(view())
   }
 
   def keepAlive: Action[AnyContent] = actions.unauthorised { implicit request =>
