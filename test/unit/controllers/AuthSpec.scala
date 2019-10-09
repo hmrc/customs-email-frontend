@@ -86,14 +86,7 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
     "not allow a logged out user to access the page" in withUnauthorisedUser {
       val result = controller.show(request)
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) should contain("/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fmanage-email-cds%2Fstart&origin=customs-email-frontend")
+      redirectLocation(result) should contain("/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fmanage-email-cds%2Fchange-email-address&origin=customs-email-frontend")
     }
   }
-
-//  "Keep Alive" should {
-//    "allow unauthenticated users to refresh their session" in withUnauthorisedUser {
-//      val result = controller.keepAlive(request)
-//      status(result) shouldBe OK
-//    }
-//  }
 }
