@@ -19,11 +19,10 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{AmendmentInProgressController, CheckYourEmailController, EmailConfirmedController, WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, EmailConfirmedController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
@@ -63,13 +62,16 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
 
   private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) = {
     subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
-      case SubscriptionDisplayResponse(Some(email)) =>
+      case SubscriptionDisplayResponse(Some(email), None) =>
         emailVerificationService.isEmailVerified(email).map {
           case Some(true) => Ok(view(emailForm, email))
           case Some(false) => Redirect(WhatIsYourEmailController.verify())
           case None => ??? //ToDo redirect to retry page
         }
-    } recover { handleNonFatalException() }
+      case SubscriptionDisplayResponse(None, Some(_)) => Future.successful(Ok(problemWithServiceView()))
+    } recover {
+      handleNonFatalException()
+    }
   }
 
   def verify: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
@@ -81,8 +83,12 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     emailForm.bindFromRequest.fold(
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
-          case SubscriptionDisplayResponse(Some(email)) => BadRequest(view(formWithErrors, email))
-        } recover { handleNonFatalException() }
+          case SubscriptionDisplayResponse(Some(email), None) => BadRequest(view(formWithErrors, email))
+          case SubscriptionDisplayResponse(None, Some(_)) => Ok(problemWithServiceView())
+          case SubscriptionDisplayResponse(None, None) => ???  //ToDo
+        } recover {
+          handleNonFatalException()
+        }
       },
       formData => {
         emailCacheService.save(request.user.internalId, EmailDetails(formData.value, None)).map {
@@ -103,7 +109,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     )
   }
 
-  private def handleNonFatalException()(implicit request: EoriRequest[AnyContent]): PartialFunction[Throwable, Result]  = {
+  private def handleNonFatalException()(implicit request: EoriRequest[AnyContent]): PartialFunction[Throwable, Result] = {
     case NonFatal(e) => {
       Logger.error(s"Subscription display failed with ${e.getMessage}")
       Ok(problemWithServiceView())

@@ -41,8 +41,8 @@ class SubscriptionDisplayConnectorSpec extends PlaySpec with ScalaFutures with M
 
   private val url = "customs-hods-proxy/subscription-display"
   private val testEori = Eori("GB1234556789")
-  private val someSubscriptionDisplayRespone = SubscriptionDisplayResponse(Some("test@test.com"))
-  private val noneSubscriptionDisplayRespone = SubscriptionDisplayResponse(None)
+  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), Some("statusCode"))
+  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None)
 
   val testConnector = new SubscriptionDisplayConnector(mockAppConfig, mockHttp, mockAuditable)
 
@@ -54,16 +54,16 @@ class SubscriptionDisplayConnectorSpec extends PlaySpec with ScalaFutures with M
   "SubscriptionDisplayConnector" should {
     "successfully send a query request return SubscriptionDisplayResponse with email inside" in {
       when(mockHttp.GET(meq(url), any[Seq[(String, String)]])(any[HttpReads[SubscriptionDisplayResponse]], any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(someSubscriptionDisplayRespone))
+        .thenReturn(Future.successful(someSubscriptionDisplayResponse))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-      testConnector.subscriptionDisplay(testEori).futureValue mustBe someSubscriptionDisplayRespone
+      testConnector.subscriptionDisplay(testEori).futureValue mustBe someSubscriptionDisplayResponse
     }
 
     "successfully send a query request return SubscriptionDisplayResponse with none for a value inside" in {
       when(mockHttp.GET(meq(url), any[Seq[(String, String)]])(any[HttpReads[SubscriptionDisplayResponse]], any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(noneSubscriptionDisplayRespone))
+        .thenReturn(Future.successful(noneSubscriptionDisplayResponse))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-      testConnector.subscriptionDisplay(testEori).futureValue mustBe noneSubscriptionDisplayRespone
+      testConnector.subscriptionDisplay(testEori).futureValue mustBe noneSubscriptionDisplayResponse
     }
   }
 }

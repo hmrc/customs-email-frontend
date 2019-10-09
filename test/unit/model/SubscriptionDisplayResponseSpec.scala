@@ -23,7 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
 
 class SubscriptionDisplayResponseSpec extends PlaySpec {
 
-  val subscriptionDisplayResponse =
+  private val subscriptionDisplayResponse =
     Json.parse("""{
                  |  "subscriptionDisplayResponse": {
                  |    "responseDetail": {
@@ -36,7 +36,18 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
                  |}""".stripMargin
     ).as[SubscriptionDisplayResponse]
 
-  val noEmailSubscriptionDisplayResponse =
+  private val noFormBundleSubscriptionDisplayResponse =
+    Json.parse("""{
+                 |  "subscriptionDisplayResponse": {
+                 |    "responseCommon":{
+                 |      "statusText": "005 - No form bundle found",
+                 |      "processingDate": "2016-08-17T19:33:47Z"
+                 |     }
+                 |    }
+                 |}""".stripMargin
+    ).as[SubscriptionDisplayResponse]
+
+  private val noEmailSubscriptionDisplayResponse =
     Json.parse("""{
                  |  "subscriptionDisplayResponse": {
                  |    "responseDetail": {
@@ -50,10 +61,16 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
 
 
   "SubscriptionDisplayResponse Object" should {
+
     "contain email when present in response" in {
       subscriptionDisplayResponse.email shouldBe Some("test@email.com")
     }
-    "return None when eail is not present in response" in {
+
+    "contain status when present in response" in {
+      noFormBundleSubscriptionDisplayResponse.status shouldBe Some("005 - No form bundle found")
+    }
+
+    "return None when email is not present in response" in {
       noEmailSubscriptionDisplayResponse.email shouldBe None
     }
   }
