@@ -77,12 +77,6 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
       redirectLocation(result) should contain(ineligibleUrl)
     }
 
-    "not allow an authorised user without any enrolments to access the page" in withAuthorisedUserWithoutEori {
-      val result = controller.show(request)
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) should contain(ineligibleUrl)
-    }
-
     "not allow a logged out user to access the page" in withUnauthorisedUser {
       val result = controller.show(request)
       status(result) shouldBe SEE_OTHER
