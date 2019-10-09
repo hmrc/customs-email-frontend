@@ -130,5 +130,37 @@ class UpdateVerifiedEmailErrorSpec extends AcceptanceTestSpec
         Then("the user should be on 'Sorry, there is a problem with the service' page")
         verifyCurrentPage(EmailNotSavedThereIsAProblemWithTheServicePage)
       }
+
+      scenario("Show 'There is a problem with the service' page when updating a verified email address is unsuccessful") {
+
+        Given("the user has successfully logged in")
+        authenticate(randomInternalId, randomEoriNumber)
+        save4LaterWithNoData(randomInternalId)
+        navigateTo(StartPage)
+        verifyCurrentPage(StartPage)
+        stubSubscriptionDisplayOkResponse(randomEoriNumber)
+        stubNotVerifiedEmailResponse()
+        clickOn(StartPage.emailLinkText)
+        verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
+
+        When("the user provides an email address to change")
+        save4LaterWithData(randomInternalId)(emailDetails)
+        enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
+        clickContinue()
+
+        Then("the user should be on 'Check your email address' page")
+        verifyCurrentPage(CheckYourEmailAddressPage)
+        assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
+
+        When("the user confirms to update the email address")
+        stubEmailAlreadyVerified()
+        stubVerifiedEmailResponse()
+        stubUpdateVerified200FailResponse()
+        clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
+        clickContinue()
+
+        Then("the user should be on 'Sorry, there is a problem with the service' page")
+        verifyCurrentPage(EmailNotSavedThereIsAProblemWithTheServicePage)
+      }
     }
 }

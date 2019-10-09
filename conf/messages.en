@@ -3,6 +3,21 @@ customs.emailfrontend.continue-button=Continue
 customs.emailfrontend.back=Back
 customs.emailfrontend.sign-out=Sign out
 
+customs.emailfrontend.start.title-and-heading=Manage your email address for the Customs Declaration Service
+customs.emailfrontend.start.bullet-intro=Use this service to change or verify the email address we use to send you:
+customs.emailfrontend.start.bullet1=updates on changes to the Customs Declaration Service
+customs.emailfrontend.start.bullet2=notifications of new import statements and payments
+customs.emailfrontend.start.bullet3=export declaration notifications
+customs.emailfrontend.start.before-start=Before you start
+customs.emailfrontend.start.before-start.p1=You’ll need the Government Gateway user ID and password you used to apply for your EORI number or to get access to Customs Declaration Service.
+customs.emailfrontend.start.button=Start now
+
+customs.emailfrontend.start.related-content=Related content
+customs.emailfrontend.start.related-content-link1=Check the status of an application you have already made
+customs.emailfrontend.start.related-content-link2=Check if you need to register with HMRC for importing or exporting
+customs.emailfrontend.start.related-content-link3=The Duty Deferment Scheme
+customs.emailfrontend.start.related-content-link4=VAT refunds on imported goods
+customs.emailfrontend.start.related-content-link5=Tariff data
 
 customs.emailfrontend.change-your-email.title-and-heading=Change your email address for CDS
 customs.emailfrontend.change-your-email.label=We''ll use your new email address to replace {0}

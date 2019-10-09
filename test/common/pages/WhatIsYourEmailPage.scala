@@ -27,6 +27,10 @@ object WhatIsYourEmailPage extends EmailPage {
   override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address/verify-email-address"
   override val title = "What is your email address?"
 }
+object WhatIsYourEmailPageShow extends EmailPage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/change-email-address"
+  override val title = "What is your email address?"
+}
 
 object ChangeYourEmailAddressPage extends EmailPage {
   override val url: String = Configuration.frontendHost + "/manage-email-cds/change-email-address/create"
