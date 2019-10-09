@@ -176,7 +176,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 
-    "show 'there is a problem with the service' page when email is found with status" in withAuthorisedUser() {
+    "show 'there is a problem with the service' page when subscription display response has status text with no email" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
 
@@ -254,9 +254,8 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 
-    "show 'there is a problem with the service' page when subscription display is found with status for submit" in withAuthorisedUser() {
+    "show 'there is a problem with the service' page when subscription display response has status text with no email for submit" in withAuthorisedUser() {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
-      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("status" -> "someStatus")
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe OK

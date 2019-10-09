@@ -85,6 +85,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
           case SubscriptionDisplayResponse(Some(email), None) => BadRequest(view(formWithErrors, email))
           case SubscriptionDisplayResponse(None, Some(_)) => Ok(problemWithServiceView())
+          case SubscriptionDisplayResponse(None, None) => ???  //ToDo
         } recover {
           handleNonFatalException()
         }
