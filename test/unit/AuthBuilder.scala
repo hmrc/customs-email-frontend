@@ -77,7 +77,7 @@ trait AuthBuilder {
     test
   }
 
-  def withUnauthorisedUserWithoutInternalId(test: => Unit) {
+  def withAuthorisedUserWithoutInternalId(test: => Unit) {
     withAuthorisedUser(Eori("ZZ111111111"), None)(test)
   }
 
@@ -86,7 +86,4 @@ trait AuthBuilder {
       .thenReturn(Future.failed(notLoggedInException))
     test
   }
-
 }
-
-
