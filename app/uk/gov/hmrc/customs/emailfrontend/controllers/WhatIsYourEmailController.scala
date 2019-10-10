@@ -69,6 +69,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
           case None => ??? //ToDo redirect to retry page
         }
       case SubscriptionDisplayResponse(None, Some("FAIL")) => Future.successful(Ok(problemWithServiceView()))
+      case SubscriptionDisplayResponse(_, _) => ??? //ToDo
     } recover {
       handleNonFatalException()
     }
@@ -85,7 +86,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
           case SubscriptionDisplayResponse(Some(email), _) => BadRequest(view(formWithErrors, email))
           case SubscriptionDisplayResponse(None, Some("FAIL")) => Ok(problemWithServiceView())
-          case SubscriptionDisplayResponse(None, None) => ??? //ToDo
+          case SubscriptionDisplayResponse(_, _) => ??? //ToDo
         } recover {
           handleNonFatalException()
         }
