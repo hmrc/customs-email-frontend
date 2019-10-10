@@ -62,21 +62,18 @@ trait AuthBuilder {
     test
   }
 
-
   def withAuthorisedUserWithoutEnrolments(test: => Unit) {
+    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
+      .thenReturn(Future.failed(InsufficientEnrolments("Some Message")))
+    test
+  }
+
+  def withAuthorisedUserWithoutEori(test: => Unit) {
     val ag = Some(Organisation)
     val role = Some(Admin)
     val retrieval = Retrieve(Enrolments(Set.empty[Enrolment]), internId).add(ag).add(role)
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.successful(retrieval))
-    test
-  }
-
-
-
-  def withAuthorisedUserWithoutEori(test: => Unit) {
-    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.failed(InsufficientEnrolments("Some Message")))
     test
   }
 

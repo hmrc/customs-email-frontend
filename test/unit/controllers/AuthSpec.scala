@@ -47,22 +47,15 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
       val result = controller.show(request)
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) should contain("/manage-email-cds/change-email-address/create")
-
-    }
-
-    "not allow an authorised user without an enrolled eori to access the page" in withAuthorisedUserWithoutEori {
-      val result = controller.show(request)
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) should contain(ineligibleUrl)
-    }
-
-    "not allow an authorised user with an empty eori to access the page" in withAuthorisedUserWithoutEori {
-      val result = controller.show(request)
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) should contain(ineligibleUrl)
     }
 
     "not allow an authorised user with and eori and without an internal id to access the page" in withUnauthorisedUserWithoutInternalId {
+      val result = controller.show(request)
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) should contain(ineligibleUrl)
+    }
+
+    "not allow an authorised user without any enrolments to access the page" in withAuthorisedUserWithoutEnrolments {
       val result = controller.show(request)
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) should contain(ineligibleUrl)

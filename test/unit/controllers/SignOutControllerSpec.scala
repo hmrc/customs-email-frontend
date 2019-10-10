@@ -26,13 +26,13 @@ class SignOutControllerSpec extends ControllerSpec {
   val controller = new SignOutController(fakeAction, appConfig)
 
   "SignOut Controller" should {
-    "return have status See_Other (303) and redirect to feedback survey" in withAuthorisedUserWithoutEnrolments {
+    "redirect to feedback survey" in withAuthorisedUser() {
       val result = controller.signOut(request)
       status(result) shouldBe SEE_OTHER
       redirectLocation(result).value should endWith("/feedback/CDS")
     }
 
-    "clear the session once the user signs out" in withAuthorisedUserWithoutEnrolments {
+    "clear the session once the user signs out" in withAuthorisedUser() {
       status(controller.signOut(request)) shouldBe SEE_OTHER
       val view = app.injector.instanceOf[start_page]
       val startPageController = new ApplicationController(fakeAction, view)
