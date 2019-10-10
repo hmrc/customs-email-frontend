@@ -39,9 +39,14 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
   private val noFormBundleSubscriptionDisplayResponse =
     Json.parse("""{
                  |  "subscriptionDisplayResponse": {
-                 |    "responseCommon":{
+                 |    "responseCommon": {
+                 |      "status": "OK",
                  |      "statusText": "005 - No form bundle found",
-                 |      "processingDate": "2016-08-17T19:33:47Z"
+                 |      "processingDate": "2016-08-17T19:33:47Z",
+                 |      "returnParameters": [{
+                 |          "paramName": "POSITION",
+                 |          "paramValue": "FAIL"
+                 |          }]
                  |     }
                  |    }
                  |}""".stripMargin
@@ -67,7 +72,7 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
     }
 
     "contain status when present in response" in {
-      noFormBundleSubscriptionDisplayResponse.status shouldBe Some("005 - No form bundle found")
+      noFormBundleSubscriptionDisplayResponse.paramValue shouldBe Some("FAIL")
     }
 
     "return None when email is not present in response" in {
