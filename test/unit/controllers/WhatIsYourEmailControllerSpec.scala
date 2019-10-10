@@ -186,7 +186,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 
-    "have a status of Redirect for create method for unauthorised user" in withAuthorisedUserWithoutEori {
+    "show 'ineligible user' page for an authorised user without eori accessing create" in withAuthorisedUserWithoutEori {
       val eventualResult = controller.create(request)
 
       status(eventualResult) shouldBe SEE_OTHER

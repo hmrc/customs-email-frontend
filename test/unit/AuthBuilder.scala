@@ -62,8 +62,13 @@ trait AuthBuilder {
     test
   }
 
-
   def withAuthorisedUserWithoutEnrolments(test: => Unit) {
+    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
+      .thenReturn(Future.failed(InsufficientEnrolments("Some Message")))
+    test
+  }
+
+  def withAuthorisedUserWithoutEori(test: => Unit) {
     val ag = Some(Organisation)
     val role = Some(Admin)
     val retrieval = Retrieve(Enrolments(Set.empty[Enrolment]), internId).add(ag).add(role)
@@ -72,15 +77,7 @@ trait AuthBuilder {
     test
   }
 
-
-
-  def withAuthorisedUserWithoutEori(test: => Unit) {
-    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.failed(InsufficientEnrolments("Some Message")))
-    test
-  }
-
-  def withUnauthorisedUserWithoutInternalId(test: => Unit) {
+  def withAuthorisedUserWithoutInternalId(test: => Unit) {
     withAuthorisedUser(Eori("ZZ111111111"), None)(test)
   }
 
@@ -89,7 +86,4 @@ trait AuthBuilder {
       .thenReturn(Future.failed(notLoggedInException))
     test
   }
-
 }
-
-
