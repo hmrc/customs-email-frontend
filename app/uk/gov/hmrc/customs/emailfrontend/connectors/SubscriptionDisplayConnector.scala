@@ -20,7 +20,6 @@ package uk.gov.hmrc.customs.emailfrontend.connectors
 import java.util.UUID
 
 import javax.inject.{Inject, Singleton}
-import play.libs.Json
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, SubscriptionDisplayResponse}
