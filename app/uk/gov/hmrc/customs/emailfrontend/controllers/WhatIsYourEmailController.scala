@@ -62,13 +62,13 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
 
   private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) = {
     subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
-      case SubscriptionDisplayResponse(Some(email), None) =>
+      case SubscriptionDisplayResponse(Some(email), _) =>
         emailVerificationService.isEmailVerified(email).map {
           case Some(true) => Ok(view(emailForm, email))
           case Some(false) => Redirect(WhatIsYourEmailController.verify())
           case None => ??? //ToDo redirect to retry page
         }
-      case SubscriptionDisplayResponse(None, Some(_)) => Future.successful(Ok(problemWithServiceView()))
+      case SubscriptionDisplayResponse(None, Some("FAIL")) => Future.successful(Ok(problemWithServiceView()))
     } recover {
       handleNonFatalException()
     }
@@ -83,9 +83,9 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     emailForm.bindFromRequest.fold(
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
-          case SubscriptionDisplayResponse(Some(email), None) => BadRequest(view(formWithErrors, email))
-          case SubscriptionDisplayResponse(None, Some(_)) => Ok(problemWithServiceView())
-          case SubscriptionDisplayResponse(None, None) => ???  //ToDo
+          case SubscriptionDisplayResponse(Some(email), _) => BadRequest(view(formWithErrors, email))
+          case SubscriptionDisplayResponse(None, Some("FAIL")) => Ok(problemWithServiceView())
+          case SubscriptionDisplayResponse(None, None) => ??? //ToDo
         } recover {
           handleNonFatalException()
         }

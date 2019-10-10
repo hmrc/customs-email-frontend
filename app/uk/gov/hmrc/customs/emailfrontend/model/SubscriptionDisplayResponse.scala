@@ -18,16 +18,16 @@ package uk.gov.hmrc.customs.emailfrontend.model
 
 import play.api.libs.json.{JsResult, JsValue, Reads}
 
-case class SubscriptionDisplayResponse(email: Option[String], status: Option[String])
+case class SubscriptionDisplayResponse(email: Option[String], paramValue: Option[String])
 
 object SubscriptionDisplayResponse {
   implicit val etmpReads: Reads[SubscriptionDisplayResponse] = new Reads[SubscriptionDisplayResponse] {
     def reads(json: JsValue): JsResult[SubscriptionDisplayResponse] = {
       for {
         email <- (json \ "subscriptionDisplayResponse" \ "responseDetail" \ "contactInformation" \ "emailAddress").validateOpt[String]
-        status <- (json \ "subscriptionDisplayResponse" \ "responseCommon" \ "statusText").validateOpt[String]
+        paramValue <- (json \ "subscriptionDisplayResponse" \ "responseCommon" \ "returnParameters" \ 0 \ "paramValue").validateOpt[String]
       } yield {
-        SubscriptionDisplayResponse(email, status)
+        SubscriptionDisplayResponse(email, paramValue)
       }
     }
   }
