@@ -42,7 +42,7 @@ class AmendmentInProgressSpec
       When("the user returns to amend the email again within 24 hours")
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
 
       Then("the user should be redirected to 'You cannot change your email address' page")
       verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
@@ -59,7 +59,7 @@ class AmendmentInProgressSpec
       When("the user returns to amend the email again after 24 hours")
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
 
       Then("the user should be on 'Change your email address for CDS' page")
       verifyCurrentPage(ChangeYourEmailAddressPage)

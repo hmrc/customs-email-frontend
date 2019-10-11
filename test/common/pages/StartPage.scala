@@ -23,7 +23,7 @@ class StartPage extends BasePage {
   override val url: String = Configuration.frontendHost + "/manage-email-cds/start"
   override val title = "Manage your email address for the Customs Declaration Service"
 
-  val emailLinkText: By = By.linkText("Start now")
+  val startNowButton: By = By.linkText("Start now")
 }
 
 object StartPage extends StartPage

@@ -43,7 +43,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubVerifiedEmailResponse()
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
@@ -81,7 +81,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubVerifiedEmailResponse()
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
@@ -111,7 +111,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       stubCustomsDataStoreOkResponse()
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
 
       Then("the user should be on 'Email confirmed' page upon successfully updating the email")
       verifyCurrentPage(EmailConfirmedPage)
@@ -129,7 +129,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubVerifiedEmailResponse()
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
@@ -157,7 +157,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       stubNotVerifiedEmailResponse()
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
 
       Then("the user should be on 'Check your email address' page")
       verifyCurrentPage(CheckYourEmailAddressPage)
@@ -176,7 +176,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubVerifiedEmailResponse()
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")

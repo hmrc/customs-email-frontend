@@ -40,6 +40,21 @@ trait StubSubscriptionDisplay {
         }
     }""".stripMargin
 
+  private val subscriptionDisplay200ErrorResponse: String =
+    """{
+      |  "subscriptionDisplayResponse": {
+      |    "responseCommon": {
+      |          "status": "OK",
+      |          "statusText": "005 - No form bundle found",
+      |          "processingDate": "2016-08-17T19:33:47Z",
+      |          "returnParameters": [{
+      |                "paramName": "POSITION",
+      |                "paramValue": "FAIL"
+      |          }]
+      |    }
+      |  }
+      |}""".stripMargin
+
 
   private val subscriptionDisplay400ResponseJson: String =
     """{
@@ -98,7 +113,7 @@ trait StubSubscriptionDisplay {
       .willReturn(
         aResponse()
           .withStatus(status)
-          .withBody(subscriptionDisplayResponseJson)
+          .withBody(subscriptionDisplayResponse)
           .withHeader(CONTENT_TYPE, JSON)
       )
     )
@@ -106,6 +121,10 @@ trait StubSubscriptionDisplay {
 
   def stubSubscriptionDisplayOkResponse(eoriNumber: String): Unit = {
     stubSubscriptionDisplay(eoriNumber, Status.OK, subscriptionDisplayResponseJson)
+  }
+
+  def stubSubscriptionDisplayOk200ErrorResponse(eoriNumber: String): Unit = {
+    stubSubscriptionDisplay(eoriNumber, Status.OK, subscriptionDisplay200ErrorResponse)
   }
 
   def stubSubscriptionDisplayBadRequestResponse(eoriNumber: String): Unit = {

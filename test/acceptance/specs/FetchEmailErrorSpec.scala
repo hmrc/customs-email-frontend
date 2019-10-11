@@ -42,7 +42,7 @@ class FetchEmailErrorSpec
       stubSubscriptionDisplayBadRequestResponse(randomEoriNumber)
 
       When("the user clicks on 'Start now' button")
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       Then("the user should be on 'There is a problem with the service' page")
@@ -59,7 +59,7 @@ class FetchEmailErrorSpec
       stubSubscriptionDisplayNotFoundResponse(randomEoriNumber)
 
       When("the user clicks on 'Start now' button")
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       Then("the user should be on 'There is a problem with the service' page")
@@ -76,11 +76,29 @@ class FetchEmailErrorSpec
       stubSubscriptionDisplayInternalServerResponse(randomEoriNumber)
 
       When("the user clicks on 'Start now' button")
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       Then("the user should be on 'There is a problem with the service' page")
       verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
     }
-  }
+
+
+    scenario("User should see 'There is a problem with the service' when there fetching an email is unsuccessful") {
+
+      Given("user is on the 'Start' page")
+      authenticate(randomInternalId, randomEoriNumber)
+      save4LaterWithNoData(randomInternalId)
+      navigateTo(StartPage)
+      verifyCurrentPage(StartPage)
+      stubSubscriptionDisplayOk200ErrorResponse(randomEoriNumber)
+
+      When("the user clicks on 'Start now' button")
+      clickOn(StartPage.startNowButton)
+      verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
+
+      Then("the user should be on 'There is a problem with the service' page")
+      verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
+      }
+    }
 }

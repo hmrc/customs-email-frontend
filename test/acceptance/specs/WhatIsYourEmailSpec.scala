@@ -44,7 +44,7 @@ class WhatIsYourEmailSpec extends AcceptanceTestSpec
       When("the user email is not verified")
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubNotVerifiedEmailResponse()
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       Then("the user should be on 'What is your email' page")

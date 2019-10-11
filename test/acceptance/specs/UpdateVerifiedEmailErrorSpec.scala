@@ -45,7 +45,7 @@ class UpdateVerifiedEmailErrorSpec extends AcceptanceTestSpec
         verifyCurrentPage(StartPage)
         stubSubscriptionDisplayOkResponse(randomEoriNumber)
         stubNotVerifiedEmailResponse()
-        clickOn(StartPage.emailLinkText)
+        clickOn(StartPage.startNowButton)
         verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
         When("the user provides an email address to change")
@@ -76,7 +76,7 @@ class UpdateVerifiedEmailErrorSpec extends AcceptanceTestSpec
         verifyCurrentPage(StartPage)
         stubSubscriptionDisplayOkResponse(randomEoriNumber)
         stubNotVerifiedEmailResponse()
-        clickOn(StartPage.emailLinkText)
+        clickOn(StartPage.startNowButton)
         verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
         When("the user provides an email address to change")
@@ -108,7 +108,7 @@ class UpdateVerifiedEmailErrorSpec extends AcceptanceTestSpec
         verifyCurrentPage(StartPage)
         stubSubscriptionDisplayOkResponse(randomEoriNumber)
         stubNotVerifiedEmailResponse()
-        clickOn(StartPage.emailLinkText)
+        clickOn(StartPage.startNowButton)
         verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
         When("the user provides an email address to change")
@@ -140,7 +140,7 @@ class UpdateVerifiedEmailErrorSpec extends AcceptanceTestSpec
         verifyCurrentPage(StartPage)
         stubSubscriptionDisplayOkResponse(randomEoriNumber)
         stubNotVerifiedEmailResponse()
-        clickOn(StartPage.emailLinkText)
+        clickOn(StartPage.startNowButton)
         verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
         When("the user provides an email address to change")

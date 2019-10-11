@@ -32,7 +32,7 @@ class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
       navigateTo(AuthLoginStubPage)
       AuthLoginStubPage.login(credId)
       verifyCurrentPage(StartPage)
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
       verifyCurrentPage(ChangeYourEmailAddressPage)
       enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
       clickContinue()
@@ -47,7 +47,7 @@ class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
       navigateTo(AuthLoginStubPage)
       AuthLoginStubPage.login(credId)
       verifyCurrentPage(StartPage)
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
 
       Then("the user should be on 'You cannot use this service' page")
       verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
