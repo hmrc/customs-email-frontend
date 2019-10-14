@@ -47,7 +47,9 @@
       linkElem = None,
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
-    <meta http-equiv="refresh" content="900;url=/manage-email-cds/signout" />
+    <!-- Google Tag Manager -->
+    <script src="@routes.Assets.versioned("javascripts/google-tag-manager.js")" type="text/javascript"></script>
+    <noscript><meta http-equiv="refresh" content="900;url=/manage-email-cds/signout" /></noscript>
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/custom.css")" type="text/css">
 }
 
@@ -70,7 +72,11 @@
       navLinks = Some(headerNavLinks))
 }
 
-@afterHeader = {}
+@afterHeader = {
+    <!-- Google Tag Manager (noscript) -->
+            <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+            <!-- End Google Tag Manager (noscript) -->
+}
 
 @bodyEnd = {
    @footer(
