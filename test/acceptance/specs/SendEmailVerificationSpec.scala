@@ -41,7 +41,7 @@ class SendEmailVerificationSpec extends AcceptanceTestSpec
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubVerifiedEmailResponse()
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
@@ -73,7 +73,7 @@ class SendEmailVerificationSpec extends AcceptanceTestSpec
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubVerifiedEmailResponse()
-      clickOn(StartPage.emailLinkText)
+      clickOn(StartPage.startNowButton)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
 
       When("the user provides an email address to change")
