@@ -20,13 +20,13 @@ import javax.inject.Inject
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
+import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{EmailConfirmedController, SignOutController, VerifyYourEmailController, WhatIsYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,8 +35,10 @@ class CheckYourEmailController @Inject()(actions: Actions,
                                          view: check_your_email,
                                          emailVerificationService: EmailVerificationService,
                                          mcc: MessagesControllerComponents,
-                                         emailCacheService: EmailCacheService)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+                                         emailCacheService: EmailCacheService,
+                                         errorHandler: ErrorHandler)
+                                        (implicit override val messagesApi: MessagesApi,
+                                         ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectWithEmail, Future.successful(Redirect(SignOutController.signOut())))
@@ -64,18 +66,12 @@ class CheckYourEmailController @Inject()(actions: Actions,
     }
   }
 
-  private def submitNewDetails(internalId: InternalId, email: String)(implicit hc: HeaderCarrier): Future[Result] = {
+  private def submitNewDetails(internalId: InternalId, email: String)(implicit request: Request[AnyContent]): Future[Result] = {
     emailVerificationService.createEmailVerificationRequest(email, EmailConfirmedController.show().url) flatMap {
       case Some(true) => Future.successful(Redirect(VerifyYourEmailController.show()))
-      case Some(false) =>
-        Logger.warn(
-          "[CheckYourEmailController][sendVerification] - " +
-            "Unable to send email verification request. Service responded with 'already verified'"
-        )
-        emailCacheService.save(internalId, EmailDetails(email, None)).map { _ =>
-          Redirect(EmailConfirmedController.show())
-        }
-      case None => throw new IllegalStateException("CreateEmailVerificationRequest Failed")
+      case Some(false) => emailCacheService.save(internalId, EmailDetails(email, None))
+        .map { _ => Redirect(EmailConfirmedController.show())}
+      case None => Future.successful(InternalServerError(errorHandler.problemWithService()))
     }
   }
 

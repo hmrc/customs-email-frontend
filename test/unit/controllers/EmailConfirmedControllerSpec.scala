@@ -21,7 +21,9 @@ import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify, _}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers.{status, _}
+import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
+import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
@@ -39,9 +41,10 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private val mockCustomsDataStoreService = mock[CustomsDataStoreService]
   private val mockEmailVerificationService = mock[EmailVerificationService]
   private val mockUpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
+  private val mockErrorHandler = mock[ErrorHandler]
 
   private val controller = new EmailConfirmedController(
-    fakeAction, view, mockProblemWithThisServiceView, mockCustomsDataStoreService, mockEmailCacheService, mockEmailVerificationService, mockUpdateVerifiedEmailService, mcc
+    fakeAction, view, mockProblemWithThisServiceView, mockCustomsDataStoreService, mockEmailCacheService, mockEmailVerificationService, mockUpdateVerifiedEmailService, mcc, mockErrorHandler
   )
 
   override protected def beforeEach(): Unit = {
@@ -127,9 +130,10 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockEmailVerificationService.isEmailVerified(any())(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(None))
+      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
 
       val eventualResult = controller.show(request)
-      status(eventualResult) shouldBe OK
+      status(eventualResult) shouldBe INTERNAL_SERVER_ERROR
       contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 
@@ -138,9 +142,10 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockEmailVerificationService.isEmailVerified(any())(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(false)))
+      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
 
       val eventualResult = controller.show(request)
-      status(eventualResult) shouldBe OK
+      status(eventualResult) shouldBe INTERNAL_SERVER_ERROR
       contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 

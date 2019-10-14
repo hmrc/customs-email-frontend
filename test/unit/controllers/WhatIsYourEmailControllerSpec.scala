@@ -23,6 +23,8 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers._
+import play.twirl.api.Html
+import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.model._
@@ -41,6 +43,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val mockEmailCacheService = mock[EmailCacheService]
   private val mockSubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
   private val mockEmailVerificationService = mock[EmailVerificationService]
+  private val mockErrorHandler = mock[ErrorHandler]
 
   private val internalId = "InternalID"
   private val jsonValue = Json.toJson("emailStatus")
@@ -49,7 +52,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), None)
   private val someSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(None, Some("FAIL"))
 
-  private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, problemWithServiceView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService)
+  private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, problemWithServiceView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService, mockErrorHandler)
 
   override protected def beforeEach(): Unit = {
     reset(mockEmailCacheService, mockSubscriptionDisplayConnector, mockEmailVerificationService)
@@ -169,20 +172,22 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "show 'there is a problem with the service' page when subscription display is failed" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.failed(new HttpException("Failed", BAD_REQUEST)))
+      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
 
       val eventualResult = controller.create(request)
 
-      status(eventualResult) shouldBe OK
+      status(eventualResult) shouldBe INTERNAL_SERVER_ERROR
       contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 
     "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
+      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
 
       val eventualResult = controller.create(request)
 
-      status(eventualResult) shouldBe OK
+      status(eventualResult) shouldBe INTERNAL_SERVER_ERROR
       contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 
@@ -246,19 +251,22 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     "show 'there is a problem with the service' page when subscription display is failed for submit" in withAuthorisedUser() {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.failed(new HttpException("Failed", BAD_REQUEST)))
+      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
       val eventualResult = controller.submit(request)
 
-      status(eventualResult) shouldBe OK
+      status(eventualResult) shouldBe INTERNAL_SERVER_ERROR
       contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 
     "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for submit" in withAuthorisedUser() {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
+      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
+
       val eventualResult = controller.submit(request)
 
-      status(eventualResult) shouldBe OK
+      status(eventualResult) shouldBe INTERNAL_SERVER_ERROR
       contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
 

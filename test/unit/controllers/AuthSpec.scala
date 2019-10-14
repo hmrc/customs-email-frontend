@@ -20,6 +20,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
+import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
@@ -35,10 +36,11 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
   private val verifyView = app.injector.instanceOf[what_is_your_email]
   private val problemWithServiceView = app.injector.instanceOf[problem_with_this_service]
   private val mockEmailCacheService = mock[EmailCacheService]
+  private val mockErrorHandler = mock[ErrorHandler]
   private val mockSubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
   private val mockEmailVerificationService = mock[EmailVerificationService]
 
-  private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, problemWithServiceView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService)
+  private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, problemWithServiceView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService, mockErrorHandler)
   when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
 
   "Accessing a controller that requires a user to be authorised" should {
