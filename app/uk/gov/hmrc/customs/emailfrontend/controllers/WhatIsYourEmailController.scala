@@ -36,7 +36,6 @@ import scala.util.control.NonFatal
 @Singleton
 class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_email,
                                           whatIsYourEmailView: what_is_your_email,
-                                          problemWithServiceView: problem_with_this_service,
                                           emailCacheService: EmailCacheService,
                                           mcc: MessagesControllerComponents,
                                           subscriptionDisplayConnector: SubscriptionDisplayConnector,
@@ -70,7 +69,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
           case Some(false) => Redirect(WhatIsYourEmailController.verify())
           case None => ??? //ToDo redirect to retry page
         }
-      case SubscriptionDisplayResponse(None, Some("FAIL")) => Future.successful(InternalServerError(errorHandler.problemWithService()))
+      case SubscriptionDisplayResponse(None, Some(_)) => Future.successful(InternalServerError(errorHandler.problemWithService()))
       //case SubscriptionDisplayResponse(_, _) => ??? //ToDo
     } recover {
       handleNonFatalException()
@@ -87,7 +86,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
           case SubscriptionDisplayResponse(Some(email), _) => BadRequest(view(formWithErrors, email))
-          case SubscriptionDisplayResponse(None, Some("FAIL")) => InternalServerError(errorHandler.problemWithService())
+          case SubscriptionDisplayResponse(None, Some(_)) => Redirect(routes.WhatIsYourEmailController.problemWithService())
           //case SubscriptionDisplayResponse(_, _) => ??? //ToDo
         } recover {
           handleNonFatalException()
@@ -115,7 +114,11 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   private def handleNonFatalException()(implicit request: EoriRequest[AnyContent]): PartialFunction[Throwable, Result] = {
     case NonFatal(e) => {
       Logger.error(s"Subscription display failed with ${e.getMessage}")
-      InternalServerError(errorHandler.problemWithService())
+      Redirect(routes.WhatIsYourEmailController.problemWithService())
     }
+  }
+
+  def problemWithService(): Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

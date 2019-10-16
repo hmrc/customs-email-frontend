@@ -71,12 +71,16 @@ class CheckYourEmailController @Inject()(actions: Actions,
       case Some(true) => Future.successful(Redirect(VerifyYourEmailController.show()))
       case Some(false) => emailCacheService.save(internalId, EmailDetails(email, None))
         .map { _ => Redirect(EmailConfirmedController.show())}
-      case None => Future.successful(InternalServerError(errorHandler.problemWithService()))
+      case None => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService()))
     }
   }
 
   private def locationByAnswer(internalId: InternalId, confirmEmail: YesNo, email: String)(implicit request: Request[AnyContent]): Future[Result] = confirmEmail.isYes match {
     case Some(true) => submitNewDetails(internalId, email)
     case _ => emailCacheService.remove(internalId).flatMap(_ => Future.successful(Redirect(WhatIsYourEmailController.create())))
+  }
+
+  def problemWithService(): Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

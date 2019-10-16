@@ -20,6 +20,7 @@ import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify, _}
 import org.scalatest.BeforeAndAfterEach
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
@@ -27,7 +28,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{email_confirmed, problem_with_this_service}
+import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 
@@ -36,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val view = app.injector.instanceOf[email_confirmed]
-  private val mockProblemWithThisServiceView = app.injector.instanceOf[problem_with_this_service]
   private val mockEmailCacheService = mock[EmailCacheService]
   private val mockCustomsDataStoreService = mock[CustomsDataStoreService]
   private val mockEmailVerificationService = mock[EmailVerificationService]
@@ -44,7 +44,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private val mockErrorHandler = mock[ErrorHandler]
 
   private val controller = new EmailConfirmedController(
-    fakeAction, view, mockProblemWithThisServiceView, mockCustomsDataStoreService, mockEmailCacheService, mockEmailVerificationService, mockUpdateVerifiedEmailService, mcc, mockErrorHandler
+    fakeAction, view, mockCustomsDataStoreService, mockEmailCacheService, mockEmailVerificationService, mockUpdateVerifiedEmailService, mcc, mockErrorHandler
   )
 
   override protected def beforeEach(): Unit = {
@@ -133,8 +133,8 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
 
       val eventualResult = controller.show(request)
-      status(eventualResult) shouldBe INTERNAL_SERVER_ERROR
-      contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/problem-with-this-service")
     }
 
     "show 'there is a problem with the service page' when save email returns 200 with no form bundle id param" in withAuthorisedUser() {
@@ -145,8 +145,8 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
 
       val eventualResult = controller.show(request)
-      status(eventualResult) shouldBe INTERNAL_SERVER_ERROR
-      contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/problem-with-this-service")
     }
 
     "have a status of OK for user with no enrolments" in withAuthorisedUserWithoutEnrolments {
@@ -159,6 +159,16 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       verify(mockEmailVerificationService, times(0)).isEmailVerified(any())(any[HeaderCarrier])
       verify(mockEmailCacheService, times(0)).fetch(any())(any[HeaderCarrier], any[ExecutionContext])
       verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any())(any[HeaderCarrier])
+    }
+
+    "redirect to 'there is a problem with the service' page" in withAuthorisedUser() {
+      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
+
+      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
+      val eventualResult = controller.problemWithService()(request)
+
+      status(eventualResult) shouldBe BAD_REQUEST
+      contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
     }
   }
 }

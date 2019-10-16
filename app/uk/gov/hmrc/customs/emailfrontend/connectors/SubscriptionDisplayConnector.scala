@@ -38,16 +38,17 @@ class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig, http: HttpCli
     val request = ("EORI" -> eori.id) :: buildQueryParams
 
     http.GET[SubscriptionDisplayResponse](url, request).map { displayResponse =>
-      auditResponse("customs-email-subscription-display", "subscriptionDisplayRequest", displayResponse.email, url)
+      auditResponse("customs-email-subscription-display", "subscriptionDisplayResponse", displayResponse, url)
       displayResponse
     }
   }
 
-  private def auditResponse(transactionName: String, auditType: String, emailAddress: Option[String], url: String)(implicit hc: HeaderCarrier): Unit = {
+  private def auditResponse(transactionName: String, auditType: String, response: SubscriptionDisplayResponse, url: String)(implicit hc: HeaderCarrier): Unit = {
     auditable.sendDataEvent(
       transactionName = transactionName,
       path = url,
-      detail = Map("emailAddress" -> emailAddress.getOrElse("No email address received")),
+      detail = Map("emailAddress" -> response.email.getOrElse("No email address received"),
+        "statusText" -> response.statusText.getOrElse("No status text")),
       auditType = auditType
     )
   }

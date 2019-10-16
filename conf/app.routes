@@ -8,16 +8,19 @@ GET         /signout                                            uk.gov.hmrc.cust
 GET         /change-email-address                               uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.show
 GET         /change-email-address/create                        uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.create
 POST        /change-email-address                               uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.submit
+GET         /change-email-address/problem-with-this-service     uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.problemWithService
 
 GET         /email-address/verify-email-address                 uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.verify
 POST        /email-address/verify-email-address                 uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.verifySubmit
 
 GET         /check-email-address                                uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController.show
 POST        /check-email-address                                uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController.submit
+GET         /check-email-address/problem-with-this-service      uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController.problemWithService
 
 GET         /confirm-email-address                              uk.gov.hmrc.customs.emailfrontend.controllers.VerifyYourEmailController.show
 
 GET         /email-address-confirmed                            uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController.show
+GET         /email-address-confirmed/problem-with-this-service  uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController.problemWithService
 
 GET         /ineligible/:ineligible                             uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController.show(ineligible:Ineligible.Value)
 

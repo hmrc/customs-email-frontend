@@ -23,11 +23,11 @@ abstract class ThereIsAProblemWithTheServicePage extends BasePage {
 }
 
 object FetchEmailThereIsAProblemWithTheServicePage extends ThereIsAProblemWithTheServicePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/change-email-address/create"
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/change-email-address/problem-with-this-service"
 }
 
 object EmailNotSavedThereIsAProblemWithTheServicePage extends ThereIsAProblemWithTheServicePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address-confirmed"
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address-confirmed/problem-with-this-service"
 }
 
 

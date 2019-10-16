@@ -72,7 +72,7 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
     }
 
     "contain status when present in response" in {
-      noFormBundleSubscriptionDisplayResponse.paramValue shouldBe Some("FAIL")
+      noFormBundleSubscriptionDisplayResponse.statusText shouldBe Some("005 - No form bundle found")
     }
 
     "return None when email is not present in response" in {

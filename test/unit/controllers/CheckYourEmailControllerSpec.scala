@@ -99,6 +99,15 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       redirectLocation(eventualResult).value should endWith("/manage-email-cds/cannot-change-email")
     }
 
+    "redirect to 'there is a problem with the service' page" in withAuthorisedUser() {
+      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
+
+      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
+      val eventualResult = controller.problemWithService()(request)
+
+      status(eventualResult) shouldBe BAD_REQUEST
+      contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
+    }
   }
 
   "ConfirmEmailController on submit with yes selected" should {
@@ -137,8 +146,8 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
 
       val eventualResult = controller.submit(request)
 
-      status(eventualResult) shouldBe INTERNAL_SERVER_ERROR
-      contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/problem-with-this-service")
     }
   }
 }

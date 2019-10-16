@@ -26,13 +26,12 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, EoriRequest}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{email_confirmed, problem_with_this_service}
+import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed,
-                                         problemWithThisServiceView: problem_with_this_service,
                                          customsDataStoreService: CustomsDataStoreService,
                                          emailCacheService: EmailCacheService,
                                          emailVerificationService: EmailVerificationService,
@@ -59,7 +58,11 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
         emailCacheService.save(request.user.internalId, EmailDetails(email, Some(DateTimeUtil.dateTime)))
         customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), email)
         Future.successful(Ok(view()))
-      case _ => Future.successful(InternalServerError(errorHandler.problemWithService()))
+      case _ => Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))
     }
+  }
+
+  def problemWithService(): Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }
