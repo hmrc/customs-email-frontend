@@ -69,7 +69,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
           case Some(false) => Redirect(WhatIsYourEmailController.verify())
           case None => ??? //ToDo redirect to retry page
         }
-      case SubscriptionDisplayResponse(None, Some(_)) => Future.successful(InternalServerError(errorHandler.problemWithService()))
+      case SubscriptionDisplayResponse(None, Some(_)) => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
       //case SubscriptionDisplayResponse(_, _) => ??? //ToDo
     } recover {
       handleNonFatalException()
