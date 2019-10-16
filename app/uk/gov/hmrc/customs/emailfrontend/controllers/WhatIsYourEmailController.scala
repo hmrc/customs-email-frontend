@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
+import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, EmailConfirmedController, WhatIsYourEmailController}
@@ -35,11 +36,11 @@ import scala.util.control.NonFatal
 @Singleton
 class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_email,
                                           whatIsYourEmailView: what_is_your_email,
-                                          problemWithServiceView: problem_with_this_service,
                                           emailCacheService: EmailCacheService,
                                           mcc: MessagesControllerComponents,
                                           subscriptionDisplayConnector: SubscriptionDisplayConnector,
-                                          emailVerificationService: EmailVerificationService)
+                                          emailVerificationService: EmailVerificationService,
+                                          errorHandler: ErrorHandler)
                                          (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
@@ -68,8 +69,8 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
           case Some(false) => Redirect(WhatIsYourEmailController.verify())
           case None => ??? //ToDo redirect to retry page
         }
-      case SubscriptionDisplayResponse(None, Some("FAIL")) => Future.successful(Ok(problemWithServiceView()))
-      case SubscriptionDisplayResponse(_, _) => ??? //ToDo
+      case SubscriptionDisplayResponse(None, Some(_)) => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
+      //case SubscriptionDisplayResponse(_, _) => ??? //ToDo
     } recover {
       handleNonFatalException()
     }
@@ -85,8 +86,8 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
           case SubscriptionDisplayResponse(Some(email), _) => BadRequest(view(formWithErrors, email))
-          case SubscriptionDisplayResponse(None, Some("FAIL")) => Ok(problemWithServiceView())
-          case SubscriptionDisplayResponse(_, _) => ??? //ToDo
+          case SubscriptionDisplayResponse(None, Some(_)) => Redirect(routes.WhatIsYourEmailController.problemWithService())
+          //case SubscriptionDisplayResponse(_, _) => ??? //ToDo
         } recover {
           handleNonFatalException()
         }
@@ -113,7 +114,11 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   private def handleNonFatalException()(implicit request: EoriRequest[AnyContent]): PartialFunction[Throwable, Result] = {
     case NonFatal(e) => {
       Logger.error(s"Subscription display failed with ${e.getMessage}")
-      Ok(problemWithServiceView())
+      Redirect(routes.WhatIsYourEmailController.problemWithService())
     }
+  }
+
+  def problemWithService(): Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

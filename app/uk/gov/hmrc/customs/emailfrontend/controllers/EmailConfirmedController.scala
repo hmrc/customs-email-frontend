@@ -17,31 +17,29 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.Inject
-import org.joda.time.DateTime
-import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
+import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, EoriRequest}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{email_confirmed, problem_with_this_service}
-import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed,
-                                         problemWithThisServiceView: problem_with_this_service,
                                          customsDataStoreService: CustomsDataStoreService,
                                          emailCacheService: EmailCacheService,
                                          emailVerificationService: EmailVerificationService,
                                          updateVerifiedEmailService: UpdateVerifiedEmailService,
-                                         mcc: MessagesControllerComponents)
-                                        (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+                                         mcc: MessagesControllerComponents,
+                                         errorHandler: ErrorHandler)
+                                        (implicit override val messagesApi: MessagesApi,
+                                         ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted andThen actions.eori).async { implicit request =>
      emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectBasedOnEmailStatus, Future.successful(Redirect(SignOutController.signOut())))
@@ -60,8 +58,11 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
         emailCacheService.save(request.user.internalId, EmailDetails(email, Some(DateTimeUtil.dateTime)))
         customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), email)
         Future.successful(Ok(view()))
-      case Some(false) => Future.successful(Ok(problemWithThisServiceView()))
-      case None => Future.successful(Ok(problemWithThisServiceView()))
+      case _ => Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))
     }
+  }
+
+  def problemWithService(): Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

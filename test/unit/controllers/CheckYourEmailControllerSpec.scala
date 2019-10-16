@@ -22,6 +22,8 @@ import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers._
+import play.twirl.api.Html
+import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
@@ -29,15 +31,15 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
 class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
 
   private val view = app.injector.instanceOf[check_your_email]
   private val mockEmailVerificationService = mock[EmailVerificationService]
   private val mockEmailCacheService = mock[EmailCacheService]
-
-  private val controller = new CheckYourEmailController(fakeAction, view, mockEmailVerificationService, mcc, mockEmailCacheService)
+  private val mockErrorHandler = mock[ErrorHandler]
+  private val controller = new CheckYourEmailController(fakeAction, view, mockEmailVerificationService, mcc, mockEmailCacheService, mockErrorHandler)
 
   "ConfirmEmailController" should {
 
@@ -97,6 +99,15 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       redirectLocation(eventualResult).value should endWith("/manage-email-cds/cannot-change-email")
     }
 
+    "redirect to 'there is a problem with the service' page" in withAuthorisedUser() {
+      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
+
+      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
+      val eventualResult = controller.problemWithService()(request)
+
+      status(eventualResult) shouldBe BAD_REQUEST
+      contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
+    }
   }
 
   "ConfirmEmailController on submit with yes selected" should {
@@ -124,19 +135,19 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       redirectLocation(eventualResult).value should endWith("/manage-email-cds/confirm-email-address")
     }
 
-    "throw exception when createEmailVerificationRequest failed" in withAuthorisedUser() {
+    "show 'there is a problem with service' page when createEmailVerificationRequest failed" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("abc@def.com", None))))
 
       when(mockEmailVerificationService.createEmailVerificationRequest(any(), any())(any())).thenReturn(Future.successful(None))
 
+      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
+
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "true")
 
-      import scala.concurrent.duration._
-      val result = intercept[IllegalStateException] {
-       Await.result(controller.submit(request), 5 seconds)
-      }
+      val eventualResult = controller.submit(request)
 
-      result.getMessage shouldBe "CreateEmailVerificationRequest Failed"
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/problem-with-this-service")
     }
   }
 }
