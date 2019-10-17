@@ -19,8 +19,8 @@ package uk.gov.hmrc.customs
 import java.time.Clock
 import java.util.UUID
 
-import org.joda.time.{DateTime, DateTimeZone}
 import org.joda.time.format.ISODateTimeFormat
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json._
 import uk.gov.hmrc.auth.core.retrieve.{~ => Retrieve}
 
@@ -60,6 +60,4 @@ package object emailfrontend {
       }
     }
   }
-
-
 }
