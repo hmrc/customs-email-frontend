@@ -66,7 +66,8 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
 
       Then("the user should be on 'Email confirmed' page")
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedText)("Your email address for CDS has been changed.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your new email address will be active in 24 hours.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)("Until then we will send CDS emails to the email address you were using previously.")
       verifyEmailVerifiedIsCalled(2)
       verifyCustomsDataStoreIsCalled(1)
       verifyUpdateVerifiedEmailIsCalled(1)
@@ -115,7 +116,8 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
 
       Then("the user should be on 'Email confirmed' page upon successfully updating the email")
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedText)("Your email address for CDS has been changed.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your new email address will be active in 24 hours.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)("Until then we will send CDS emails to the email address you were using previously.")
       verifyCustomsDataStoreIsCalled(1)
       verifyUpdateVerifiedEmailIsCalled(1)
     }
