@@ -82,7 +82,8 @@ lazy val microservice = Project(appName, file("."))
     acceptanceTestSettings,
     endtoendTestSettings,
     routesImport ++= Seq("uk.gov.hmrc.customs.emailfrontend.model._"),
-    resolvers += Resolver.jcenterRepo
+    resolvers += Resolver.jcenterRepo,
+    resolvers += "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/"
   )
 
 PlayKeys.devSettings := Seq("play.server.http.port" -> "9898")
