@@ -26,7 +26,7 @@ class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
 
     lazy val credId = generateRandomNumberString()
 
-    scenario("User returns to the service to amend an email address within 24 hours and should be redirected to 'You cannot change' page"){
+    scenario("User returns to the service to amend an email address within 24 hours and should be redirected to 'You cannot change' page") {
       Given("the user has successfully changed the email address")
 
       navigateTo(AuthLoginStubPage)
@@ -40,7 +40,8 @@ class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedText)("Your email address for CDS has been changed.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your new email address will be active in 24 hours.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)("Until then we will send CDS emails to the email address you were using previously.")
       clickOn(EmailConfirmedPage.signOutId)
 
       When("the user logs in to amend the email")

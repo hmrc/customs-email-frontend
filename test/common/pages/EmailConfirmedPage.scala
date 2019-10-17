@@ -23,7 +23,8 @@ class EmailConfirmedPage extends BasePage {
   override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address-confirmed"
   override val title = "Email address confirmed"
 
-  val verifyEmailConfirmedText: By = By.id("info")
+  val verifyEmailConfirmedTextPartOne: By = By.id("info1")
+  val verifyEmailConfirmedTextPartTwo: By = By.id("info2")
 }
 
 object EmailConfirmedPage extends EmailConfirmedPage
