@@ -27,14 +27,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class EnrolledUserFilter(implicit override val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
 
   def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = {
-    if(request.user.eori.nonEmpty) toFutureResult()
+    if(request.user.eori.nonEmpty) Future.successful(None)
     else {
       Logger.warn("[EnrolledUserFilter] CDS Enrolment is missing")
-      toFutureResult(Some(Ineligible.NoEnrolment))
+      Future.successful(Some(Redirect(IneligibleUserController.show(Ineligible.NoEnrolment))))
     }
-  }
-
-  private def toFutureResult(result: Option[Ineligible.Value] = None): Future[Option[Result]] = {
-    Future.successful(result.map(i => Redirect(IneligibleUserController.show(i))))
   }
 }
