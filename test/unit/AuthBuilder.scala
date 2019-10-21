@@ -19,7 +19,7 @@ package unit
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
+import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, credentialRole, internalId}
 import uk.gov.hmrc.auth.core.retrieve.{~ => Retrieve}
@@ -71,6 +71,15 @@ trait AuthBuilder {
   def withAuthorisedUserWithoutEori(test: => Unit) {
     val ag = Some(Organisation)
     val role = Some(Admin)
+    val retrieval = Retrieve(Enrolments(Set.empty[Enrolment]), internId).add(ag).add(role)
+    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
+      .thenReturn(Future.successful(retrieval))
+    test
+  }
+
+  def withAuthorisedAgentWithoutCDSEnrolment(test: => Unit) {
+    val ag = Some(Agent)
+    val role = Some(User)
     val retrieval = Retrieve(Enrolments(Set.empty[Enrolment]), internId).add(ag).add(role)
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.successful(retrieval))

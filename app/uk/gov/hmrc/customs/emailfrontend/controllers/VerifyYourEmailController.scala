@@ -34,7 +34,9 @@ class VerifyYourEmailController @Inject()(actions: Actions,
                                           mcc: MessagesControllerComponents)(implicit override val messagesApi: MessagesApi, ex: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
+  def show: Action[AnyContent] = (actions.auth
+    andThen actions.isPermitted
+    andThen actions.isEnrolled).async { implicit request =>
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectWithEmail, Future.successful(Redirect(SignOutController.signOut())))
   }
 

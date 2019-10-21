@@ -27,15 +27,13 @@ trait StubAuthClient {
   private val authRequestJson: String =
     """{
       |"authorise" : [{
-      | "enrolment" : "HMRC-CUS-ORG",
-      | "identifiers" : [],
-      | "state" : "Activated"
+      | "authProviders" : ["GovernmentGateway"]
       |}],
       | "retrieve" : ["allEnrolments","internalId","affinityGroup","credentialRole"]
       |}
     """.stripMargin
 
-  def authenticate(internalId: String, eoriNumber: String,credentialRole: String="Admin",affinityGroup:String="Organisation"): StubMapping = {
+  def authenticate(internalId: String, eoriNumber: String, credentialRole: String = "Admin", affinityGroup: String = "Organisation"): StubMapping = {
     stubFor(post(urlEqualTo(authUrl))
       .withRequestBody(equalToJson(authRequestJson))
       .willReturn(
@@ -60,13 +58,16 @@ trait StubAuthClient {
     )
   }
 
-  def authenticateGGUserWithNoEnrolments(internalId: String): StubMapping = {
+  def authenticateGGUserAsAgentWithNoCDSEnrolment(internalId: String, eoriNumber: String, credentialRole: String, affinityGroup: String): StubMapping = {
     stubFor(post(urlEqualTo(authUrl))
       .withRequestBody(equalToJson(authRequestJson))
       .willReturn(
         aResponse()
           .withStatus(Status.OK)
-          .withBody(s"""{"allEnrolments": [], "internalId": "$internalId"}""")
+          .withBody(
+            s"""{
+               | "allEnrolments": [], "internalId": "$internalId" , "credentialRole": "$credentialRole", "affinityGroup": "$affinityGroup"
+                }""".stripMargin)
       )
     )
   }

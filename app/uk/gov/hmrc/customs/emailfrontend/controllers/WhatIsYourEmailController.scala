@@ -44,7 +44,9 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
                                          (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
+  def show: Action[AnyContent] = (actions.auth
+    andThen actions.isPermitted
+    andThen actions.isEnrolled).async { implicit request =>
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectBasedOnEmailStatus,
       Future.successful(Redirect(WhatIsYourEmailController.create())))
   }
@@ -57,7 +59,9 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     }
   }
 
-  def create: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+  def create: Action[AnyContent] = (actions.auth
+    andThen actions.isEnrolled
+    andThen actions.eori).async { implicit request =>
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(email => Future.successful(Ok(view(emailForm, email))), subscriptionDisplay)
   }
 
@@ -76,12 +80,16 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     }
   }
 
-  def verify: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+  def verify: Action[AnyContent] = (actions.auth
+    andThen actions.isEnrolled
+    andThen actions.eori).async { implicit request =>
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(_ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
       Future.successful(Ok(whatIsYourEmailView(emailForm))))
   }
 
-  def submit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+  def submit: Action[AnyContent] = (actions.auth
+    andThen actions.isEnrolled
+    andThen actions.eori).async { implicit request =>
     emailForm.bindFromRequest.fold(
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
@@ -100,7 +108,9 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     )
   }
 
-  def verifySubmit: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+  def verifySubmit: Action[AnyContent] = (actions.auth
+    andThen actions.isEnrolled
+    andThen actions.eori).async { implicit request =>
     emailForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(formWithErrors))),
       formData => {
@@ -118,7 +128,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     }
   }
 
-  def problemWithService(): Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+  def problemWithService(): Action[AnyContent] = actions.auth.async { implicit request =>
     Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }
