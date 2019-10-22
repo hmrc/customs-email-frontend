@@ -50,6 +50,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val cacheMap = CacheMap(internalId, data)
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), None)
   private val someSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(None, Some("FAIL"))
+  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None)
 
   private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService, mockErrorHandler)
 
@@ -132,6 +133,16 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
       when(mockEmailVerificationService.isEmailVerified(meq(someSubscriptionDisplayResponse.email.get))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
+
+      val eventualResult = controller.create(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/email-address/verify-email-address")
+    }
+
+    "have a status of SEE_OTHER for create method when no email found in subscription display response but returned OK" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(noneSubscriptionDisplayResponse))
 
       val eventualResult = controller.create(request)
 
@@ -225,6 +236,15 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe BAD_REQUEST
+    }
+
+    "show 'there is a problem with the service' page when subscription display return response with no email or status for submit" in withAuthorisedUser() {
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(noneSubscriptionDisplayResponse))
+
+      val eventualResult = controller.submit(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/problem-with-this-service")
     }
 
     "have a status of Bad Request when the email is invalid" in withAuthorisedUser() {
