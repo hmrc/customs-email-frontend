@@ -79,7 +79,7 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
     scenario("A user with an agent account tries to amend email") {
 
       Given("the user is an agent on the account for an organisation")
-      authenticate(randomInternalId, randomEoriNumber, "user","agent")
+      authenticate(randomInternalId, randomEoriNumber, "user","Agent")
 
       When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
@@ -91,7 +91,7 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
     scenario("A user with an agent account having no CDS enrolment tries to amend email") {
 
       Given("the user is an agent on the account for an organisation")
-      authenticateGGUserAsAgentWithNoCDSEnrolment(randomInternalId, randomEoriNumber, "user","agent")
+      authenticateGGUserAsAgentWithNoCDSEnrolment(randomInternalId, randomEoriNumber, "user","Agent")
 
       When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
@@ -100,10 +100,10 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
       verifyCurrentPage(IneligibleUserAgentPage)
     }
 
-    scenario("A standard user with an organisation account having no CDS enrolment tries to amend email") {
+    scenario("An assistant user with an organisation account having no CDS enrolment tries to amend email") {
 
       Given("the user is an agent on the account for an organisation")
-      authenticateGGUserAsAgentWithNoCDSEnrolment(randomInternalId, randomEoriNumber, "user","Organisation")
+      authenticateGGUserAsAgentWithNoCDSEnrolment(randomInternalId, randomEoriNumber, "assistant","Organisation")
 
       When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
