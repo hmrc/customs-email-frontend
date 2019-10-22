@@ -118,20 +118,6 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       redirectLocation(eventualResult).value should endWith("/manage-email-cds/change-email-address/create")
     }
 
-    "show 'ineligible user - no enrolment' page for an authorised user having no eori" in withAuthorisedUserWithoutEori {
-      val eventualResult = controller.show(request)
-
-      status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/ineligible/no-enrolment")
-    }
-
-    "show 'ineligible user - agent' page for an authorised agent with no enrolments" in withAuthorisedAgentWithoutCDSEnrolment {
-      val eventualResult = controller.show(request)
-
-      status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/ineligible/is-agent")
-    }
-
     "have a status of OK for create method when verified email found in subscription display response" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))

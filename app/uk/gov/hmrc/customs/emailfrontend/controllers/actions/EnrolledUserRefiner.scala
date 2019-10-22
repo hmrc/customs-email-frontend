@@ -25,16 +25,17 @@ import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Eori, Eori
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EoriAction(implicit override val executionContext: ExecutionContext) extends ActionRefiner[AuthenticatedRequest, EoriRequest] {
+class EnrolledUserRefiner(implicit override val executionContext: ExecutionContext) extends ActionRefiner[AuthenticatedRequest, EoriRequest] {
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, EoriRequest[A]]] = {
 
-    def enrolmentToRequest: Option[EnrolmentIdentifier] => Option[EoriRequest[A]] = {
-      case Some(eori: EnrolmentIdentifier) if eori.value.nonEmpty => Some(EoriRequest(request, Eori(eori)))
+    def enrolmentExists: Option[EnrolmentIdentifier] => Option[EoriRequest[A]] = {
+      case Some(eori) if eori.value.nonEmpty => Some(EoriRequest(request, Eori(eori)))
       case _ => None
     }
+
     Future.successful(
-      enrolmentToRequest(request.user.eori) orElse None toRight {
-        Logger.warn("Eori is missing in the request")
+      enrolmentExists(request.user.eori) orElse None toRight {
+        Logger.warn("[EnrolledUserRefiner] CDS Enrolment is missing")
         Redirect(IneligibleUserController.show(Ineligible.NoEnrolment))
       }
     )

@@ -43,8 +43,7 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
 
   def show: Action[AnyContent] = (actions.auth
     andThen actions.isPermitted
-    andThen actions.isEnrolled
-    andThen actions.eori).async { implicit request =>
+    andThen actions.isEnrolled).async { implicit request =>
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectBasedOnEmailStatus, Future.successful(Redirect(SignOutController.signOut())))
   }
 

@@ -44,7 +44,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectWithEmail, Future.successful(Redirect(SignOutController.signOut())))
   }
 
-  private def redirectWithEmail(email: String)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
+  private def redirectWithEmail(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
     Future.successful(Ok(view(confirmEmailForm, email)))
   }
 

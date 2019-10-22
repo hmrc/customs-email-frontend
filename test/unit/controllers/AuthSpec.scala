@@ -67,5 +67,19 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) should contain("/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fmanage-email-cds%2Fchange-email-address&origin=customs-email-frontend")
     }
+
+    "show 'ineligible user - no enrolment' page for an authorised user having no eori" in withAuthorisedUserWithoutEori {
+      val eventualResult = controller.show(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/ineligible/no-enrolment")
+    }
+
+    "show 'ineligible user - agent' page for an authorised agent with no enrolments" in withAuthorisedAgentWithoutCDSEnrolment {
+      val eventualResult = controller.show(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/ineligible/is-agent")
+    }
   }
 }

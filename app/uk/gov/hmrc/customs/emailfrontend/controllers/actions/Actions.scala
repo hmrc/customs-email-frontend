@@ -29,8 +29,7 @@ import scala.concurrent.ExecutionContext
 trait Actions {
   def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest]
   def isPermitted : ActionFilter[AuthenticatedRequest]
-  def isEnrolled : ActionFilter[AuthenticatedRequest]
-  def eori: ActionRefiner[AuthenticatedRequest, EoriRequest]
+  def isEnrolled : ActionRefiner[AuthenticatedRequest, EoriRequest]
   def unauthorised: DefaultActionBuilder
 }
 
@@ -44,9 +43,7 @@ class ActionsImpl @Inject()(authConnector: AuthConnector, config: Configuration,
 
   override def isPermitted: ActionFilter[AuthenticatedRequest] = new PermittedUserFilter()
 
-  override def isEnrolled: ActionFilter[AuthenticatedRequest] = new EnrolledUserFilter()
-
-  override def eori: ActionRefiner[AuthenticatedRequest, EoriRequest] = new EoriAction()
+  override def isEnrolled: ActionRefiner[AuthenticatedRequest, EoriRequest] = new EnrolledUserRefiner()
 
   override def unauthorised: DefaultActionBuilder = new UnauthorisedAction(bodyParser)
 }
