@@ -238,13 +238,13 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       status(eventualResult) shouldBe BAD_REQUEST
     }
 
-    "have a status of Bad Request when no email is provided in the form and no email or status text found in SubscriptionDisplayResponse" in withAuthorisedUser() {
+    "show 'there is a problem with the service' page when subscription display return response with no email or status for submit" in withAuthorisedUser() {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(noneSubscriptionDisplayResponse))
 
-      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
       val eventualResult = controller.submit(request)
 
-      status(eventualResult) shouldBe BAD_REQUEST
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/problem-with-this-service")
     }
 
     "have a status of Bad Request when the email is invalid" in withAuthorisedUser() {
