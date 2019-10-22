@@ -21,7 +21,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
-import uk.gov.hmrc.customs.emailfrontend.model.AuthenticatedRequest
+import uk.gov.hmrc.customs.emailfrontend.model.EoriRequest
 import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_your_email
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -34,11 +34,13 @@ class VerifyYourEmailController @Inject()(actions: Actions,
                                           mcc: MessagesControllerComponents)(implicit override val messagesApi: MessagesApi, ex: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
+  def show: Action[AnyContent] = (actions.auth
+    andThen actions.isPermitted
+    andThen actions.isEnrolled).async { implicit request =>
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectWithEmail, Future.successful(Redirect(SignOutController.signOut())))
   }
 
-  private def redirectWithEmail(email: String)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
+  private def redirectWithEmail(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
     Future.successful(Ok(view(email)))
   }
 }

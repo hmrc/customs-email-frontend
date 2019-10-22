@@ -40,15 +40,15 @@ class CheckYourEmailController @Inject()(actions: Actions,
                                         (implicit override val messagesApi: MessagesApi,
                                          ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted).async { implicit request =>
+  def show: Action[AnyContent] = (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectWithEmail, Future.successful(Redirect(SignOutController.signOut())))
   }
 
-  private def redirectWithEmail(email: String)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
+  private def redirectWithEmail(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
     Future.successful(Ok(view(confirmEmailForm, email)))
   }
 
-  def submit: Action[AnyContent] = actions.authEnrolled.async { implicit request =>
+  def submit: Action[AnyContent] = actions.auth.async { implicit request =>
     emailCacheService.fetch(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[CheckYourEmailController][submit] - emailStatus cache none, user logged out")
@@ -80,7 +80,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
     case _ => emailCacheService.remove(internalId).flatMap(_ => Future.successful(Redirect(WhatIsYourEmailController.create())))
   }
 
-  def problemWithService(): Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+  def problemWithService(): Action[AnyContent] = actions.auth.async { implicit request =>
     Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

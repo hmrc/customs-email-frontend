@@ -18,6 +18,8 @@ package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
+import play.api.{Configuration, Environment, Logger}
+import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, credentialRole, internalId}
 import uk.gov.hmrc.auth.core.retrieve.~
@@ -28,10 +30,8 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.{Configuration, Environment, Logger}
 
-class AuthAction(enrolment: Enrolment,
-                 override val authConnector: AuthConnector,
+class AuthAction(override val authConnector: AuthConnector,
                  override val config: Configuration,
                  override val env: Environment,
                  override val parser: BodyParser[AnyContent])(implicit val executionContext: ExecutionContext)
@@ -39,15 +39,15 @@ class AuthAction(enrolment: Enrolment,
 
   private lazy val ggSignInRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
 
-
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-    authorised(enrolment).retrieve(allEnrolments and internalId and affinityGroup and credentialRole) {
+
+    authorised(AuthProviders(GovernmentGateway)).retrieve(allEnrolments and internalId and affinityGroup and credentialRole) {
       case userAllEnrolments ~ Some(userInternalId) ~ affinityGroup ~ credentialRole =>
-        Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments, InternalId(userInternalId),affinityGroup,credentialRole))))
+        Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments, InternalId(userInternalId), affinityGroup, credentialRole))))
       case _ => {
         Logger.warn("AuthAction[refine] internalId or allEnrolments is missing")
-        Future.successful(Left(Redirect(IneligibleUserController.show(Ineligible.NoEnrolment))))
+        throw InsufficientEnrolments()
       }
     } recover withAuthOrRedirect(request)
   }

@@ -34,7 +34,7 @@ class AmendmentInProgressController @Inject()(actions: Actions,
                                               mcc: MessagesControllerComponents)
                                              (implicit override val messagesApi: MessagesApi, ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+  def show: Action[AnyContent] = (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
     emailCacheService.fetch(request.user.internalId) map {
       _.fold {
         Logger.warn("[AmendmentInProgressController][show] - emailStatus not found")

@@ -16,8 +16,8 @@
 
 package acceptance.specs
 
-import common.pages._
 import acceptance.wiremockstub._
+import common.pages._
 import utils.SpecHelper
 
 class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAuthClient {
@@ -79,7 +79,7 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
     scenario("A user with an agent account tries to amend email") {
 
       Given("the user is an agent on the account for an organisation")
-      authenticate(randomInternalId, randomEoriNumber, "user","agent")
+      authenticate(randomInternalId, randomEoriNumber, "user","Agent")
 
       When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
@@ -88,5 +88,28 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
       verifyCurrentPage(IneligibleUserAgentPage)
     }
 
+    scenario("A user with an agent account having no CDS enrolment tries to amend email") {
+
+      Given("the user is an agent on the account for an organisation")
+      authenticateGGUserAsAgentWithNoCDSEnrolment(randomInternalId, randomEoriNumber, "user","Agent")
+
+      When("the user attempts to access the 'What is your email?' page")
+      navigateTo(WhatIsYourEmailPageShow)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(IneligibleUserAgentPage)
+    }
+
+    scenario("An assistant user with an organisation account having no CDS enrolment tries to amend email") {
+
+      Given("the user is an agent on the account for an organisation")
+      authenticateGGUserAsAgentWithNoCDSEnrolment(randomInternalId, randomEoriNumber, "assistant","Organisation")
+
+      When("the user attempts to access the 'What is your email?' page")
+      navigateTo(WhatIsYourEmailPageShow)
+
+      Then("the user should not be allowed")
+      verifyCurrentPage(IneligibleUserNotAdminPage)
+    }
   }
 }

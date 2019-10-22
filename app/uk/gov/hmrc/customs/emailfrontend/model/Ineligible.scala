@@ -20,7 +20,7 @@ import play.api.libs.json.{Reads, Writes}
 import play.api.mvc.{PathBindable, QueryStringBindable}
 
 object Ineligible extends Enumeration {
-  val NoEnrolment, IsAgent,NotAdmin = Value
+  val NoEnrolment, IsAgent, NotAdmin = Value
 
   implicit val reads: Reads[Ineligible.Value] = Reads.enumNameReads(Ineligible)
   implicit val writes: Writes[Ineligible.Value] = Writes.enumNameWrites

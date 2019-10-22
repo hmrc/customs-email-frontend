@@ -23,6 +23,7 @@ case class LoggedInUser(enrolments: Enrolments, internalId: InternalId , affinit
 }
 
 case class Eori(id: String)
+
 object Eori {
   def apply(identifier: EnrolmentIdentifier) = new Eori(identifier.value)
 }

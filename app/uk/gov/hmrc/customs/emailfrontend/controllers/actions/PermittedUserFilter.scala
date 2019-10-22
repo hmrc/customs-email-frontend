@@ -33,7 +33,7 @@ class PermittedUserFilter(implicit override val executionContext: ExecutionConte
     val credentialRole: Option[CredentialRole] = request.user.credentialRole
 
     (affinityGroup, credentialRole) match {
-      case(Some(Organisation),Some(Admin) | Some(User)) => toFutureResult()
+      case(Some(Organisation), Some(Admin) | Some(User)) => toFutureResult()
       case(Some(Organisation), _) => toFutureResult(Some(Ineligible.NotAdmin))
       case(Some(Agent),_) => toFutureResult(Some(Ineligible.IsAgent))
       case _ => toFutureResult() //ToDo handle case for affinityGroup and credentialRole having None values

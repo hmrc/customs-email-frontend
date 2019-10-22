@@ -41,8 +41,10 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
                                         (implicit override val messagesApi: MessagesApi,
                                          ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = (actions.authEnrolled andThen actions.isPermitted andThen actions.eori).async { implicit request =>
-     emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectBasedOnEmailStatus, Future.successful(Redirect(SignOutController.signOut())))
+  def show: Action[AnyContent] = (actions.auth
+    andThen actions.isPermitted
+    andThen actions.isEnrolled).async { implicit request =>
+    emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectBasedOnEmailStatus, Future.successful(Redirect(SignOutController.signOut())))
   }
 
   private def redirectBasedOnEmailStatus(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
@@ -62,7 +64,7 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
     }
   }
 
-  def problemWithService(): Action[AnyContent] = (actions.authEnrolled andThen actions.eori).async { implicit request =>
+  def problemWithService(): Action[AnyContent] = actions.auth.async { implicit request =>
     Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

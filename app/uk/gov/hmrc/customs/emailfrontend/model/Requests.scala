@@ -21,6 +21,5 @@ import play.api.mvc.{Request, WrappedRequest}
 case class AuthenticatedRequest[A](request: Request[A], user: LoggedInUser) extends WrappedRequest[A](request)
 
 case class EoriRequest[A](request: AuthenticatedRequest[A], eori: Eori) extends WrappedRequest[A](request) {
-
   val user: LoggedInUser = request.user
 }
