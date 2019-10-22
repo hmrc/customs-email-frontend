@@ -50,6 +50,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val cacheMap = CacheMap(internalId, data)
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), None)
   private val someSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(None, Some("FAIL"))
+  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None)
 
   private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService, mockErrorHandler)
 
@@ -139,6 +140,16 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       redirectLocation(eventualResult).value should endWith("/manage-email-cds/email-address/verify-email-address")
     }
 
+    "have a status of SEE_OTHER for create method when no email found in subscription display response but returned OK" in withAuthorisedUser() {
+      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(noneSubscriptionDisplayResponse))
+
+      val eventualResult = controller.create(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/email-address/verify-email-address")
+    }
+
     "have a status of SEE_OTHER for create method when email found in cache with no timestamp" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails("test@email", None))))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -220,6 +231,15 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     "have a status of Bad Request when no email is provided in the form" in withAuthorisedUser() {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
+
+      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
+      val eventualResult = controller.submit(request)
+
+      status(eventualResult) shouldBe BAD_REQUEST
+    }
+
+    "have a status of Bad Request when no email is provided in the form and no email or status text found in SubscriptionDisplayResponse" in withAuthorisedUser() {
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(noneSubscriptionDisplayResponse))
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
       val eventualResult = controller.submit(request)
