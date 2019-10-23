@@ -16,8 +16,8 @@
 
 package acceptance.specs
 
-import common.pages._
 import acceptance.wiremockstub._
+import common.pages._
 import utils.SpecHelper
 
 class WhatIsYourEmailSpec extends AcceptanceTestSpec
@@ -51,6 +51,22 @@ class WhatIsYourEmailSpec extends AcceptanceTestSpec
       verifyCurrentPage(WhatIsYourEmailPage)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
       verifyEmailVerifiedIsCalled(1)
+    }
+
+    scenario("Show 'What is your email' page when email is not available") {
+      authenticate(randomInternalId, randomEoriNumber)
+      save4LaterWithNoData(randomInternalId)
+      navigateTo(StartPage)
+      verifyCurrentPage(StartPage)
+      stubSubscriptionDisplayOk200EmailNotAvailableResponse(randomEoriNumber)
+
+      When("the user click on 'Start now' button")
+      clickOn(StartPage.startNowButton)
+      verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
+
+      Then("the user should be on 'What is your email' page")
+      verifyCurrentPage(WhatIsYourEmailPage)
+      verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
     }
   }
 }
