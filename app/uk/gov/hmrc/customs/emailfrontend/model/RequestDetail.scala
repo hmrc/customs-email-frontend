@@ -18,11 +18,22 @@ package uk.gov.hmrc.customs.emailfrontend.model
 
 import org.joda.time.DateTime
 import play.api.libs.json.Json
+import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 
 case class RequestDetail(IDType: String,
                          IDNumber: String,
                          emailAddress: String,
-                         emailVerificationTimestamp: DateTime)
+                         emailVerificationTimestamp: DateTime){
+  def toAuditMap: Map[String,String] = {
+    Map(
+      "idType" -> this.IDType,
+      "idNumber" -> this.IDNumber,
+      "email" -> this.emailAddress,
+      "emailVerificationTimestamp" -> DateTimeUtil.toString(this.emailVerificationTimestamp)
+    )
+  }
+
+}
 
 object RequestDetail {
   import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._

@@ -35,12 +35,7 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
 
   def updateVerifiedEmail(request: VerifiedEmailRequest)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
 
-    val details = Map(
-      "requestDetail" -> request.updateVerifiedEmailRequest.requestDetail.toString,
-      "requestCommon" -> request.updateVerifiedEmailRequest.requestCommon.toString
-    )
-
-    auditRequest(details)
+    auditRequest(request.updateVerifiedEmailRequest.requestDetail.toAuditMap)
 
     http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](url, request) map { resp =>
       auditResponse(Map("responseCommon" -> resp.updateVerifiedEmailResponse.responseCommon.toString))
