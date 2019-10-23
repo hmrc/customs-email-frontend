@@ -55,6 +55,66 @@ trait StubSubscriptionDisplay {
       |  }
       |}""".stripMargin
 
+  private val subscriptionDisplay200EmailNotAvailableResponseJson = {
+    """{
+      |  "subscriptionDisplayResponse": {
+      |    "responseCommon": {
+      |      "status": "OK",
+      |      "processingDate": "2016-08-17T19:33:47Z",
+      |      "returnParameters": [
+      |        {
+      |          "paramName": "ETMPFORMBUNDLENUMBER",
+      |          "paramValue": "9876543210"
+      |        },
+      |        {
+      |          "paramName": "POSITION",
+      |          "paramValue": "LINK"
+      |        }
+      |      ]
+      |    },
+      |    "responseDetail": {
+      |      "EORINo": "GBE9XSDF10BCKEYAX",
+      |      "EORIStartDate": "1999-01-01",
+      |      "EORIEndDate": "2020-01-01",
+      |      "CDSFullName": "John Doe",
+      |      "CDSEstablishmentAddress": {
+      |        "streetAndNumber": "Line 1",
+      |        "city": "City name",
+      |        "postalCode": "ZZ99 1AA",
+      |        "countryCode": "GB"
+      |      },
+      |      "establishmentInTheCustomsTerritoryOfTheUnion": "0",
+      |      "typeOfLegalEntity": "0003",
+      |      "contactInformation": {
+      |        "personOfContact": "John Doe",
+      |        "streetAndNumber": "Line 1",
+      |        "city": "City name",
+      |        "postalCode": "ZZ99 1AA",
+      |        "countryCode": "GB",
+      |        "telephoneNumber": "01702215001",
+      |        "faxNumber": "01702215002"
+      |      },
+      |      "VATIDs": [
+      |        {
+      |          "countryCode": "GB",
+      |          "VATID": "12164568990"
+      |        }
+      |      ],
+      |      "thirdCountryUniqueIdentificationNumber": [
+      |        "321",
+      |        "222"
+      |      ],
+      |      "consentToDisclosureOfPersonalData": "1",
+      |      "shortName": "Robinson",
+      |      "dateOfEstablishment": "1963-04-01",
+      |      "typeOfPerson": "1",
+      |      "principalEconomicActivity": "2000"
+      |    }
+      |  }
+      |}
+    """.stripMargin
+  }
+
 
   private val subscriptionDisplay400ResponseJson: String =
     """{
@@ -137,6 +197,10 @@ trait StubSubscriptionDisplay {
 
   def stubSubscriptionDisplayInternalServerResponse(eoriNumber: String): Unit = {
     stubSubscriptionDisplay(eoriNumber, Status.INTERNAL_SERVER_ERROR, subscriptionDisplay500ResponseJson)
+  }
+
+  def stubSubscriptionDisplayOk200EmailNotAvailableResponse(eoriNumber: String) = {
+    stubSubscriptionDisplay(eoriNumber, Status.OK, subscriptionDisplay200EmailNotAvailableResponseJson)
   }
 
   def verifySubscriptionDisplayIsCalled(times:Int, eoriNumber:String): Unit = {
