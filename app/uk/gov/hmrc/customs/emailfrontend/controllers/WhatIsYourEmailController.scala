@@ -51,17 +51,17 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
       Future.successful(Redirect(WhatIsYourEmailController.create())))
   }
 
-  private def redirectBasedOnEmailStatus(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
-    emailVerificationService.isEmailVerified(email).map {
+  private def redirectBasedOnEmailStatus(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
+    emailVerificationService.isEmailVerified(details.newEmail).map {
       case Some(true) => Redirect(EmailConfirmedController.show())
       case Some(false) => Redirect(CheckYourEmailController.show())
       case None => ??? //ToDo redirect to retry page  Email Service is down or any other errors
     }
   }
 
-  def create: Action[AnyContent] = (actions.auth
-    andThen actions.isEnrolled).async { implicit request =>
-    emailCacheService.routeBasedOnAmendment(request.user.internalId)(email => Future.successful(Ok(view(emailForm, email))), subscriptionDisplay)
+  def create: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
+    emailCacheService.routeBasedOnAmendment(request.user.internalId)(details =>
+      Future.successful(Ok(view(emailForm, details.newEmail))), subscriptionDisplay)
   }
 
   private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) = {
@@ -79,14 +79,12 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     }
   }
 
-  def verify: Action[AnyContent] = (actions.auth
-    andThen actions.isEnrolled).async { implicit request =>
+  def verify: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(_ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
       Future.successful(Ok(whatIsYourEmailView(emailForm))))
   }
 
-  def submit: Action[AnyContent] = (actions.auth
-    andThen actions.isEnrolled).async { implicit request =>
+  def submit: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
     emailForm.bindFromRequest.fold(
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
@@ -97,19 +95,24 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         }
       },
       formData => {
-        emailCacheService.save(request.user.internalId, EmailDetails(formData.value, None)).map {
-          _ => Redirect(routes.CheckYourEmailController.show())
+        subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
+          case SubscriptionDisplayResponse(currentEmail@Some(_), _) => {
+            emailCacheService.save(request.user.internalId, EmailDetails(currentEmail, formData.value, isVerified = false, None))
+              .map {_ => Redirect(routes.CheckYourEmailController.show())}
+          }
+          case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
         }
+      } recover {
+        handleNonFatalException()
       }
     )
   }
 
-  def verifySubmit: Action[AnyContent] = (actions.auth
-    andThen actions.isEnrolled).async { implicit request =>
+  def verifySubmit: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
     emailForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(formWithErrors))),
       formData => {
-        emailCacheService.save(request.user.internalId, EmailDetails(formData.value, None)).map {
+        emailCacheService.save(request.user.internalId, EmailDetails(None, formData.value, isVerified = false, None)).map {
           _ => Redirect(routes.CheckYourEmailController.show())
         }
       }

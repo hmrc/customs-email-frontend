@@ -18,8 +18,8 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
+import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{Call, Result}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, CompositeSymmetricCrypto}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.AmendmentInProgressController
@@ -29,7 +29,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
-
 
 @Singleton
 class Save4LaterCachingConfig @Inject()(httpClient: HttpClient, appConfig: AppConfig) extends ShortLivedHttpCaching {
@@ -75,19 +74,19 @@ object EmailCacheService {
 
   implicit class EmailCacheServiceHelper(emailCacheService: EmailCacheService) {
 
-    def routeBasedOnAmendment(internalId: InternalId)(redirectBasedOnEmailStatus: String => Future[Result], noEmail: Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext) = {
+    def routeBasedOnAmendment(internalId: InternalId)(redirectBasedOnEmailStatus: EmailDetails => Future[Result], noEmail: Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext) = {
       emailCacheService.fetch(internalId).flatMap {
         case Some(data) if data.amendmentInProgress => {
           Logger.info("email amendment in-progress")
           Future.successful(Redirect(AmendmentInProgressController.show()))
         }
-        case Some(EmailDetails(_, Some(_))) => {
+        case Some(EmailDetails(_, _, _, Some(_))) => {
           Logger.info("email amendment completed")
           emailCacheService.remove(internalId).flatMap(_ => noEmail)
         }
-        case Some(EmailDetails(email, None)) => {
+        case Some(details@EmailDetails(_, _, _, None)) => {
           Logger.info("email amendment not determined")
-          redirectBasedOnEmailStatus(email)
+          redirectBasedOnEmailStatus(details)
         }
         case _ => {
           Logger.info("email details not found in the cache")

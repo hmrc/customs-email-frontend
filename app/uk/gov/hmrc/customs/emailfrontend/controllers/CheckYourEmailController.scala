@@ -44,8 +44,8 @@ class CheckYourEmailController @Inject()(actions: Actions,
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectWithEmail, Future.successful(Redirect(SignOutController.signOut())))
   }
 
-  private def redirectWithEmail(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
-    Future.successful(Ok(view(confirmEmailForm, email)))
+  private def redirectWithEmail(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
+    Future.successful(Ok(view(confirmEmailForm, details.newEmail)))
   }
 
   def submit: Action[AnyContent] = actions.auth.async { implicit request =>
@@ -57,26 +57,26 @@ class CheckYourEmailController @Inject()(actions: Actions,
         emailDetails =>
           confirmEmailForm.bindFromRequest.fold(
             formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, emailDetails.email)))
+              Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail)))
             },
             formData =>
-              locationByAnswer(request.user.internalId, formData, emailDetails.email)
+              locationByAnswer(request.user.internalId, formData, emailDetails)
           )
       }
     }
   }
 
-  private def submitNewDetails(internalId: InternalId, email: String)(implicit request: Request[AnyContent]): Future[Result] = {
-    emailVerificationService.createEmailVerificationRequest(email, EmailConfirmedController.show().url) flatMap {
+  private def submitNewDetails(internalId: InternalId, details: EmailDetails)(implicit request: Request[AnyContent]): Future[Result] = {
+    emailVerificationService.createEmailVerificationRequest(details.newEmail, EmailConfirmedController.show().url) flatMap {
       case Some(true) => Future.successful(Redirect(VerifyYourEmailController.show()))
-      case Some(false) => emailCacheService.save(internalId, EmailDetails(email, None))
+      case Some(false) => emailCacheService.save(internalId, details.copy(timestamp = None))
         .map { _ => Redirect(EmailConfirmedController.show())}
       case None => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService()))
     }
   }
 
-  private def locationByAnswer(internalId: InternalId, confirmEmail: YesNo, email: String)(implicit request: Request[AnyContent]): Future[Result] = confirmEmail.isYes match {
-    case Some(true) => submitNewDetails(internalId, email)
+  private def locationByAnswer(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails)(implicit request: Request[AnyContent]): Future[Result] = confirmEmail.isYes match {
+    case Some(true) => submitNewDetails(internalId, details)
     case _ => emailCacheService.remove(internalId).flatMap(_ => Future.successful(Redirect(WhatIsYourEmailController.create())))
   }
 
