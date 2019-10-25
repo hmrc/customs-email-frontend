@@ -29,17 +29,17 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateVerifiedEmailConnector)(implicit ec: ExecutionContext) {
 
-  def updateVerifiedEmail(email: String, eori: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
+  def updateVerifiedEmail(currentEmail: Option[String], newEmail: String, eori: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
 
     val requestDetail = RequestDetail(
       IDType = "EORI",
       IDNumber = eori,
-      emailAddress = email,
+      emailAddress = newEmail,
       emailVerificationTimestamp = DateTimeUtil.dateTime
     )
     val request = VerifiedEmailRequest(UpdateVerifiedEmailRequest(RequestCommon(), requestDetail))
 
-    updateVerifiedEmailConnector.updateVerifiedEmail(request).map {
+    updateVerifiedEmailConnector.updateVerifiedEmail(request, currentEmail).map {
       case Right(res) if res.updateVerifiedEmailResponse.responseCommon.returnParameters.exists(msp => msp.paramName == formBundleIdParamName) =>
         Logger.debug("[UpdateVerifiedEmailService][updateVerifiedEmail] - successfully updated verified email")
         Some(true)
