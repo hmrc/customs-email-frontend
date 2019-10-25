@@ -79,7 +79,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(verifiedEmailResponse))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Right(verifiedEmailResponse)
     }
 
@@ -89,7 +89,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(forbiddenException))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(Forbidden)
     }
 
@@ -99,7 +99,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(forbidden))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(Forbidden)
     }
 
@@ -109,7 +109,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(badRequestException))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(BadRequest)
     }
 
@@ -119,7 +119,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(badRequest))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(BadRequest)
     }
 
@@ -129,7 +129,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(internalServerException))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(ServiceUnavailable)
     }
 
@@ -139,7 +139,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(internalServerError))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(ServiceUnavailable)
     }
 
@@ -149,7 +149,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.failed(unhandledException))
 
-      val result = await(connector.updateVerifiedEmail(verifiedEmailRequest))
+      val result = await(connector.updateVerifiedEmail(verifiedEmailRequest, None))
       result mustBe Left(UnhandledException)
     }
   }

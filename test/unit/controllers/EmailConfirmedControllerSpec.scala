@@ -57,7 +57,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
         when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", false, None))))
 
         when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
-        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None), meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
         when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
         when(mockEmailCacheService.save(meq(InternalId("internalId")), any[EmailDetails])(any(), any())).thenReturn(Future.successful(CacheMap("internalId", Map())))
@@ -72,7 +72,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       "email found in cache, email is verified and update verified email is successful but saving timestamp fails" in withAuthorisedUser() {
         when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", false, None))))
         when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
-        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None), meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
         when(mockEmailCacheService.save(meq(InternalId("internalId")), meq(EmailDetails(None, "abc@def.com", false, None)))(any(), any())).thenReturn(Future.failed(new InternalServerException("")))
         when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
@@ -128,7 +128,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "show 'there is a problem with the service page' when save email is failed with Error 400 or 500" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", false, None))))
       when(mockEmailVerificationService.isEmailVerified(any())(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
-      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None), meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(None))
       when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
 
@@ -140,7 +140,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "show 'there is a problem with the service page' when save email returns 200 with no form bundle id param" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", false, None))))
       when(mockEmailVerificationService.isEmailVerified(any())(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
-      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None), meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(false)))
       when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
 
@@ -158,7 +158,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
       verify(mockCustomsDataStoreService, times(0)).storeEmail(any(), any())(any[HeaderCarrier])
       verify(mockEmailVerificationService, times(0)).isEmailVerified(any())(any[HeaderCarrier])
       verify(mockEmailCacheService, times(0)).fetch(any())(any[HeaderCarrier], any[ExecutionContext])
-      verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any())(any[HeaderCarrier])
+      verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
     }
 
     "redirect to 'there is a problem with the service' page" in withAuthorisedUser() {
