@@ -79,7 +79,7 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
         (any[Writes[VerifiedEmailRequest]], any[HttpReads[VerifiedEmailResponse]], any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(verifiedEmailResponse))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
+      val result = connector.updateVerifiedEmail(verifiedEmailRequest, Some("old-email-address")).futureValue
       result mustBe Right(verifiedEmailResponse)
     }
 

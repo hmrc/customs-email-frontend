@@ -105,7 +105,7 @@ class EmailVerificationConnectorSpec extends PlaySpec
             "continueUrl" -> "test-continue-url")), any())(any(), any(), any[HeaderCarrier], any()))
           .thenReturn(Future.successful(Right(EmailVerificationRequestSent)))
 
-        val result = connector.createEmailVerificationRequest(EmailDetails(None, "email-address", None), "test-continue-url", "EORINumber").futureValue
+        val result = connector.createEmailVerificationRequest(EmailDetails(Some("old-email-address"), "email-address", None), "test-continue-url", "EORINumber").futureValue
 
         result mustBe Right(EmailVerificationRequestSent)
       }

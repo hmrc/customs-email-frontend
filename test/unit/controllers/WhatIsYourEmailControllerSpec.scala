@@ -280,6 +280,17 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for submit" in withAuthorisedUser() {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
 
+      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "valid@email.com")
+      val eventualResult = controller.submit(request)
+
+      status(eventualResult) shouldBe SEE_OTHER
+      redirectLocation(eventualResult).value should endWith("/problem-with-this-service")
+    }
+
+    "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for bad request form" in withAuthorisedUser() {
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
+
+      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "invalidEmail")
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
