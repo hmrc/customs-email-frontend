@@ -48,8 +48,6 @@ package object emailfrontend {
       }
     }
 
-    def toString(dateTime: DateTime): String ={ dateTime.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC())}
-
     implicit val dateTimeReads: Reads[DateTime] = dateTimeReadsIso
     implicit val dateTimeWrites: Writes[DateTime] = dateTimeWritesIsoUtc
 

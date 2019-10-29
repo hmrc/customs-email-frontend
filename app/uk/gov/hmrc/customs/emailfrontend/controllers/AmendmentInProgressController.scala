@@ -41,7 +41,7 @@ class AmendmentInProgressController @Inject()(actions: Actions,
         Redirect(SignOutController.signOut())
       } {
         emailDetails =>
-          Ok(view(emailDetails.email))
+          Ok(view(emailDetails.newEmail))
       }
     }
   }

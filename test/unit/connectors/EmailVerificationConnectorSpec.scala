@@ -29,6 +29,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestResponse, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser._
+import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -104,7 +105,7 @@ class EmailVerificationConnectorSpec extends PlaySpec
             "continueUrl" -> "test-continue-url")), any())(any(), any(), any[HeaderCarrier], any()))
           .thenReturn(Future.successful(Right(EmailVerificationRequestSent)))
 
-        val result = connector.createEmailVerificationRequest("email-address", "test-continue-url").futureValue
+        val result = connector.createEmailVerificationRequest(EmailDetails(Some("old-email-address"), "email-address", None), "test-continue-url", "EORINumber").futureValue
 
         result mustBe Right(EmailVerificationRequestSent)
       }
@@ -115,7 +116,7 @@ class EmailVerificationConnectorSpec extends PlaySpec
         when(mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](any(), any(), any())(any(), any(), any[HeaderCarrier], any()))
           .thenReturn(Future.successful(Right(EmailAlreadyVerified)))
 
-        val result = connector.createEmailVerificationRequest("email-address", "test-continue-url").futureValue
+        val result = connector.createEmailVerificationRequest(EmailDetails(None, "email-address", None), "test-continue-url", "EORINumber").futureValue
 
         result mustBe Right(EmailAlreadyVerified)
       }
@@ -126,7 +127,7 @@ class EmailVerificationConnectorSpec extends PlaySpec
         when(mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](any(), any(), any())(any(), any(), any[HeaderCarrier], any()))
           .thenReturn(Future.successful(Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR, "Internal server error"))))
 
-        val result = connector.createEmailVerificationRequest("email-address", "test-continue-url").futureValue
+        val result = connector.createEmailVerificationRequest(EmailDetails(None, "email-address", None), "test-continue-url", "EORINumber").futureValue
 
         result mustBe Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR, "Internal server error"))
       }

@@ -55,25 +55,25 @@ class UpdateVerifiedEmailServiceSpec extends PlaySpec with MockitoSugar with Bef
   }
 
   def mockGetEmailVerificationState(response: Either[HttpErrorResponse, VerifiedEmailResponse]): Unit =
-    when(mockConnector.updateVerifiedEmail(any[VerifiedEmailRequest])(any[HeaderCarrier])) thenReturn Future.successful(response)
+    when(mockConnector.updateVerifiedEmail(any[VerifiedEmailRequest], any[Option[String]])(any[HeaderCarrier])) thenReturn Future.successful(response)
 
   "Calling UpdateVerifiedEmailService updateVerifiedEmail" should {
     "return Some(true) when VerifiedEmailResponse returned with bundleId" in {
       mockGetEmailVerificationState(Right(bundleIdUpdateVerifiedEmailResponse))
 
-      service.updateVerifiedEmail(email, eoriNumber).futureValue mustBe Some(true)
+      service.updateVerifiedEmail(None, email, eoriNumber).futureValue mustBe Some(true)
     }
 
     "return None when VerifiedEmailResponse returned without bundleId" in {
       mockGetEmailVerificationState(Right(businessErrorUpdateVerifiedEmailResponse))
 
-      service.updateVerifiedEmail(email, eoriNumber).futureValue mustBe Some(false)
+      service.updateVerifiedEmail(None, email, eoriNumber).futureValue mustBe Some(false)
     }
 
     "return None when HttpErrorResponse returned" in {
       mockGetEmailVerificationState(Left(serviceUnavailableResponse))
 
-      service.updateVerifiedEmail(email, eoriNumber).futureValue mustBe None
+      service.updateVerifiedEmail(None, email, eoriNumber).futureValue mustBe None
     }
   }
 }

@@ -40,6 +40,4 @@ class Save4LaterCacheConfigSpec extends PlaySpec
       save4LaterConfig.http mustBe mockHttpClient
     }
   }
-
-
 }

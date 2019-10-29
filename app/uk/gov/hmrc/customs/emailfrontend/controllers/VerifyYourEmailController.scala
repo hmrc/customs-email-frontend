@@ -21,7 +21,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
-import uk.gov.hmrc.customs.emailfrontend.model.EoriRequest
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, EoriRequest}
 import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_your_email
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -40,7 +40,7 @@ class VerifyYourEmailController @Inject()(actions: Actions,
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectWithEmail, Future.successful(Redirect(SignOutController.signOut())))
   }
 
-  private def redirectWithEmail(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
-    Future.successful(Ok(view(email)))
+  private def redirectWithEmail(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
+    Future.successful(Ok(view(details.newEmail)))
   }
 }

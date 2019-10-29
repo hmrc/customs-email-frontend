@@ -25,6 +25,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestResponse, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerificationStateErrorResponse, EmailVerified}
+import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.http._
 import utils.Constants._
 import utils.WireMockRunner
@@ -43,7 +44,9 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec
 
   private lazy val connector = app.injector.instanceOf[EmailVerificationConnector]
   private val emailAddress = "test@example.com"
+  private val emailDetails = EmailDetails(None, "test@example.com", None)
   private val expectedContinueUrl = "/customs/test-continue-url"
+  private val eoriNumber = "EORINumber"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -97,7 +100,7 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec
       "return an EmailVerificationRequestSent" in {
         EmailVerificationStubService.stubVerificationRequestSent()
         val expected = Right(EmailVerificationRequestSent)
-        val result = connector.createEmailVerificationRequest(emailAddress, expectedContinueUrl).futureValue
+        val result = connector.createEmailVerificationRequest(emailDetails, expectedContinueUrl, eoriNumber).futureValue
 
         result mustBe expected
       }
@@ -107,7 +110,7 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec
       "return an EmailAlreadyVerified" in {
         EmailVerificationStubService.stubEmailAlreadyVerified()
         val expected = Right(EmailAlreadyVerified)
-        val result: EmailVerificationRequestResponse = connector.createEmailVerificationRequest(emailAddress, expectedContinueUrl).futureValue
+        val result: EmailVerificationRequestResponse = connector.createEmailVerificationRequest(emailDetails, expectedContinueUrl, eoriNumber).futureValue
 
         result mustBe expected
       }
@@ -117,7 +120,7 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec
       "return an Internal Server Error" in {
         EmailVerificationStubService.stubVerificationRequestError()
         val expected = Left(EmailVerificationRequestFailure(INTERNAL_SERVER_ERROR, EmailVerificationStubService.internalServerErrorResponse))
-        val result: EmailVerificationRequestResponse = connector.createEmailVerificationRequest(emailAddress, expectedContinueUrl).futureValue
+        val result: EmailVerificationRequestResponse = connector.createEmailVerificationRequest(emailDetails, expectedContinueUrl, eoriNumber).futureValue
 
         result mustBe expected
       }

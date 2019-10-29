@@ -47,18 +47,18 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectBasedOnEmailStatus, Future.successful(Redirect(SignOutController.signOut())))
   }
 
-  private def redirectBasedOnEmailStatus(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
+  private def redirectBasedOnEmailStatus(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
     for {
-      verified <- emailVerificationService.isEmailVerified(email)
-      redirect <- if (verified.contains(true)) updateEmail(email) else Future.successful(Redirect(VerifyYourEmailController.show()))
+      verified <- emailVerificationService.isEmailVerified(details.newEmail)
+      redirect <- if (verified.contains(true)) updateEmail(details) else Future.successful(Redirect(VerifyYourEmailController.show()))
     } yield redirect
   }
 
-  private[this] def updateEmail(email: String)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
-    updateVerifiedEmailService.updateVerifiedEmail(email, request.eori.id).flatMap {
+  private[this] def updateEmail(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
+    updateVerifiedEmailService.updateVerifiedEmail(details.currentEmail, details.newEmail, request.eori.id).flatMap {
       case Some(true) =>
-        emailCacheService.save(request.user.internalId, EmailDetails(email, Some(DateTimeUtil.dateTime)))
-        customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), email)
+        emailCacheService.save(request.user.internalId, details.copy(timestamp = Some(DateTimeUtil.dateTime)))
+        customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), details.newEmail)
         Future.successful(Ok(view()))
       case _ => Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))
     }

@@ -64,7 +64,7 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
       "return an EmailVerified response" in {
         UpdateVerifiedEmailStubService.stubEmailUpdated(verifiedEmailResponse)
         val expected = Right(Json.parse(verifiedEmailResponse).as[VerifiedEmailResponse])
-        val result = connector.updateVerifiedEmail(request).futureValue
+        val result = connector.updateVerifiedEmail(request, None).futureValue
 
         result mustBe expected
       }
@@ -74,7 +74,7 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
       "return BadRequest response" in {
         UpdateVerifiedEmailStubService.stubBadRequest()
         val expected = Left(BadRequest)
-        val result = connector.updateVerifiedEmail(request).futureValue
+        val result = connector.updateVerifiedEmail(request, None).futureValue
 
         result mustBe expected
       }
@@ -84,7 +84,7 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
       "return an EmailVerificationRequestSent" in {
         UpdateVerifiedEmailStubService.stubForbidden()
         val expected = Left(Forbidden)
-        val result = connector.updateVerifiedEmail(request).futureValue
+        val result = connector.updateVerifiedEmail(request, None).futureValue
 
         result mustBe expected
       }
@@ -94,7 +94,7 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
       "return ServiceUnavailable response" in {
         UpdateVerifiedEmailStubService.stubServiceUnavailable()
         val expected = Left(ServiceUnavailable)
-        val result = connector.updateVerifiedEmail(request).futureValue
+        val result = connector.updateVerifiedEmail(request, None).futureValue
 
         result mustBe expected
       }
@@ -104,7 +104,7 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
       "return non unhandled response" in {
         UpdateVerifiedEmailStubService.stubEmailUpdatedResponseWithStatus("", 502)
         val expected = Left(UnhandledException)
-        val result = connector.updateVerifiedEmail(request).futureValue
+        val result = connector.updateVerifiedEmail(request, None).futureValue
 
         result mustBe expected
       }

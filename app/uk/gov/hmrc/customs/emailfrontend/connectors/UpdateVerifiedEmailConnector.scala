@@ -33,37 +33,38 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
 
   private[connectors] lazy val url: String = appConfig.updateVerifiedEmailUrl
 
-  def updateVerifiedEmail(request: VerifiedEmailRequest)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
+  def updateVerifiedEmail(request: VerifiedEmailRequest, currentEmail: Option[String])(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
+    val newEmail = request.updateVerifiedEmailRequest.requestDetail.emailAddress
+    val eori = request.updateVerifiedEmailRequest.requestDetail.IDNumber
 
-    auditRequest(request.updateVerifiedEmailRequest.requestDetail.toAuditMap)
+    auditRequest(currentEmail, newEmail, eori)
 
     http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](url, request) map { resp =>
-      auditResponse(Map("responseCommon" -> resp.updateVerifiedEmailResponse.responseCommon.toString))
       Right(resp)
     } recover {
       case _: BadRequestException | Upstream4xxResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
       case _: ForbiddenException | Upstream4xxResponse(_, FORBIDDEN, _, _) => Left(Forbidden)
       case _: InternalServerException | Upstream5xxResponse(_, INTERNAL_SERVER_ERROR, _) => Left(ServiceUnavailable)
       case NonFatal(e) =>
-        auditResponse(Map("HttpErrorResponse" -> e.getMessage))
         Logger.error(s"[UpdateVerifiedEmailConnector][updateVerifiedEmail] update-verified-email. url: $url, error: ${e.getMessage}")
         Left(UnhandledException)
     }
   }
 
-  private def auditRequest(detail: Map[String, String])(implicit hc: HeaderCarrier): Unit =
+  private def auditRequest(currentEmail: Option[String], newEmail: String, eoriNumber: String)(implicit hc: HeaderCarrier): Unit = {
+  if(currentEmail.isDefined)
     audit.sendDataEvent(
       transactionName = "UpdateVerifiedEmailRequestSubmitted",
       path = url,
-      detail = detail,
-      auditType = "UpdateVerifiedEmailRequest"
+      detail = Map("currentEmailAddress" -> currentEmail.get, "newEmailAddress" -> newEmail, "eori" -> eoriNumber),
+      auditType = "changeEmailAddressVerified"
     )
-
-  private def auditResponse(detail: Map[String, String])(implicit hc: HeaderCarrier): Unit =
+  else
     audit.sendDataEvent(
-      transactionName = "UpdateVerifiedEmailResponseReceived",
+      transactionName = "UpdateVerifiedEmailRequestSubmitted",
       path = url,
-      detail = detail,
-      auditType = "UpdateVerifiedEmailResponse"
+      detail = Map("newEmailAddress" -> newEmail, "eori" -> eoriNumber),
+      auditType = "changeEmailAddressAttempted"
     )
+  }
 }
