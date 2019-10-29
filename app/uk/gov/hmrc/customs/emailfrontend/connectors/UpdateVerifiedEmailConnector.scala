@@ -37,9 +37,9 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
     val newEmail = request.updateVerifiedEmailRequest.requestDetail.emailAddress
     val eori = request.updateVerifiedEmailRequest.requestDetail.IDNumber
 
-    auditRequest(currentEmail, newEmail, eori)
-
+      auditRequest(currentEmail, newEmail, eori , "changeEmailAddressAttempted")
     http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](url, request) map { resp =>
+      auditRequest(currentEmail, newEmail, eori , "changeEmailAddressVerified")
       Right(resp)
     } recover {
       case _: BadRequestException | Upstream4xxResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
@@ -51,20 +51,21 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
     }
   }
 
-  private def auditRequest(currentEmail: Option[String], newEmail: String, eoriNumber: String)(implicit hc: HeaderCarrier): Unit = {
-  if(currentEmail.isDefined)
-    audit.sendDataEvent(
-      transactionName = "UpdateVerifiedEmailRequestSubmitted",
-      path = url,
-      detail = Map("currentEmailAddress" -> currentEmail.get, "newEmailAddress" -> newEmail, "eori" -> eoriNumber),
-      auditType = "changeEmailAddressVerified"
-    )
-  else
-    audit.sendDataEvent(
-      transactionName = "UpdateVerifiedEmailRequestSubmitted",
-      path = url,
-      detail = Map("newEmailAddress" -> newEmail, "eori" -> eoriNumber),
-      auditType = "changeEmailAddressAttempted"
+  private def auditRequest(currentEmail: Option[String], newEmail: String, eoriNumber: String, auditType: String)(implicit hc: HeaderCarrier): Unit = {
+    currentEmail.fold(
+      audit.sendDataEvent(
+        transactionName = "UpdateVerifiedEmailRequestSubmitted",
+        path = url,
+        detail = Map("newEmailAddress" -> newEmail, "eori" -> eoriNumber),
+        auditType = auditType
+      )
+    )(emailAddress =>
+      audit.sendDataEvent(
+        transactionName = "UpdateVerifiedEmailRequestSubmitted",
+        path = url,
+        detail = Map("currentEmailAddress" -> emailAddress, "newEmailAddress" -> newEmail, "eori" -> eoriNumber),
+        auditType = auditType
+      )
     )
   }
 }
