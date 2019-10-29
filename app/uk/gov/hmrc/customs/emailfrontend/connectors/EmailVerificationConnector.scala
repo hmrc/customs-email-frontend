@@ -23,6 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationKeys._
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.EmailVerificationRequestResponse
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.EmailVerificationStateResponse
+import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -44,17 +45,19 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
     http.POST[JsObject, EmailVerificationStateResponse](checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
   }
 
-  def createEmailVerificationRequest(emailAddress: String, continueUrl: String)
+  def createEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)
                                     (implicit hc: HeaderCarrier): Future[EmailVerificationRequestResponse] = {
     val jsonBody =
       Json.obj(
-        EmailKey -> emailAddress,
+        EmailKey -> details.newEmail,
         TemplateIdKey -> appConfig.emailVerificationTemplateId,
         TemplateParametersKey -> Json.obj(),
         LinkExpiryDurationKey -> appConfig.emailVerificationLinkExpiryDuration,
         ContinueUrlKey -> continueUrl
       )
-    auditRequest("customs-update-email-verification-request", "CustomsUpdateEmailVerificationRequest", emailAddress, createEmailVerificationRequestUrl)
+
+    auditVerificationRequest(details, createEmailVerificationRequestUrl, eoriNumber)
+
     http.POST[JsObject, EmailVerificationRequestResponse](createEmailVerificationRequestUrl, jsonBody)
   }
 
@@ -65,6 +68,23 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
       detail = Map("emailAddress" -> emailAddress),
       auditType = auditType
     )
+  }
+
+  private def auditVerificationRequest(details: EmailDetails, url: String, eoriNumber: String)(implicit hc: HeaderCarrier): Unit = {
+    if (details.currentEmail.isDefined)
+      auditable.sendDataEvent(
+        transactionName = "UpdateVerifiedEmailRequestSubmitted",
+        path = url,
+        detail = Map("currentEmailAddress" -> details.currentEmail.get, "newEmailAddress" -> details.newEmail, "eori" -> eoriNumber),
+        auditType = "changeEmailAddressVerified"
+      )
+    else
+      auditable.sendDataEvent(
+        transactionName = "UpdateVerifiedEmailRequestSubmitted",
+        path = url,
+        detail = Map("newEmailAddress" -> details.newEmail, "eori" -> eoriNumber),
+        auditType = "changeEmailAddressAttempted"
+      )
   }
 }
 

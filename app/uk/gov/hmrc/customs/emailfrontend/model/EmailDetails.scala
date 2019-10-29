@@ -19,7 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.model
 import org.joda.time.DateTime
 import play.api.libs.json.Json
 
-case class EmailDetails(currentEmail: Option[String], newEmail: String, isVerified: Boolean, timestamp: Option[DateTime]) {
+case class EmailDetails(currentEmail: Option[String], newEmail: String, timestamp: Option[DateTime]) {
   lazy val amendmentInProgress = timestamp match {
     case Some(date) => !date.isBefore(DateTime.now.minusDays(1))
     case None => false

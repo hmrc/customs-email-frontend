@@ -48,7 +48,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
     Future.successful(Ok(view(confirmEmailForm, details.newEmail)))
   }
 
-  def submit: Action[AnyContent] = actions.auth.async { implicit request =>
+  def submit: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
     emailCacheService.fetch(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[CheckYourEmailController][submit] - emailStatus cache none, user logged out")
@@ -60,14 +60,14 @@ class CheckYourEmailController @Inject()(actions: Actions,
               Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail)))
             },
             formData =>
-              locationByAnswer(request.user.internalId, formData, emailDetails)
+              locationByAnswer(request.user.internalId, formData, emailDetails, request.eori.id)
           )
       }
     }
   }
 
-  private def submitNewDetails(internalId: InternalId, details: EmailDetails)(implicit request: Request[AnyContent]): Future[Result] = {
-    emailVerificationService.createEmailVerificationRequest(details.newEmail, EmailConfirmedController.show().url) flatMap {
+  private def submitNewDetails(internalId: InternalId, details: EmailDetails, eori: String)(implicit request: Request[AnyContent]): Future[Result] = {
+    emailVerificationService.createEmailVerificationRequest(details, EmailConfirmedController.show().url, eori) flatMap {
       case Some(true) => Future.successful(Redirect(VerifyYourEmailController.show()))
       case Some(false) => emailCacheService.save(internalId, details.copy(timestamp = None))
         .map { _ => Redirect(EmailConfirmedController.show())}
@@ -75,8 +75,8 @@ class CheckYourEmailController @Inject()(actions: Actions,
     }
   }
 
-  private def locationByAnswer(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails)(implicit request: Request[AnyContent]): Future[Result] = confirmEmail.isYes match {
-    case Some(true) => submitNewDetails(internalId, details)
+  private def locationByAnswer(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)(implicit request: Request[AnyContent]): Future[Result] = confirmEmail.isYes match {
+    case Some(true) => submitNewDetails(internalId, details, eori)
     case _ => emailCacheService.remove(internalId).flatMap(_ => Future.successful(Redirect(WhatIsYourEmailController.create())))
   }
 

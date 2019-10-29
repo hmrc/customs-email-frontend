@@ -41,7 +41,7 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
 
   private val internalId = InternalId("internalID")
   private val timestamp = DateTimeUtil.dateTime
-  private val emailDetails = EmailDetails(None, "test@test.com", false, Some(timestamp))
+  private val emailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
   private val jsonValue = Json.toJson(emailDetails)
   private val data = Map(internalId.id -> jsonValue)
 

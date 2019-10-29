@@ -31,9 +31,9 @@ trait StubSave4Later {
 
   private val save4LaterGetUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId"
   private val save4LaterPutUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId/data/emailDetails"
-  val emailDetails = EmailDetails(None, "b@a.com", false,  None)
-  val emailDetailsWithTimestamp = EmailDetails(None, "b@a.com", false, Some(DateTime.now().minusHours(12)))
-  val emailDetailsWithTimestampOver24Hours = EmailDetails(None, "b@a.com", false, Some(DateTime.now().minusHours(25)))
+  val emailDetails = EmailDetails(None, "b@a.com",  None)
+  val emailDetailsWithTimestamp = EmailDetails(None, "b@a.com", Some(DateTime.now().minusHours(12)))
+  val emailDetailsWithTimestampOver24Hours = EmailDetails(None, "b@a.com", Some(DateTime.now().minusHours(25)))
 
   private def encryptEmailDetails : EmailDetails => String = emailDetails => encrypt(Json.toJson(emailDetails).toString())
 

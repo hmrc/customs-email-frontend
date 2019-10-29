@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerified}
+import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,9 +36,9 @@ class EmailVerificationService @Inject()(emailVerificationConnector: EmailVerifi
     }
   }
 
-  def createEmailVerificationRequest(email: String, continueUrl: String)
+  def createEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)
                                     (implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
-    emailVerificationConnector.createEmailVerificationRequest(email, continueUrl) map {
+    emailVerificationConnector.createEmailVerificationRequest(details, continueUrl, eoriNumber) map {
       case Right(EmailVerificationRequestSent) => Some(true)
       case Right(EmailAlreadyVerified) => Some(false)
       case _ => None

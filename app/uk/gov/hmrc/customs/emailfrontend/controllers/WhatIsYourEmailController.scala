@@ -97,7 +97,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
       formData => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
           case SubscriptionDisplayResponse(currentEmail@Some(_), _) => {
-            emailCacheService.save(request.user.internalId, EmailDetails(currentEmail, formData.value, isVerified = false, None))
+            emailCacheService.save(request.user.internalId, EmailDetails(currentEmail, formData.value, None))
               .map {_ => Redirect(routes.CheckYourEmailController.show())}
           }
           case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
@@ -112,7 +112,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     emailForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(formWithErrors))),
       formData => {
-        emailCacheService.save(request.user.internalId, EmailDetails(None, formData.value, isVerified = false, None)).map {
+        emailCacheService.save(request.user.internalId, EmailDetails(None, formData.value, None)).map {
           _ => Redirect(routes.CheckYourEmailController.show())
         }
       }

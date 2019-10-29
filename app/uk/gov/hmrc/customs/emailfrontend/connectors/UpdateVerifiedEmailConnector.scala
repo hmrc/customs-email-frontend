@@ -36,6 +36,7 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
   def updateVerifiedEmail(request: VerifiedEmailRequest, currentEmail: Option[String])(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
     val newEmail = request.updateVerifiedEmailRequest.requestDetail.emailAddress
     val eori = request.updateVerifiedEmailRequest.requestDetail.IDNumber
+
     auditRequest(currentEmail, newEmail, eori)
 
     http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](url, request) map { resp =>
@@ -56,7 +57,7 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
       transactionName = "UpdateVerifiedEmailRequestSubmitted",
       path = url,
       detail = Map("currentEmailAddress" -> currentEmail.get, "newEmailAddress" -> newEmail, "eori" -> eoriNumber),
-      auditType = "changeEmailAddressAttempted"
+      auditType = "changeEmailAddressVerified"
     )
   else
     audit.sendDataEvent(

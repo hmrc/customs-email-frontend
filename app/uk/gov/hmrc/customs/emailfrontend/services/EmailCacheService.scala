@@ -80,11 +80,11 @@ object EmailCacheService {
           Logger.info("email amendment in-progress")
           Future.successful(Redirect(AmendmentInProgressController.show()))
         }
-        case Some(EmailDetails(_, _, _, Some(_))) => {
+        case Some(EmailDetails(_, _, Some(_))) => {
           Logger.info("email amendment completed")
           emailCacheService.remove(internalId).flatMap(_ => noEmail)
         }
-        case Some(details@EmailDetails(_, _, _, None)) => {
+        case Some(details@EmailDetails(_, _, None)) => {
           Logger.info("email amendment not determined")
           redirectBasedOnEmailStatus(details)
         }

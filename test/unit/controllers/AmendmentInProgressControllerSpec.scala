@@ -46,7 +46,7 @@ class AmendmentInProgressControllerSpec extends ControllerSpec {
 
     "have a status of OK when email found in cache and verification in progress" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(meq(InternalId("internalId")))(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", false, Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
 
       val eventualResult = controller.show(request)
 

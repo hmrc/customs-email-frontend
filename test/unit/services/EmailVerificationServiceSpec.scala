@@ -27,6 +27,7 @@ import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestResponse, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerificationStateErrorResponse, EmailVerificationStateResponse, EmailVerified}
+import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.EmailVerificationService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -42,7 +43,9 @@ class EmailVerificationServiceSpec extends PlaySpec with ScalaFutures with Mocki
   val service = new EmailVerificationService(mockConnector)
 
   private val email = "test@test.com"
+  private val emailDetails = EmailDetails(None, "test@test.com", None)
   private val continueUrl = "/customs/test-continue-url"
+  private val eoriNumber = "EORINumber"
 
   override protected def beforeEach(): Unit = {
     reset(mockConnector)
@@ -53,10 +56,11 @@ class EmailVerificationServiceSpec extends PlaySpec with ScalaFutures with Mocki
       ArgumentMatchers.eq(emailAddress)
     )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
 
-  def mockCreateEmailVerificationRequest(emailAddress: String, continueUrl: String)(response: Future[EmailVerificationRequestResponse]): Unit =
+  def mockCreateEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)(response: Future[EmailVerificationRequestResponse]): Unit =
     when(mockConnector.createEmailVerificationRequest(
-      ArgumentMatchers.eq(emailAddress),
-      ArgumentMatchers.eq(continueUrl)
+      ArgumentMatchers.eq(details),
+      ArgumentMatchers.eq(continueUrl),
+      ArgumentMatchers.eq(eoriNumber)
     )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
 
   "Checking email verification status" when {
@@ -105,11 +109,11 @@ class EmailVerificationServiceSpec extends PlaySpec with ScalaFutures with Mocki
     "the email verification request is sent successfully" should {
 
       "return Some(true)" in {
-        mockCreateEmailVerificationRequest(email, continueUrl)(
+        mockCreateEmailVerificationRequest(emailDetails, continueUrl, eoriNumber)(
           Future.successful(Right(EmailVerificationRequestSent))
         )
         val res: Option[Boolean] = {
-          service.createEmailVerificationRequest(email, continueUrl).futureValue
+          service.createEmailVerificationRequest(emailDetails, continueUrl, eoriNumber).futureValue
         }
         res mustBe Some(true)
       }
@@ -119,9 +123,9 @@ class EmailVerificationServiceSpec extends PlaySpec with ScalaFutures with Mocki
 
       "return Some(false)" in {
 
-        mockCreateEmailVerificationRequest(email, continueUrl)(Future.successful(Right(EmailAlreadyVerified)))
+        mockCreateEmailVerificationRequest(emailDetails, continueUrl, eoriNumber)(Future.successful(Right(EmailAlreadyVerified)))
         val res: Option[Boolean] = {
-          service.createEmailVerificationRequest(email, continueUrl).futureValue
+          service.createEmailVerificationRequest(emailDetails, continueUrl, eoriNumber).futureValue
         }
         res mustBe Some(false)
       }
@@ -130,11 +134,11 @@ class EmailVerificationServiceSpec extends PlaySpec with ScalaFutures with Mocki
     "the email address verification request failed" should {
 
       "return None" in {
-        mockCreateEmailVerificationRequest(email, continueUrl)(
+        mockCreateEmailVerificationRequest(emailDetails, continueUrl, eoriNumber)(
           Future.successful(Left(EmailVerificationRequestFailure(BAD_REQUEST, "")))
         )
         val res: Option[Boolean] = {
-          service.createEmailVerificationRequest(email, continueUrl).futureValue
+          service.createEmailVerificationRequest(emailDetails, continueUrl, eoriNumber).futureValue
         }
         res mustBe None
       }
