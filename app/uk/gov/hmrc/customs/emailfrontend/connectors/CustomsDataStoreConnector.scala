@@ -26,10 +26,10 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable) {
+class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)(implicit ec: ExecutionContext) {
 
   private[connectors] lazy val url: String = appConfig.customsDataStoreUrl
 
@@ -40,7 +40,7 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
     val detail = Map("eori number" -> eori.id, "emailAddress" -> email)
     auditRequest("DataStoreEmailRequestSubmitted", detail)
 
-    httpClient.doPost[JsValue](url, Json.parse(query), Seq("Content-Type" -> "application/json"))(implicitly, header)
+    httpClient.doPost[JsValue](url, Json.parse(query), Seq("Content-Type" -> "application/json"))(implicitly, header, ec)
       .map { response =>
         auditResponse("DataStoreResponseReceived", response, url)
         response

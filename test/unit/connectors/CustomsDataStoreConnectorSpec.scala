@@ -31,6 +31,7 @@ import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CustomsDataStoreConnectorSpec extends PlaySpec with ScalaFutures with MockitoSugar with BeforeAndAfterEach {
@@ -63,7 +64,7 @@ class CustomsDataStoreConnectorSpec extends PlaySpec with ScalaFutures with Mock
         meq(url),
         meq(Json.parse(query)),
         meq(headers)
-      )(any(), meq(header)))
+      )(any(), meq(header), any()))
         .thenReturn(Future.successful(HttpResponse(200)))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
       testConnector.storeEmailAddress(testEori, testEmail).futureValue.status mustBe 200
@@ -74,7 +75,7 @@ class CustomsDataStoreConnectorSpec extends PlaySpec with ScalaFutures with Mock
         meq(url),
         meq(Json.parse(query)),
         meq(headers)
-      )(any(), meq(header)))
+      )(any(), meq(header), any()))
         .thenReturn(Future.successful(HttpResponse(400)))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
       testConnector.storeEmailAddress(testEori, testEmail).futureValue.status mustBe 400
