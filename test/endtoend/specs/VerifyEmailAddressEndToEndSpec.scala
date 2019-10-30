@@ -34,7 +34,7 @@ class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
       verifyCurrentPage(StartPage)
       clickOn(StartPage.startNowButton)
       verifyCurrentPage(ChangeYourEmailAddressPage)
-      enterText(WhatIsYourEmailPage.emailTextFieldId)("b@a.com")
+      enterText(WhatIsYourEmailPage.emailTextFieldId)("john.doe@example.com")
       clickContinue()
       verifyCurrentPage(CheckYourEmailAddressPage)
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
@@ -52,6 +52,7 @@ class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
 
       Then("the user should be on 'You cannot use this service' page")
       verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
+      assertIsTextVisible(YouCannotChangeYourEmailAddressPage.recentlyChangedEmailTextCss)(YouCannotChangeYourEmailAddressPage.recentlyChangedEmailText)
       navigateTo(ChangeYourEmailAddressPage)
       verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
       navigateTo(CheckYourEmailAddressPage)
