@@ -26,7 +26,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable) {
