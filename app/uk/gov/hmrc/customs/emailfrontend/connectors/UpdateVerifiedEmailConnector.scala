@@ -37,9 +37,9 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
     val newEmail = request.updateVerifiedEmailRequest.requestDetail.emailAddress
     val eori = request.updateVerifiedEmailRequest.requestDetail.IDNumber
 
-      auditRequest(currentEmail, newEmail, eori , "changeEmailAddressAttempted")
-    http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](url, request) map { resp =>
       auditRequest(currentEmail, newEmail, eori , "changeEmailAddressVerified")
+    http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](url, request) map { resp =>
+      auditRequest(currentEmail, newEmail, eori , "changeEmailAddressConfirmed")
       Right(resp)
     } recover {
       case _: BadRequestException | Upstream4xxResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
