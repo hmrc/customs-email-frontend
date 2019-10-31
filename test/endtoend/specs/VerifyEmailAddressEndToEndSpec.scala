@@ -26,7 +26,7 @@ class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
 
     lazy val credId = generateRandomNumberString()
 
-    scenario("User returns to the service to amend an email address within 24 hours and should be redirected to 'You cannot change' page") {
+    scenario("User returns to the service to amend an email address within 2 hours and should be redirected to 'You cannot change' page") {
       Given("the user has successfully changed the email address")
 
       navigateTo(AuthLoginStubPage)

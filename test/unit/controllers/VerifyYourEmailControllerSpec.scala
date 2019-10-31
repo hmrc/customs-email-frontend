@@ -53,7 +53,7 @@ class VerifyYourEmailControllerSpec extends ControllerSpec {
       status(eventualResult) shouldBe OK
     }
 
-    "have a status of SEE_OTHER when user clicks browser back on the successful request or uses already complete bookmarked request within 24 hours" in withAuthorisedUser() {
+    "have a status of SEE_OTHER when user clicks browser back on the successful request or uses already complete bookmarked request within 2 hours" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
 
       val eventualResult = controller.show(request)

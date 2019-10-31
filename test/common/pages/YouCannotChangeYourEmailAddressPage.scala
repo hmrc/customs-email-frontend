@@ -25,10 +25,7 @@ class YouCannotChangeYourEmailAddressPage extends BasePage {
 
   val recentlyChangedEmailTextCss: By = By.cssSelector("#info")
 
-  val recentlyChangedEmailText = "You recently changed your email address to john.doe@example.com. If you need to change this again, you will need to try again in 24 hours."
+  val recentlyChangedEmailText = "You recently changed your email address to john.doe@example.com. If you need to change this again, you will need to try again in 2 hours."
 }
 
-
 object YouCannotChangeYourEmailAddressPage extends YouCannotChangeYourEmailAddressPage
-
-
