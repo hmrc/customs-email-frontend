@@ -35,7 +35,7 @@ class EmailConfirmedViewSpec extends ViewSpec {
     }
 
     "have the correct content" in {
-      doc.getElementById("info1").text mustBe "Your new email address will be active in 24 hours."
+      doc.getElementById("info1").text mustBe "Your new email address will be active in 2 hours."
       doc.getElementById("info2").text mustBe "Until then we will send CDS emails to the email address you were using previously."
     }
 

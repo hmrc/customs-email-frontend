@@ -40,7 +40,7 @@ class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your new email address will be active in 24 hours.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your new email address will be active in 2 hours.")
       assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)("Until then we will send CDS emails to the email address you were using previously.")
       clickOn(EmailConfirmedPage.signOutId)
 
