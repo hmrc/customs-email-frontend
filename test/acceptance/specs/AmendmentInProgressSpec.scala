@@ -33,13 +33,13 @@ class AmendmentInProgressSpec
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario("User returning to the service within 24 hours after successfully amending the email") {
+    scenario("User returning to the service within 2 hours after successfully amending the email") {
 
       Given("the user has successfully amended the email")
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithData(randomInternalId)(emailDetailsWithTimestamp)
 
-      When("the user returns to amend the email again within 24 hours")
+      When("the user returns to amend the email again within 2 hours")
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
       clickOn(StartPage.startNowButton)
@@ -48,15 +48,15 @@ class AmendmentInProgressSpec
       verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
     }
 
-    scenario("User returning to the service after 24 hours of successfully amending the email") {
+    scenario("User returning to the service after 2 hours of successfully amending the email") {
 
       Given("the user has successfully amended the email")
       authenticate(randomInternalId, randomEoriNumber)
-      save4LaterWithData(randomInternalId)(emailDetailsWithTimestampOver24Hours)
+      save4LaterWithData(randomInternalId)(emailDetailsWithTimestampOver2Hours)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubVerifiedEmailResponse()
 
-      When("the user returns to amend the email again after 24 hours")
+      When("the user returns to amend the email again after 2 hours")
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)
       clickOn(StartPage.startNowButton)

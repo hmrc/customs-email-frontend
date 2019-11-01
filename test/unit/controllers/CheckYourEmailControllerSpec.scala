@@ -93,7 +93,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
       redirectLocation(eventualResult).value should endWith("/manage-email-cds/change-email-address/create")
     }
 
-    "have a status of SEE_OTHER when user clicks back on the successful request or uses already complete bookmarked request within 24 hours" in withAuthorisedUser() {
+    "have a status of SEE_OTHER when user clicks back on the successful request or uses already complete bookmarked request within 2 hours" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any()))
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
 

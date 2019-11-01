@@ -64,4 +64,4 @@ customs.emailfrontend.you-cant-use-service.heading=You cannot use this service
 
 #verification in progress
 customs.emailfrontend.verification-in-progress.title-and-heading=You cannot change your email address
-customs.emailfrontend.verification-in-progress.info=You recently changed your email address to {0}. If you need to change this again, you will need to try again in 24 hours.
+customs.emailfrontend.verification-in-progress.info=You recently changed your email address to {0}. If you need to change this again, you will need to try again in 2 hours.
