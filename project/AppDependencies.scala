@@ -4,8 +4,8 @@ import sbt._
 object AppDependencies {
 
   val compile = Seq(
-    "uk.gov.hmrc" %% "govuk-template" % "5.36.0-play-26",
-    "uk.gov.hmrc" %% "play-ui" % "7.40.0-play-26",
+    "uk.gov.hmrc" %% "govuk-template" % "5.43.0-play-26",
+    "uk.gov.hmrc" %% "play-ui" % "8.3.0-play-26",
     "uk.gov.hmrc" %% "http-caching-client" % "8.4.0-play-26",
     "uk.gov.hmrc" %% "bootstrap-play-26" % "0.42.0",
     "uk.gov.hmrc" %% "emailaddress" % "3.2.0"
@@ -19,7 +19,7 @@ object AppDependencies {
     "com.typesafe.play" %% "play-test" % current % "test",
     "org.pegdown" % "pegdown" % "1.6.0" % "test, it",
     "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test, it",
-    "org.mockito" % "mockito-core" % "3.0.0" % "test,it",
-    "com.github.tomakehurst" % "wiremock-standalone" % "2.23.2" % "test"
+    "org.mockito" % "mockito-core" % "3.1.0" % "test, it",
+    "com.github.tomakehurst" % "wiremock-standalone" % "2.25.1" % "test"
   )
 }

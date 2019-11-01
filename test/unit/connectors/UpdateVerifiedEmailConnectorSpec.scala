@@ -154,4 +154,3 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec
     }
   }
 }
-
