@@ -66,8 +66,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
 
       Then("the user should be on 'Email confirmed' page")
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your new email address will be active in 2 hours.")
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)("Until then we will send CDS emails to the email address you were using previously.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address b@a.com will be active in 2 hours.")
       verifyEmailVerifiedIsCalled(2)
       verifyCustomsDataStoreIsCalled(1)
       verifyUpdateVerifiedEmailIsCalled(1)
@@ -106,7 +105,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
 
       When("the user returns to the service after confirming the email address but was unsuccessful to update")
       authenticate(randomInternalId, randomEoriNumber)
-      save4LaterWithData(randomInternalId)(emailDetails)
+      save4LaterWithData(randomInternalId)(emailDetailsWithPreviousEmail)
       stubVerifiedEmailResponse()
       stubEmailUpdatedResponseWithStatus(updatedVerifiedEmailResponse, 200)
       stubCustomsDataStoreOkResponse()
@@ -116,8 +115,8 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
 
       Then("the user should be on 'Email confirmed' page upon successfully updating the email")
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your new email address will be active in 2 hours.")
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)("Until then we will send CDS emails to the email address you were using previously.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address b@a.com will be active in 2 hours.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)("Until then we will send CDS emails to old@email.com.")
       verifyCustomsDataStoreIsCalled(1)
       verifyUpdateVerifiedEmailIsCalled(1)
     }
