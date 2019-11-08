@@ -20,15 +20,15 @@
 
 
 @this(main_template: main_template)
-@()(implicit request: Request[_], messages: Messages)
+@(newEmail: String, prevEmail: Option[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(messages("customs.emailfrontend.email-confirmed.title-and-heading")) {
 
     <h1 class="heading-xlarge">@messages("customs.emailfrontend.email-confirmed.title-and-heading")</h1>
 
-    <p id="info1">@messages("customs.emailfrontend.email-confirmed.info1")</p>
+    <p id="info1">@Html(messages("customs.emailfrontend.email-confirmed.info1", newEmail))</p>
 
-    <p id="info2">@messages("customs.emailfrontend.email-confirmed.info2")</p>
+    @prevEmail.map{email => <p id="info2">@Html(messages("customs.emailfrontend.email-confirmed.info2", email))</p>}
 
     <a class="button" href="@SignOutController.signOut.url" role="button">@messages("customs.emailfrontend.sign-out")</a>
 }

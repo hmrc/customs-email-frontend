@@ -23,7 +23,10 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 
 class EmailConfirmedViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[email_confirmed]
-  private val doc: Document = Jsoup.parse(contentAsString(view.render(request, messages)))
+  private val oldEmail: Option[String] = Some("oldEmail@email.com")
+  private val newEmail: String = "newEmail@email.com"
+  private val doc: Document = Jsoup.parse(contentAsString(view.render(newEmail, oldEmail, request, messages)))
+  private val docWithoutOldEmail: Document = Jsoup.parse(contentAsString(view.render(newEmail, None, request, messages)))
 
   "Confirm Email page" should {
     "have the correct title" in {
@@ -35,8 +38,13 @@ class EmailConfirmedViewSpec extends ViewSpec {
     }
 
     "have the correct content" in {
-      doc.getElementById("info1").text mustBe "Your new email address will be active in 2 hours."
-      doc.getElementById("info2").text mustBe "Until then we will send CDS emails to the email address you were using previously."
+      doc.getElementById("info1").text mustBe s"Your email address $newEmail will be active in 2 hours."
+      doc.getElementById("info2").text mustBe s"Until then we will send CDS emails to ${oldEmail.get}."
+    }
+
+    "have the correct content without old email mentioned" in {
+      docWithoutOldEmail.getElementById("info1").text mustBe s"Your email address $newEmail will be active in 2 hours."
+      docWithoutOldEmail.text() must not include "Until then we will send CDS emails to"
     }
 
     "have the sign out button" in {
