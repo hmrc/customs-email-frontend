@@ -65,13 +65,19 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.appName shouldBe "customs-email-frontend"
     }
     "have customsHodsProxyBaseUrl defined" in {
-      appConfig.customsHodsProxyBaseUrl shouldBe "http://localhost:9832"
+      appConfig.customsHodsProxyBaseUrl shouldBe "http://localhost:8989"
     }
     "have subscriptionDisplayContext defined" in {
       appConfig.subscriptionDisplayContext shouldBe "subscription-display"
     }
     "have subscriptionDisplayUrl defined" in {
-      appConfig.subscriptionDisplayUrl shouldBe "http://localhost:9832/subscription-display"
+      appConfig.subscriptionDisplayUrl shouldBe "http://localhost:8989/subscription-display"
+    }
+    "have updateVerifiedEmailContext defined" in {
+      appConfig.updateVerifiedEmailContext shouldBe "update-verified-email"
+    }
+    "have updateVerifiedEmailUrl defined" in {
+      appConfig.updateVerifiedEmailUrl shouldBe "http://localhost:8989/update-verified-email"
     }
   }
 }

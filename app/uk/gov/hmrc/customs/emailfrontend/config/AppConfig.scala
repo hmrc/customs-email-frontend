@@ -53,11 +53,11 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val customsDataStoreUrl = s"$customsDataStoreBaseUrl$customsDataStoreContext"
   val customsDataStoreToken: String = config.get[String]("microservice.services.customs-data-store.token")
 
-  val customsHodsProxyBaseUrl: String = servicesConfig.baseUrl("customs-hods-proxy")
+  val customsHodsProxyBaseUrl: String = servicesConfig.baseUrl("customs-email-proxy")
 
-  val subscriptionDisplayContext: String = config.get[String]("microservice.services.customs-hods-proxy.subscription-display.context")
+  val subscriptionDisplayContext: String = config.get[String]("microservice.services.customs-email-proxy.subscription-display.context")
   val subscriptionDisplayUrl: String = s"$customsHodsProxyBaseUrl/$subscriptionDisplayContext"
 
-  val updateVerifiedEmailContext: String = config.get[String]("microservice.services.customs-hods-proxy.update-verified-email.context")
+  val updateVerifiedEmailContext: String = config.get[String]("microservice.services.customs-email-proxy.update-verified-email.context")
   val updateVerifiedEmailUrl: String = s"$customsHodsProxyBaseUrl/$updateVerifiedEmailContext"
 }

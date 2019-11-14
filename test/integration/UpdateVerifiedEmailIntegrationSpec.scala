@@ -34,8 +34,8 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
   with GuiceOneAppPerSuite with WireMockRunner {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder().configure(Map(
-    "microservice.services.customs-hods-proxy.host" -> wireMockHost,
-    "microservice.services.customs-hods-proxy.port" -> wireMockPort,
+    "microservice.services.customs-email-proxy.host" -> wireMockHost,
+    "microservice.services.customs-email-proxy.port" -> wireMockPort,
     "auditing.enabled" -> false
   )).build()
 
