@@ -38,7 +38,7 @@ trait AcceptanceTestSpec extends FeatureSpec
       "microservice.services.cachable.short-lived-cache.port" -> Constants.wireMockPort,
       "microservice.services.email-verification.port" -> Constants.wireMockPort,
       "microservice.services.customs-data-store.port" -> Constants.wireMockPort,
-      "microservice.services.customs-hods-proxy.port" -> Constants.wireMockPort))
+      "microservice.services.customs-email-proxy.port" -> Constants.wireMockPort))
     .disable[com.kenshoo.play.metrics.PlayModule]
     .build()
 
