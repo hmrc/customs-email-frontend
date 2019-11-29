@@ -61,7 +61,10 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
 
   def create: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
     emailCacheService.routeBasedOnAmendment(request.user.internalId)(details =>
-      Future.successful(Ok(view(emailForm, details.newEmail))), subscriptionDisplay)
+      details.currentEmail.fold(Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))) {
+        currentEmail =>
+          Future.successful(Ok(view(emailForm, currentEmail)))
+      }, subscriptionDisplay)
   }
 
   private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) = {
@@ -98,7 +101,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
           case SubscriptionDisplayResponse(currentEmail@Some(_), _) => {
             emailCacheService.save(request.user.internalId, EmailDetails(currentEmail, formData.value, None))
-              .map {_ => Redirect(routes.CheckYourEmailController.show())}
+              .map { _ => Redirect(routes.CheckYourEmailController.show()) }
           }
           case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
         }

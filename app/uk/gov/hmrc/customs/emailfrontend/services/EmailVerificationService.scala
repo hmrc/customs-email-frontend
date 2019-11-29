@@ -29,6 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmailVerificationService @Inject()(emailVerificationConnector: EmailVerificationConnector)(implicit ec: ExecutionContext) {
 
   def isEmailVerified(email: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
+
     emailVerificationConnector.getEmailVerificationState(email) map {
       case Right(EmailVerified) => Some(true)
       case Right(EmailNotVerified) => Some(false)

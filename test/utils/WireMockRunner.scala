@@ -22,7 +22,9 @@ import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
 
 trait WireMockRunner {
+
   import Constants._
+
   lazy val wireMockUrl = s"http://$wireMockHost:$wireMockPort"
   lazy val wireMockServer = new WireMockServer(wireMockConfig().port(wireMockPort).notifier(new ConsoleNotifier(false)))
 
