@@ -50,10 +50,10 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.save4LaterBaseUrl shouldBe "http://localhost:9272"
     }
     "have emailVerificationBaseUrl defined" in {
-      appConfig.emailVerificationBaseUrl shouldBe "http://localhost:9477"
+      appConfig.emailVerificationBaseUrl shouldBe "http://localhost:9744"
     }
     "have emailVerificationWithContext defined" in {
-      appConfig.emailVerificationWithContext shouldBe "http://localhost:9477/email-verification"
+      appConfig.emailVerificationWithContext shouldBe "http://localhost:9744/email-verification"
     }
     "have emailVerificationTemplateId defined" in {
       appConfig.emailVerificationTemplateId shouldBe "verifyEmailAddress"
