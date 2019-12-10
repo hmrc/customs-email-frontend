@@ -38,12 +38,12 @@ class PermittedUserFilterSpec extends PlaySpec with ScalaFutures {
 
   val values = Table(
     ("affinityGroup", "role", "expected"),
-    (Some(Organisation), Some(Admin), None),
+    (Some(Organisation), Some(User), None),
     (Some(Organisation), Some(User), None),
     (Some(Organisation), Some(Assistant), Some(expectedResultNotAdmin)),
     (Some(Agent), Some(User), Some(expectedResultIsAgent)),
     (Some(Individual), Some(User), None),
-    (Some(Individual), Some(Admin), None)
+    (Some(Individual), Some(User), None)
   )
   val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GBXXXXXXXXXX")))
   val fakeRequest = FakeRequest()
