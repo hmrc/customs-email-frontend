@@ -10,10 +10,7 @@ lazy val IntegrationTest = config("it") extend Test
 lazy val EndToEndTest = config("endtoend") extend Test
 lazy val testConfig = Seq(EndToEndTest, AcceptanceTest, IntegrationTest, Test)
 
-lazy val commonSettings: Seq[Setting[_]] = scalaSettings ++
-  publishingSettings ++
-  defaultSettings() ++
-  gitStampSettings
+lazy val commonSettings: Seq[Setting[_]] = scalaSettings ++ publishingSettings ++ defaultSettings()
 
 lazy val unitTestSettings =
   inConfig(Test)(Defaults.testTasks) ++

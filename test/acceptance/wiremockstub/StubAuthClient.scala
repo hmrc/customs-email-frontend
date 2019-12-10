@@ -33,7 +33,7 @@ trait StubAuthClient {
       |}
     """.stripMargin
 
-  def authenticate(internalId: String, eoriNumber: String, credentialRole: String = "Admin", affinityGroup: String = "Organisation"): StubMapping = {
+  def authenticate(internalId: String, eoriNumber: String, credentialRole: String = "User", affinityGroup: String = "Organisation"): StubMapping = {
     stubFor(post(urlEqualTo(authUrl))
       .withRequestBody(equalToJson(authRequestJson))
       .willReturn(

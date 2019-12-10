@@ -45,7 +45,7 @@ trait AuthBuilder {
   def withAuthorisedUser(eori: Eori = Eori("GB1234567890"), userInternalId: Option[String] = internId)(test: => Unit) {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
     val ag = Some(Organisation)
-    val role = Some(Admin)
+    val role = Some(User)
     val retrieval = Retrieve(userEnrollments , userInternalId).add(ag).add(role)
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.successful(retrieval))
@@ -70,7 +70,7 @@ trait AuthBuilder {
 
   def withAuthorisedUserWithoutEori(test: => Unit) {
     val ag = Some(Organisation)
-    val role = Some(Admin)
+    val role = Some(User)
     val retrieval = Retrieve(Enrolments(Set.empty[Enrolment]), internId).add(ag).add(role)
     when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.successful(retrieval))

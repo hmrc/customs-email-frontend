@@ -28,6 +28,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.Constants._
 import utils.WireMockRunner
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
   with BeforeAndAfter
   with BeforeAndAfterAll
