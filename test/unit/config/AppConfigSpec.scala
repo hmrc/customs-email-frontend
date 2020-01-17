@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 package unit.config
 
+import java.util
+
+import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import unit.controllers.ControllerSpec
 
 class AppConfigSpec extends ControllerSpec {
@@ -78,6 +81,9 @@ class AppConfigSpec extends ControllerSpec {
     }
     "have updateVerifiedEmailUrl defined" in {
       appConfig.updateVerifiedEmailUrl shouldBe "http://localhost:8989/update-verified-email"
+    }
+    "have referrerName defined" in {
+      appConfig.referrerName shouldBe Seq(ReferrerName("customs-finance", "/xyz"), ReferrerName("customs-export","/xyz"))
     }
   }
 }

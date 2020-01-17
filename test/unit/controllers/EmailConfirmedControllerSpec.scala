@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,13 @@
 
 package unit.controllers
 
+import akka.util.ByteString
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify, _}
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
+import play.api.libs.streams.Accumulator
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
@@ -64,7 +66,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
         when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(HttpResponse(OK)))
 
-        val eventualResult = controller.show(request)
+        val eventualResult: Accumulator[ByteString, Result] = controller.show(request)
         status(eventualResult) shouldBe OK
       }
 
