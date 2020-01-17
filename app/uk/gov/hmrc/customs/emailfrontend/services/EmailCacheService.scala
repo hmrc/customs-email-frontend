@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,8 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
 
   val emailDetailsKey = "emailDetails"
 
+  val referrerNameKey = "referrerName"
+
   def remove(internalId: InternalId)
             (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
     Logger.info("removing cached data from save 4 later")
@@ -67,6 +69,12 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
   def fetch(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailDetails]] = {
     Logger.info("retrieving email address and timestamp from save 4 later")
     fetchAndGetEntry[EmailDetails](internalId.id, emailDetailsKey)
+  }
+
+  def saveReferrer(internalId: InternalId, referrerName: ReferrerName)
+          (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
+    Logger.info("saving referrer name and referrer url to save 4 later")
+    cache[ReferrerName](internalId.id, referrerNameKey, referrerName)
   }
 }
 

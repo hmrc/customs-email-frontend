@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
+
 
 @Singleton
 class IneligibleUserController @Inject()(actions: Actions, view: ineligible_user)(implicit override val messagesApi: MessagesApi) extends I18nSupport {

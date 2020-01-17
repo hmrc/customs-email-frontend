@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,11 @@
 package uk.gov.hmrc.customs.emailfrontend.config
 
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
+import play.api.{ConfigLoader, Configuration}
+import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import scala.collection.JavaConverters._
 
 @Singleton
 class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
@@ -60,4 +63,14 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val updateVerifiedEmailContext: String = config.get[String]("microservice.services.customs-email-proxy.update-verified-email.context")
   val updateVerifiedEmailUrl: String = s"$customsHodsProxyBaseUrl/$updateVerifiedEmailContext"
+
+  implicit val configLoader: ConfigLoader[Seq[ReferrerName]] = ConfigLoader(_.getConfigList).map(
+    _.asScala.toList.map(config =>
+      ReferrerName(
+        config.getString("name"),
+        config.getString("continueUrl")
+      )
+    )
+  )
+  lazy val referrerName: Seq[ReferrerName] = config.get[Seq[ReferrerName]]("referrer-services")
 }
