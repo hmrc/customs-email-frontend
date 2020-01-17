@@ -66,7 +66,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
         when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(HttpResponse(OK)))
 
-        val eventualResult: Accumulator[ByteString, Result] = controller.show(request)
+        val eventualResult = controller.show(request)
         status(eventualResult) shouldBe OK
       }
 
