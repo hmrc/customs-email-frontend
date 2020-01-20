@@ -35,8 +35,8 @@ class ServiceNameController @Inject()(actions: Actions,
                                      (implicit override val messagesApi: MessagesApi, ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   def show(name: String): Action[AnyContent] = (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
-    val optionalReferralName: Option[ReferrerName] = appConfig.referrerName.find(_.name == name)
-    optionalReferralName.map { referrerName =>
+    val optionalReferrerName: Option[ReferrerName] = appConfig.referrerName.find(_.name == name)
+    optionalReferrerName.map { referrerName =>
       emailCacheService.saveReferrer(request.user.internalId, referrerName)
       Future.successful(Redirect(WhatIsYourEmailController.create()))
     }.getOrElse(Future.successful(Redirect(WhatIsYourEmailController.problemWithService())))
