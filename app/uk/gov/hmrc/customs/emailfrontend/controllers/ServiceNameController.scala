@@ -39,7 +39,7 @@ class ServiceNameController @Inject()(actions: Actions,
     optionalReferrerName.map { referrerName =>
       emailCacheService.saveReferrer(request.user.internalId, referrerName)
       Future.successful(Redirect(WhatIsYourEmailController.show()))
-    }.getOrElse(Future.successful(Redirect(WhatIsYourEmailController.problemWithService())))
+    }.getOrElse(Future.successful(Redirect(WhatIsYourEmailController.show())))
   }
 }
 
