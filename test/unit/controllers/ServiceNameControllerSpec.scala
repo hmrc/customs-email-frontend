@@ -46,7 +46,7 @@ class ServiceNameControllerSpec extends ControllerSpec {
       val request = FakeRequest("GET", "/").withCSRFToken
       val eventualResult = controller.show("customs-finance")(request)
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/change-email-address/create")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/change-email-address")
     }
 
     "redirect to problem-with-service page when service name is not found in the url" in withAuthorisedUser() {
