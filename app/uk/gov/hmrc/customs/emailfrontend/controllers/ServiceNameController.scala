@@ -38,7 +38,7 @@ class ServiceNameController @Inject()(actions: Actions,
     val optionalReferrerName: Option[ReferrerName] = appConfig.referrerName.find(_.name == name)
     optionalReferrerName.map { referrerName =>
       emailCacheService.saveReferrer(request.user.internalId, referrerName)
-      Future.successful(Redirect(WhatIsYourEmailController.create()))
+      Future.successful(Redirect(WhatIsYourEmailController.show()))
     }.getOrElse(Future.successful(Redirect(WhatIsYourEmailController.problemWithService())))
   }
 }
