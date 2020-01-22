@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.model
+package common.pages
 
-import play.api.mvc.{Request, WrappedRequest}
+import utils.{Configuration, SpecHelper}
 
-case class AuthenticatedRequest[A](request: Request[A], user: LoggedInUser) extends WrappedRequest[A](request)
+class ReferrerPage extends BasePage with SpecHelper {
 
-case class EoriRequest[A](request: AuthenticatedRequest[A], eori: Eori) extends WrappedRequest[A](request) {
-  val user: LoggedInUser = request.user
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/service/"
+  override val title = "What is your email address?"
+
+}
+
+object ListedOnReferrerPage extends ReferrerPage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/service/customs-finance"
+}
+
+object NotListedOnReferrerPage extends ReferrerPage {
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/service/xxx"
 }

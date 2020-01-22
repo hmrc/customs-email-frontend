@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,10 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
   private val emailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
   private val jsonValue = Json.toJson(emailDetails)
   private val data = Map(internalId.id -> jsonValue)
+  private val referrerName = ReferrerName("customs-finance", "/xyz")
 
   private val cacheMap = CacheMap(internalId.id, data)
+  private val referrerCacheMap = CacheMap(internalId.id, Map.empty)
   private val successResponse = HttpResponse(OK)
 
   private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
@@ -83,6 +85,15 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
       val cache: HttpResponse = service.remove(internalId).futureValue
 
       cache mustBe successResponse
+    }
+
+    "save referrer" in {
+      when(mockEmailCachingConfig.cache(meq(internalId.id), meq("referrerName"), meq(Protected(referrerName)))(any[HeaderCarrier],
+        any(), any[ExecutionContext])).thenReturn(Future.successful(referrerCacheMap))
+
+      val cache: CacheMap = service.saveReferrer(internalId, referrerName).futureValue
+
+      cache mustBe referrerCacheMap
     }
   }
 }

@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.Json
 
-case class AuthenticatedRequest[A](request: Request[A], user: LoggedInUser) extends WrappedRequest[A](request)
+case class ReferrerName(name: String, continueUrl: String)
 
-case class EoriRequest[A](request: AuthenticatedRequest[A], eori: Eori) extends WrappedRequest[A](request) {
-  val user: LoggedInUser = request.user
+object ReferrerName  {
+  implicit val formats = Json.format[ReferrerName]
 }
