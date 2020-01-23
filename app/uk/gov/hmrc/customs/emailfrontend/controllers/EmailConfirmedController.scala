@@ -57,9 +57,13 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
   private[this] def updateEmail(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
     updateVerifiedEmailService.updateVerifiedEmail(details.currentEmail, details.newEmail, request.eori.id).flatMap {
       case Some(true) =>
-        emailCacheService.save(request.user.internalId, details.copy(timestamp = Some(DateTimeUtil.dateTime)))
-        customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), details.newEmail)
-        Future.successful(Ok(view(details.newEmail, details.currentEmail)))
+        for {
+          _ <- emailCacheService.save(request.user.internalId, details.copy(timestamp = Some(DateTimeUtil.dateTime)))
+          _ <- customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), details.newEmail)
+          referrer <- emailCacheService.fetchReferrer(request.user.internalId)
+        } yield {
+          Ok(view(details.newEmail, details.currentEmail, referrer.map(_.continueUrl)))
+        }
       case _ => Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))
     }
   }

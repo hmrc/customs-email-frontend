@@ -72,9 +72,14 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
   }
 
   def saveReferrer(internalId: InternalId, referrerName: ReferrerName)
-          (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
+                  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
     Logger.info("saving referrer name and referrer url to save 4 later")
     cache[ReferrerName](internalId.id, referrerNameKey, referrerName)
+  }
+
+  def fetchReferrer(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[ReferrerName]] = {
+    Logger.info("retrieving referrer name and referrer url from save 4 later")
+    fetchAndGetEntry[ReferrerName](internalId.id, referrerNameKey)
   }
 }
 
@@ -103,4 +108,5 @@ object EmailCacheService {
       }
     }
   }
+
 }
