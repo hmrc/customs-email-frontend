@@ -16,13 +16,11 @@
 
 package unit.controllers
 
-import akka.util.ByteString
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify, _}
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.streams.Accumulator
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
@@ -70,7 +68,6 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
         val eventualResult = controller.show(request)
         status(eventualResult) shouldBe OK
       }
-
 
       "email found in cache, email is verified and update verified email is successful but saving timestamp fails" in withAuthorisedUser() {
         when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
