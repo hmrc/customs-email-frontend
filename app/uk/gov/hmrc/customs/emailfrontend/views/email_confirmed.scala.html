@@ -29,9 +29,9 @@
     <p id="info1">@Html(messages("customs.emailfrontend.email-confirmed.info1", newEmail))</p>
 
     @if(referrerUrl.nonEmpty){
-        @referrerName.map{name =>
+        @referrerName.map{ name =>
             @referrerUrl.map{ url =>
-                <p id="info3">@Html(messages("customs.emailfrontend.email-confirmed.redirect.info." + name, url))</p>
+                <p id="info3">@Html(messages(s"customs.emailfrontend.email-confirmed.redirect.info.$name", url))</p>
             }
         }
     } else {
