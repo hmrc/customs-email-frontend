@@ -25,11 +25,13 @@ class EmailConfirmedViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[email_confirmed]
   private val oldEmail: Option[String] = Some("oldEmail@email.com")
   private val newEmail: String = "newEmail@email.com"
-  private val doc: Document = Jsoup.parse(contentAsString(view.render(newEmail, oldEmail, None, request, messages)))
-  private val docWithoutOldEmail: Document = Jsoup.parse(contentAsString(view.render(newEmail, None, None, request, messages)))
-  private def docWithContinueUrl(continueUrl: Option[String]): Document = Jsoup.parse(contentAsString(view.render(newEmail, oldEmail, continueUrl, request , messages)))
-  private val docForFinance : Document = docWithContinueUrl(Some("/customs-finance"))
-  private val docForExports : Document = docWithContinueUrl(Some("/customs-exports"))
+  private val doc: Document = Jsoup.parse(contentAsString(view.render(newEmail, oldEmail, None, None, request, messages)))
+  private val docWithoutOldEmail: Document = Jsoup.parse(contentAsString(view.render(newEmail, None, None, None, request, messages)))
+
+  private def docWithContinueUrl(referrerName: Option[String], continueUrl: Option[String]): Document = Jsoup.parse(contentAsString(view.render(newEmail, oldEmail, referrerName, continueUrl, request, messages)))
+
+  private val docForFinance: Document = docWithContinueUrl(Some("customs-finance"), Some("/customs-finance"))
+  private val docForExports: Document = docWithContinueUrl(Some("customs-exports"), Some("/customs-exports"))
 
   "Confirm Email page" should {
     "have the correct title" in {
@@ -63,7 +65,7 @@ class EmailConfirmedViewSpec extends ViewSpec {
     }
 
     "have a correct link text and href when continueUrl is available from exports" in {
-      docForExports.getElementById("info3").text mustBe "You can now continue to Get your import VAT and duty adjustment statements."
+      docForExports.getElementById("info3").text mustBe "You can now continue to Redirect to customs exports."
       docForExports.getElementById("info3").select("a[href]").attr("href") mustBe "/customs-exports"
     }
   }

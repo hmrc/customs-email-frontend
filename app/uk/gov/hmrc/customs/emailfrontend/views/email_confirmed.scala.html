@@ -20,7 +20,7 @@
 
 
 @this(main_template: main_template)
-@(newEmail: String, prevEmail: Option[String], referrerUrl: Option[String])(implicit request: Request[_], messages: Messages)
+@(newEmail: String, prevEmail: Option[String], referrerName: Option[String], referrerUrl: Option[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(messages("customs.emailfrontend.email-confirmed.title-and-heading")) {
 
@@ -29,9 +29,13 @@
     <p id="info1">@Html(messages("customs.emailfrontend.email-confirmed.info1", newEmail))</p>
 
     @if(referrerUrl.nonEmpty){
-        @referrerUrl.map{url => <p id="info3">@Html(messages("customs.emailfrontend.email-confirmed.redirect.info", url))}</p>
-    }else{
+        @referrerName.map{name =>
+            @referrerUrl.map{ url =>
+                <p id="info3">@Html(messages("customs.emailfrontend.email-confirmed.redirect.info." + name, url))</p>
+            }
+        }
+    } else {
         @prevEmail.map{email => <p id="info2">@Html(messages("customs.emailfrontend.email-confirmed.info2", email))</p>}
         <a class="button" href="@SignOutController.signOut.url" role="button">@messages("customs.emailfrontend.sign-out")</a>
-        }
+    }
 }

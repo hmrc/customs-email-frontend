@@ -60,7 +60,7 @@ class EmailConfirmedController @Inject()(actions: Actions, view: email_confirmed
         emailCacheService.save(request.user.internalId, details.copy(timestamp = Some(DateTimeUtil.dateTime)))
         customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), details.newEmail)
         emailCacheService.fetchReferrer(request.user.internalId).map { referrer =>
-          Ok(view(details.newEmail, details.currentEmail, referrer.map(_.continueUrl)))
+          Ok(view(details.newEmail, details.currentEmail, referrer.map(_.name), referrer.map(_.continueUrl)))
         }
       case _ => Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))
     }
