@@ -25,10 +25,11 @@ class EmailConfirmedViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[email_confirmed]
   private val oldEmail: Option[String] = Some("oldEmail@email.com")
   private val newEmail: String = "newEmail@email.com"
-  private val continueUrl: Option[String] = Some("/custom-finance")
   private val doc: Document = Jsoup.parse(contentAsString(view.render(newEmail, oldEmail, None, request, messages)))
   private val docWithoutOldEmail: Document = Jsoup.parse(contentAsString(view.render(newEmail, None, None, request, messages)))
-  private val docWithContinueUrl: Document = Jsoup.parse(contentAsString(view.render(newEmail, oldEmail, continueUrl, request , messages)))
+  private def docWithContinueUrl(continueUrl: Option[String]): Document = Jsoup.parse(contentAsString(view.render(newEmail, oldEmail, continueUrl, request , messages)))
+  private val docForFinance : Document = docWithContinueUrl(Some("/customs-finance"))
+  private val docForExports : Document = docWithContinueUrl(Some("/customs-exports"))
 
   "Confirm Email page" should {
     "have the correct title" in {
@@ -54,11 +55,16 @@ class EmailConfirmedViewSpec extends ViewSpec {
       doc.getElementsByClass("button").attr("href") mustBe "/manage-email-cds/signout"
     }
 
-    "have a correct content when continueUrl is available" in {
-      docWithContinueUrl.getElementById("info1").text mustBe s"Your email address $newEmail will be active in 2 hours."
-      docWithContinueUrl.getElementById("info3").text mustBe "You can now continue to Get your import VAT and duty adjustment statements."
-      docWithContinueUrl.getElementById("info3").select("a[href]").attr("href") mustBe "/custom-finance"
-      docWithContinueUrl.text() must not include "Until then we will send CDS emails to"
+    "have a correct content when continueUrl is available from finance" in {
+      docForFinance.getElementById("info1").text mustBe s"Your email address $newEmail will be active in 2 hours."
+      docForFinance.getElementById("info3").text mustBe "You can now continue to Get your import VAT and duty adjustment statements."
+      docForFinance.getElementById("info3").select("a[href]").attr("href") mustBe "/customs-finance"
+      docForFinance.text() must not include "Until then we will send CDS emails to"
+    }
+
+    "have a correct link text and href when continueUrl is available from exports" in {
+      docForExports.getElementById("info3").text mustBe "You can now continue to Get your import VAT and duty adjustment statements."
+      docForExports.getElementById("info3").select("a[href]").attr("href") mustBe "/customs-exports"
     }
   }
 }

@@ -83,7 +83,7 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.updateVerifiedEmailUrl shouldBe "http://localhost:8989/update-verified-email"
     }
     "have referrerName defined" in {
-      appConfig.referrerName shouldBe Seq(ReferrerName("customs-finance", "/customs/payment-records"), ReferrerName("customs-export","/xyz"))
+      appConfig.referrerName shouldBe Seq(ReferrerName("customs-finance", "/customs/payment-records"), ReferrerName("customs-exports","/xyz"))
     }
   }
 }
