@@ -95,6 +95,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
       val eventualResult = controller.show(request)
       status(eventualResult) shouldBe SEE_OTHER
+      eventualResult
 
       redirectLocation(eventualResult).value should endWith("/manage-email-cds/confirm-email-address")
     }

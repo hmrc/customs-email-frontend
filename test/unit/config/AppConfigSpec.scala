@@ -16,14 +16,17 @@
 
 package unit.config
 
-import java.util
-
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import unit.controllers.ControllerSpec
 
 class AppConfigSpec extends ControllerSpec {
 
   "AppConfig" should {
+
+    "have referrer key mapping in messages.en properties" in {
+      appConfig.referrerName.map(referrerName =>
+        messagesApi.messages("en")(s"customs.emailfrontend.email-confirmed.redirect.info.${referrerName.name}") != "")
+    }
 
     "have reportAProblemNonJSUrl defined" in {
       appConfig.reportAProblemNonJSUrl shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=CDS"
@@ -83,7 +86,7 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.updateVerifiedEmailUrl shouldBe "http://localhost:8989/update-verified-email"
     }
     "have referrerName defined" in {
-      appConfig.referrerName shouldBe Seq(ReferrerName("customs-finance", "/customs/payment-records"), ReferrerName("customs-exports","/xyz"))
+      appConfig.referrerName shouldBe Seq(ReferrerName("customs-finance", "/customs/payment-records"), ReferrerName("customs-exports", "/xyz"))
     }
   }
 }
