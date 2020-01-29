@@ -25,6 +25,7 @@ class EmailConfirmedPage extends BasePage {
 
   val verifyEmailConfirmedTextPartOne: By = By.id("info1")
   val verifyEmailConfirmedTextPartTwo: By = By.id("info2")
+  val verifyEmailConfirmedTextPartThree: By = By.id("info3")
 }
 
 object EmailConfirmedPage extends EmailConfirmedPage

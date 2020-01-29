@@ -16,19 +16,17 @@
 
 package unit.controllers
 
-import akka.util.ByteString
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify, _}
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.streams.Accumulator
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailCacheService, EmailVerificationService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -63,6 +61,7 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
           .thenReturn(Future.successful(Some(true)))
         when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
         when(mockEmailCacheService.save(meq(InternalId("internalId")), any[EmailDetails])(any(), any())).thenReturn(Future.successful(CacheMap("internalId", Map())))
+        when(mockEmailCacheService.fetchReferrer(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.successful(Some(ReferrerName("abc", "/xyz"))))
         when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(HttpResponse(OK)))
 
@@ -70,13 +69,14 @@ class EmailConfirmedControllerSpec extends ControllerSpec with BeforeAndAfterEac
         status(eventualResult) shouldBe OK
       }
 
-
       "email found in cache, email is verified and update verified email is successful but saving timestamp fails" in withAuthorisedUser() {
         when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
         when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(true)))
         when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None), meq("abc@def.com"), meq("GB1234567890"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
-        when(mockEmailCacheService.save(meq(InternalId("internalId")), meq(EmailDetails(None, "abc@def.com", None)))(any(), any())).thenReturn(Future.failed(new InternalServerException("")))
+        when(mockEmailCacheService.save(meq(InternalId("internalId")), meq(EmailDetails(None, "abc@def.com", None)))(any(), any()))
+          .thenReturn(Future.failed(new InternalServerException("")))
+        when(mockEmailCacheService.fetchReferrer(any())(any(), any())).thenReturn(Future.successful(Some(ReferrerName("abc", "/xyz"))))
         when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(HttpResponse(OK)))
 

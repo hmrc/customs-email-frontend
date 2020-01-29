@@ -42,8 +42,8 @@ class AllowReferrerServicesEndToEndSpec extends EndToEndTestSpec with SpecHelper
       clickContinue()
       verifyCurrentPage(EmailConfirmedPage)
       assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address new-john.doe@example.com will be active in 2 hours.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartThree)("You can now continue to Get your import VAT and duty adjustment statements.")
       clickOn(EmailConfirmedPage.signOutId)
-
     }
 
     scenario("User should be allowed to verify email address when redirected from a service which is not on the referrer list") {
@@ -64,7 +64,6 @@ class AllowReferrerServicesEndToEndSpec extends EndToEndTestSpec with SpecHelper
       clickContinue()
       verifyCurrentPage(EmailConfirmedPage)
 
-      //TODO : the assertion below will change when the content gets dynamic
       assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address new-john.doe@example.com will be active in 2 hours.")
       clickOn(EmailConfirmedPage.signOutId)
     }
