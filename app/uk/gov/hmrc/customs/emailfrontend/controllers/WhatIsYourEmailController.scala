@@ -76,7 +76,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
           case None => ??? //ToDo redirect to retry page
         }
       case SubscriptionDisplayResponse(_, Some("Processed Successfully"),_) =>
-        Future.successful(Redirect(WhatIsYourEmailController.create()))
+        Future.successful(Redirect(WhatIsYourEmailController.verify()))
       case SubscriptionDisplayResponse(None, Some(_),Some("FAIL")) => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
       case SubscriptionDisplayResponse(None, None,None) => Future.successful(Redirect(routes.WhatIsYourEmailController.verify()))
     } recover {
