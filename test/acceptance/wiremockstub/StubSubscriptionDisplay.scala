@@ -60,6 +60,7 @@ trait StubSubscriptionDisplay {
       |  "subscriptionDisplayResponse": {
       |    "responseCommon": {
       |      "status": "OK",
+      |      "statusText": "Processed Successfully",
       |      "processingDate": "2016-08-17T19:33:47Z",
       |      "returnParameters": [
       |        {
