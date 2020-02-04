@@ -48,9 +48,9 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val jsonValue = Json.toJson("emailStatus")
   private val data = Map(internalId -> jsonValue)
   private val cacheMap = CacheMap(internalId, data)
-  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), None)
-  private val someSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(None, Some("FAIL"))
-  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None)
+  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), None,None)
+  private val someSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(None,Some("statusText"), Some("FAIL"))
+  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None,None)
 
   private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService, mockErrorHandler)
 

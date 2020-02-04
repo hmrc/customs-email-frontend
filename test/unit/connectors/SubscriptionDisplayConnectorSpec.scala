@@ -41,8 +41,8 @@ class SubscriptionDisplayConnectorSpec extends PlaySpec with ScalaFutures with M
 
   private val url = "customs-email-proxy/subscription-display"
   private val testEori = Eori("GB1234556789")
-  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), Some("statusCode"))
-  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None)
+  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), Some("statusCode"),Some("FAIL"))
+  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None,None)
 
   val testConnector = new SubscriptionDisplayConnector(mockAppConfig, mockHttp, mockAuditable)
 
