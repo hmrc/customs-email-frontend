@@ -36,6 +36,23 @@ To start the app using SBT simply use the command
 
 from the terminal, visit [this link](http://localhost:9898/customs-email-frontend/start) to see the app running.
 
+
+#### Verify an email from another MDTP Service
+
+If any MDTP frontend service wants to use email-frontend for email verification then you will need to check if your service name and continue url is in application.conf and if not please 
+update the application.conf with your service name, continue url in the referrer-services and also the message properties file and raise a pull request. Please note the message property is derived from
+the name key in the config file. In the below example it is ***customs-finance***
+
+            referrer-services : {
+              name = "customs-finance",
+              continueUrl = "/customs/payment-records"
+            }
+            
+            customs.emailfrontend.email-confirmed.redirect.info.customs-finance
+            
+
+If the service name is in `application.conf` then the url context will be `"/manage-email-cds/service/:service-name/"` for example if `customs-finance` has to use the service then the url would be `http://localhost:9898/manage-email-cds/service/customs-finance`
+
 You'll need to use a Government Gateway account with CDS enrolment to access most pages as they are authenticated.
 
 ### License
