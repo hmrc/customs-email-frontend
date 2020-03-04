@@ -70,11 +70,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
   private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) = {
     subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), Some(emailVerificationTimeStamp), _, _) =>
-        emailVerificationService.isEmailVerified(email).map {
-          case Some(true) => Ok(view(emailForm, email))
-          case Some(false) => Redirect(WhatIsYourEmailController.verify())
-          case None => ??? //ToDo redirect to retry page
-        }
+        Future.successful(Ok(view(emailForm, email)))
       case SubscriptionDisplayResponse(Some(email), _, _, _) =>
         Future.successful(Redirect(WhatIsYourEmailController.verify()))
       case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
