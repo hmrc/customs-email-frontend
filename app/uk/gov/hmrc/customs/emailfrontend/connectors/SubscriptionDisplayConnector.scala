@@ -48,6 +48,7 @@ class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig, http: HttpCli
       transactionName = transactionName,
       path = url,
       detail = Map("emailAddress" -> response.email.getOrElse("No email address received"),
+        "emailVerificationTimestamp" -> response.emailVerificationTimestamp.getOrElse("No emailVerificationTimestamp  received"),
         "statusText" -> response.statusText.getOrElse("No status text"),
         "paramValue" -> response.paramValue.getOrElse("paramValue")),
       auditType = auditType

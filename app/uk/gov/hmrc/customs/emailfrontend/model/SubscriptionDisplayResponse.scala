@@ -19,19 +19,20 @@ package uk.gov.hmrc.customs.emailfrontend.model
 import play.api.Logger
 import play.api.libs.json.{JsResult, JsValue, Reads}
 
-case class SubscriptionDisplayResponse(email: Option[String], statusText: Option[String],paramValue: Option[String])
+case class SubscriptionDisplayResponse(email: Option[String],emailVerificationTimestamp: Option[String], statusText: Option[String],paramValue: Option[String])
 
 object SubscriptionDisplayResponse {
   implicit val etmpReads: Reads[SubscriptionDisplayResponse] = new Reads[SubscriptionDisplayResponse] {
     def reads(json: JsValue): JsResult[SubscriptionDisplayResponse] = {
       for {
         email <- (json \ "subscriptionDisplayResponse" \ "responseDetail" \ "contactInformation" \ "emailAddress").validateOpt[String]
+        emailVerificationTimestamp <- (json \ "subscriptionDisplayResponse" \ "responseDetail" \ "contactInformation" \ "emailVerificationTimestamp").validateOpt[String]
         statusText <- (json \ "subscriptionDisplayResponse" \ "responseCommon" \ "statusText").validateOpt[String]
         paramValue <- (json \ "subscriptionDisplayResponse" \ "responseCommon" \ "returnParameters" \ 0 \ "paramValue").validateOpt[String]
 
       } yield {
         statusText.foreach(text => Logger.debug(s"[SubscriptionDisplayResponse][statusText] - $text"))
-        SubscriptionDisplayResponse(email, statusText,paramValue)
+        SubscriptionDisplayResponse(email,emailVerificationTimestamp, statusText,paramValue)
       }
     }
   }

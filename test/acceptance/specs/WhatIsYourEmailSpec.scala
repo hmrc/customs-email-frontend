@@ -42,7 +42,7 @@ class WhatIsYourEmailSpec extends AcceptanceTestSpec
       verifyCurrentPage(StartPage)
 
       When("the user email is not verified")
-      stubSubscriptionDisplayOkResponse(randomEoriNumber)
+      stubSubscriptionWithoutTimestampDisplayOkResponse(randomEoriNumber)
       stubNotVerifiedEmailResponse()
       clickOn(StartPage.startNowButton)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
@@ -50,7 +50,6 @@ class WhatIsYourEmailSpec extends AcceptanceTestSpec
       Then("the user should be on 'What is your email' page")
       verifyCurrentPage(WhatIsYourEmailPage)
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
-      verifyEmailVerifiedIsCalled(1)
     }
 
     scenario("Show 'What is your email' page when email is not available") {

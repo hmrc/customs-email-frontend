@@ -69,16 +69,14 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
 
   private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) = {
     subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
-      case SubscriptionDisplayResponse(Some(email), _,_) =>
-        emailVerificationService.isEmailVerified(email).map {
-          case Some(true) => Ok(view(emailForm, email))
-          case Some(false) => Redirect(WhatIsYourEmailController.verify())
-          case None => ??? //ToDo redirect to retry page
-        }
-      case SubscriptionDisplayResponse(_, Some("Processed Successfully"),_) =>
+      case SubscriptionDisplayResponse(Some(email), Some(emailVerificationTimeStamp), _, _) =>
+        Future.successful(Ok(view(emailForm, email)))
+      case SubscriptionDisplayResponse(Some(email), _, _, _) =>
         Future.successful(Redirect(WhatIsYourEmailController.verify()))
-      case SubscriptionDisplayResponse(None, Some(_),Some("FAIL")) => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
-      case SubscriptionDisplayResponse(None, None,None) => Future.successful(Redirect(routes.WhatIsYourEmailController.verify()))
+      case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
+        Future.successful(Redirect(WhatIsYourEmailController.verify()))
+      case SubscriptionDisplayResponse(None, _, Some(_), Some("FAIL")) => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
+      case SubscriptionDisplayResponse(None, _, None, None) => Future.successful(Redirect(routes.WhatIsYourEmailController.verify()))
     } recover {
       handleNonFatalException()
     }
@@ -93,7 +91,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
     emailForm.bindFromRequest.fold(
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
-          case SubscriptionDisplayResponse(Some(email), _,_) => BadRequest(view(formWithErrors, email))
+          case SubscriptionDisplayResponse(Some(email), _, _, _) => BadRequest(view(formWithErrors, email))
           case _ => Redirect(routes.WhatIsYourEmailController.problemWithService())
         } recover {
           handleNonFatalException()
@@ -101,7 +99,7 @@ class WhatIsYourEmailController @Inject()(actions: Actions, view: change_your_em
       },
       formData => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
-          case SubscriptionDisplayResponse(currentEmail@Some(_), _,_) => {
+          case SubscriptionDisplayResponse(currentEmail@Some(_), _, _, _) => {
             emailCacheService.save(request.user.internalId, EmailDetails(currentEmail, formData.value, None))
               .map { _ => Redirect(routes.CheckYourEmailController.show()) }
           }

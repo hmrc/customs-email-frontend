@@ -69,6 +69,7 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
 
     "contain email when present in response" in {
       subscriptionDisplayResponse.email shouldBe Some("test@email.com")
+      subscriptionDisplayResponse.emailVerificationTimestamp shouldBe Some("2019-09-06T12:30:59Z")
     }
 
     "contain status when present in response" in {
