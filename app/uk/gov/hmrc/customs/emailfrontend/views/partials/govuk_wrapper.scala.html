@@ -19,6 +19,10 @@
 @import uk.gov.hmrc.play.views.html.layouts._
 @import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
 @import views.html.layouts.GovUkTemplate
+@import views.html.language_selection
+@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.EmailLanguageController._
+@import uk.gov.hmrc.customs.emailfrontend.controllers.EmailLanguageController._
+@import play.api.i18n.Lang
 
 @import views.html.language_selection
 @import uk.gov.hmrc.customs.emailfrontend.controllers.routes.EmailLanguageController._
@@ -106,8 +110,8 @@
     @if(contentHeader.isDefined) {
         @main_content_header(contentHeader = contentHeader.get)
     }
-<!--    @language_selection(languageMap, routeToSwitchLanguage, Some("language-toggle"), Some("customs-email-frontend"))-->
-
+    @language_selection(languageMap, routeToSwitchLanguage, Some("language-toggle"), Some("customs-email-frontend"))
+    
 }
 
 @getHelpForm = @{reportAProblemLink(appConfig.reportAProblemPartialUrl, appConfig.reportAProblemNonJSUrl)}
