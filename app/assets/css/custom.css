@@ -17,3 +17,8 @@ h1 {
     margin-bottom: 10px;
     list-style-type: none;
 }
+
+.language-toggle {
+    float: right;
+    margin: 0;
+}
