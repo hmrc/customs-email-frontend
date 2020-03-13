@@ -8,7 +8,8 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % "8.4.0-play-26",
     "uk.gov.hmrc" %% "http-caching-client" % "9.0.0-play-26",
     "uk.gov.hmrc" %% "bootstrap-play-26" % "1.3.0",
-    "uk.gov.hmrc" %% "emailaddress" % "3.4.0"
+    "uk.gov.hmrc" %% "emailaddress" % "3.4.0",
+    "uk.gov.hmrc" %% "play-language" % "4.2.0-play-26"
   )
 
   val test = Seq(
