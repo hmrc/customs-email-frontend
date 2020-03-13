@@ -67,7 +67,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       Then("the user should be on 'Email confirmed' page")
       verifyCurrentPage(EmailConfirmedPage)
       assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address b@a.com will be active in 2 hours.")
-      verifyEmailVerifiedIsCalled(2)
+      verifyEmailVerifiedIsCalled(1)
       verifyCustomsDataStoreIsCalled(1)
       verifyUpdateVerifiedEmailIsCalled(1)
     }
@@ -165,7 +165,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       assertIsTextVisible(CheckYourEmailAddressPage.emailAddressId)("b@a.com")
       verifyCustomsDataStoreIsCalled(0)
       verifyUpdateVerifiedEmailIsCalled(0)
-      verifyEmailVerifiedIsCalled(2)
+      verifyEmailVerifiedIsCalled(1)
     }
 
     scenario("Show verify your email page when user does not verify the email and tries to access the 'Email Confirmed' page") {
@@ -202,7 +202,7 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
 
       When("the user attempts to access 'Email confirmed' page")
       navigateTo(EmailConfirmedPage)
-      verifyEmailVerifiedIsCalled(2)
+      verifyEmailVerifiedIsCalled(1)
       verifyCustomsDataStoreIsNotCalled()
       verifyUpdateVerifiedEmailIsCalled(0)
 

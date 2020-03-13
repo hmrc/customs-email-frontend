@@ -30,11 +30,22 @@ trait StubSubscriptionDisplay {
 
   private val subscriptionDisplayResponseJson: String =
     """{
+          "subscriptionDisplayResponse": {
+            "responseDetail": {
+              "contactInformation": {
+              "emailAddress": "b@a.com",
+              "emailVerificationTimestamp": "2019-09-06T12:30:59Z"
+                  }
+              }
+          }
+       }""".stripMargin
+
+  private val subscriptionDisplayWithoutTimestampResponseJson: String =
+    """{
         "subscriptionDisplayResponse": {
         "responseDetail": {
         "contactInformation": {
-        "emailAddress": "b@a.com",
-        "emailVerificationTimestamp": "2019-09-06T12:30:59Z"
+        "emailAddress": "b@a.com"
             }
           }
         }
@@ -60,6 +71,7 @@ trait StubSubscriptionDisplay {
       |  "subscriptionDisplayResponse": {
       |    "responseCommon": {
       |      "status": "OK",
+      |      "statusText": "Processed Successfully",
       |      "processingDate": "2016-08-17T19:33:47Z",
       |      "returnParameters": [
       |        {
@@ -181,6 +193,10 @@ trait StubSubscriptionDisplay {
 
   def stubSubscriptionDisplayOkResponse(eoriNumber: String): Unit = {
     stubSubscriptionDisplay(eoriNumber, Status.OK, subscriptionDisplayResponseJson)
+  }
+
+  def stubSubscriptionWithoutTimestampDisplayOkResponse(eoriNumber: String): Unit = {
+    stubSubscriptionDisplay(eoriNumber, Status.OK, subscriptionDisplayWithoutTimestampResponseJson)
   }
 
   def stubSubscriptionDisplayOk200ErrorResponse(eoriNumber: String): Unit = {

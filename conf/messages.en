@@ -32,6 +32,8 @@ customs.emailfrontend.confirm-your-email.no=No, I need to change this email
 customs.emailfrontend.email-confirmed.title-and-heading=Email address confirmed
 customs.emailfrontend.email-confirmed.info1=Your email address <strong class="bold">{0}</strong> will be active in 2 hours.
 customs.emailfrontend.email-confirmed.info2=Until then we will send CDS emails to <strong class="bold">{0}</strong>.
+customs.emailfrontend.email-confirmed.redirect.info.customs-finance=You can now continue to <a href="{0}">Get your import VAT and duty adjustment statements.</a>
+customs.emailfrontend.email-confirmed.redirect.info.customs-exports=You can now continue to <a href="{0}">Redirect to customs exports.</a>
 customs.emailfrontend.verify-email.title=Verify your email address
 customs.emailfrontend.verify-email.para1=We have sent an email to {0}. Click on the link in the email to verify your email address.
 customs.emailfrontend.verify-email.para2=You can <a href="{0}">change your email address</a> if it is not correct.

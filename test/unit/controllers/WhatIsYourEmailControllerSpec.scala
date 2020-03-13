@@ -43,14 +43,16 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val mockSubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
   private val mockEmailVerificationService = mock[EmailVerificationService]
   private val mockErrorHandler = mock[ErrorHandler]
+  private val emailVerificationTimeStamp ="2016-3-17T9:30:47.114"
 
   private val internalId = "InternalID"
   private val jsonValue = Json.toJson("emailStatus")
   private val data = Map(internalId -> jsonValue)
   private val cacheMap = CacheMap(internalId, data)
-  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), None)
-  private val someSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(None, Some("FAIL"))
-  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None)
+  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"),Some(emailVerificationTimeStamp), None,None)
+  private val someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp = SubscriptionDisplayResponse(Some("test@test.com"),None, None,None)
+  private val someSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(None,None,Some("statusText"), Some("FAIL"))
+  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None,None,None)
 
   private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService, mockErrorHandler)
 
@@ -131,11 +133,8 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     "have a status of SEE_OTHER for create method when unverified email found in subscription display response" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
-      when(mockEmailVerificationService.isEmailVerified(meq(someSubscriptionDisplayResponse.email.get))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
-
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp))
       val eventualResult = controller.create(request)
-
       status(eventualResult) shouldBe SEE_OTHER
       redirectLocation(eventualResult).value should endWith("/manage-email-cds/email-address/verify-email-address")
     }
@@ -180,8 +179,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     "have a status of OK for create method when unverified email found in subscription display response" in withAuthorisedUser() {
       when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponse))
-      when(mockEmailVerificationService.isEmailVerified(meq(someSubscriptionDisplayResponse.email.get))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier])).thenReturn(Future.successful(someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp))
 
       val eventualResult = controller.create(request)
 

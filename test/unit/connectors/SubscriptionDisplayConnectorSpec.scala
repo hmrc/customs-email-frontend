@@ -17,6 +17,7 @@
 package unit.connectors
 
 
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{doNothing, reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -29,6 +30,7 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, SubscriptionDisplayResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.time.DateTimeUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,8 +43,9 @@ class SubscriptionDisplayConnectorSpec extends PlaySpec with ScalaFutures with M
 
   private val url = "customs-email-proxy/subscription-display"
   private val testEori = Eori("GB1234556789")
-  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), Some("statusCode"))
-  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None)
+  val emailVerificationTimeStamp ="2016-3-17T9:30:47.114"
+  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"),Some(emailVerificationTimeStamp), Some("statusCode"),Some("FAIL"))
+  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None,None, None,None)
 
   val testConnector = new SubscriptionDisplayConnector(mockAppConfig, mockHttp, mockAuditable)
 
