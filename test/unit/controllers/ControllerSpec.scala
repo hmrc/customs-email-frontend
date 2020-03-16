@@ -45,7 +45,7 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
 
   val env: Environment = Environment.simple()
 
-  private val config = Configuration.load(env)
+  implicit val config: Configuration = Configuration.load(env)
 
   private val serviceConfig = new ServicesConfig(config, new RunMode(config, Mode.Dev))
 
