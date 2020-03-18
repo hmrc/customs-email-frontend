@@ -39,7 +39,7 @@ customs.emailfrontend.errors.valid-email.empty=Nodwch eich cyfeiriad e-bost
 customs.emailfrontend.errors.valid-email.too-long=Mae’n rhaid i’r cyfeiriad e-bost fod yn 50 o gymeriadau neu lai
 customs.emailfrontend.errors.valid-email.wrong-format=Nodwch gyfeiriad e-bost dilys
 customs.emailfrontend.errors.valid-confirm-email=Rhowch wybod os mai dyma’r cyfeiriad e-bost cywir
-customs.emailfrontend.problem-with-service.title-and-heading=there is a problem with the service"
+customs.emailfrontend.problem-with-service.title-and-heading=Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
 customs.emailfrontend.problem-with-service.info=Nid yw’ch cyfeiriad e-bost wedi’i ddiweddaru. Rhowch gynnig arall arni yn nes ymlaen.
 customs.emailfrontend.timeout.message=Er eich diogelwch, byddwn yn dileu’ch atebion a chewch eich allgofnodi ymhen
 customs.emailfrontend.timeout.keep-alive-button=Cael 15 munud arall
@@ -51,5 +51,5 @@ customs.emailfrontend.you-cant-use-service-NotAdmin.hint1="Gwnaethoch fewngofnod
 customs.emailfrontend.you-cant-use-service-NotAdmin.hint2=Cysylltwch â’r person a greodd eich cyfrif Porth y Llywodraeth.
 customs.emailfrontend.you-cant-use-service.heading=Ni allwch ddefnyddio’r gwasanaeth hwn
 customs.emailfrontend.verification-in-progress.title-and-heading=Ni allwch newid eich cyfeiriad e-bost
-customs.emailfrontend.verification-in-progress.info=you will need to try again in 2 hours."
+customs.emailfrontend.verification-in-progress.info=Rydych wedi newid eich cyfeiriad e-bost i {0} yn ddiweddar. Os oes angen i chi newid hwn eto, bydd yn rhaid i chi roi cynnig arall arni ymhen 2 awr.
 
