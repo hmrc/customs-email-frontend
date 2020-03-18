@@ -24,7 +24,7 @@ customs.emailfrontend.confirm-your-email.title-and-heading=Gwirio’ch cyfeiriad
 customs.emailfrontend.confirm-your-email.email-address=Cyfeiriad e-bost
 customs.emailfrontend.confirm-your-email.hint=Byddwn yn anfon cysylltiad atoch i gadarnhau’ch cyfeiriad e-bost.
 customs.emailfrontend.confirm-your-email.yes-no-label=Ai dyma’r cyfeiriad e-bost rydych am ei ddefnyddio?
-customs.emailfrontend.confirm-your-email.yes="Iawn
+customs.emailfrontend.confirm-your-email.yes=Iawn, dyma’r cyfeiriad e-bost rwyf am ei ddefnyddio
 customs.emailfrontend.confirm-your-email.no=Na, mae angen i mi newid y cyfeiriad e-bost hwn
 customs.emailfrontend.email-confirmed.title-and-heading=Cyfeiriad e-bost wedi’i gadarnhau
 customs.emailfrontend.email-confirmed.info1=Bydd eich cyfeiriad e-bost <strong class=""bold"">{0}</strong> yn dod i rym ymhen 2 awr.
