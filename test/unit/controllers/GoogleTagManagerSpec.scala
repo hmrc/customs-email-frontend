@@ -31,7 +31,6 @@ class GoogleTagManagerSpec extends ViewSpec {
   private val form: Form[Email] = Forms.emailForm
   private val doc: Document = Jsoup.parse(contentAsString(view.render(form, request, messages)))
 
-
   "Google Tag Manager" should {
     "include the javascript file in the header" in {
       doc.head().getElementsByTag("script").get(2).attr("src") must include ("google-tag-manager.js")
