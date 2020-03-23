@@ -94,11 +94,12 @@
 @footerLinks = {}
 
 @mainContentHeader = {
+    <div class="service-info"></div>
     @if(contentHeader.isDefined) {
         @main_content_header(contentHeader = contentHeader.get)
     }
     @language_selection(languageMap, routeToSwitchLanguage, Some("language-toggle"), Some("customs-email-frontend"))
-    
+
 }
 
 @getHelpForm = @{reportAProblemLink(appConfig.reportAProblemPartialUrl, appConfig.reportAProblemNonJSUrl)}
