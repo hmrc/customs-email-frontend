@@ -47,7 +47,7 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.analyticsHost shouldBe "auto"
     }
     "have feedbackSurveyUrl defined" in {
-      appConfig.feedbackUrl shouldBe "http://localhost:9514/feedback/CDS"
+      appConfig.feedbackUrl shouldBe "http://localhost:9514/feedback/manage-email-cds"
     }
     "have save4LaterDomain defined" in {
       appConfig.save4LaterDomain shouldBe "save4later"
