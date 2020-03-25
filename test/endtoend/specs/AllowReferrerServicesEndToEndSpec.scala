@@ -16,7 +16,7 @@
 
 package endtoend.specs
 
-import common.pages.{AuthLoginStubPage, ChangeYourEmailAddressPage, CheckYourEmailAddressPage, EmailConfirmedPage, ListedOnReferrerPage, NotListedOnReferrerPage, ReferrerPage, StartPage, WhatIsYourEmailPage}
+import common.pages.{AuthLoginStubPage, ChangeYourEmailAddressPage, CheckYourEmailAddressPage, EmailConfirmedPage, FeedbackPage, ListedOnReferrerPage, NotListedOnReferrerPage, ReferrerPage, StartPage, WhatIsYourEmailPage}
 import utils.SpecHelper
 
 class AllowReferrerServicesEndToEndSpec extends EndToEndTestSpec with SpecHelper {
@@ -66,6 +66,7 @@ class AllowReferrerServicesEndToEndSpec extends EndToEndTestSpec with SpecHelper
 
       assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address new-john.doe@example.com will be active in 2 hours.")
       clickOn(EmailConfirmedPage.signOutId)
+      verifyCurrentPage(FeedbackPage)
     }
   }
 }
