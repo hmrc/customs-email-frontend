@@ -28,12 +28,6 @@ class AppConfigSpec extends ControllerSpec {
         messagesApi.messages("en")(s"customs.emailfrontend.email-confirmed.redirect.info.${referrerName.name}") != "")
     }
 
-    "have reportAProblemNonJSUrl defined" in {
-      appConfig.reportAProblemNonJSUrl shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=CDS"
-    }
-    "have reportAProblemPartialUrl defined" in {
-      appConfig.reportAProblemPartialUrl shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=CDS"
-    }
     "have assetsPrefix defined" in {
       appConfig.assetsPrefix shouldBe "https://www.development.tax.service.gov.uk/assets/3.4.0"
     }
@@ -47,7 +41,7 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.analyticsHost shouldBe "auto"
     }
     "have feedbackSurveyUrl defined" in {
-      appConfig.feedbackUrl shouldBe "http://localhost:9514/feedback/CDS"
+      appConfig.feedbackUrl shouldBe "http://localhost:9514/feedback/manage-email-cds"
     }
     "have save4LaterDomain defined" in {
       appConfig.save4LaterDomain shouldBe "save4later"

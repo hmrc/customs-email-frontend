@@ -29,7 +29,7 @@ class SignOutControllerSpec extends ControllerSpec {
     "redirect to feedback survey" in withAuthorisedUser() {
       val result = controller.signOut(request)
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result).value should endWith("/feedback/CDS")
+      redirectLocation(result).value should endWith("/feedback/manage-email-cds")
     }
 
     "clear the session once the user signs out" in withAuthorisedUser() {
