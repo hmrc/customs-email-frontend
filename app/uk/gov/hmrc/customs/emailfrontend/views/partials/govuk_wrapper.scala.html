@@ -80,6 +80,7 @@
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <!-- End Google Tag Manager (noscript) -->
    <div class="centered-content">
+        <div class="service-info"></div>
         <div class="beta-banner internal-beta-banner">
             <p>
                 <strong class="phase-tag">@messages("customs.emailfrontend.phase-banner-beta")</strong>
@@ -102,7 +103,6 @@
 @footerLinks = {}
 
 @mainContentHeader = {
-    <div class="service-info"></div>
     @if(contentHeader.isDefined) {
         @main_content_header(contentHeader = contentHeader.get)
     }
