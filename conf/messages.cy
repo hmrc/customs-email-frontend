@@ -27,13 +27,13 @@ customs.emailfrontend.confirm-your-email.yes-no-label=Ai dyma’r cyfeiriad e-bo
 customs.emailfrontend.confirm-your-email.yes=Iawn, dyma’r cyfeiriad e-bost rwyf am ei ddefnyddio
 customs.emailfrontend.confirm-your-email.no=Na, mae angen i mi newid y cyfeiriad e-bost hwn
 customs.emailfrontend.email-confirmed.title-and-heading=Cyfeiriad e-bost wedi’i gadarnhau
-customs.emailfrontend.email-confirmed.info1=Bydd eich cyfeiriad e-bost <strong class=""bold"">{0}</strong> yn dod i rym ymhen 2 awr.
-customs.emailfrontend.email-confirmed.info2=Tan hynny, byddwn yn anfon e-byst CDS i <strong class=""bold"">{0}</strong>.
+customs.emailfrontend.email-confirmed.info1=Bydd eich cyfeiriad e-bost <strong class="bold">{0}</strong> yn dod i rym ymhen 2 awr.
+customs.emailfrontend.email-confirmed.info2=Tan hynny, byddwn yn anfon e-byst CDS i <strong class="bold">{0}</strong>.
 customs.emailfrontend.verify-email.title=Dilyswch eich cyfeiriad e-bost
 customs.emailfrontend.verify-email.para1=Rydym wedi anfon e-bost i {0}. Cliciwch ar y cysylltiad yn yr e-bost i ddilysu’ch cyfeiriad e-bost.
-customs.emailfrontend.verify-email.para2=Gallwch <a href=""{0}"">newid eich cyfeiriad e-bost</a> os nad yw’n gywir.
+customs.emailfrontend.verify-email.para2=Gallwch <a href="{0}">newid eich cyfeiriad e-bost</a> os nad yw’n gywir.
 customs.emailfrontend.verify-email.progressive-disclosure.heading=Ches i ddim e-bost
-customs.emailfrontend.verify-email.progressive-disclosure.content=Chwiliwch yn eich ffolder sothach. Os nad yw’r neges yno, gallwn <a href=""{0}"">ei hanfon eto</a>. Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio.
+customs.emailfrontend.verify-email.progressive-disclosure.content=Chwiliwch yn eich ffolder sothach. Os nad yw’r neges yno, gallwn <a href="{0}">ei hanfon eto</a>. Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio.
 customs.emailfrontend.error-summary.problem=Mae problem wedi codi.
 customs.emailfrontend.errors.valid-email.empty=Nodwch eich cyfeiriad e-bost
 customs.emailfrontend.errors.valid-email.too-long=Mae’n rhaid i’r cyfeiriad e-bost fod yn 50 o gymeriadau neu lai
@@ -53,3 +53,8 @@ customs.emailfrontend.you-cant-use-service.heading=Ni allwch ddefnyddio’r gwas
 customs.emailfrontend.verification-in-progress.title-and-heading=Ni allwch newid eich cyfeiriad e-bost
 customs.emailfrontend.verification-in-progress.info=Rydych wedi newid eich cyfeiriad e-bost i {0} yn ddiweddar. Os oes angen i chi newid hwn eto, bydd yn rhaid i chi roi cynnig arall arni ymhen 2 awr.
 
+#phase banner
+customs.emailfrontend.phase-banner-beta=BETA
+customs.emailfrontend.phase-banner1=Mae hwn yn wasanaeth newydd – bydd eich
+customs.emailfrontend.phase-banner2=adborth
+customs.emailfrontend.phase-banner3=yn ein helpu i''w wella.
