@@ -28,21 +28,19 @@ trait StubCustomsDataStore {
 
   private val customsDataStoreContextPath: UrlPattern = urlMatching(customsDataStoreGraphQl)
 
-  def stubCustomsDataStoreOkResponse(): Unit = {
-    stubFor(post(urlEqualTo(customsDataStoreGraphQl))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  def stubCustomsDataStoreOkResponse(): Unit =
+    stubFor(
+      post(urlEqualTo(customsDataStoreGraphQl))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 
-  def verifyCustomsDataStoreIsCalled(times: Int): Unit = {
+  def verifyCustomsDataStoreIsCalled(times: Int): Unit =
     verify(times, postRequestedFor(customsDataStoreContextPath))
-  }
 
-  def verifyCustomsDataStoreIsNotCalled(): Unit = {
+  def verifyCustomsDataStoreIsNotCalled(): Unit =
     verify(0, postRequestedFor(customsDataStoreContextPath))
-  }
 }

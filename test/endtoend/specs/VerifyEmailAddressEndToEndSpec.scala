@@ -19,14 +19,15 @@ package endtoend.specs
 import common.pages._
 import utils.SpecHelper
 
-
 class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
 
   feature("Amend email address") {
 
     lazy val credId = generateRandomNumberString()
 
-    scenario("User returns to the service to amend an email address within 2 hours and should be redirected to 'You cannot change' page") {
+    scenario(
+      "User returns to the service to amend an email address within 2 hours and should be redirected to 'You cannot change' page"
+    ) {
       Given("the user has successfully changed the email address")
 
       navigateTo(AuthLoginStubPage)
@@ -40,8 +41,12 @@ class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address new-john.doe@example.com will be active in 2 hours.")
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)("Until then we will send CDS emails to john.doe@example.com.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)(
+        "Your email address new-john.doe@example.com will be active in 2 hours."
+      )
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)(
+        "Until then we will send CDS emails to john.doe@example.com."
+      )
       clickOn(EmailConfirmedPage.signOutId)
 
       When("the user logs in to amend the email")
@@ -52,7 +57,9 @@ class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
 
       Then("the user should be on 'You cannot use this service' page")
       verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
-      assertIsTextVisible(YouCannotChangeYourEmailAddressPage.recentlyChangedEmailTextCss)(YouCannotChangeYourEmailAddressPage.recentlyChangedEmailText)
+      assertIsTextVisible(YouCannotChangeYourEmailAddressPage.recentlyChangedEmailTextCss)(
+        YouCannotChangeYourEmailAddressPage.recentlyChangedEmailText
+      )
       navigateTo(ChangeYourEmailAddressPage)
       verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
       navigateTo(CheckYourEmailAddressPage)

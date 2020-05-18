@@ -17,20 +17,27 @@
 package integration.stubservices
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import play.mvc.Http.HeaderNames.CONTENT_TYPE
-import play.mvc.Http.MimeTypes.JSON
-import utils.WireMockRunner
+import play.api.http.Status
 
-trait CustomsDataStoreService extends WireMockRunner {
+object AuditService {
 
-  def returnCustomsDataStoreResponse(url: String, request: String, status: Int): Unit =
+  private val AuditWriteUrl: String = "/write/audit"
+
+  def stubAuditService(): Unit =
     stubFor(
-      post(urlEqualTo(url))
-        .withRequestBody(equalToJson(request))
+      post(urlEqualTo(AuditWriteUrl))
         .willReturn(
           aResponse()
-            .withStatus(status)
-            .withHeader(CONTENT_TYPE, JSON)
+            .withStatus(Status.OK)
         )
     )
+
+  def verifyAuditWrite(): Unit =
+    verify(postRequestedFor(urlEqualTo(AuditWriteUrl)))
+
+  def verifyNoAuditWrite(): Unit =
+    verify(0, postRequestedFor(urlEqualTo(AuditWriteUrl)))
+
+  def verifyXAuditWrite(times: Int): Unit =
+    verify(times, postRequestedFor(urlEqualTo(AuditWriteUrl)))
 }

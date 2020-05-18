@@ -32,7 +32,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class PermittedUserFilterSpec extends PlaySpec with ScalaFutures {
 
-  def responseHeader(e:String) = ResponseHeader(303, Map("Location" -> s"/manage-email-cds/ineligible/$e"))
+  def responseHeader(e: String) = ResponseHeader(303, Map("Location" -> s"/manage-email-cds/ineligible/$e"))
   val expectedResultNotAdmin = Result(responseHeader("not-admin"), HttpEntity.NoEntity)
   val expectedResultIsAgent = Result(responseHeader("is-agent"), HttpEntity.NoEntity)
 
@@ -45,7 +45,9 @@ class PermittedUserFilterSpec extends PlaySpec with ScalaFutures {
     (Some(Individual), Some(User), None),
     (Some(Individual), Some(User), None)
   )
-  val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GBXXXXXXXXXX")))
+  val userEnrollments: Enrolments = Enrolments(
+    Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GBXXXXXXXXXX"))
+  )
   val fakeRequest = FakeRequest()
   val internalId = InternalId("internalId")
 

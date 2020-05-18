@@ -20,13 +20,9 @@ import acceptance.wiremockstub._
 import common.pages._
 import utils.SpecHelper
 
-class WhatIsYourEmailSpec extends AcceptanceTestSpec
-  with SpecHelper
-  with StubSave4Later
-  with StubAuthClient
-  with StubEmailVerification
-  with StubCustomsDataStore
-  with StubSubscriptionDisplay {
+class WhatIsYourEmailSpec
+    extends AcceptanceTestSpec with SpecHelper with StubSave4Later with StubAuthClient with StubEmailVerification
+    with StubCustomsDataStore with StubSubscriptionDisplay {
 
   feature("Show 'What is your email' page when the email address is not verified") {
 

@@ -21,12 +21,8 @@ import common.pages.{ChangeYourEmailAddressPage, StartPage, YouCannotChangeYourE
 import utils.SpecHelper
 
 class AmendmentInProgressSpec
-  extends AcceptanceTestSpec
-  with StubSave4Later
-  with StubAuthClient
-  with SpecHelper
-  with StubEmailVerification
-  with StubSubscriptionDisplay {
+    extends AcceptanceTestSpec with StubSave4Later with StubAuthClient with SpecHelper with StubEmailVerification
+    with StubSubscriptionDisplay {
 
   feature("Amendment already in progress") {
 

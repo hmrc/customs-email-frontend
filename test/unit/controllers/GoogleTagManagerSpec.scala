@@ -33,11 +33,13 @@ class GoogleTagManagerSpec extends ViewSpec {
 
   "Google Tag Manager" should {
     "include the javascript file in the header" in {
-      doc.head().getElementsByTag("script").get(2).attr("src") must include ("google-tag-manager.js")
+      doc.head().getElementsByTag("script").get(2).attr("src") must include("google-tag-manager.js")
     }
 
     "include a noscript snippet in the body" in {
-      doc.body().getElementsByTag("iframe").attr("src") must include("https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK")
+      doc.body().getElementsByTag("iframe").attr("src") must include(
+        "https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK"
+      )
     }
   }
 }

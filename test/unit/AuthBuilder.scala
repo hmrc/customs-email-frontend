@@ -46,25 +46,39 @@ trait AuthBuilder {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
     val ag = Some(Organisation)
     val role = Some(User)
-    val retrieval = Retrieve(userEnrollments , userInternalId).add(ag).add(role)
-    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.successful(retrieval))
+    val retrieval = Retrieve(userEnrollments, userInternalId).add(ag).add(role)
+    when(
+      mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(
+        any[HeaderCarrier],
+        any[ExecutionContext]
+      )
+    ).thenReturn(Future.successful(retrieval))
     test
   }
 
-  def withAuthorisedIndividualUser(eori: Eori = Eori("GB1234567890"), userInternalId: Option[String] = internId)(test: => Unit) {
+  def withAuthorisedIndividualUser(eori: Eori = Eori("GB1234567890"), userInternalId: Option[String] = internId)(
+    test: => Unit
+  ) {
     val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
     val ag = Some(Individual)
     val role = Some(User)
-    val retrieval =  Retrieve(userEnrollments , userInternalId).add(ag).add(role)
-    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.successful(retrieval))
+    val retrieval = Retrieve(userEnrollments, userInternalId).add(ag).add(role)
+    when(
+      mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(
+        any[HeaderCarrier],
+        any[ExecutionContext]
+      )
+    ).thenReturn(Future.successful(retrieval))
     test
   }
 
   def withAuthorisedUserWithoutEnrolments(test: => Unit) {
-    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.failed(InsufficientEnrolments("Some Message")))
+    when(
+      mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(
+        any[HeaderCarrier],
+        any[ExecutionContext]
+      )
+    ).thenReturn(Future.failed(InsufficientEnrolments("Some Message")))
     test
   }
 
@@ -72,8 +86,12 @@ trait AuthBuilder {
     val ag = Some(Organisation)
     val role = Some(User)
     val retrieval = Retrieve(Enrolments(Set.empty[Enrolment]), internId).add(ag).add(role)
-    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.successful(retrieval))
+    when(
+      mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(
+        any[HeaderCarrier],
+        any[ExecutionContext]
+      )
+    ).thenReturn(Future.successful(retrieval))
     test
   }
 
@@ -81,8 +99,12 @@ trait AuthBuilder {
     val ag = Some(Agent)
     val role = Some(User)
     val retrieval = Retrieve(Enrolments(Set.empty[Enrolment]), internId).add(ag).add(role)
-    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(any[HeaderCarrier], any[ExecutionContext]))
-      .thenReturn(Future.successful(retrieval))
+    when(
+      mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))(
+        any[HeaderCarrier],
+        any[ExecutionContext]
+      )
+    ).thenReturn(Future.successful(retrieval))
     test
   }
 

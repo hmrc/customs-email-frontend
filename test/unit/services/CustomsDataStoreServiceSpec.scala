@@ -42,9 +42,8 @@ class CustomsDataStoreServiceSpec extends PlaySpec with MockitoSugar with Before
   val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
   val email = "abc@def.com"
 
-  override protected def beforeEach(): Unit = {
+  override protected def beforeEach(): Unit =
     reset(mockConnector)
-  }
 
   "Customs Data Store Service" should {
     "return a status OK when data store request is successful" in {

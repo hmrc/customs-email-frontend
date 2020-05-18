@@ -34,40 +34,58 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val analyticsToken: String = config.get[String](s"google-analytics.token")
   val analyticsHost: String = config.get[String](s"google-analytics.host")
 
-  val ggSignInRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
+  val ggSignInRedirectUrl: String =
+    config.get[String]("external-url.company-auth-frontend.continue-url")
   val feedbackUrl: String = config.get[String]("external-url.feedback-survey")
 
   val appName: String = config.get[String]("appName")
 
-  val save4LaterBaseUrl: String = servicesConfig.baseUrl("cachable.short-lived-cache")
-  val save4LaterDomain: String = config.get[String]("microservice.services.cachable.short-lived-cache.domain")
+  val save4LaterBaseUrl: String =
+    servicesConfig.baseUrl("cachable.short-lived-cache")
+  val save4LaterDomain: String =
+    config.get[String]("microservice.services.cachable.short-lived-cache.domain")
 
-  val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
-  val emailVerificationContext: String = config.get[String]("microservice.services.email-verification.context")
-  val emailVerificationWithContext = s"${emailVerificationBaseUrl}/${emailVerificationContext}"
-  val emailVerificationTemplateId: String = config.get[String]("microservice.services.email-verification.templateId")
-  val emailVerificationLinkExpiryDuration: String = config.get[String]("microservice.services.email-verification.linkExpiryDuration")
+  val emailVerificationBaseUrl: String =
+    servicesConfig.baseUrl("email-verification")
+  val emailVerificationContext: String =
+    config.get[String]("microservice.services.email-verification.context")
+  val emailVerificationWithContext =
+    s"${emailVerificationBaseUrl}/${emailVerificationContext}"
+  val emailVerificationTemplateId: String =
+    config.get[String]("microservice.services.email-verification.templateId")
+  val emailVerificationLinkExpiryDuration: String =
+    config.get[String]("microservice.services.email-verification.linkExpiryDuration")
 
-  val customsDataStoreBaseUrl: String = servicesConfig.baseUrl("customs-data-store")
-  val customsDataStoreContext: String = config.get[String]("microservice.services.customs-data-store.context")
+  val customsDataStoreBaseUrl: String =
+    servicesConfig.baseUrl("customs-data-store")
+  val customsDataStoreContext: String =
+    config.get[String]("microservice.services.customs-data-store.context")
   val customsDataStoreUrl = s"$customsDataStoreBaseUrl$customsDataStoreContext"
-  val customsDataStoreToken: String = config.get[String]("microservice.services.customs-data-store.token")
+  val customsDataStoreToken: String =
+    config.get[String]("microservice.services.customs-data-store.token")
 
-  val customsHodsProxyBaseUrl: String = servicesConfig.baseUrl("customs-email-proxy")
+  val customsHodsProxyBaseUrl: String =
+    servicesConfig.baseUrl("customs-email-proxy")
 
-  val subscriptionDisplayContext: String = config.get[String]("microservice.services.customs-email-proxy.subscription-display.context")
-  val subscriptionDisplayUrl: String = s"$customsHodsProxyBaseUrl/$subscriptionDisplayContext"
+  val subscriptionDisplayContext: String =
+    config.get[String]("microservice.services.customs-email-proxy.subscription-display.context")
+  val subscriptionDisplayUrl: String =
+    s"$customsHodsProxyBaseUrl/$subscriptionDisplayContext"
 
-  val updateVerifiedEmailContext: String = config.get[String]("microservice.services.customs-email-proxy.update-verified-email.context")
-  val updateVerifiedEmailUrl: String = s"$customsHodsProxyBaseUrl/$updateVerifiedEmailContext"
+  val updateVerifiedEmailContext: String =
+    config.get[String]("microservice.services.customs-email-proxy.update-verified-email.context")
+  val updateVerifiedEmailUrl: String =
+    s"$customsHodsProxyBaseUrl/$updateVerifiedEmailContext"
 
-  implicit val configLoader: ConfigLoader[Seq[ReferrerName]] = ConfigLoader(_.getConfigList).map(
-    _.asScala.toList.map(config =>
-      ReferrerName(
-        config.getString("name"),
-        config.getString("continueUrl")
-      )
+  val save4LaterContext: String =
+    config.get[String]("microservice.services.customs-email-proxy.mongo-cache.context")
+  val save4LaterUrl: String = s"$customsHodsProxyBaseUrl/$save4LaterContext"
+
+  implicit val configLoader: ConfigLoader[Seq[ReferrerName]] =
+    ConfigLoader(_.getConfigList).map(
+      _.asScala.toList
+        .map(config => ReferrerName(config.getString("name"), config.getString("continueUrl")))
     )
-  )
-  lazy val referrerName: Seq[ReferrerName] = config.get[Seq[ReferrerName]]("referrer-services")
+  lazy val referrerName: Seq[ReferrerName] =
+    config.get[Seq[ReferrerName]]("referrer-services")
 }

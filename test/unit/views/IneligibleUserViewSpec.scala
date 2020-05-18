@@ -29,7 +29,7 @@ class IneligibleUserViewSpec extends ViewSpec {
   private val doc: Document = Jsoup.parse(contentAsString(view.render(Ineligible.NoEnrolment, request, messages)))
 
   "IneligibleUser with no cds enrolment" should {
-     val doc: Document = Jsoup.parse(contentAsString(view.render(Ineligible.NoEnrolment, request, messages)))
+    val doc: Document = Jsoup.parse(contentAsString(view.render(Ineligible.NoEnrolment, request, messages)))
 
     "have the correct title" in {
       doc.title mustBe "You cannot use this service"
@@ -39,7 +39,9 @@ class IneligibleUserViewSpec extends ViewSpec {
       doc.body.getElementsByTag("h1").text mustBe "You cannot use this service"
     }
     "have the correct message no cds enrolment" in {
-      doc.body.getElementById("info1").text mustBe "The Government Gateway you signed in with does not have access to CDS."
+      doc.body
+        .getElementById("info1")
+        .text mustBe "The Government Gateway you signed in with does not have access to CDS."
     }
   }
 
@@ -55,7 +57,9 @@ class IneligibleUserViewSpec extends ViewSpec {
     }
     "have the correct message for an Agent" in {
       doc.body.getElementById("info1").text mustBe "You signed in to Government Gateway with an agent services account."
-      doc.body.getElementById("info2").text mustBe "You need to sign in with the Government Gateway for the organisation or individual that is changing their email for CDS."
+      doc.body
+        .getElementById("info2")
+        .text mustBe "You need to sign in with the Government Gateway for the organisation or individual that is changing their email for CDS."
     }
   }
 
@@ -70,7 +74,9 @@ class IneligibleUserViewSpec extends ViewSpec {
       doc.body.getElementsByTag("h1").text mustBe "You cannot use this service"
     }
     "have the correct message an Assistant account" in {
-      doc.body.getElementById("info1").text mustBe "You signed in to Government Gateway as a standard user. To change your email for CDS you must be an administrator user."
+      doc.body
+        .getElementById("info1")
+        .text mustBe "You signed in to Government Gateway as a standard user. To change your email for CDS you must be an administrator user."
       doc.body.getElementById("info2").text mustBe "Contact the person who set up your Government Gateway."
     }
   }

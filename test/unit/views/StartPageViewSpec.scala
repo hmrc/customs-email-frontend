@@ -38,7 +38,9 @@ class StartPageViewSpec extends ViewSpec {
     }
 
     "have the correct text explaining what the service is for" in {
-      doc.getElementById("bulletP").text mustBe "Use this service to change or verify the email address we use to send you:"
+      doc
+        .getElementById("bulletP")
+        .text mustBe "Use this service to change or verify the email address we use to send you:"
       doc.getElementById("b1").text mustBe "updates on changes to the Customs Declaration Service"
       doc.getElementById("b2").text mustBe "notifications of new import statements and payments"
       doc.getElementById("b3").text mustBe "export declaration notifications"
@@ -46,7 +48,9 @@ class StartPageViewSpec extends ViewSpec {
 
     "have the correct text explaining what you'll need before starting " in {
       doc.getElementById("start-before").text mustBe "Before you start"
-      doc.getElementById("beforeStart").text mustBe "You’ll need the Government Gateway user ID and password you used to apply for your EORI number or to get access to Customs Declaration Service."
+      doc
+        .getElementById("beforeStart")
+        .text mustBe "You’ll need the Government Gateway user ID and password you used to apply for your EORI number or to get access to Customs Declaration Service."
     }
 
     "have the correct text on the button" in {
@@ -63,7 +67,9 @@ class StartPageViewSpec extends ViewSpec {
       doc.getElementById("link2").attr("href") mustBe "/version20/eori-check-start"
 
       doc.getElementById("link3").text mustBe "The Duty Deferment Scheme"
-      doc.getElementById("link3").attr("href") mustBe "https://www.gov.uk/government/publications/notice-101-deferring-duty-vat-and-other-charges?_nfpb=true&_pageLabel=pageVAT_ShowContent&id=HMCE_CL_000013&propertyType=document"
+      doc
+        .getElementById("link3")
+        .attr("href") mustBe "https://www.gov.uk/government/publications/notice-101-deferring-duty-vat-and-other-charges?_nfpb=true&_pageLabel=pageVAT_ShowContent&id=HMCE_CL_000013&propertyType=document"
 
       doc.getElementById("link4").text mustBe "VAT refunds on imported goods"
       doc.getElementById("link4").attr("href") mustBe "https://www.gov.uk/duty-relief-for-imports-and-exports"

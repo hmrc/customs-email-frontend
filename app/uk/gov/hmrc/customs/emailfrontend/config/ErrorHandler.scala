@@ -25,11 +25,15 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 
 @Singleton
-class ErrorHandler @Inject()(override val messagesApi: MessagesApi,
-                             errorView: error_template,
-                             customErrorView: problem_with_this_service) extends FrontendErrorHandler {
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
+class ErrorHandler @Inject()(
+  override val messagesApi: MessagesApi,
+  errorView: error_template,
+  customErrorView: problem_with_this_service
+) extends FrontendErrorHandler {
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(
+    implicit request: Request[_]
+  ): Html =
     errorView(pageTitle, heading, message)
 
-  def problemWithService()(implicit request: Request[_]): Html = { customErrorView() }
+  def problemWithService()(implicit request: Request[_]): Html = customErrorView()
 }

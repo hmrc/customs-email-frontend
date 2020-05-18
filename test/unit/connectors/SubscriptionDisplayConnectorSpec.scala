@@ -16,7 +16,6 @@
 
 package unit.connectors
 
-
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{doNothing, reset, when}
@@ -43,9 +42,14 @@ class SubscriptionDisplayConnectorSpec extends PlaySpec with ScalaFutures with M
 
   private val url = "customs-email-proxy/subscription-display"
   private val testEori = Eori("GB1234556789")
-  val emailVerificationTimeStamp ="2016-3-17T9:30:47.114"
-  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"),Some(emailVerificationTimeStamp), Some("statusCode"),Some("FAIL"))
-  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None,None, None,None)
+  val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
+  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(
+    Some("test@test.com"),
+    Some(emailVerificationTimeStamp),
+    Some("statusCode"),
+    Some("FAIL")
+  )
+  private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None, None, None)
 
   val testConnector = new SubscriptionDisplayConnector(mockAppConfig, mockHttp, mockAuditable)
 
@@ -56,15 +60,25 @@ class SubscriptionDisplayConnectorSpec extends PlaySpec with ScalaFutures with M
 
   "SubscriptionDisplayConnector" should {
     "successfully send a query request return SubscriptionDisplayResponse with email inside" in {
-      when(mockHttp.GET(meq(url), any[Seq[(String, String)]])(any[HttpReads[SubscriptionDisplayResponse]], any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(someSubscriptionDisplayResponse))
+      when(
+        mockHttp.GET(meq(url), any[Seq[(String, String)]])(
+          any[HttpReads[SubscriptionDisplayResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      ).thenReturn(Future.successful(someSubscriptionDisplayResponse))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
       testConnector.subscriptionDisplay(testEori).futureValue mustBe someSubscriptionDisplayResponse
     }
 
     "successfully send a query request return SubscriptionDisplayResponse with none for a value inside" in {
-      when(mockHttp.GET(meq(url), any[Seq[(String, String)]])(any[HttpReads[SubscriptionDisplayResponse]], any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(noneSubscriptionDisplayResponse))
+      when(
+        mockHttp.GET(meq(url), any[Seq[(String, String)]])(
+          any[HttpReads[SubscriptionDisplayResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      ).thenReturn(Future.successful(noneSubscriptionDisplayResponse))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
       testConnector.subscriptionDisplay(testEori).futureValue mustBe noneSubscriptionDisplayResponse
     }

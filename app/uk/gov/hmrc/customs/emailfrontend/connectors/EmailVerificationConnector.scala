@@ -31,7 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfig, auditable: Auditable)(
-  implicit ec: ExecutionContext) {
+  implicit ec: ExecutionContext
+) {
 
   private[connectors] lazy val checkVerifiedEmailUrl: String =
     s"${appConfig.emailVerificationWithContext}/verified-email-check"
@@ -39,14 +40,21 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
   private[connectors] lazy val createEmailVerificationRequestUrl: String =
     s"${appConfig.emailVerificationWithContext}/verification-requests"
 
-  def getEmailVerificationState(emailAddress: String)
-                               (implicit hc: HeaderCarrier): Future[EmailVerificationStateResponse] = {
-    auditRequest("customs-update-email-verification-state", "CustomsUpdateEmailVerificationState", emailAddress, checkVerifiedEmailUrl)
+  def getEmailVerificationState(
+    emailAddress: String
+  )(implicit hc: HeaderCarrier): Future[EmailVerificationStateResponse] = {
+    auditRequest(
+      "customs-update-email-verification-state",
+      "CustomsUpdateEmailVerificationState",
+      emailAddress,
+      checkVerifiedEmailUrl
+    )
     http.POST[JsObject, EmailVerificationStateResponse](checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
   }
 
-  def createEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)
-                                    (implicit hc: HeaderCarrier): Future[EmailVerificationRequestResponse] = {
+  def createEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)(
+    implicit hc: HeaderCarrier
+  ): Future[EmailVerificationRequestResponse] = {
     val jsonBody =
       Json.obj(
         EmailKey -> details.newEmail,
@@ -58,19 +66,23 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
 
     auditVerificationRequest(details, createEmailVerificationRequestUrl, eoriNumber)
 
-    http.POST[JsObject, EmailVerificationRequestResponse](createEmailVerificationRequestUrl, jsonBody)
+    http
+      .POST[JsObject, EmailVerificationRequestResponse](createEmailVerificationRequestUrl, jsonBody)
   }
 
-  private def auditRequest(transactionName: String, auditType: String, emailAddress: String, url: String)(implicit hc: HeaderCarrier): Unit = {
+  private def auditRequest(transactionName: String, auditType: String, emailAddress: String, url: String)(
+    implicit hc: HeaderCarrier
+  ): Unit =
     auditable.sendDataEvent(
       transactionName = transactionName,
       path = url,
       detail = Map("emailAddress" -> emailAddress),
       auditType = auditType
     )
-  }
 
-  private def auditVerificationRequest(details: EmailDetails, url: String, eoriNumber: String)(implicit hc: HeaderCarrier): Unit = {
+  private def auditVerificationRequest(details: EmailDetails, url: String, eoriNumber: String)(
+    implicit hc: HeaderCarrier
+  ): Unit =
     details.currentEmail.fold(
       auditable.sendDataEvent(
         transactionName = "UpdateVerifiedEmailRequestSubmitted",
@@ -78,15 +90,16 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
         detail = Map("newEmailAddress" -> details.newEmail, "eori" -> eoriNumber),
         auditType = "changeEmailAddressAttempted"
       )
-    )(emailAddress =>
-      auditable.sendDataEvent(
-        transactionName = "UpdateVerifiedEmailRequestSubmitted",
-        path = url,
-        detail = Map("currentEmailAddress" -> emailAddress, "newEmailAddress" -> details.newEmail, "eori" -> eoriNumber),
-        auditType = "changeEmailAddressAttempted"
+    )(
+      emailAddress =>
+        auditable.sendDataEvent(
+          transactionName = "UpdateVerifiedEmailRequestSubmitted",
+          path = url,
+          detail =
+            Map("currentEmailAddress" -> emailAddress, "newEmailAddress" -> details.newEmail, "eori" -> eoriNumber),
+          auditType = "changeEmailAddressAttempted"
       )
     )
-  }
 }
 
 object EmailVerificationKeys {

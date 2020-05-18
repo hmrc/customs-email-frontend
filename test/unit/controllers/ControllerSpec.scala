@@ -35,7 +35,8 @@ import unit.AuthBuilder
 
 import scala.concurrent.ExecutionContext
 
-trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder with OptionValues {
+trait ControllerSpec
+    extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder with OptionValues {
 
   implicit def materializer: Materializer = Play.materializer
 
@@ -59,7 +60,8 @@ trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with Guice
 
   implicit val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
-  val idsRetrievalResult: Option[AffinityGroup] ~ Option[String] = new ~(Option(AffinityGroup.Organisation), Option("userId"))
+  val idsRetrievalResult: Option[AffinityGroup] ~ Option[String] =
+    new ~(Option(AffinityGroup.Organisation), Option("userId"))
 
   val fakeAction = new ActionsImpl(mockAuthConnector, config, env, mcc)
 

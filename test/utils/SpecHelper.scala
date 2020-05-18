@@ -31,9 +31,8 @@ trait SpecHelper extends Matchers {
 
   def navigateTo: Page => Unit = page => webDriver.navigate().to(page.url)
 
-  def waitForPresenceOfElement(locator:By): WebElement = {
-    new WebDriverWait(webDriver,10).until(ExpectedConditions.presenceOfElementLocated(locator))
-  }
+  def waitForPresenceOfElement(locator: By): WebElement =
+    new WebDriverWait(webDriver, 10).until(ExpectedConditions.presenceOfElementLocated(locator))
 
   def verifyCurrentPage: BasePage => Assertion = page => {
     new WebDriverWait(webDriver, 5).until(ExpectedConditions.urlContains(page.url))
@@ -45,8 +44,8 @@ trait SpecHelper extends Matchers {
     webDriver.findElement(locator).sendKeys(text)
   }
 
-  def assertIsTextVisible(locator: By) : String => Boolean = text => {
-    new WebDriverWait(webDriver,10).until(ExpectedConditions.textToBePresentInElementLocated(locator,text))
+  def assertIsTextVisible(locator: By): String => Boolean = text => {
+    new WebDriverWait(webDriver, 10).until(ExpectedConditions.textToBePresentInElementLocated(locator, text))
   }
 
   def clickContinue(): Unit = {
@@ -54,7 +53,7 @@ trait SpecHelper extends Matchers {
     webDriver.findElement(continueButtonId).click()
   }
 
-  def clickOn(locator:By): Unit = {
+  def clickOn(locator: By): Unit = {
     waitForPresenceOfElement(locator)
     webDriver.findElement(locator).click()
   }

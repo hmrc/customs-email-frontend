@@ -127,7 +127,6 @@ trait StubSubscriptionDisplay {
     """.stripMargin
   }
 
-
   private val subscriptionDisplay400ResponseJson: String =
     """{
       |"errorDetail": {
@@ -177,52 +176,48 @@ trait StubSubscriptionDisplay {
       |}
       |"""
 
-  private def stubSubscriptionDisplay(eoriNumber: String, status: Int, subscriptionDisplayResponse: String): Unit = {
-    stubFor(get(urlPathEqualTo(s"$subscriptionDisplay"))
-      .withQueryParam("EORI", equalTo(eoriNumber))
-      .withQueryParam("regime", equalTo("CDS"))
-      .withQueryParam("acknowledgementReference", matching("[\\w]{32}"))
-      .willReturn(
-        aResponse()
-          .withStatus(status)
-          .withBody(subscriptionDisplayResponse)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  private def stubSubscriptionDisplay(eoriNumber: String, status: Int, subscriptionDisplayResponse: String): Unit =
+    stubFor(
+      get(urlPathEqualTo(s"$subscriptionDisplay"))
+        .withQueryParam("EORI", equalTo(eoriNumber))
+        .withQueryParam("regime", equalTo("CDS"))
+        .withQueryParam("acknowledgementReference", matching("[\\w]{32}"))
+        .willReturn(
+          aResponse()
+            .withStatus(status)
+            .withBody(subscriptionDisplayResponse)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 
-  def stubSubscriptionDisplayOkResponse(eoriNumber: String): Unit = {
+  def stubSubscriptionDisplayOkResponse(eoriNumber: String): Unit =
     stubSubscriptionDisplay(eoriNumber, Status.OK, subscriptionDisplayResponseJson)
-  }
 
-  def stubSubscriptionWithoutTimestampDisplayOkResponse(eoriNumber: String): Unit = {
+  def stubSubscriptionWithoutTimestampDisplayOkResponse(eoriNumber: String): Unit =
     stubSubscriptionDisplay(eoriNumber, Status.OK, subscriptionDisplayWithoutTimestampResponseJson)
-  }
 
-  def stubSubscriptionDisplayOk200ErrorResponse(eoriNumber: String): Unit = {
+  def stubSubscriptionDisplayOk200ErrorResponse(eoriNumber: String): Unit =
     stubSubscriptionDisplay(eoriNumber, Status.OK, subscriptionDisplay200ErrorResponse)
-  }
 
-  def stubSubscriptionDisplayBadRequestResponse(eoriNumber: String): Unit = {
+  def stubSubscriptionDisplayBadRequestResponse(eoriNumber: String): Unit =
     stubSubscriptionDisplay(eoriNumber, Status.BAD_REQUEST, subscriptionDisplay400ResponseJson)
-  }
 
-  def stubSubscriptionDisplayNotFoundResponse(eoriNumber: String): Unit = {
+  def stubSubscriptionDisplayNotFoundResponse(eoriNumber: String): Unit =
     stubSubscriptionDisplay(eoriNumber, Status.NOT_FOUND, subscriptionDisplay404ResponseJson)
-  }
 
-  def stubSubscriptionDisplayInternalServerResponse(eoriNumber: String): Unit = {
+  def stubSubscriptionDisplayInternalServerResponse(eoriNumber: String): Unit =
     stubSubscriptionDisplay(eoriNumber, Status.INTERNAL_SERVER_ERROR, subscriptionDisplay500ResponseJson)
-  }
 
-  def stubSubscriptionDisplayOk200EmailNotAvailableResponse(eoriNumber: String) = {
+  def stubSubscriptionDisplayOk200EmailNotAvailableResponse(eoriNumber: String) =
     stubSubscriptionDisplay(eoriNumber, Status.OK, subscriptionDisplay200EmailNotAvailableResponseJson)
-  }
 
-  def verifySubscriptionDisplayIsCalled(times:Int, eoriNumber:String): Unit = {
-    verify(times, getRequestedFor(subscriptionDisplayContextPath).withQueryParam("EORI", equalTo(eoriNumber))
-      .withQueryParam("regime", equalTo("CDS"))
-      .withQueryParam("acknowledgementReference", matching("[\\w]{32}")))
-  }
+  def verifySubscriptionDisplayIsCalled(times: Int, eoriNumber: String): Unit =
+    verify(
+      times,
+      getRequestedFor(subscriptionDisplayContextPath)
+        .withQueryParam("EORI", equalTo(eoriNumber))
+        .withQueryParam("regime", equalTo("CDS"))
+        .withQueryParam("acknowledgementReference", matching("[\\w]{32}"))
+    )
 
 }

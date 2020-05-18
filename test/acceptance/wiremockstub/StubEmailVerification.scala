@@ -44,48 +44,45 @@ trait StubEmailVerification {
       |}""".stripMargin
   }
 
-  private def stubVerificationRequest(url: String, status: Int): Unit = {
-    stubFor(post(urlEqualTo(url))
-      .withRequestBody(equalToJson(verificationRequestJson))
-      .willReturn(
-        aResponse()
-          .withStatus(status)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  private def stubVerificationRequest(url: String, status: Int): Unit =
+    stubFor(
+      post(urlEqualTo(url))
+        .withRequestBody(equalToJson(verificationRequestJson))
+        .willReturn(
+          aResponse()
+            .withStatus(status)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 
-  def stubVerificationRequestSent(): Unit = {
+  def stubVerificationRequestSent(): Unit =
     stubVerificationRequest(emailVerificationPostUrl, Status.CREATED)
-  }
 
-  def stubEmailAlreadyVerified(): Unit = {
+  def stubEmailAlreadyVerified(): Unit =
     stubVerificationRequest(emailVerificationPostUrl, Status.CONFLICT)
-  }
 
-  def stubVerifiedEmailResponse(): Unit = {
-    stubFor(post(urlEqualTo(verifiedEmailPostUrl))
-      .withRequestBody(equalToJson(verifiedEmailRequestJson))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  def stubVerifiedEmailResponse(): Unit =
+    stubFor(
+      post(urlEqualTo(verifiedEmailPostUrl))
+        .withRequestBody(equalToJson(verifiedEmailRequestJson))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 
-  def stubNotVerifiedEmailResponse(): Unit = {
-    stubFor(post(urlEqualTo(verifiedEmailPostUrl))
-      .withRequestBody(equalToJson(verifiedEmailRequestJson))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.NOT_FOUND)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  def stubNotVerifiedEmailResponse(): Unit =
+    stubFor(
+      post(urlEqualTo(verifiedEmailPostUrl))
+        .withRequestBody(equalToJson(verifiedEmailRequestJson))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.NOT_FOUND)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 
-  def verifyEmailVerifiedIsCalled(times:Int): Unit = {
+  def verifyEmailVerifiedIsCalled(times: Int): Unit =
     verify(times, postRequestedFor(verifiedEmailContextPath))
-  }
 }

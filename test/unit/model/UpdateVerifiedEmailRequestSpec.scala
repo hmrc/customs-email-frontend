@@ -26,18 +26,24 @@ import uk.gov.hmrc.customs.emailfrontend.model._
 class UpdateVerifiedEmailRequestSpec extends PlaySpec {
 
   val requestCommon = RequestCommon()
-  val requestDetail = RequestDetail(IDType = "EORI",
+  val requestDetail = RequestDetail(
+    IDType = "EORI",
     IDNumber = "GBXXXXXXXXXXXX",
     emailAddress = "test@email.com",
-    emailVerificationTimestamp = DateTimeUtil.dateTime)
+    emailVerificationTimestamp = DateTimeUtil.dateTime
+  )
   val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
   val verifiedEmailRequest = VerifiedEmailRequest(updateVerifiedEmailRequest = updateVerifiedEmailRequest)
 
   "UpdateVerifiedEmailRequest" should {
     "parse the model to correct json format" in {
       val requestJosn = Json.toJson[VerifiedEmailRequest](verifiedEmailRequest)
-      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress" shouldBe JsDefined(JsString("test@email.com"))
-      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDNumber" shouldBe JsDefined(JsString("GBXXXXXXXXXXXX"))
+      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress" shouldBe JsDefined(
+        JsString("test@email.com")
+      )
+      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDNumber" shouldBe JsDefined(
+        JsString("GBXXXXXXXXXXXX")
+      )
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDType" shouldBe JsDefined(JsString("EORI"))
     }
   }

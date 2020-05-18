@@ -23,15 +23,12 @@ import uk.gov.hmrc.customs.emailfrontend.model.{Email, YesNo}
 
 object Forms {
 
-  val emailForm: Form[Email] = Form(
-    mapping(
-      "email" -> text.verifying(validEmail)
-    )(Email.apply)(Email.unapply)
-  )
+  val emailForm: Form[Email] = Form(mapping("email" -> text.verifying(validEmail))(Email.apply)(Email.unapply))
 
   val confirmEmailForm: Form[YesNo] = Form(
     mapping(
-      "isYes" -> optional(boolean).verifying(validYesNo("customs.emailfrontend.errors.valid-confirm-email"))
+      "isYes" -> optional(boolean)
+        .verifying(validYesNo("customs.emailfrontend.errors.valid-confirm-email"))
     )(YesNo.apply)(YesNo.unapply)
   )
 

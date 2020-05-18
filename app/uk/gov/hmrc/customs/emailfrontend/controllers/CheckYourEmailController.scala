@@ -22,7 +22,12 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{EmailConfirmedController, SignOutController, VerifyYourEmailController, WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{
+  EmailConfirmedController,
+  SignOutController,
+  VerifyYourEmailController,
+  WhatIsYourEmailController
+}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
@@ -31,53 +36,60 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourEmailController @Inject()(actions: Actions,
-                                         view: check_your_email,
-                                         emailVerificationService: EmailVerificationService,
-                                         mcc: MessagesControllerComponents,
-                                         emailCacheService: EmailCacheService,
-                                         errorHandler: ErrorHandler)
-                                        (implicit override val messagesApi: MessagesApi,
-                                         ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+class CheckYourEmailController @Inject()(
+  actions: Actions,
+  view: check_your_email,
+  emailVerificationService: EmailVerificationService,
+  mcc: MessagesControllerComponents,
+  emailCacheService: EmailCacheService,
+  errorHandler: ErrorHandler
+)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
-    emailCacheService.routeBasedOnAmendment(request.user.internalId)(redirectWithEmail, Future.successful(Redirect(SignOutController.signOut())))
-  }
+  def show: Action[AnyContent] =
+    (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
+      emailCacheService.routeBasedOnAmendment(request.user.internalId)(
+        redirectWithEmail,
+        Future.successful(Redirect(SignOutController.signOut()))
+      )
+    }
 
-  private def redirectWithEmail(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
+  private def redirectWithEmail(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] =
     Future.successful(Ok(view(confirmEmailForm, details.newEmail)))
-  }
 
   def submit: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
     emailCacheService.fetch(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[CheckYourEmailController][submit] - emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
-      } {
-        emailDetails =>
-          confirmEmailForm.bindFromRequest.fold(
-            formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail)))
-            },
-            formData =>
-              locationByAnswer(request.user.internalId, formData, emailDetails, request.eori.id)
-          )
+      } { emailDetails =>
+        confirmEmailForm.bindFromRequest.fold(formWithErrors => {
+          Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail)))
+        }, formData => locationByAnswer(request.user.internalId, formData, emailDetails, request.eori.id))
       }
     }
   }
 
-  private def submitNewDetails(internalId: InternalId, details: EmailDetails, eori: String)(implicit request: Request[AnyContent]): Future[Result] = {
+  private def submitNewDetails(internalId: InternalId, details: EmailDetails, eori: String)(
+    implicit request: Request[AnyContent]
+  ): Future[Result] =
     emailVerificationService.createEmailVerificationRequest(details, EmailConfirmedController.show().url, eori) flatMap {
       case Some(true) => Future.successful(Redirect(VerifyYourEmailController.show()))
-      case Some(false) => emailCacheService.save(internalId, details.copy(timestamp = None))
-        .map { _ => Redirect(EmailConfirmedController.show())}
+      case Some(false) =>
+        emailCacheService.save(internalId, details.copy(timestamp = None)).map { _ =>
+          Redirect(EmailConfirmedController.show())
+        }
       case None => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService()))
     }
-  }
 
-  private def locationByAnswer(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)(implicit request: Request[AnyContent]): Future[Result] = confirmEmail.isYes match {
+  private def locationByAnswer(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)(
+    implicit request: Request[AnyContent]
+  ): Future[Result] = confirmEmail.isYes match {
     case Some(true) => submitNewDetails(internalId, details, eori)
-    case _ => emailCacheService.remove(internalId).flatMap(_ => Future.successful(Redirect(WhatIsYourEmailController.create())))
+    case _ =>
+      emailCacheService
+        .remove(internalId)
+        .flatMap(_ => Future.successful(Redirect(WhatIsYourEmailController.create())))
   }
 
   def problemWithService(): Action[AnyContent] = actions.auth.async { implicit request =>

@@ -28,22 +28,29 @@ import scala.concurrent.ExecutionContext
 @ImplementedBy(classOf[ActionsImpl])
 trait Actions {
   def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest]
-  def isPermitted : ActionFilter[AuthenticatedRequest]
-  def isEnrolled : ActionRefiner[AuthenticatedRequest, EoriRequest]
+  def isPermitted: ActionFilter[AuthenticatedRequest]
+  def isEnrolled: ActionRefiner[AuthenticatedRequest, EoriRequest]
   def unauthorised: DefaultActionBuilder
 }
 
 @Singleton
-class ActionsImpl @Inject()(authConnector: AuthConnector, config: Configuration, environment: Environment, mcc: MessagesControllerComponents)
-                           (implicit ec: ExecutionContext) extends Actions {
+class ActionsImpl @Inject()(
+  authConnector: AuthConnector,
+  config: Configuration,
+  environment: Environment,
+  mcc: MessagesControllerComponents
+)(implicit ec: ExecutionContext)
+    extends Actions {
 
   private def bodyParser = mcc.parsers.defaultBodyParser
 
-  override def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] = new AuthAction(authConnector, config, environment, bodyParser)
+  override def auth: ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] =
+    new AuthAction(authConnector, config, environment, bodyParser)
 
   override def isPermitted: ActionFilter[AuthenticatedRequest] = new PermittedUserFilter()
 
-  override def isEnrolled: ActionRefiner[AuthenticatedRequest, EoriRequest] = new EnrolledUserRefiner()
+  override def isEnrolled: ActionRefiner[AuthenticatedRequest, EoriRequest] =
+    new EnrolledUserRefiner()
 
   override def unauthorised: DefaultActionBuilder = new UnauthorisedAction(bodyParser)
 }

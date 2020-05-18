@@ -112,46 +112,41 @@ object UpdateVerifiedEmailStubService {
       |}""".stripMargin
   }
 
-  def stubEmailUpdated(okResponse: String) = {
+  def stubEmailUpdated(okResponse: String) =
     stubUpdateVerifiedEmailRequest(okResponse, OK)
-  }
 
-  def stubBadRequest() = {
+  def stubBadRequest() =
     stubUpdateVerifiedEmailRequest(badRequestResponse, BAD_REQUEST)
-  }
 
-  def stubServiceUnavailable() = {
+  def stubServiceUnavailable() =
     stubUpdateVerifiedEmailRequest(serviceUnavailableResponse, INTERNAL_SERVER_ERROR)
-  }
 
-  def stubForbidden() = {
+  def stubForbidden() =
     stubUpdateVerifiedEmailRequest(forbiddenResponse, FORBIDDEN)
-  }
 
-  private def stubUpdateVerifiedEmailRequest(response: String, status: Int): Unit = {
-    stubFor(put(urlMatching(expectedUrl))
-      .withRequestBody(equalToJson(verifiedEmailRequest))
-      .willReturn(
-        aResponse()
-          .withBody(response)
-          .withStatus(status)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  private def stubUpdateVerifiedEmailRequest(response: String, status: Int): Unit =
+    stubFor(
+      put(urlMatching(expectedUrl))
+        .withRequestBody(equalToJson(verifiedEmailRequest))
+        .willReturn(
+          aResponse()
+            .withBody(response)
+            .withStatus(status)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 
-  def stubEmailUpdatedResponseWithStatus(response: String, status: Int): Unit = {
-    stubFor(put(urlMatching(expectedUrl))
-      .willReturn(
-        aResponse()
-          .withBody(response)
-          .withStatus(status)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  def stubEmailUpdatedResponseWithStatus(response: String, status: Int): Unit =
+    stubFor(
+      put(urlMatching(expectedUrl))
+        .willReturn(
+          aResponse()
+            .withBody(response)
+            .withStatus(status)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 
-  def verifyUpdateVerifiedEmailIsCalled(times: Int): Unit = {
+  def verifyUpdateVerifiedEmailIsCalled(times: Int): Unit =
     verify(times, putRequestedFor(updateVerifiedEmailContextPath))
-  }
 }

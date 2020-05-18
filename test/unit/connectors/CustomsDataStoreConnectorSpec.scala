@@ -46,11 +46,11 @@ class CustomsDataStoreConnectorSpec extends PlaySpec with ScalaFutures with Mock
   val url = "/customs-data-store/graphql"
   val testEori = Eori("GB1234556789")
   val testEmail = "email@test.com"
-  val query = s"""{"query" : "mutation {byEori(eoriHistory:{eori:\\"${testEori.id}\\"}, notificationEmail:{address:\\"$testEmail\\"})}"}"""
+  val query =
+    s"""{"query" : "mutation {byEori(eoriHistory:{eori:\\"${testEori.id}\\"}, notificationEmail:{address:\\"$testEmail\\"})}"}"""
   val token = "secret-token"
   val headers = Seq("Content-Type" -> "application/json")
   val header: HeaderCarrier = hc.copy(authorization = Some(Authorization(s"Bearer $token")))
-
 
   override def beforeEach(): Unit = {
     reset(mockHttp, mockAuditable, mockAppConfig)
@@ -60,22 +60,14 @@ class CustomsDataStoreConnectorSpec extends PlaySpec with ScalaFutures with Mock
 
   "CustomsDataStoreConnector" should {
     "successfully send a query request to customs data store and return the OK response" in {
-      when(mockHttp.doPost(
-        meq(url),
-        meq(Json.parse(query)),
-        meq(headers)
-      )(any(), meq(header), any[ExecutionContext]))
+      when(mockHttp.doPost(meq(url), meq(Json.parse(query)), meq(headers))(any(), meq(header), any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(200)))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
       testConnector.storeEmailAddress(testEori, testEmail).futureValue.status mustBe 200
     }
 
     "return the failure response from customs data store" in {
-      when(mockHttp.doPost(
-        meq(url),
-        meq(Json.parse(query)),
-        meq(headers)
-      )(any(), meq(header), any[ExecutionContext]))
+      when(mockHttp.doPost(meq(url), meq(Json.parse(query)), meq(headers))(any(), meq(header), any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(400)))
       doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
       testConnector.storeEmailAddress(testEori, testEmail).futureValue.status mustBe 400

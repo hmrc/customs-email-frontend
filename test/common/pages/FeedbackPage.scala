@@ -25,5 +25,3 @@ class FeedbackPage extends BasePage {
 }
 
 object FeedbackPage extends FeedbackPage
-
-

@@ -39,7 +39,16 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
   private val mockSubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
   private val mockEmailVerificationService = mock[EmailVerificationService]
 
-  private val controller = new WhatIsYourEmailController(fakeAction, view, verifyView, mockEmailCacheService, mcc, mockSubscriptionDisplayConnector, mockEmailVerificationService, mockErrorHandler)
+  private val controller = new WhatIsYourEmailController(
+    fakeAction,
+    view,
+    verifyView,
+    mockEmailCacheService,
+    mcc,
+    mockSubscriptionDisplayConnector,
+    mockEmailVerificationService,
+    mockErrorHandler
+  )
   when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
 
   "Accessing a controller that requires a user to be authorised" should {
@@ -65,7 +74,9 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
     "not allow a logged out user to access the page" in withUnauthorisedUser {
       val result = controller.show(request)
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) should contain("/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fmanage-email-cds%2Fchange-email-address&origin=customs-email-frontend")
+      redirectLocation(result) should contain(
+        "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fmanage-email-cds%2Fchange-email-address&origin=customs-email-frontend"
+      )
     }
 
     "show 'ineligible user - no enrolment' page for an authorised user having no eori" in withAuthorisedUserWithoutEori {

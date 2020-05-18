@@ -23,36 +23,34 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import utils.{Configuration, Constants, WireMockRunner}
 import utils.Configuration.webDriver
 
-trait AcceptanceTestSpec extends FeatureSpec
-  with GivenWhenThen
-  with GuiceOneServerPerSuite
-  with BeforeAndAfterAll
-  with BeforeAndAfterEach
-  with WireMockRunner {
+trait AcceptanceTestSpec
+    extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuite with BeforeAndAfterAll with BeforeAndAfterEach
+    with WireMockRunner {
   override lazy val port = Configuration.port
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Map("metrics.enabled" -> false,
-      "auditing.enabled" -> false,
-      "microservice.services.auth.port" -> Constants.wireMockPort,
-      "microservice.services.cachable.short-lived-cache.port" -> Constants.wireMockPort,
-      "microservice.services.email-verification.port" -> Constants.wireMockPort,
-      "microservice.services.customs-data-store.port" -> Constants.wireMockPort,
-      "microservice.services.customs-email-proxy.port" -> Constants.wireMockPort))
+    .configure(
+      Map(
+        "metrics.enabled" -> false,
+        "auditing.enabled" -> false,
+        "microservice.services.auth.port" -> Constants.wireMockPort,
+        "microservice.services.cachable.short-lived-cache.port" -> Constants.wireMockPort,
+        "microservice.services.email-verification.port" -> Constants.wireMockPort,
+        "microservice.services.customs-data-store.port" -> Constants.wireMockPort,
+        "microservice.services.customs-email-proxy.port" -> Constants.wireMockPort
+      )
+    )
     .disable[com.kenshoo.play.metrics.PlayModule]
     .build()
 
-  override def beforeAll: Unit = {
+  override def beforeAll: Unit =
     startMockServer()
-  }
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     resetMockServer()
-  }
 
-  override def afterAll: Unit = {
+  override def afterAll: Unit =
     stopMockServer()
-  }
 
   sys.addShutdownHook(webDriver.quit())
 }

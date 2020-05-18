@@ -24,8 +24,8 @@ import utils.{Configuration, SpecHelper}
 class AuthLoginStubPage extends BasePage with SpecHelper {
 
   override val url: String = Configuration.forCurrentEnv {
-    case QA => "https://www.qa.tax.service.gov.uk"
-    case DEV => "https://www.development.tax.service.gov.uk"
+    case QA    => "https://www.qa.tax.service.gov.uk"
+    case DEV   => "https://www.development.tax.service.gov.uk"
     case LOCAL => "http://localhost:9949"
   } + "/auth-login-stub/gg-sign-in"
 
@@ -39,7 +39,12 @@ class AuthLoginStubPage extends BasePage with SpecHelper {
 
   val submitButtonCss: By = By.cssSelector(".button")
 
-  def login(credId: String, affinityType: String = "Individual", credentialRole: String = "User", eori: String = "ZZ123456789000"): Unit = {
+  def login(
+    credId: String,
+    affinityType: String = "Individual",
+    credentialRole: String = "User",
+    eori: String = "ZZ123456789000"
+  ): Unit = {
     enterText(credIdName)(credId)
 
     val affinityDropDown = webDriver.findElement(By.name("affinityGroup"))

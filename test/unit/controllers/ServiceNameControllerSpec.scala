@@ -40,8 +40,12 @@ class ServiceNameControllerSpec extends ControllerSpec {
 
   "ServiceNameController" should {
     "redirect to chance-email-address page and store the referred service name in the cache when parameter found in the url" in withAuthorisedUser() {
-      when(mockEmailCacheService.saveReferrer(meq(InternalId("internalId")), meq(ReferrerName("customs-finance", "/finance")))(any[HeaderCarrier], any[ExecutionContext])).
-        thenReturn(Future.successful(cacheMap))
+      when(
+        mockEmailCacheService.saveReferrer(
+          meq(InternalId("internalId")),
+          meq(ReferrerName("customs-finance", "/finance"))
+        )(any[HeaderCarrier], any[ExecutionContext])
+      ).thenReturn(Future.successful(cacheMap))
 
       val request = FakeRequest("GET", "/").withCSRFToken
       val eventualResult = controller.show("customs-finance")(request)
@@ -50,7 +54,9 @@ class ServiceNameControllerSpec extends ControllerSpec {
     }
 
     "redirect to problem-with-service page when service name is not found in the url" in withAuthorisedUser() {
-      when(mockEmailCacheService.saveReferrer(any(), meq(ReferrerName("", "")))(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(cacheMap))
+      when(
+        mockEmailCacheService.saveReferrer(any(), meq(ReferrerName("", "")))(any[HeaderCarrier], any[ExecutionContext])
+      ).thenReturn(Future.successful(cacheMap))
 
       val request = FakeRequest("GET", "/").withCSRFToken
       val eventualResult = controller.show("")(request)

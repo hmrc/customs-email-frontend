@@ -20,14 +20,9 @@ import common.pages._
 import acceptance.wiremockstub._
 import utils.SpecHelper
 
-class EmailConfirmedSpec extends AcceptanceTestSpec
-  with SpecHelper
-  with StubSave4Later
-  with StubAuthClient
-  with StubEmailVerification
-  with StubCustomsDataStore
-  with StubSubscriptionDisplay
-  with StubUpdateVerifiedEmail {
+class EmailConfirmedSpec
+    extends AcceptanceTestSpec with SpecHelper with StubSave4Later with StubAuthClient with StubEmailVerification
+    with StubCustomsDataStore with StubSubscriptionDisplay with StubUpdateVerifiedEmail {
 
   feature("Show Email confirmed to user when the email address is verified") {
 
@@ -66,13 +61,17 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
 
       Then("the user should be on 'Email confirmed' page")
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address b@a.com will be active in 2 hours.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)(
+        "Your email address b@a.com will be active in 2 hours."
+      )
       verifyEmailVerifiedIsCalled(1)
       verifyCustomsDataStoreIsCalled(1)
       verifyUpdateVerifiedEmailIsCalled(1)
     }
 
-    scenario("Show 'Email confirmed' page when user returns to the service after verifying the email address but could not successfully update the email address") {
+    scenario(
+      "Show 'Email confirmed' page when user returns to the service after verifying the email address but could not successfully update the email address"
+    ) {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
@@ -115,8 +114,12 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
 
       Then("the user should be on 'Email confirmed' page upon successfully updating the email")
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address b@a.com will be active in 2 hours.")
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)("Until then we will send CDS emails to old@email.com.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)(
+        "Your email address b@a.com will be active in 2 hours."
+      )
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)(
+        "Until then we will send CDS emails to old@email.com."
+      )
       verifyCustomsDataStoreIsCalled(1)
       verifyUpdateVerifiedEmailIsCalled(1)
     }
@@ -168,7 +171,9 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifyEmailVerifiedIsCalled(1)
     }
 
-    scenario("Show verify your email page when user does not verify the email and tries to access the 'Email Confirmed' page") {
+    scenario(
+      "Show verify your email page when user does not verify the email and tries to access the 'Email Confirmed' page"
+    ) {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)

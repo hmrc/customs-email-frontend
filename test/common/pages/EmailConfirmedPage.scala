@@ -29,4 +29,3 @@ class EmailConfirmedPage extends BasePage {
 }
 
 object EmailConfirmedPage extends EmailConfirmedPage
-

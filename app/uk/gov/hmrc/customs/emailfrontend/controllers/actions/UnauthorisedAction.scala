@@ -20,7 +20,9 @@ import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnauthorisedAction(override val parser: BodyParser[AnyContent])(implicit override val executionContext: ExecutionContext) extends DefaultActionBuilder {
+class UnauthorisedAction(override val parser: BodyParser[AnyContent])(
+  implicit override val executionContext: ExecutionContext
+) extends DefaultActionBuilder {
 
   override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = block(request)
 }

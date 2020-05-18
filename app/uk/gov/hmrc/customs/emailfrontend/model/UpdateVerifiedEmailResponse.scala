@@ -22,4 +22,3 @@ case class UpdateVerifiedEmailResponse(responseCommon: ResponseCommon)
 object UpdateVerifiedEmailResponse {
   implicit val format = Json.format[UpdateVerifiedEmailResponse]
 }
-

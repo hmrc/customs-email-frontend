@@ -22,7 +22,8 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object EmailVerificationStateHttpParser {
 
-  type EmailVerificationStateResponse = Either[EmailVerificationStateErrorResponse, EmailVerificationState]
+  type EmailVerificationStateResponse =
+    Either[EmailVerificationStateErrorResponse, EmailVerificationState]
 
   implicit object GetEmailVerificationStateHttpReads extends HttpReads[EmailVerificationStateResponse] {
     override def read(method: String, url: String, response: HttpResponse): EmailVerificationStateResponse =

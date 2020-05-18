@@ -44,7 +44,7 @@ class Save4LaterCachingConfig @Inject()(httpClient: HttpClient, appConfig: AppCo
 
 @Singleton
 class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationCrypto: ApplicationCrypto)
-  extends ShortLivedCache {
+    extends ShortLivedCache {
 
   override implicit val crypto: CompositeSymmetricCrypto = applicationCrypto.JsonCrypto
 
@@ -54,30 +54,39 @@ class EmailCacheService @Inject()(caching: Save4LaterCachingConfig, applicationC
 
   val referrerNameKey = "referrerName"
 
-  def remove(internalId: InternalId)
-            (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
+  def remove(
+    internalId: InternalId
+  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
     Logger.info("removing cached data from save 4 later")
     remove(internalId.id)
   }
 
-  def save(internalId: InternalId, emailDetails: EmailDetails)
-          (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
+  def save(
+    internalId: InternalId,
+    emailDetails: EmailDetails
+  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
     Logger.info("saving email address and timestamp to save 4 later")
     cache[EmailDetails](internalId.id, emailDetailsKey, emailDetails)
   }
 
-  def fetch(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailDetails]] = {
+  def fetch(
+    internalId: InternalId
+  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailDetails]] = {
     Logger.info("retrieving email address and timestamp from save 4 later")
     fetchAndGetEntry[EmailDetails](internalId.id, emailDetailsKey)
   }
 
-  def saveReferrer(internalId: InternalId, referrerName: ReferrerName)
-                  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
+  def saveReferrer(
+    internalId: InternalId,
+    referrerName: ReferrerName
+  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[CacheMap] = {
     Logger.info("saving referrer name and referrer url to save 4 later")
     cache[ReferrerName](internalId.id, referrerNameKey, referrerName)
   }
 
-  def fetchReferrer(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[ReferrerName]] = {
+  def fetchReferrer(
+    internalId: InternalId
+  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[ReferrerName]] = {
     Logger.info("retrieving referrer name and referrer url from save 4 later")
     fetchAndGetEntry[ReferrerName](internalId.id, referrerNameKey)
   }
@@ -87,7 +96,10 @@ object EmailCacheService {
 
   implicit class EmailCacheServiceHelper(emailCacheService: EmailCacheService) {
 
-    def routeBasedOnAmendment(internalId: InternalId)(redirectBasedOnEmailStatus: EmailDetails => Future[Result], noEmail: Future[Result])(implicit hc: HeaderCarrier, executionContext: ExecutionContext) = {
+    def routeBasedOnAmendment(internalId: InternalId)(
+      redirectBasedOnEmailStatus: EmailDetails => Future[Result],
+      noEmail: Future[Result]
+    )(implicit hc: HeaderCarrier, executionContext: ExecutionContext) =
       emailCacheService.fetch(internalId).flatMap {
         case Some(data) if data.amendmentInProgress => {
           Logger.info("email amendment in-progress")
@@ -97,7 +109,7 @@ object EmailCacheService {
           Logger.info("email amendment completed")
           emailCacheService.remove(internalId).flatMap(_ => noEmail)
         }
-        case Some(details@EmailDetails(_, _, None)) => {
+        case Some(details @ EmailDetails(_, _, None)) => {
           Logger.info("email amendment not determined")
           redirectBasedOnEmailStatus(details)
         }
@@ -106,7 +118,6 @@ object EmailCacheService {
           noEmail
         }
       }
-    }
   }
 
 }

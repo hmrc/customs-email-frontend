@@ -27,9 +27,13 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateVerifiedEmailConnector)(implicit ec: ExecutionContext) {
+class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateVerifiedEmailConnector)(
+  implicit ec: ExecutionContext
+) {
 
-  def updateVerifiedEmail(currentEmail: Option[String], newEmail: String, eori: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
+  def updateVerifiedEmail(currentEmail: Option[String], newEmail: String, eori: String)(
+    implicit hc: HeaderCarrier
+  ): Future[Option[Boolean]] = {
 
     val requestDetail = RequestDetail(
       IDType = "EORI",
@@ -40,7 +44,9 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
     val request = VerifiedEmailRequest(UpdateVerifiedEmailRequest(RequestCommon(), requestDetail))
 
     updateVerifiedEmailConnector.updateVerifiedEmail(request, currentEmail).map {
-      case Right(res) if res.updateVerifiedEmailResponse.responseCommon.returnParameters.exists(msp => msp.paramName == formBundleIdParamName) =>
+      case Right(res)
+          if res.updateVerifiedEmailResponse.responseCommon.returnParameters
+            .exists(msp => msp.paramName == formBundleIdParamName) =>
         Logger.debug("[UpdateVerifiedEmailService][updateVerifiedEmail] - successfully updated verified email")
         Some(true)
       case Right(res) =>
@@ -51,7 +57,9 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
         )
         Some(false)
       case Left(res) =>
-        Logger.warn(s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with response: $res")
+        Logger.warn(
+          s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with response: $res"
+        )
         None
     }
   }

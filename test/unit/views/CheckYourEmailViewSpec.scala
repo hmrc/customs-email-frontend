@@ -29,7 +29,8 @@ class CheckYourEmailViewSpec extends ViewSpec {
   private val form: Form[YesNo] = Forms.confirmEmailForm
   private val formWithEmptyError: Form[YesNo] = Forms.confirmEmailForm.bind(Map("isYes" -> ""))
   private val doc: Document = Jsoup.parse(contentAsString(view.render(form, "test@email.com", request, messages)))
-  private val docWithEmptyError: Document = Jsoup.parse(contentAsString(view.render(formWithEmptyError, "test@email.com", request, messages)))
+  private val docWithEmptyError: Document =
+    Jsoup.parse(contentAsString(view.render(formWithEmptyError, "test@email.com", request, messages)))
 
   "Confirm Email page" should {
     "have the correct title" in {
@@ -50,7 +51,9 @@ class CheckYourEmailViewSpec extends ViewSpec {
     }
 
     "have the correct text on options" in {
-      doc.getElementsByTag("label").text mustBe "Yes, this is the email address I want to use No, I need to change this email"
+      doc
+        .getElementsByTag("label")
+        .text mustBe "Yes, this is the email address I want to use No, I need to change this email"
     }
 
     "have the correct error when an option isn't selected" in {

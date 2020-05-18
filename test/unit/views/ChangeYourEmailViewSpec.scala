@@ -30,11 +30,15 @@ class ChangeYourEmailViewSpec extends ViewSpec {
   private val email: String = "email@test.com"
   private val formWithEmptyError: Form[Email] = Forms.emailForm.bind(Map("email" -> ""))
   private val formWithWrongFormatError: Form[Email] = Forms.emailForm.bind(Map("email" -> "invalid"))
-  private val formWithTooLongError: Form[Email] = Forms.emailForm.bind(Map("email" -> "abcdefghijklmnopqrstuvwxyz1234567890@abcdefghijklmnopqrstuvwxyz1234567890"))
+  private val formWithTooLongError: Form[Email] =
+    Forms.emailForm.bind(Map("email" -> "abcdefghijklmnopqrstuvwxyz1234567890@abcdefghijklmnopqrstuvwxyz1234567890"))
   private val doc: Document = Jsoup.parse(contentAsString(view.render(form, email, request, messages)))
-  private val docWithEmptyError: Document = Jsoup.parse(contentAsString(view.render(formWithEmptyError, email, request, messages)))
-  private val docWithWrongFormatError: Document = Jsoup.parse(contentAsString(view.render(formWithWrongFormatError, email, request, messages)))
-  private val docWithTooLongError: Document = Jsoup.parse(contentAsString(view.render(formWithTooLongError, email, request, messages)))
+  private val docWithEmptyError: Document =
+    Jsoup.parse(contentAsString(view.render(formWithEmptyError, email, request, messages)))
+  private val docWithWrongFormatError: Document =
+    Jsoup.parse(contentAsString(view.render(formWithWrongFormatError, email, request, messages)))
+  private val docWithTooLongError: Document =
+    Jsoup.parse(contentAsString(view.render(formWithTooLongError, email, request, messages)))
 
   "Email page" should {
     "have the correct title" in {
@@ -61,7 +65,9 @@ class ChangeYourEmailViewSpec extends ViewSpec {
 
     "display correct error when email is entered which is too long" in {
       docWithTooLongError.getElementById("errors").text contains "The email address must be 50 characters or less"
-      docWithTooLongError.getElementsByClass("error-message").text mustBe "The email address must be 50 characters or less"
+      docWithTooLongError
+        .getElementsByClass("error-message")
+        .text mustBe "The email address must be 50 characters or less"
     }
   }
 }

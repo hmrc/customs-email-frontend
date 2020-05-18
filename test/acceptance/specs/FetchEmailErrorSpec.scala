@@ -17,15 +17,11 @@
 package acceptance.specs
 
 import acceptance.wiremockstub.{StubAuthClient, StubSave4Later, StubSubscriptionDisplay}
-import common.pages.{StartPage, FetchEmailThereIsAProblemWithTheServicePage}
+import common.pages.{FetchEmailThereIsAProblemWithTheServicePage, StartPage}
 import utils.SpecHelper
 
 class FetchEmailErrorSpec
-  extends AcceptanceTestSpec
-    with SpecHelper
-    with StubAuthClient
-    with StubSave4Later
-    with StubSubscriptionDisplay {
+    extends AcceptanceTestSpec with SpecHelper with StubAuthClient with StubSave4Later with StubSubscriptionDisplay {
 
   feature("Show 'There is a problem with the service' page when user tries to the email") {
 
@@ -83,7 +79,6 @@ class FetchEmailErrorSpec
       verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
     }
 
-
     scenario("User should see 'There is a problem with the service' when there fetching an email is unsuccessful") {
 
       Given("user is on the 'Start' page")
@@ -99,6 +94,6 @@ class FetchEmailErrorSpec
 
       Then("the user should be on 'There is a problem with the service' page")
       verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
-      }
     }
+  }
 }

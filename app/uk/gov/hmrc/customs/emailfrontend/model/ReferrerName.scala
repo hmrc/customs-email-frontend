@@ -20,6 +20,6 @@ import play.api.libs.json.Json
 
 case class ReferrerName(name: String, continueUrl: String)
 
-object ReferrerName  {
+object ReferrerName {
   implicit val formats = Json.format[ReferrerName]
 }

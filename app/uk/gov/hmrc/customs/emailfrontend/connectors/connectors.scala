@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package integration.stubservices
+package uk.gov.hmrc.customs.emailfrontend
 
-import com.github.tomakehurst.wiremock.client.WireMock._
-import play.mvc.Http.HeaderNames.CONTENT_TYPE
-import play.mvc.Http.MimeTypes.JSON
-import utils.WireMockRunner
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-trait CustomsDataStoreService extends WireMockRunner {
-
-  def returnCustomsDataStoreResponse(url: String, request: String, status: Int): Unit =
-    stubFor(
-      post(urlEqualTo(url))
-        .withRequestBody(equalToJson(request))
-        .willReturn(
-          aResponse()
-            .withStatus(status)
-            .withHeader(CONTENT_TYPE, JSON)
-        )
-    )
+package object connectors {
+  implicit val httpReads: HttpReads[HttpResponse] =
+    new HttpReads[HttpResponse] {
+      override def read(method: String, url: String, response: HttpResponse) =
+        response
+    }
 }

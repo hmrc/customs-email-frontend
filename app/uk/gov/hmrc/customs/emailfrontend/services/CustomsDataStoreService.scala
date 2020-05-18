@@ -27,10 +27,11 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector)(implicit ec: ExecutionContext) {
+class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector)(
+  implicit ec: ExecutionContext
+) {
 
-  def storeEmail(enrolmentId: EnrolmentIdentifier, email: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-
+  def storeEmail(enrolmentId: EnrolmentIdentifier, email: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email) map { response =>
       response.status match {
         case OK =>
@@ -41,5 +42,4 @@ class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataSt
           response
       }
     }
-  }
 }

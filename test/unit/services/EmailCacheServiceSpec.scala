@@ -61,8 +61,13 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
   "EmailCacheService for ShortLivedCache" should {
 
     "save" in {
-      when(mockEmailCachingConfig.cache(meq(internalId.id), meq("emailDetails"), meq(Protected(emailDetails)))(any[HeaderCarrier],
-        any(), any[ExecutionContext])).thenReturn(Future.successful(cacheMap))
+      when(
+        mockEmailCachingConfig.cache(meq(internalId.id), meq("emailDetails"), meq(Protected(emailDetails)))(
+          any[HeaderCarrier],
+          any(),
+          any[ExecutionContext]
+        )
+      ).thenReturn(Future.successful(cacheMap))
 
       val cache: CacheMap = service.save(internalId, emailDetails).futureValue
 
@@ -70,8 +75,13 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
     }
 
     "fetch" in {
-      when(mockEmailCachingConfig.fetchAndGetEntry[Protected[EmailDetails]](meq(internalId.id), meq("emailDetails"))(any[HeaderCarrier], any(), any[ExecutionContext]))
-        .thenReturn(Future.successful(Some(Protected(emailDetails))))
+      when(
+        mockEmailCachingConfig.fetchAndGetEntry[Protected[EmailDetails]](meq(internalId.id), meq("emailDetails"))(
+          any[HeaderCarrier],
+          any(),
+          any[ExecutionContext]
+        )
+      ).thenReturn(Future.successful(Some(Protected(emailDetails))))
 
       val cachedEmailStatus = service.fetch(internalId).futureValue
 
@@ -88,8 +98,13 @@ class EmailCacheServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar
     }
 
     "save referrer" in {
-      when(mockEmailCachingConfig.cache(meq(internalId.id), meq("referrerName"), meq(Protected(referrerName)))(any[HeaderCarrier],
-        any(), any[ExecutionContext])).thenReturn(Future.successful(referrerCacheMap))
+      when(
+        mockEmailCachingConfig.cache(meq(internalId.id), meq("referrerName"), meq(Protected(referrerName)))(
+          any[HeaderCarrier],
+          any(),
+          any[ExecutionContext]
+        )
+      ).thenReturn(Future.successful(referrerCacheMap))
 
       val cache: CacheMap = service.saveReferrer(internalId, referrerName).futureValue
 

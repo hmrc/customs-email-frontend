@@ -30,48 +30,56 @@ trait StubSave4Later {
   private val crypto: CompositeSymmetricCrypto = aes("fqpLDZ4smuDsekHkeEBlCA==", Seq.empty)
 
   private val save4LaterGetUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId"
-  private val save4LaterPutUrl = (internalId: String) => s"/save4later/customs-email-frontend/$internalId/data/emailDetails"
-  val emailDetails = EmailDetails(None, "b@a.com",  None)
-  val emailDetailsWithPreviousEmail = EmailDetails(Some("old@email.com"), "b@a.com",  None)
+  private val save4LaterPutUrl = (internalId: String) =>
+    s"/save4later/customs-email-frontend/$internalId/data/emailDetails"
+  val emailDetails = EmailDetails(None, "b@a.com", None)
+  val emailDetailsWithPreviousEmail = EmailDetails(Some("old@email.com"), "b@a.com", None)
   val emailDetailsWithTimestamp = EmailDetails(None, "b@a.com", Some(DateTime.now().minusHours(1)))
   val emailDetailsWithTimestampOver2Hours = EmailDetails(None, "b@a.com", Some(DateTime.now().minusHours(3)))
 
-  private def encryptEmailDetails : EmailDetails => String = emailDetails => encrypt(Json.toJson(emailDetails).toString())
+  private def encryptEmailDetails: EmailDetails => String =
+    emailDetails => encrypt(Json.toJson(emailDetails).toString())
 
   def save4LaterWithNoData(internalId: String): StubMapping = {
-    stubFor(get(urlEqualTo(save4LaterGetUrl(internalId)))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withBody("""{"data": {}, "id": ""}""".stripMargin)
-      )
+    stubFor(
+      get(urlEqualTo(save4LaterGetUrl(internalId)))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withBody("""{"data": {}, "id": ""}""".stripMargin)
+        )
     )
 
-    stubFor(put(urlEqualTo(save4LaterPutUrl(internalId)))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withBody("""{"data": {}, "id": ""}""".stripMargin)
-      )
+    stubFor(
+      put(urlEqualTo(save4LaterPutUrl(internalId)))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withBody("""{"data": {}, "id": ""}""".stripMargin)
+        )
     )
   }
 
   def encrypt(str: String): String = crypto.encrypt(PlainText(str)).value
 
   def save4LaterWithData(internalId: String)(emailDetails: EmailDetails): StubMapping = {
-    stubFor(get(urlEqualTo(save4LaterGetUrl(internalId)))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withBody(s"""{"data": {"emailDetails": "${encryptEmailDetails(emailDetails)}"}, "id": "$internalId"}""".stripMargin)
-      )
+    stubFor(
+      get(urlEqualTo(save4LaterGetUrl(internalId)))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withBody(
+              s"""{"data": {"emailDetails": "${encryptEmailDetails(emailDetails)}"}, "id": "$internalId"}""".stripMargin
+            )
+        )
     )
 
-    stubFor(delete(urlEqualTo(save4LaterGetUrl(internalId)))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-      )
+    stubFor(
+      delete(urlEqualTo(save4LaterGetUrl(internalId)))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+        )
     )
   }
 }

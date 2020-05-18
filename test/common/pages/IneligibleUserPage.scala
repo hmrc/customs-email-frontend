@@ -27,9 +27,9 @@ object IneligibleUserPage extends IneligibleUserPage {
 }
 
 object IneligibleUserNotAdminPage extends IneligibleUserPage {
-  override val url: String = Configuration.frontendHost  + "/manage-email-cds/ineligible/not-admin"
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/ineligible/not-admin"
 }
 
 object IneligibleUserAgentPage extends IneligibleUserPage {
-  override val url: String = Configuration.frontendHost  + "/manage-email-cds/ineligible/is-agent"
+  override val url: String = Configuration.frontendHost + "/manage-email-cds/ineligible/is-agent"
 }

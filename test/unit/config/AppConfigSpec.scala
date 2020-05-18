@@ -24,8 +24,10 @@ class AppConfigSpec extends ControllerSpec {
   "AppConfig" should {
 
     "have referrer key mapping in messages.en properties" in {
-      appConfig.referrerName.map(referrerName =>
-        messagesApi.messages("en")(s"customs.emailfrontend.email-confirmed.redirect.info.${referrerName.name}") != "")
+      appConfig.referrerName.map(
+        referrerName =>
+          messagesApi.messages("en")(s"customs.emailfrontend.email-confirmed.redirect.info.${referrerName.name}") != ""
+      )
     }
 
     "have assetsPrefix defined" in {
@@ -80,7 +82,10 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.updateVerifiedEmailUrl shouldBe "http://localhost:8989/update-verified-email"
     }
     "have referrerName defined" in {
-      appConfig.referrerName shouldBe Seq(ReferrerName("customs-finance", "/customs/payment-records"), ReferrerName("customs-exports", "/xyz"))
+      appConfig.referrerName shouldBe Seq(
+        ReferrerName("customs-finance", "/customs/payment-records"),
+        ReferrerName("customs-exports", "/xyz")
+      )
     }
   }
 }

@@ -36,7 +36,9 @@ class AmendmentInProgressViewSpec extends ViewSpec {
     }
 
     "have the correct content" in {
-      doc.getElementById("info").text mustBe "You recently changed your email address to test@email.com. If you need to change this again, you will need to try again in 2 hours."
+      doc
+        .getElementById("info")
+        .text mustBe "You recently changed your email address to test@email.com. If you need to change this again, you will need to try again in 2 hours."
     }
 
     "have the sign out button" in {

@@ -32,20 +32,17 @@ package object emailfrontend {
 
   object DateTimeUtil {
 
-    def dateTime: DateTime = {
+    def dateTime: DateTime =
       new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC)
-    }
 
     private def dateTimeWritesIsoUtc: Writes[DateTime] = new Writes[DateTime] {
-      def writes(d: org.joda.time.DateTime): JsValue = {
+      def writes(d: org.joda.time.DateTime): JsValue =
         JsString(d.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC()))
-      }
     }
 
     private def dateTimeReadsIso: Reads[DateTime] = new Reads[DateTime] {
-      def reads(value: JsValue): JsResult[DateTime] = {
-          JsSuccess(ISODateTimeFormat.dateTimeParser.parseDateTime(value.as[String]))
-      }
+      def reads(value: JsValue): JsResult[DateTime] =
+        JsSuccess(ISODateTimeFormat.dateTimeParser.parseDateTime(value.as[String]))
     }
 
     implicit val dateTimeReads: Reads[DateTime] = dateTimeReadsIso
@@ -53,11 +50,10 @@ package object emailfrontend {
 
   }
 
-  object Retrieval{
-    implicit class AddRetrievals[A,B,C](r:Retrieve[A,B]){
-      def add(c:C): A Retrieve B Retrieve C = {
-        Retrieve(r,c)
-      }
+  object Retrieval {
+    implicit class AddRetrievals[A, B, C](r: Retrieve[A, B]) {
+      def add(c: C): A Retrieve B Retrieve C =
+        Retrieve(r, c)
     }
   }
 }

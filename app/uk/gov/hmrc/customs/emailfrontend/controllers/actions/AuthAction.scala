@@ -31,29 +31,43 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthAction(override val authConnector: AuthConnector,
-                 override val config: Configuration,
-                 override val env: Environment,
-                 override val parser: BodyParser[AnyContent])(implicit val executionContext: ExecutionContext)
-  extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] with AuthorisedFunctions with AuthRedirects {
+class AuthAction(
+  override val authConnector: AuthConnector,
+  override val config: Configuration,
+  override val env: Environment,
+  override val parser: BodyParser[AnyContent]
+)(implicit val executionContext: ExecutionContext)
+    extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest]
+    with AuthorisedFunctions with AuthRedirects {
 
-  private lazy val ggSignInRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
+  private lazy val ggSignInRedirectUrl: String =
+    config.get[String]("external-url.company-auth-frontend.continue-url")
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised(AuthProviders(GovernmentGateway)).retrieve(allEnrolments and internalId and affinityGroup and credentialRole) {
-      case userAllEnrolments ~ Some(userInternalId) ~ affinityGroup ~ credentialRole =>
-        Future.successful(Right(AuthenticatedRequest(request, LoggedInUser(userAllEnrolments, InternalId(userInternalId), affinityGroup, credentialRole))))
-      case _ => {
-        Logger.warn("AuthAction[refine] internalId or allEnrolments is missing")
-        throw InsufficientEnrolments()
-      }
-    } recover withAuthOrRedirect(request)
+    authorised(AuthProviders(GovernmentGateway))
+      .retrieve(allEnrolments and internalId and affinityGroup and credentialRole) {
+        case userAllEnrolments ~ Some(userInternalId) ~ affinityGroup ~ credentialRole =>
+          Future.successful(
+            Right(
+              AuthenticatedRequest(
+                request,
+                LoggedInUser(userAllEnrolments, InternalId(userInternalId), affinityGroup, credentialRole)
+              )
+            )
+          )
+        case _ => {
+          Logger.warn("AuthAction[refine] internalId or allEnrolments is missing")
+          throw InsufficientEnrolments()
+        }
+      } recover withAuthOrRedirect(request)
   }
 
   private def withAuthOrRedirect[A](implicit request: Request[_]): PartialFunction[Throwable, Either[Result, A]] = {
     case _: NoActiveSession => Left(toGGLogin(continueUrl = ggSignInRedirectUrl))
-    case _: InsufficientEnrolments => Left(Redirect(IneligibleUserController.show(Ineligible.NoEnrolment)))
+    case _: InsufficientEnrolments =>
+      Left(Redirect(IneligibleUserController.show(Ineligible.NoEnrolment)))
   }
 }

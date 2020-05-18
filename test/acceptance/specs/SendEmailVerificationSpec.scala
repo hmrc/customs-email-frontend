@@ -20,12 +20,9 @@ import common.pages.{CheckYourEmailAddressPage, StartPage, VerifyYourEmailAddres
 import acceptance.wiremockstub._
 import utils.SpecHelper
 
-class SendEmailVerificationSpec extends AcceptanceTestSpec
-  with SpecHelper
-  with StubAuthClient
-  with StubSave4Later
-  with StubEmailVerification
-  with StubSubscriptionDisplay {
+class SendEmailVerificationSpec
+    extends AcceptanceTestSpec with SpecHelper with StubAuthClient with StubSave4Later with StubEmailVerification
+    with StubSubscriptionDisplay {
 
   val randomInternalId = generateRandomNumberString()
   val randomEoriNumber = "GB" + generateRandomNumberString()

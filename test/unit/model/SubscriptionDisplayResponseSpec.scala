@@ -33,8 +33,7 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
                  |      }
                  |    }
                  |  }
-                 |}""".stripMargin
-    ).as[SubscriptionDisplayResponse]
+                 |}""".stripMargin).as[SubscriptionDisplayResponse]
 
   private val noFormBundleSubscriptionDisplayResponse =
     Json.parse("""{
@@ -49,8 +48,7 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
                  |          }]
                  |     }
                  |    }
-                 |}""".stripMargin
-    ).as[SubscriptionDisplayResponse]
+                 |}""".stripMargin).as[SubscriptionDisplayResponse]
 
   private val noEmailSubscriptionDisplayResponse =
     Json.parse("""{
@@ -61,9 +59,7 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
                  |      }
                  |    }
                  |  }
-                 |}""".stripMargin
-    ).as[SubscriptionDisplayResponse]
-
+                 |}""".stripMargin).as[SubscriptionDisplayResponse]
 
   "SubscriptionDisplayResponse Object" should {
 

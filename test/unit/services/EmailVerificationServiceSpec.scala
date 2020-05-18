@@ -25,8 +25,18 @@ import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.BAD_REQUEST
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestResponse, EmailVerificationRequestSent}
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerificationStateErrorResponse, EmailVerificationStateResponse, EmailVerified}
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{
+  EmailAlreadyVerified,
+  EmailVerificationRequestFailure,
+  EmailVerificationRequestResponse,
+  EmailVerificationRequestSent
+}
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{
+  EmailNotVerified,
+  EmailVerificationStateErrorResponse,
+  EmailVerificationStateResponse,
+  EmailVerified
+}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.EmailVerificationService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,7 +44,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EmailVerificationServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach {
+class EmailVerificationServiceSpec
+    extends PlaySpec with ScalaFutures with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach {
   private val mockConnector = mock[EmailVerificationConnector]
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
@@ -47,21 +58,24 @@ class EmailVerificationServiceSpec extends PlaySpec with ScalaFutures with Mocki
   private val continueUrl = "/customs/test-continue-url"
   private val eoriNumber = "EORINumber"
 
-  override protected def beforeEach(): Unit = {
+  override protected def beforeEach(): Unit =
     reset(mockConnector)
-  }
 
   def mockGetEmailVerificationState(emailAddress: String)(response: Future[EmailVerificationStateResponse]): Unit =
-    when(mockConnector.getEmailVerificationState(
-      ArgumentMatchers.eq(emailAddress)
-    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
+    when(
+      mockConnector.getEmailVerificationState(ArgumentMatchers.eq(emailAddress))(ArgumentMatchers.any[HeaderCarrier])
+    ) thenReturn response
 
-  def mockCreateEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)(response: Future[EmailVerificationRequestResponse]): Unit =
-    when(mockConnector.createEmailVerificationRequest(
-      ArgumentMatchers.eq(details),
-      ArgumentMatchers.eq(continueUrl),
-      ArgumentMatchers.eq(eoriNumber)
-    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
+  def mockCreateEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)(
+    response: Future[EmailVerificationRequestResponse]
+  ): Unit =
+    when(
+      mockConnector.createEmailVerificationRequest(
+        ArgumentMatchers.eq(details),
+        ArgumentMatchers.eq(continueUrl),
+        ArgumentMatchers.eq(eoriNumber)
+      )(ArgumentMatchers.any[HeaderCarrier])
+    ) thenReturn response
 
   "Checking email verification status" when {
 
@@ -123,7 +137,9 @@ class EmailVerificationServiceSpec extends PlaySpec with ScalaFutures with Mocki
 
       "return Some(false)" in {
 
-        mockCreateEmailVerificationRequest(emailDetails, continueUrl, eoriNumber)(Future.successful(Right(EmailAlreadyVerified)))
+        mockCreateEmailVerificationRequest(emailDetails, continueUrl, eoriNumber)(
+          Future.successful(Right(EmailAlreadyVerified))
+        )
         val res: Option[Boolean] = {
           service.createEmailVerificationRequest(emailDetails, continueUrl, eoriNumber).futureValue
         }

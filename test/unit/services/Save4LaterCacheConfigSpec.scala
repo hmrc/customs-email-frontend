@@ -23,14 +23,12 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterCachingConfig
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-class Save4LaterCacheConfigSpec extends PlaySpec
-  with ScalaFutures
-  with MockitoSugar {
+class Save4LaterCacheConfigSpec extends PlaySpec with ScalaFutures with MockitoSugar {
 
   private val mockHttpClient = mock[HttpClient]
   private val mockAppConfig = mock[AppConfig]
 
-  val save4LaterConfig = new Save4LaterCachingConfig(mockHttpClient,mockAppConfig)
+  val save4LaterConfig = new Save4LaterCachingConfig(mockHttpClient, mockAppConfig)
 
   "Save4LaterCachingConfig" should {
     "configure the Caching Config" in {
