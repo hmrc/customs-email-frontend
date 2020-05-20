@@ -38,6 +38,7 @@ class FetchEmailErrorSpec
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayBadRequestResponse(randomEoriNumber)
 
@@ -55,6 +56,7 @@ class FetchEmailErrorSpec
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayNotFoundResponse(randomEoriNumber)
 
@@ -72,6 +74,7 @@ class FetchEmailErrorSpec
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayInternalServerResponse(randomEoriNumber)
 
@@ -90,6 +93,7 @@ class FetchEmailErrorSpec
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOk200ErrorResponse(randomEoriNumber)
 

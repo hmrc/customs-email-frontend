@@ -34,6 +34,7 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
 
       When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
+      addUserInSession()
 
       Then("the user should not be allowed")
       verifyCurrentPage(IneligibleUserPage)
@@ -71,6 +72,7 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
 
       When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
+      addUserInSession()
 
       Then("the user should not be allowed")
       verifyCurrentPage(IneligibleUserNotAdminPage)
@@ -83,6 +85,7 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
 
       When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
+      addUserInSession()
 
       Then("the user should not be allowed")
       verifyCurrentPage(IneligibleUserAgentPage)
@@ -95,6 +98,7 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
 
       When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
+      addUserInSession()
 
       Then("the user should not be allowed")
       verifyCurrentPage(IneligibleUserAgentPage)
@@ -107,6 +111,7 @@ class IneligibleUserSpec extends AcceptanceTestSpec with SpecHelper with StubAut
 
       When("the user attempts to access the 'What is your email?' page")
       navigateTo(WhatIsYourEmailPageShow)
+      addUserInSession()
 
       Then("the user should not be allowed")
       verifyCurrentPage(IneligibleUserNotAdminPage)
