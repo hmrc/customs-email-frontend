@@ -28,7 +28,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
+import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.views.html._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
@@ -39,7 +39,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private val view = app.injector.instanceOf[change_your_email]
   private val verifyView = app.injector.instanceOf[what_is_your_email]
-  private val mockEmailCacheService = mock[EmailCacheService]
+  private val mockSave4LaterService = mock[Save4LaterService]
   private val mockSubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
   private val mockEmailVerificationService = mock[EmailVerificationService]
   private val mockErrorHandler = mock[ErrorHandler]
@@ -61,7 +61,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     fakeAction,
     view,
     verifyView,
-    mockEmailCacheService,
+    mockSave4LaterService,
     mcc,
     mockSubscriptionDisplayConnector,
     mockEmailVerificationService,
@@ -69,15 +69,15 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   )
 
   override protected def beforeEach(): Unit =
-    reset(mockEmailCacheService, mockSubscriptionDisplayConnector, mockEmailVerificationService)
+    reset(mockSave4LaterService, mockSubscriptionDisplayConnector, mockEmailVerificationService)
 
   "WhatIsYourEmailController" should {
 
     "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentCompleted" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any()))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now().minusDays(2))))))
-      when(mockEmailCacheService.remove(meq(InternalId("internalId")))(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockSave4LaterService.remove(meq(InternalId("internalId")))(any(), any()))
+        .thenReturn(Future.successful(()))
       when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(true)))
 
@@ -88,7 +88,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentNotDetermined and email is not in cache" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
 
       val eventualResult = controller.show(request)
 
@@ -98,7 +98,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for show method when email found in cache with no timestamp and email is verified" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any()))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
       when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(true)))
@@ -111,7 +111,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for show method when email found in cache with no timestamp and email is not verified" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any()))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
       when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(false)))
@@ -123,7 +123,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for show method when email found in cache with timestamp for AmendmentInProgress" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any()))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
 
       val eventualResult = controller.show(request)
@@ -133,7 +133,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for show method email is not found in cache " in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
@@ -141,7 +141,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of OK for create method when verified email found in subscription display response" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
       when(
@@ -154,7 +154,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for create method when unverified email found in subscription display response" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp))
       val eventualResult = controller.create(request)
@@ -163,7 +163,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for create method when no email found in subscription display response but returned OK" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier]))
         .thenReturn(Future.successful(noneSubscriptionDisplayResponse))
 
@@ -174,7 +174,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of OK for create method when email found in cache with no timestamp" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any()))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
         .thenReturn(Future.successful(Some(EmailDetails(Some("old@email"), "test@email", None))))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -185,7 +185,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for create method when current email not found in cache with no timestamp" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any()))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -197,7 +197,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for create method when the bookmark url is used and user already completed success amend email journey" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any()))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -210,7 +210,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of OK for create method when unverified email found in subscription display response" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp))
 
@@ -221,7 +221,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "show 'there is a problem with the service' page when subscription display is failed" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier]))
         .thenReturn(Future.failed(new HttpException("Failed", BAD_REQUEST)))
 
@@ -232,7 +232,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
 
@@ -250,7 +250,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of OK for verify method" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
 
       val eventualResult = controller.verify(request)
 
@@ -258,7 +258,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of OK for verify method when email found in cache with no timestamp" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any()))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
 
       val eventualResult = controller.verify(request)
@@ -267,7 +267,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of SEE_OTHER for verify method when the bookmark url is used and user already complete success amend email journey " in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any()))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
 
       val eventualResult = controller.verify(request)
@@ -308,9 +308,9 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[Eori])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
       when(
-        mockEmailCacheService
-          .save(any(), meq(EmailDetails(Some("test@test.com"), "valid@email.com", None)))(any(), any())
-      ).thenReturn(Future.successful(cacheMap))
+        mockSave4LaterService
+          .saveEmail(any(), meq(EmailDetails(Some("test@test.com"), "valid@email.com", None)))(any())
+      ).thenReturn(Future.successful(()))
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "valid@email.com")
       val eventualResult = controller.submit(request)
@@ -359,7 +359,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have a status of OK for verifyEmail method when the email is valid" in withAuthorisedUser() {
-      when(mockEmailCacheService.save(any(), any())(any(), any())).thenReturn(Future.successful(cacheMap))
+      when(mockSave4LaterService.saveEmail(any(), any())(any())).thenReturn(Future.successful(()))
 
       val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "valid@email.com")
       val eventualResult = controller.verifySubmit(request)

@@ -30,7 +30,7 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{
 }
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
+import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.views.html._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -42,7 +42,7 @@ class WhatIsYourEmailController @Inject()(
   actions: Actions,
   view: change_your_email,
   whatIsYourEmailView: what_is_your_email,
-  emailCacheService: EmailCacheService,
+  save4LaterService: Save4LaterService,
   mcc: MessagesControllerComponents,
   subscriptionDisplayConnector: SubscriptionDisplayConnector,
   emailVerificationService: EmailVerificationService,
@@ -54,7 +54,7 @@ class WhatIsYourEmailController @Inject()(
     (actions.auth
       andThen actions.isPermitted
       andThen actions.isEnrolled).async { implicit request =>
-      emailCacheService.routeBasedOnAmendment(request.user.internalId)(
+      save4LaterService.routeBasedOnAmendment(request.user.internalId)(
         redirectBasedOnEmailStatus,
         Future.successful(Redirect(WhatIsYourEmailController.create()))
       )
@@ -70,7 +70,7 @@ class WhatIsYourEmailController @Inject()(
     }
 
   def create: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
-    emailCacheService.routeBasedOnAmendment(request.user.internalId)(
+    save4LaterService.routeBasedOnAmendment(request.user.internalId)(
       details =>
         details.currentEmail.fold(Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))) {
           currentEmail =>
@@ -97,7 +97,7 @@ class WhatIsYourEmailController @Inject()(
     }
 
   def verify: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
-    emailCacheService.routeBasedOnAmendment(request.user.internalId)(
+    save4LaterService.routeBasedOnAmendment(request.user.internalId)(
       _ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
       Future.successful(Ok(whatIsYourEmailView(emailForm)))
     )
@@ -117,8 +117,8 @@ class WhatIsYourEmailController @Inject()(
       formData => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
           case SubscriptionDisplayResponse(currentEmail @ Some(_), _, _, _) => {
-            emailCacheService
-              .save(request.user.internalId, EmailDetails(currentEmail, formData.value, None))
+            save4LaterService
+              .saveEmail(request.user.internalId, EmailDetails(currentEmail, formData.value, None))
               .map { _ =>
                 Redirect(routes.CheckYourEmailController.show())
               }
@@ -136,8 +136,8 @@ class WhatIsYourEmailController @Inject()(
     emailForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(formWithErrors))),
       formData => {
-        emailCacheService
-          .save(request.user.internalId, EmailDetails(None, formData.value, None))
+        save4LaterService
+          .saveEmail(request.user.internalId, EmailDetails(None, formData.value, None))
           .map { _ =>
             Redirect(routes.CheckYourEmailController.show())
           }

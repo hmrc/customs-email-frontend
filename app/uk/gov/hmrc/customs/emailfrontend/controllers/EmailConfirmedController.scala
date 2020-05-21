@@ -29,6 +29,7 @@ import uk.gov.hmrc.customs.emailfrontend.services.{
   CustomsDataStoreService,
   EmailCacheService,
   EmailVerificationService,
+  Save4LaterService,
   UpdateVerifiedEmailService
 }
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
@@ -40,7 +41,7 @@ class EmailConfirmedController @Inject()(
   actions: Actions,
   view: email_confirmed,
   customsDataStoreService: CustomsDataStoreService,
-  emailCacheService: EmailCacheService,
+  save4LaterService: Save4LaterService,
   emailVerificationService: EmailVerificationService,
   updateVerifiedEmailService: UpdateVerifiedEmailService,
   mcc: MessagesControllerComponents,
@@ -52,7 +53,7 @@ class EmailConfirmedController @Inject()(
     (actions.auth
       andThen actions.isPermitted
       andThen actions.isEnrolled).async { implicit request =>
-      emailCacheService.routeBasedOnAmendment(request.user.internalId)(
+      save4LaterService.routeBasedOnAmendment(request.user.internalId)(
         redirectBasedOnEmailStatus,
         Future.successful(Redirect(SignOutController.signOut()))
       )
@@ -72,9 +73,9 @@ class EmailConfirmedController @Inject()(
       .updateVerifiedEmail(details.currentEmail, details.newEmail, request.eori.id)
       .flatMap {
         case Some(true) =>
-          emailCacheService.save(request.user.internalId, details.copy(timestamp = Some(DateTimeUtil.dateTime)))
+          save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(DateTimeUtil.dateTime)))
           customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), details.newEmail)
-          emailCacheService.fetchReferrer(request.user.internalId).map { referrer =>
+          save4LaterService.fetchReferrer(request.user.internalId).map { referrer =>
             Ok(view(details.newEmail, details.currentEmail, referrer.map(_.name), referrer.map(_.continueUrl)))
           }
         case _ => Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))

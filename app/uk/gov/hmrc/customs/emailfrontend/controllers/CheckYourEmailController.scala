@@ -30,7 +30,7 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{
 }
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService}
+import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -41,14 +41,14 @@ class CheckYourEmailController @Inject()(
   view: check_your_email,
   emailVerificationService: EmailVerificationService,
   mcc: MessagesControllerComponents,
-  emailCacheService: EmailCacheService,
+  save4LaterService: Save4LaterService,
   errorHandler: ErrorHandler
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] =
     (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
-      emailCacheService.routeBasedOnAmendment(request.user.internalId)(
+      save4LaterService.routeBasedOnAmendment(request.user.internalId)(
         redirectWithEmail,
         Future.successful(Redirect(SignOutController.signOut()))
       )
@@ -58,7 +58,7 @@ class CheckYourEmailController @Inject()(
     Future.successful(Ok(view(confirmEmailForm, details.newEmail)))
 
   def submit: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
-    emailCacheService.fetch(request.user.internalId) flatMap {
+    save4LaterService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
         Logger.warn("[CheckYourEmailController][submit] - emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
@@ -76,7 +76,7 @@ class CheckYourEmailController @Inject()(
     emailVerificationService.createEmailVerificationRequest(details, EmailConfirmedController.show().url, eori) flatMap {
       case Some(true) => Future.successful(Redirect(VerifyYourEmailController.show()))
       case Some(false) =>
-        emailCacheService.save(internalId, details.copy(timestamp = None)).map { _ =>
+        save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
           Redirect(EmailConfirmedController.show())
         }
       case None => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService()))
@@ -87,7 +87,7 @@ class CheckYourEmailController @Inject()(
   ): Future[Result] = confirmEmail.isYes match {
     case Some(true) => submitNewDetails(internalId, details, eori)
     case _ =>
-      emailCacheService
+      save4LaterService
         .remove(internalId)
         .flatMap(_ => Future.successful(Redirect(WhatIsYourEmailController.create())))
   }

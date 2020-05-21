@@ -22,7 +22,7 @@ import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.AmendmentInProgressController
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
-import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
+import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.views.html.amendment_in_progress
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -31,12 +31,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendmentInProgressControllerSpec extends ControllerSpec {
 
   private val view = app.injector.instanceOf[amendment_in_progress]
-  private val mockEmailCacheService = mock[EmailCacheService]
-  private val controller = new AmendmentInProgressController(fakeAction, view, mockEmailCacheService, mcc)
+  private val mockSave4LaterService = mock[Save4LaterService]
+  private val controller = new AmendmentInProgressController(fakeAction, view, mockSave4LaterService, mcc)
 
   "AmendmentInProgressController" should {
     "have a status of SEE_OTHER when the email status is not found " in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
 
       val eventualResult = controller.show(request)
 
@@ -45,7 +45,7 @@ class AmendmentInProgressControllerSpec extends ControllerSpec {
     }
 
     "have a status of OK when email found in cache and verification in progress" in withAuthorisedUser() {
-      when(mockEmailCacheService.fetch(meq(InternalId("internalId")))(any[HeaderCarrier], any[ExecutionContext]))
+      when(mockSave4LaterService.fetchEmail(meq(InternalId("internalId")))(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
 
       val eventualResult = controller.show(request)

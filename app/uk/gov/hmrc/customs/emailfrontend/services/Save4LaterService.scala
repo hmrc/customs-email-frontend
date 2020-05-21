@@ -18,9 +18,13 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
+import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes.AmendmentInProgressController
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -56,6 +60,36 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector)(impl
   def remove(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = {
     Logger.info("removing cached data from  mongo")
     save4LaterConnector.delete(internalId.id)
+  }
+
+}
+
+object Save4LaterService {
+
+  implicit class EmailCacheServiceHelper(save4LaterService: Save4LaterService) {
+
+    def routeBasedOnAmendment(internalId: InternalId)(
+      redirectBasedOnEmailStatus: EmailDetails => Future[Result],
+      noEmail: Future[Result]
+    )(implicit hc: HeaderCarrier, executionContext: ExecutionContext) =
+      save4LaterService.fetchEmail(internalId).flatMap {
+        case Some(data) if data.amendmentInProgress => {
+          Logger.info("email amendment in-progress")
+          Future.successful(Redirect(AmendmentInProgressController.show()))
+        }
+        case Some(EmailDetails(_, _, Some(_))) => {
+          Logger.info("email amendment completed")
+          save4LaterService.remove(internalId).flatMap(_ => noEmail)
+        }
+        case Some(details @ EmailDetails(_, _, None)) => {
+          Logger.info("email amendment not determined")
+          redirectBasedOnEmailStatus(details)
+        }
+        case _ => {
+          Logger.info("email details not found in the cache")
+          noEmail
+        }
+      }
   }
 
 }
