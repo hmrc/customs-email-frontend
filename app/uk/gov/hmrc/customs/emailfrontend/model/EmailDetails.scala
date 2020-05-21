@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.model
 
 import org.joda.time.DateTime
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 
 case class EmailDetails(currentEmail: Option[String], newEmail: String, timestamp: Option[DateTime]) {
   lazy val amendmentInProgress = timestamp match {
@@ -29,4 +29,6 @@ case class EmailDetails(currentEmail: Option[String], newEmail: String, timestam
 object EmailDetails {
   import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
   implicit val jsonFormat = Json.format[EmailDetails]
+  implicit def toJsonFormat(emailDetails: EmailDetails): JsValue = Json.toJson(emailDetails)
+
 }
