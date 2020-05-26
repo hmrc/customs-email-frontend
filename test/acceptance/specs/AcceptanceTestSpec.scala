@@ -16,6 +16,12 @@
 
 package acceptance.specs
 
+import java.net.URLEncoder
+
+import com.typesafe.config.Config
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
+import org.openqa.selenium.Cookie
 import org.scalatest.{
   BeforeAndAfterAll,
   BeforeAndAfterEach,
@@ -25,6 +31,13 @@ import org.scalatest.{
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.Codecs
+import uk.gov.hmrc.crypto.{
+  ApplicationCrypto,
+  CryptoGCMWithKeysFromConfig,
+  PlainText
+}
+import uk.gov.hmrc.http.SessionKeys
 import utils.{Configuration, Constants, WireMockRunner}
 import utils.Configuration.webDriver
 
@@ -52,14 +65,54 @@ trait AcceptanceTestSpec
     .disable[com.kenshoo.play.metrics.PlayModule]
     .build()
 
-  override def beforeAll: Unit =
+  private def encryptSessionData(sessionData: Map[String, String]): String = {
+    val config: Config = app.configuration.underlying
+    lazy val sessionCookieCrypto: CryptoGCMWithKeysFromConfig =
+      new ApplicationCrypto(config).SessionCookieCrypto
+    val UTF_8 = "UTF-8"
+    lazy val provider: Option[String] =
+      app.configuration.getOptional[String]("application.crypto.provider")
+    lazy val applicationSecret = app.configuration
+      .getOptional[String]("play.crypto.secret")
+      .getOrElse("some random secret")
+      .getBytes
+    def sign(message: String, key: Array[Byte]): String = {
+      val mac = provider
+        .map(p => Mac.getInstance("HmacSHA1", p))
+        .getOrElse(Mac.getInstance("HmacSHA1"))
+      mac.init(new SecretKeySpec(key, "HmacSHA1"))
+      Codecs.toHexString(mac.doFinal(message.getBytes(UTF_8)))
+    }
+
+    def encode(data: Map[String, String]): String = {
+      val encoded = data
+        .map {
+          case (k, v) =>
+            URLEncoder.encode(k, UTF_8) + "=" + URLEncoder.encode(v, UTF_8)
+        }
+        .mkString("&")
+      sign(encoded, applicationSecret) + "-" + encoded
+    }
+    sessionCookieCrypto.encrypt(PlainText(encode(sessionData))).value
+  }
+
+  def addUserInSession() = {
+    webDriver manage () addCookie new Cookie(
+      "mdtp",
+      encryptSessionData(Map(SessionKeys.userId -> "/auth/oid/some-oid")))
+  }
+
+  override def beforeAll: Unit = {
     startMockServer()
+  }
 
-  override def beforeEach(): Unit =
+  override def beforeEach(): Unit = {
     resetMockServer()
+  }
 
-  override def afterAll: Unit =
+  override def afterAll: Unit = {
     stopMockServer()
+  }
 
   sys.addShutdownHook(webDriver.quit())
 }

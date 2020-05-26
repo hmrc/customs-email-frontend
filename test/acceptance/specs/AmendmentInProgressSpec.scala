@@ -27,6 +27,8 @@ import common.pages.{
   StartPage,
   YouCannotChangeYourEmailAddressPage
 }
+import org.openqa.selenium.Cookie
+import uk.gov.hmrc.http.SessionKeys
 import utils.SpecHelper
 
 class AmendmentInProgressSpec
@@ -51,6 +53,7 @@ class AmendmentInProgressSpec
 
       When("the user returns to amend the email again within 2 hours")
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
       clickOn(StartPage.startNowButton)
 
@@ -70,6 +73,7 @@ class AmendmentInProgressSpec
 
       When("the user returns to amend the email again after 2 hours")
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
       clickOn(StartPage.startNowButton)
 

@@ -37,13 +37,13 @@ class UpdateVerifiedEmailErrorSpec
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
     scenario(
-      "Show 'There is a problem with the service' page when user tries to update the verified email with incorrect data"
-    ) {
+      "Show 'There is a problem with the service' page when user tries to update the verified email with incorrect data") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubNotVerifiedEmailResponse()
@@ -71,13 +71,13 @@ class UpdateVerifiedEmailErrorSpec
     }
 
     scenario(
-      "Show 'There is a problem with the service' page when a restricted user tries to update the verified email address"
-    ) {
+      "Show 'There is a problem with the service' page when a restricted user tries to update the verified email address") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubNotVerifiedEmailResponse()
@@ -106,13 +106,13 @@ class UpdateVerifiedEmailErrorSpec
     }
 
     scenario(
-      "Show 'There is a problem with the service' page when there is a technical error while updating the verified email address"
-    ) {
+      "Show 'There is a problem with the service' page when there is a technical error while updating the verified email address") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubNotVerifiedEmailResponse()
@@ -147,6 +147,7 @@ class UpdateVerifiedEmailErrorSpec
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOkResponse(randomEoriNumber)
       stubNotVerifiedEmailResponse()

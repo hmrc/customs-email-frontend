@@ -41,6 +41,7 @@ class WhatIsYourEmailSpec
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
 
       When("the user email is not verified")
@@ -58,6 +59,7 @@ class WhatIsYourEmailSpec
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
+      addUserInSession()
       verifyCurrentPage(StartPage)
       stubSubscriptionDisplayOk200EmailNotAvailableResponse(randomEoriNumber)
 
