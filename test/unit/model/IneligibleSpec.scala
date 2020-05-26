@@ -20,7 +20,11 @@ import org.scalatest.{EitherValues, MustMatchers, OptionValues, WordSpec}
 import play.api.mvc.{PathBindable, QueryStringBindable}
 import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 
-class IneligibleSpec extends WordSpec with MustMatchers with EitherValues with OptionValues {
+class IneligibleSpec
+    extends WordSpec
+    with MustMatchers
+    with EitherValues
+    with OptionValues {
 
   "Ineligible" must {
 
@@ -84,7 +88,11 @@ class IneligibleSpec extends WordSpec with MustMatchers with EitherValues with O
     "bind to `IsAgent` from query" in {
 
       val result =
-        queryBindable.bind("key", Map("key" -> Seq("is-agent"))).value.right.value
+        queryBindable
+          .bind("key", Map("key" -> Seq("is-agent")))
+          .value
+          .right
+          .value
 
       result mustEqual Ineligible.IsAgent
     }
@@ -92,7 +100,11 @@ class IneligibleSpec extends WordSpec with MustMatchers with EitherValues with O
     "bind to `NotAdmin` from query" in {
 
       val result =
-        queryBindable.bind("key", Map("key" -> Seq("not-admin"))).value.right.value
+        queryBindable
+          .bind("key", Map("key" -> Seq("not-admin")))
+          .value
+          .right
+          .value
 
       result mustEqual Ineligible.NotAdmin
     }
@@ -100,7 +112,11 @@ class IneligibleSpec extends WordSpec with MustMatchers with EitherValues with O
     "bind to `NoEnrolment` from query" in {
 
       val result =
-        queryBindable.bind("key", Map("key" -> Seq("no-enrolment"))).value.right.value
+        queryBindable
+          .bind("key", Map("key" -> Seq("no-enrolment")))
+          .value
+          .right
+          .value
 
       result mustEqual Ineligible.NoEnrolment
     }

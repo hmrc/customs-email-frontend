@@ -14,34 +14,30 @@
  * limitations under the License.
  */
 
-package acceptance.wiremockstub
+package integration.stubservices
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import com.github.tomakehurst.wiremock.matching.UrlPattern
 import play.api.http.Status
-import play.mvc.Http.HeaderNames.CONTENT_TYPE
-import play.mvc.Http.MimeTypes.JSON
 
-trait StubCustomsDataStore {
+object AuditService {
 
-  private val customsDataStoreGraphQl = "/customs-data-store/graphql"
+  private val AuditWriteUrl: String = "/write/audit"
 
-  private val customsDataStoreContextPath: UrlPattern = urlMatching(
-    customsDataStoreGraphQl)
-
-  def stubCustomsDataStoreOkResponse(): Unit =
+  def stubAuditService(): Unit =
     stubFor(
-      post(urlEqualTo(customsDataStoreGraphQl))
+      post(urlEqualTo(AuditWriteUrl))
         .willReturn(
           aResponse()
             .withStatus(Status.OK)
-            .withHeader(CONTENT_TYPE, JSON)
         )
     )
 
-  def verifyCustomsDataStoreIsCalled(times: Int): Unit =
-    verify(times, postRequestedFor(customsDataStoreContextPath))
+  def verifyAuditWrite(): Unit =
+    verify(postRequestedFor(urlEqualTo(AuditWriteUrl)))
 
-  def verifyCustomsDataStoreIsNotCalled(): Unit =
-    verify(0, postRequestedFor(customsDataStoreContextPath))
+  def verifyNoAuditWrite(): Unit =
+    verify(0, postRequestedFor(urlEqualTo(AuditWriteUrl)))
+
+  def verifyXAuditWrite(times: Int): Unit =
+    verify(times, postRequestedFor(urlEqualTo(AuditWriteUrl)))
 }

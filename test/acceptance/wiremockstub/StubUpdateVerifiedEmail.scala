@@ -61,7 +61,6 @@ trait StubUpdateVerifiedEmail {
       |}""".stripMargin
   }
 
-
   val badRequestResponse: String = {
     """{
       |  "errorDetail": {
@@ -131,50 +130,45 @@ trait StubUpdateVerifiedEmail {
       |}""".stripMargin
   }
 
-  def stubEmailUpdated(okResponse: String) = {
+  def stubEmailUpdated(okResponse: String) =
     stubUpdateVerifiedEmailRequest(okResponse, OK)
-  }
 
-  def stubUpdateVerifiedBadRequest() = {
+  def stubUpdateVerifiedBadRequest() =
     stubUpdateVerifiedEmailRequest(badRequestResponse, BAD_REQUEST)
-  }
 
-  def stubUpdateVerifiedServiceUnavailable() = {
-    stubUpdateVerifiedEmailRequest(serviceUnavailableResponse, INTERNAL_SERVER_ERROR)
-  }
+  def stubUpdateVerifiedServiceUnavailable() =
+    stubUpdateVerifiedEmailRequest(serviceUnavailableResponse,
+                                   INTERNAL_SERVER_ERROR)
 
-  def stubUpdateVerified200FailResponse() = {
+  def stubUpdateVerified200FailResponse() =
     stubUpdateVerifiedEmailRequest(failResponse200, OK)
-  }
 
-  def stubUpdateVerifiedForbidden() = {
+  def stubUpdateVerifiedForbidden() =
     stubUpdateVerifiedEmailRequest(forbiddenResponse, FORBIDDEN)
-  }
 
-  private def stubUpdateVerifiedEmailRequest(response: String, status: Int): Unit = {
-    stubFor(put(urlMatching(expectedUrl))
-      .willReturn(
-        aResponse()
-          .withBody(response)
-          .withStatus(status)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  private def stubUpdateVerifiedEmailRequest(response: String,
+                                             status: Int): Unit =
+    stubFor(
+      put(urlMatching(expectedUrl))
+        .willReturn(
+          aResponse()
+            .withBody(response)
+            .withStatus(status)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 
-  def stubEmailUpdatedResponseWithStatus(response: String, status: Int): Unit = {
-    stubFor(put(urlMatching(expectedUrl))
-      .willReturn(
-        aResponse()
-          .withBody(response)
-          .withStatus(status)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  def stubEmailUpdatedResponseWithStatus(response: String, status: Int): Unit =
+    stubFor(
+      put(urlMatching(expectedUrl))
+        .willReturn(
+          aResponse()
+            .withBody(response)
+            .withStatus(status)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 
-  def verifyUpdateVerifiedEmailIsCalled(times: Int): Unit = {
+  def verifyUpdateVerifiedEmailIsCalled(times: Int): Unit =
     verify(times, putRequestedFor(updateVerifiedEmailContextPath))
-  }
 }
-

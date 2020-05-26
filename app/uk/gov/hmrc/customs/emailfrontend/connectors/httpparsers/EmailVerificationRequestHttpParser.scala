@@ -22,7 +22,8 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object EmailVerificationRequestHttpParser {
 
-  type EmailVerificationRequestResponse = Either[EmailVerificationRequestFailure, EmailVerificationRequestSuccess]
+  type EmailVerificationRequestResponse =
+    Either[EmailVerificationRequestFailure, EmailVerificationRequestSuccess]
 
   implicit object CreateEmailVerificationRequestHttpReads extends HttpReads[EmailVerificationRequestResponse] {
     override def read(method: String, url: String, response: HttpResponse): EmailVerificationRequestResponse =
@@ -36,10 +37,10 @@ object EmailVerificationRequestHttpParser {
         case status =>
           Logger.warn(
             "[CreateEmailVerificationRequestHttpParser][CreateEmailVerificationRequestHttpReads][read] - " +
-            s"Failed to create email verification. Received status: $status Response body: ${response.body}"
+              s"Failed to create email verification. Received status: $status Response body: ${response.body}"
           )
           Left(EmailVerificationRequestFailure(status, response.body))
-    }
+      }
   }
 
   sealed trait EmailVerificationRequestSuccess

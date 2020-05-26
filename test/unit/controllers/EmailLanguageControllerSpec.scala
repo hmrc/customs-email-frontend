@@ -17,7 +17,10 @@
 package unit.controllers
 
 import play.api.i18n.Lang
-import uk.gov.hmrc.customs.emailfrontend.controllers.{EmailLanguageController, routes}
+import uk.gov.hmrc.customs.emailfrontend.controllers.{
+  EmailLanguageController,
+  routes
+}
 import uk.gov.hmrc.play.language.LanguageUtils
 
 class EmailLanguageControllerSpec extends ControllerSpec {
@@ -31,13 +34,15 @@ class EmailLanguageControllerSpec extends ControllerSpec {
     "return the page in English language" in {
       val language = "english"
       val langCall = controller.langToCall(language)
-      langCall(language) shouldBe routes.EmailLanguageController.switchToLanguage(language)
+      langCall(language) shouldBe routes.EmailLanguageController
+        .switchToLanguage(language)
     }
 
     "return the page in Welsh language" in {
       val language = "welsh"
       val langCall = controller.langToCall(language)
-      langCall(language) shouldBe routes.EmailLanguageController.switchToLanguage(language)
+      langCall(language) shouldBe routes.EmailLanguageController
+        .switchToLanguage(language)
     }
 
     "have mapped english and welsh for language map" in {

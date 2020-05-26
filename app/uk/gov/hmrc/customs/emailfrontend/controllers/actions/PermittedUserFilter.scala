@@ -19,13 +19,14 @@ package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
-import uk.gov.hmrc.auth.core.{Admin, AffinityGroup, CredentialRole, User}
+import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole, User}
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Ineligible}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PermittedUserFilter(implicit override val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
+class PermittedUserFilter(implicit override val executionContext: ExecutionContext)
+    extends ActionFilter[AuthenticatedRequest] {
 
   def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = {
 
@@ -34,13 +35,13 @@ class PermittedUserFilter(implicit override val executionContext: ExecutionConte
 
     (affinityGroup, credentialRole) match {
       case (Some(Organisation), Some(User)) => toFutureResult()
-      case (Some(Organisation), _) => toFutureResult(Some(Ineligible.NotAdmin))
-      case (Some(Agent), _) => toFutureResult(Some(Ineligible.IsAgent))
-      case _ => toFutureResult() //ToDo handle case for affinityGroup and credentialRole having None values
+      case (Some(Organisation), _)          => toFutureResult(Some(Ineligible.NotAdmin))
+      case (Some(Agent), _)                 => toFutureResult(Some(Ineligible.IsAgent))
+      case _ =>
+        toFutureResult() //ToDo handle case for affinityGroup and credentialRole having None values
     }
   }
 
-  private def toFutureResult(result: Option[Ineligible.Value] = None): Future[Option[Result]] = {
+  private def toFutureResult(result: Option[Ineligible.Value] = None): Future[Option[Result]] =
     Future.successful(result.map(i => Redirect(IneligibleUserController.show(i))))
-  }
 }

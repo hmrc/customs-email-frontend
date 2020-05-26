@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package common.pages
+package uk.gov.hmrc.customs.emailfrontend
 
-import org.openqa.selenium.By
-import org.scalatestplus.selenium.Page
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-trait BasePage extends Page {
-  val title: String
-  val signOutId: By = By.id("sign-out")
+package object connectors {
+  implicit val httpReads: HttpReads[HttpResponse] =
+    new HttpReads[HttpResponse] {
+      override def read(method: String, url: String, response: HttpResponse) =
+        response
+    }
 }

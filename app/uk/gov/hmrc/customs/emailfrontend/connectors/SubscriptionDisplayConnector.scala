@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-
 import java.util.UUID
 
 import javax.inject.{Inject, Singleton}
@@ -43,22 +42,27 @@ class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig, http: HttpCli
     }
   }
 
-  private def auditResponse(transactionName: String, auditType: String, response: SubscriptionDisplayResponse, url: String)(implicit hc: HeaderCarrier): Unit = {
+  private def auditResponse(
+    transactionName: String,
+    auditType: String,
+    response: SubscriptionDisplayResponse,
+    url: String
+  )(implicit hc: HeaderCarrier): Unit =
     auditable.sendDataEvent(
       transactionName = transactionName,
       path = url,
-      detail = Map("emailAddress" -> response.email.getOrElse("No email address received"),
-        "emailVerificationTimestamp" -> response.emailVerificationTimestamp.getOrElse("No emailVerificationTimestamp  received"),
+      detail = Map(
+        "emailAddress" -> response.email.getOrElse("No email address received"),
+        "emailVerificationTimestamp" -> response.emailVerificationTimestamp
+          .getOrElse("No emailVerificationTimestamp  received"),
         "statusText" -> response.statusText.getOrElse("No status text"),
-        "paramValue" -> response.paramValue.getOrElse("paramValue")),
+        "paramValue" -> response.paramValue.getOrElse("paramValue")
+      ),
       auditType = auditType
     )
-  }
 
-  private def buildQueryParams: List[(String, String)] = {
+  private def buildQueryParams: List[(String, String)] =
     List("regime" -> "CDS", "acknowledgementReference" -> generateUUIDAsString)
-  }
 
   private def generateUUIDAsString: String = UUID.randomUUID().toString.replace("-", "")
 }
-

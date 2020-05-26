@@ -17,21 +17,41 @@
 package uk.gov.hmrc.customs.emailfrontend.audit
 
 import javax.inject.Inject
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.audit.model.{Audit, DataEvent}
+import uk.gov.hmrc.play.audit.model.{Audit, DataEvent, ExtendedDataEvent}
 
 class Auditable @Inject()(auditConnector: AuditConnector, appConfig: AppConfig) {
 
   private val audit = Audit(appConfig.appName, auditConnector)
+  private val auditSource: String = appConfig.appName
 
-  def sendDataEvent(transactionName: String, path: String = "N/A", detail: Map[String, String], auditType: String)(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(DataEvent(
-      appConfig.appName,
-      auditType,
-      tags = hc.toAuditTags(transactionName, path),
-      detail = hc.toAuditDetails(detail.toSeq: _*))
+  def sendDataEvent(transactionName: String, path: String = "N/A", detail: Map[String, String], auditType: String)(
+    implicit hc: HeaderCarrier
+  ): Unit =
+    audit.sendDataEvent(
+      DataEvent(
+        auditSource,
+        auditType,
+        tags = hc.toAuditTags(transactionName, path),
+        detail = hc.toAuditDetails(detail.toSeq: _*)
+      )
     )
+
+  def sendExtendedDataEvent(
+    transactionName: String,
+    path: String = "N/A",
+    tags: Map[String, String] = Map.empty,
+    details: JsValue,
+    eventType: String
+  )(implicit hc: HeaderCarrier): Unit = {
+
+    import scala.concurrent.ExecutionContext.Implicits.global
+    auditConnector.sendExtendedEvent(
+      ExtendedDataEvent(auditSource, eventType, tags = hc.toAuditTags(transactionName, path) ++ tags, detail = details)
+    )
+  }
 }

@@ -33,14 +33,19 @@ trait StubAuthClient {
       |}
     """.stripMargin
 
-  def authenticate(internalId: String, eoriNumber: String, credentialRole: String = "User", affinityGroup: String = "Organisation"): StubMapping = {
-    stubFor(post(urlEqualTo(authUrl))
-      .withRequestBody(equalToJson(authRequestJson))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withBody(
-            s"""{"allEnrolments": [
+  def authenticate(
+      internalId: String,
+      eoriNumber: String,
+      credentialRole: String = "User",
+      affinityGroup: String = "Organisation"
+  ): StubMapping =
+    stubFor(
+      post(urlEqualTo(authUrl))
+        .withRequestBody(equalToJson(authRequestJson))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withBody(s"""{"allEnrolments": [
                |  {
                | "key": "HMRC-CUS-ORG",
                | "identifiers": [
@@ -54,31 +59,36 @@ trait StubAuthClient {
                |"internalId": "$internalId" , "credentialRole": "$credentialRole", "affinityGroup": "$affinityGroup"
                |}
               """.stripMargin)
-      )
+        )
     )
-  }
 
-  def authenticateGGUserAsAgentWithNoCDSEnrolment(internalId: String, eoriNumber: String, credentialRole: String, affinityGroup: String): StubMapping = {
-    stubFor(post(urlEqualTo(authUrl))
-      .withRequestBody(equalToJson(authRequestJson))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.OK)
-          .withBody(
-            s"""{
+  def authenticateGGUserAsAgentWithNoCDSEnrolment(
+      internalId: String,
+      eoriNumber: String,
+      credentialRole: String,
+      affinityGroup: String
+  ): StubMapping =
+    stubFor(
+      post(urlEqualTo(authUrl))
+        .withRequestBody(equalToJson(authRequestJson))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withBody(s"""{
                | "allEnrolments": [], "internalId": "$internalId" , "credentialRole": "$credentialRole", "affinityGroup": "$affinityGroup"
                 }""".stripMargin)
-      )
+        )
     )
-  }
 
-  def authenticateGGUserWithError(internalId: String, reason: String): StubMapping = {
-    stubFor(post(urlEqualTo(authUrl))
-      .withRequestBody(equalToJson(authRequestJson))
-      .willReturn(
-        aResponse()
-          .withStatus(Status.UNAUTHORIZED).withHeader("WWW-Authenticate", s"""MDTP detail="$reason"""")
-      )
+  def authenticateGGUserWithError(internalId: String,
+                                  reason: String): StubMapping =
+    stubFor(
+      post(urlEqualTo(authUrl))
+        .withRequestBody(equalToJson(authRequestJson))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.UNAUTHORIZED)
+            .withHeader("WWW-Authenticate", s"""MDTP detail="$reason"""")
+        )
     )
-  }
 }

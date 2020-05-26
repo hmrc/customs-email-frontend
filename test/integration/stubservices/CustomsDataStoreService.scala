@@ -23,14 +23,16 @@ import utils.WireMockRunner
 
 trait CustomsDataStoreService extends WireMockRunner {
 
-  def returnCustomsDataStoreResponse(url: String, request: String, status: Int): Unit = {
-    stubFor(post(urlEqualTo(url))
-      .withRequestBody(equalToJson(request))
-      .willReturn(
-        aResponse()
-          .withStatus(status)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  def returnCustomsDataStoreResponse(url: String,
+                                     request: String,
+                                     status: Int): Unit =
+    stubFor(
+      post(urlEqualTo(url))
+        .withRequestBody(equalToJson(request))
+        .willReturn(
+          aResponse()
+            .withStatus(status)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 }

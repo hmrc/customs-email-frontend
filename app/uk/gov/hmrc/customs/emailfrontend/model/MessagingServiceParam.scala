@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.model
 
 import play.api.libs.json.Json
 
-
 case class MessagingServiceParam(paramName: String, paramValue: String)
 
 object MessagingServiceParam {
@@ -28,6 +27,3 @@ object MessagingServiceParam {
   val Fail = "FAIL"
   val formBundleIdParamName = "ETMPFORMBUNDLENUMBER"
 }
-
-
-

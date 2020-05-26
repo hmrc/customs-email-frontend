@@ -23,13 +23,15 @@ import play.mvc.Http.Status._
 
 object EmailVerificationStubService {
 
-  def expectedGetUrl(email:String) = s"/email-verification/verified-email-addresses/$email"
+  def expectedGetUrl(email: String) =
+    s"/email-verification/verified-email-addresses/$email"
 
-  private val expectedVerifiedEmailPostUrl = "/email-verification/verified-email-check"
+  private val expectedVerifiedEmailPostUrl =
+    "/email-verification/verified-email-check"
 
   private val expectedPostUrl = "/email-verification/verification-requests"
 
-  private def verificationRequestJson(): String = {
+  private def verificationRequestJson(): String =
     """{
       |"email":"test@example.com",
       |"templateId" : "verifyEmailAddress",
@@ -38,7 +40,6 @@ object EmailVerificationStubService {
       |"continueUrl":"/customs/test-continue-url"
       |}
     """.stripMargin
-  }
 
   val internalServerErrorResponse: String = {
     """{
@@ -47,50 +48,52 @@ object EmailVerificationStubService {
       |}""".stripMargin
   }
 
-  def stubEmailVerified() = {
+  def stubEmailVerified() =
     stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, "", OK)
-  }
 
-  def stubEmailNotVerified() = {
+  def stubEmailNotVerified() =
     stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, "", NOT_FOUND)
-  }
 
-  def stubEmailVerifiedInternalServerError() = {
-    stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, internalServerErrorResponse, INTERNAL_SERVER_ERROR)
-  }
+  def stubEmailVerifiedInternalServerError() =
+    stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl,
+                                 internalServerErrorResponse,
+                                 INTERNAL_SERVER_ERROR)
 
-  def stubVerificationRequestSent()={
-    stubVerificationRequest(expectedPostUrl,"", CREATED)
-  }
+  def stubVerificationRequestSent() =
+    stubVerificationRequest(expectedPostUrl, "", CREATED)
 
-  def stubEmailAlreadyVerified()={
-    stubVerificationRequest(expectedPostUrl,"", CONFLICT)
-  }
+  def stubEmailAlreadyVerified() =
+    stubVerificationRequest(expectedPostUrl, "", CONFLICT)
 
-  def stubVerificationRequestError()={
-    stubVerificationRequest(expectedPostUrl, internalServerErrorResponse, INTERNAL_SERVER_ERROR)
-  }
+  def stubVerificationRequestError() =
+    stubVerificationRequest(expectedPostUrl,
+                            internalServerErrorResponse,
+                            INTERNAL_SERVER_ERROR)
 
-  def stubTheVerifiedEmailResponse(url: String, response: String, status: Int): Unit = {
-    stubFor(post(urlEqualTo(url))
-      .willReturn(
-        aResponse()
-          .withStatus(status)
-          .withBody(response)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  def stubTheVerifiedEmailResponse(url: String,
+                                   response: String,
+                                   status: Int): Unit =
+    stubFor(
+      post(urlEqualTo(url))
+        .willReturn(
+          aResponse()
+            .withStatus(status)
+            .withBody(response)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 
-  def stubVerificationRequest(url: String, response: String, status: Int): Unit = {
-    stubFor(post(urlMatching(url))
-      .withRequestBody(equalToJson(verificationRequestJson()))
-      .willReturn(
-        aResponse()
-          .withBody(response)
-          .withStatus(status)
-          .withHeader(CONTENT_TYPE, JSON)
-      )
+  def stubVerificationRequest(url: String,
+                              response: String,
+                              status: Int): Unit =
+    stubFor(
+      post(urlMatching(url))
+        .withRequestBody(equalToJson(verificationRequestJson()))
+        .willReturn(
+          aResponse()
+            .withBody(response)
+            .withStatus(status)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
     )
-  }
 }

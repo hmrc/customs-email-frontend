@@ -16,55 +16,85 @@
 
 package endtoend.specs
 
-import common.pages.{AuthLoginStubPage, ChangeYourEmailAddressPage, CheckYourEmailAddressPage, EmailConfirmedPage, FeedbackPage, ListedOnReferrerPage, NotListedOnReferrerPage, ReferrerPage, StartPage, WhatIsYourEmailPage}
+import common.pages.{
+  AuthLoginStubPage,
+  ChangeYourEmailAddressPage,
+  CheckYourEmailAddressPage,
+  EmailConfirmedPage,
+  FeedbackPage,
+  ListedOnReferrerPage,
+  NotListedOnReferrerPage,
+  ReferrerPage,
+  StartPage,
+  WhatIsYourEmailPage
+}
 import utils.SpecHelper
 
-class AllowReferrerServicesEndToEndSpec extends EndToEndTestSpec with SpecHelper {
+class AllowReferrerServicesEndToEndSpec
+    extends EndToEndTestSpec
+    with SpecHelper {
 
-  feature("Allow users to verify email address when they are available in the referrer list") {
+  feature(
+    "Allow users to verify email address when they are available in the referrer list") {
 
-
-    scenario("User should be allowed to verify email address when redirected from 'customs-finance'") {
-      Given("the user is successfully logged in 'customs-finance' service and the email address is not verified")
+    scenario(
+      "User should be allowed to verify email address when redirected from 'customs-finance'") {
+      Given(
+        "the user is successfully logged in 'customs-finance' service and the email address is not verified")
       navigateTo(AuthLoginStubPage)
-      AuthLoginStubPage.login(generateRandomNumberString(), eori = "GB123123123")
+      AuthLoginStubPage.login(generateRandomNumberString(),
+                              eori = "GB123123123")
       verifyCurrentPage(StartPage)
 
-      When("the user gets redirected to 'manage-email-cds' service for email verification")
+      When(
+        "the user gets redirected to 'manage-email-cds' service for email verification")
       navigateTo(ListedOnReferrerPage)
       verifyCurrentPage(WhatIsYourEmailPage)
 
       Then("the user should be able to successfully verify the email")
-      enterText(WhatIsYourEmailPage.emailTextFieldId)("new-john.doe@example.com")
+      enterText(WhatIsYourEmailPage.emailTextFieldId)(
+        "new-john.doe@example.com")
       clickContinue()
       verifyCurrentPage(CheckYourEmailAddressPage)
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address new-john.doe@example.com will be active in 2 hours.")
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartThree)("You can now continue to Get your import VAT and duty adjustment statements.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)(
+        "Your email address new-john.doe@example.com will be active in 2 hours."
+      )
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartThree)(
+        "You can now continue to Get your import VAT and duty adjustment statements."
+      )
       clickOn(EmailConfirmedPage.signOutId)
     }
 
-    scenario("User should be allowed to verify email address when redirected from a service which is not on the referrer list") {
-      Given("the user is successfully logged in 'an non referrer' service and the email address is not verified")
+    scenario(
+      "User should be allowed to verify email address when redirected from a service which is not on the referrer list"
+    ) {
+      Given(
+        "the user is successfully logged in 'an non referrer' service and the email address is not verified")
       navigateTo(AuthLoginStubPage)
-      AuthLoginStubPage.login(generateRandomNumberString(), eori = "GB123123123")
+      AuthLoginStubPage.login(generateRandomNumberString(),
+                              eori = "GB123123123")
       verifyCurrentPage(StartPage)
 
-      When("the user gets redirected to 'manage-email-cds' service for email verification")
+      When(
+        "the user gets redirected to 'manage-email-cds' service for email verification")
       navigateTo(NotListedOnReferrerPage)
       verifyCurrentPage(WhatIsYourEmailPage)
 
       Then("the user should be able to successfully verify the email")
-      enterText(WhatIsYourEmailPage.emailTextFieldId)("new-john.doe@example.com")
+      enterText(WhatIsYourEmailPage.emailTextFieldId)(
+        "new-john.doe@example.com")
       clickContinue()
       verifyCurrentPage(CheckYourEmailAddressPage)
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
       verifyCurrentPage(EmailConfirmedPage)
 
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address new-john.doe@example.com will be active in 2 hours.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)(
+        "Your email address new-john.doe@example.com will be active in 2 hours."
+      )
       clickOn(EmailConfirmedPage.signOutId)
       verifyCurrentPage(FeedbackPage)
     }

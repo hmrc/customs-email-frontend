@@ -18,14 +18,13 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
-import play.api.i18n.{Lang, MessagesApi}
+import play.api.i18n.Lang
 import play.api.mvc.{Call, ControllerComponents}
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 
 @Singleton
-class EmailLanguageController @Inject()(config: Configuration,
-                                       languageUtils: LanguageUtils,
-                                       cc: ControllerComponents) extends LanguageController(config, languageUtils, cc) {
+class EmailLanguageController @Inject()(config: Configuration, languageUtils: LanguageUtils, cc: ControllerComponents)
+    extends LanguageController(config, languageUtils, cc) {
   override protected def fallbackURL: String = "/customs/manage-email-cds"
   def langToCall(lang: String): String => Call = EmailLanguageController.routeToSwitchLanguage
 
@@ -33,10 +32,8 @@ class EmailLanguageController @Inject()(config: Configuration,
 }
 
 object EmailLanguageController {
-  def routeToSwitchLanguage: String => Call = (lang: String) => routes.EmailLanguageController.switchToLanguage(lang)
+  def routeToSwitchLanguage: String => Call =
+    (lang: String) => routes.EmailLanguageController.switchToLanguage(lang)
 
-  def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy")
-  )
+  def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 }

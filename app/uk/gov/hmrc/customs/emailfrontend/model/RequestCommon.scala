@@ -20,20 +20,14 @@ import org.joda.time.DateTime
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.RandomUUIDGenerator
 
-
-case class RequestCommon(regime: String,
-                         receiptDate: DateTime,
-                         acknowledgementReference: String)
-
+case class RequestCommon(regime: String, receiptDate: DateTime, acknowledgementReference: String)
 
 object RequestCommon {
 
   import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
 
-  def apply(): RequestCommon = RequestCommon("CDS",
-    receiptDate = dateTime,
-    acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString
-  )
+  def apply(): RequestCommon =
+    RequestCommon("CDS", receiptDate = dateTime, acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString)
 
   implicit val formats = Json.format[RequestCommon]
 }

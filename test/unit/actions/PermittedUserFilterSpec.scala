@@ -26,15 +26,22 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.PermittedUserFilter
-import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, InternalId, LoggedInUser}
+import uk.gov.hmrc.customs.emailfrontend.model.{
+  AuthenticatedRequest,
+  InternalId,
+  LoggedInUser
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class PermittedUserFilterSpec extends PlaySpec with ScalaFutures {
 
-  def responseHeader(e:String) = ResponseHeader(303, Map("Location" -> s"/manage-email-cds/ineligible/$e"))
-  val expectedResultNotAdmin = Result(responseHeader("not-admin"), HttpEntity.NoEntity)
-  val expectedResultIsAgent = Result(responseHeader("is-agent"), HttpEntity.NoEntity)
+  def responseHeader(e: String) =
+    ResponseHeader(303, Map("Location" -> s"/manage-email-cds/ineligible/$e"))
+  val expectedResultNotAdmin =
+    Result(responseHeader("not-admin"), HttpEntity.NoEntity)
+  val expectedResultIsAgent =
+    Result(responseHeader("is-agent"), HttpEntity.NoEntity)
 
   val values = Table(
     ("affinityGroup", "role", "expected"),
@@ -45,7 +52,9 @@ class PermittedUserFilterSpec extends PlaySpec with ScalaFutures {
     (Some(Individual), Some(User), None),
     (Some(Individual), Some(User), None)
   )
-  val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GBXXXXXXXXXX")))
+  val userEnrollments: Enrolments = Enrolments(
+    Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GBXXXXXXXXXX"))
+  )
   val fakeRequest = FakeRequest()
   val internalId = InternalId("internalId")
 
@@ -53,7 +62,8 @@ class PermittedUserFilterSpec extends PlaySpec with ScalaFutures {
     "allow the user" in {
       val isPermittedUser = new PermittedUserFilter()
       forAll(values) { (affinityGroup, role, expected) =>
-        val user = LoggedInUser(userEnrollments, internalId, affinityGroup, role)
+        val user =
+          LoggedInUser(userEnrollments, internalId, affinityGroup, role)
         val authenticatedRequest = AuthenticatedRequest(fakeRequest, user)
         isPermittedUser.filter(authenticatedRequest).futureValue mustBe expected
       }

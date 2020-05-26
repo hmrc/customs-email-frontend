@@ -31,7 +31,11 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CustomsDataStoreServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
+class CustomsDataStoreServiceSpec
+    extends PlaySpec
+    with MockitoSugar
+    with BeforeAndAfterEach
+    with ScalaFutures {
 
   private val mockConnector = mock[CustomsDataStoreConnector]
 
@@ -42,21 +46,28 @@ class CustomsDataStoreServiceSpec extends PlaySpec with MockitoSugar with Before
   val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
   val email = "abc@def.com"
 
-  override protected def beforeEach(): Unit = {
+  override protected def beforeEach(): Unit =
     reset(mockConnector)
-  }
 
   "Customs Data Store Service" should {
     "return a status OK when data store request is successful" in {
-      when(mockConnector.storeEmailAddress(any(), any())(any())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockConnector.storeEmailAddress(any(), any())(any()))
+        .thenReturn(Future.successful(HttpResponse(OK)))
 
-      service.storeEmail(enrolmentIdentifier, email).futureValue.status mustBe OK
+      service
+        .storeEmail(enrolmentIdentifier, email)
+        .futureValue
+        .status mustBe OK
     }
   }
 
   "return a status BAD_REQUEST when data store request is successful" in {
-    when(mockConnector.storeEmailAddress(any(), any())(any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
+    when(mockConnector.storeEmailAddress(any(), any())(any()))
+      .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
-    service.storeEmail(enrolmentIdentifier, email).futureValue.status mustBe BAD_REQUEST
+    service
+      .storeEmail(enrolmentIdentifier, email)
+      .futureValue
+      .status mustBe BAD_REQUEST
   }
 }

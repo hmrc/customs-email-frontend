@@ -16,29 +16,38 @@
 
 package acceptance.specs
 
-import acceptance.wiremockstub.{StubAuthClient, StubEmailVerification, StubSave4Later, StubSubscriptionDisplay}
-import common.pages.{ChangeYourEmailAddressPage, StartPage, YouCannotChangeYourEmailAddressPage}
+import acceptance.wiremockstub.{
+  StubAuthClient,
+  StubEmailVerification,
+  StubSave4Later,
+  StubSubscriptionDisplay
+}
+import common.pages.{
+  ChangeYourEmailAddressPage,
+  StartPage,
+  YouCannotChangeYourEmailAddressPage
+}
 import org.openqa.selenium.Cookie
 import uk.gov.hmrc.http.SessionKeys
 import utils.SpecHelper
 
 class AmendmentInProgressSpec
-  extends AcceptanceTestSpec
-  with StubSave4Later
-  with StubAuthClient
-  with SpecHelper
-  with StubEmailVerification
-  with StubSubscriptionDisplay {
+    extends AcceptanceTestSpec
+    with StubSave4Later
+    with StubAuthClient
+    with SpecHelper
+    with StubEmailVerification
+    with StubSubscriptionDisplay {
 
   feature("Amendment already in progress") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario("User returning to the service within 2 hours after successfully amending the email") {
+    scenario(
+      "User returning to the service within 2 hours after successfully amending the email") {
 
       Given("the user has successfully amended the email")
-
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithData(randomInternalId)(emailDetailsWithTimestamp)
 
@@ -48,11 +57,13 @@ class AmendmentInProgressSpec
       verifyCurrentPage(StartPage)
       clickOn(StartPage.startNowButton)
 
-      Then("the user should be redirected to 'You cannot change your email address' page")
+      Then(
+        "the user should be redirected to 'You cannot change your email address' page")
       verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
     }
 
-    scenario("User returning to the service after 2 hours of successfully amending the email") {
+    scenario(
+      "User returning to the service after 2 hours of successfully amending the email") {
 
       Given("the user has successfully amended the email")
       authenticate(randomInternalId, randomEoriNumber)

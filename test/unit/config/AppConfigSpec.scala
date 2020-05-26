@@ -24,8 +24,11 @@ class AppConfigSpec extends ControllerSpec {
   "AppConfig" should {
 
     "have referrer key mapping in messages.en properties" in {
-      appConfig.referrerName.map(referrerName =>
-        messagesApi.messages("en")(s"customs.emailfrontend.email-confirmed.redirect.info.${referrerName.name}") != "")
+      appConfig.referrerName.map(
+        referrerName =>
+          messagesApi.messages("en")(
+            s"customs.emailfrontend.email-confirmed.redirect.info.${referrerName.name}") != ""
+      )
     }
 
     "have assetsPrefix defined" in {
@@ -42,12 +45,6 @@ class AppConfigSpec extends ControllerSpec {
     }
     "have feedbackSurveyUrl defined" in {
       appConfig.feedbackUrl shouldBe "http://localhost:9514/feedback/manage-email-cds"
-    }
-    "have save4LaterDomain defined" in {
-      appConfig.save4LaterDomain shouldBe "save4later"
-    }
-    "have save4LaterBaseUrl defined" in {
-      appConfig.save4LaterBaseUrl shouldBe "http://localhost:9272"
     }
     "have emailVerificationBaseUrl defined" in {
       appConfig.emailVerificationBaseUrl shouldBe "http://localhost:9744"
@@ -80,7 +77,10 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.updateVerifiedEmailUrl shouldBe "http://localhost:8989/update-verified-email"
     }
     "have referrerName defined" in {
-      appConfig.referrerName shouldBe Seq(ReferrerName("customs-finance", "/customs/payment-records"), ReferrerName("customs-exports", "/xyz"))
+      appConfig.referrerName shouldBe Seq(
+        ReferrerName("customs-finance", "/customs/payment-records"),
+        ReferrerName("customs-exports", "/xyz")
+      )
     }
   }
 }

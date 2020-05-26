@@ -20,21 +20,23 @@ import common.pages._
 import acceptance.wiremockstub._
 import utils.SpecHelper
 
-class EmailConfirmedSpec extends AcceptanceTestSpec
-  with SpecHelper
-  with StubSave4Later
-  with StubAuthClient
-  with StubEmailVerification
-  with StubCustomsDataStore
-  with StubSubscriptionDisplay
-  with StubUpdateVerifiedEmail {
+class EmailConfirmedSpec
+    extends AcceptanceTestSpec
+    with SpecHelper
+    with StubSave4Later
+    with StubAuthClient
+    with StubEmailVerification
+    with StubCustomsDataStore
+    with StubSubscriptionDisplay
+    with StubUpdateVerifiedEmail {
 
   feature("Show Email confirmed to user when the email address is verified") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario("Show email confirmed page without sending email verification link when user email address is verified") {
+    scenario(
+      "Show email confirmed page without sending email verification link when user email address is verified") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
@@ -67,13 +69,17 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
 
       Then("the user should be on 'Email confirmed' page")
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address b@a.com will be active in 2 hours.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)(
+        "Your email address b@a.com will be active in 2 hours."
+      )
       verifyEmailVerifiedIsCalled(1)
       verifyCustomsDataStoreIsCalled(1)
       verifyUpdateVerifiedEmailIsCalled(1)
     }
 
-    scenario("Show 'Email confirmed' page when user returns to the service after verifying the email address but could not successfully update the email address") {
+    scenario(
+      "Show 'Email confirmed' page when user returns to the service after verifying the email address but could not successfully update the email address"
+    ) {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
@@ -105,7 +111,8 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifyCurrentPage(VerifyYourEmailAddressPage)
       assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
 
-      When("the user returns to the service after confirming the email address but was unsuccessful to update")
+      When(
+        "the user returns to the service after confirming the email address but was unsuccessful to update")
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithData(randomInternalId)(emailDetailsWithPreviousEmail)
       stubVerifiedEmailResponse()
@@ -115,15 +122,21 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifyCurrentPage(StartPage)
       clickOn(StartPage.startNowButton)
 
-      Then("the user should be on 'Email confirmed' page upon successfully updating the email")
+      Then(
+        "the user should be on 'Email confirmed' page upon successfully updating the email")
       verifyCurrentPage(EmailConfirmedPage)
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)("Your email address b@a.com will be active in 2 hours.")
-      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)("Until then we will send CDS emails to old@email.com.")
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartOne)(
+        "Your email address b@a.com will be active in 2 hours."
+      )
+      assertIsTextVisible(EmailConfirmedPage.verifyEmailConfirmedTextPartTwo)(
+        "Until then we will send CDS emails to old@email.com."
+      )
       verifyCustomsDataStoreIsCalled(1)
       verifyUpdateVerifiedEmailIsCalled(1)
     }
 
-    scenario("Show 'Check your email' page when user returns to the service without verifying the email address") {
+    scenario(
+      "Show 'Check your email' page when user returns to the service without verifying the email address") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
@@ -155,7 +168,8 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifyCurrentPage(VerifyYourEmailAddressPage)
       assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
 
-      When("the user returns to the service without confirming the email address")
+      When(
+        "the user returns to the service without confirming the email address")
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithData(randomInternalId)(emailDetails)
       stubNotVerifiedEmailResponse()
@@ -171,7 +185,9 @@ class EmailConfirmedSpec extends AcceptanceTestSpec
       verifyEmailVerifiedIsCalled(1)
     }
 
-    scenario("Show verify your email page when user does not verify the email and tries to access the 'Email Confirmed' page") {
+    scenario(
+      "Show verify your email page when user does not verify the email and tries to access the 'Email Confirmed' page"
+    ) {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)

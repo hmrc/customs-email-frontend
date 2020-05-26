@@ -33,7 +33,9 @@ class ErrorHandlerSpec extends ControllerSpec with ScalaFutures {
 
   "ErrorHandlerSpec" should {
     "define standardErrorTemplate" in {
-      val result = errorHandler.standardErrorTemplate("title", "heading", "message")(request)
+      val result = errorHandler.standardErrorTemplate("title",
+                                                      "heading",
+                                                      "message")(request)
       val doc = Jsoup.parse(contentAsString(result))
       doc.title shouldBe "title"
       doc.body.getElementsByTag("h1").text shouldBe "heading"

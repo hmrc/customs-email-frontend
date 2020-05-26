@@ -28,24 +28,28 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.Constants._
 import utils.WireMockRunner
 
-import scala.concurrent.ExecutionContext.Implicits.global
+class UpdateVerifiedEmailIntegrationSpec
+    extends IntegrationSpec
+    with WireMockRunner {
 
-class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
-  with BeforeAndAfter
-  with BeforeAndAfterAll
-  with GuiceOneAppPerSuite with WireMockRunner {
+  override implicit lazy val app: Application = new GuiceApplicationBuilder()
+    .configure(
+      Map(
+        "microservice.services.customs-email-proxy.host" -> wireMockHost,
+        "microservice.services.customs-email-proxy.port" -> wireMockPort,
+        "auditing.enabled" -> false
+      )
+    )
+    .build()
 
-  override implicit lazy val app: Application = new GuiceApplicationBuilder().configure(Map(
-    "microservice.services.customs-email-proxy.host" -> wireMockHost,
-    "microservice.services.customs-email-proxy.port" -> wireMockPort,
-    "auditing.enabled" -> false
-  )).build()
+  private lazy val connector =
+    app.injector.instanceOf[UpdateVerifiedEmailConnector]
 
-  private lazy val connector = app.injector.instanceOf[UpdateVerifiedEmailConnector]
-
-  private val verifiedEmailResponse = UpdateVerifiedEmailStubService.updatedVerifiedEmailResponse
-  private val request = Json.parse(UpdateVerifiedEmailStubService.verifiedEmailRequest).as[VerifiedEmailRequest]
-
+  private val verifiedEmailResponse =
+    UpdateVerifiedEmailStubService.updatedVerifiedEmailResponse
+  private val request = Json
+    .parse(UpdateVerifiedEmailStubService.verifiedEmailRequest)
+    .as[VerifiedEmailRequest]
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -53,19 +57,18 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
     resetMockServer()
   }
 
-  override def beforeAll(): Unit = {
+  override def beforeAll(): Unit =
     startMockServer()
-  }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     stopMockServer()
-  }
 
   "Calling updateVerifiedEmail" when {
     "the email was updated successfully" should {
       "return an EmailVerified response" in {
         UpdateVerifiedEmailStubService.stubEmailUpdated(verifiedEmailResponse)
-        val expected = Right(Json.parse(verifiedEmailResponse).as[VerifiedEmailResponse])
+        val expected =
+          Right(Json.parse(verifiedEmailResponse).as[VerifiedEmailResponse])
         val result = connector.updateVerifiedEmail(request, None).futureValue
 
         result mustBe expected
@@ -104,7 +107,8 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec
 
     "service returned non fatal" should {
       "return non unhandled response" in {
-        UpdateVerifiedEmailStubService.stubEmailUpdatedResponseWithStatus("", 502)
+        UpdateVerifiedEmailStubService.stubEmailUpdatedResponseWithStatus("",
+                                                                          502)
         val expected = Left(UnhandledException)
         val result = connector.updateVerifiedEmail(request, None).futureValue
 

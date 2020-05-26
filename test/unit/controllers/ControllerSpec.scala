@@ -35,37 +35,50 @@ import unit.AuthBuilder
 
 import scala.concurrent.ExecutionContext
 
-trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite with AuthBuilder with OptionValues {
+trait ControllerSpec
+    extends WordSpec
+    with Matchers
+    with MockitoSugar
+    with GuiceOneAppPerSuite
+    with AuthBuilder
+    with OptionValues {
 
   implicit def materializer: Materializer = Play.materializer
 
   implicit def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  implicit def bodyParser: BodyParser[AnyContent] = app.injector.instanceOf[BodyParser[AnyContent]]
+  implicit def bodyParser: BodyParser[AnyContent] =
+    app.injector.instanceOf[BodyParser[AnyContent]]
 
   val env: Environment = Environment.simple()
 
   implicit val config: Configuration = Configuration.load(env)
 
-  private val serviceConfig = new ServicesConfig(config, new RunMode(config, Mode.Dev))
+  private val serviceConfig =
+    new ServicesConfig(config, new RunMode(config, Mode.Dev))
 
   implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig)
 
-  val request: Request[String] = Request(FakeRequest("GET", "/").withCSRFToken, "")
+  val request: Request[String] =
+    Request(FakeRequest("GET", "/").withCSRFToken, "")
 
-  implicit val cc: ControllerComponents = app.injector.instanceOf[ControllerComponents]
+  implicit val cc: ControllerComponents =
+    app.injector.instanceOf[ControllerComponents]
 
   implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
 
-  implicit val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
+  implicit val mcc: MessagesControllerComponents =
+    app.injector.instanceOf[MessagesControllerComponents]
 
-  val idsRetrievalResult: Option[AffinityGroup] ~ Option[String] = new ~(Option(AffinityGroup.Organisation), Option("userId"))
+  val idsRetrievalResult: Option[AffinityGroup] ~ Option[String] =
+    new ~(Option(AffinityGroup.Organisation), Option("userId"))
 
   val fakeAction = new ActionsImpl(mockAuthConnector, config, env, mcc)
 
   private def formUrlEncodedBody(data: Seq[(String, String)]) =
     AnyContentAsFormUrlEncoded(groupBy(data)(_._1))
 
-  def requestWithForm(data: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
+  def requestWithForm(
+      data: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
     Request(FakeRequest("GET", "/").withCSRFToken, formUrlEncodedBody(data))
 }

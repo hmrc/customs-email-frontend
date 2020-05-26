@@ -16,9 +16,26 @@
 
 package integration
 
-import org.scalatest.BeforeAndAfterAll
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration.{Duration, FiniteDuration}
 
-trait IntegrationSpec extends PlaySpec with ScalaFutures with Eventually with IntegrationPatience with BeforeAndAfterAll with GuiceOneAppPerSuite
+trait IntegrationSpec
+    extends PlaySpec
+    with ScalaFutures
+    with Eventually
+    with IntegrationPatience
+    with BeforeAndAfter
+    with BeforeAndAfterAll
+    with GuiceOneAppPerSuite {
+  implicit val defaultTimeout: FiniteDuration = 5 seconds
+
+  implicit def extractAwait[A](future: Future[A]): A = await[A](future)
+
+  def await[A](future: Future[A])(implicit timeout: Duration): A =
+    Await.result(future, timeout)
+}

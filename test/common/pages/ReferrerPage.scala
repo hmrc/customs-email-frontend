@@ -20,15 +20,18 @@ import utils.{Configuration, SpecHelper}
 
 class ReferrerPage extends BasePage with SpecHelper {
 
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/service/"
+  override val url
+    : String = Configuration.frontendHost + "/manage-email-cds/service/"
   override val title = "What is your email address?"
 
 }
 
 object ListedOnReferrerPage extends ReferrerPage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/service/customs-finance"
+  override val url
+    : String = Configuration.frontendHost + "/manage-email-cds/service/customs-finance"
 }
 
 object NotListedOnReferrerPage extends ReferrerPage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/service/xxx"
+  override val url
+    : String = Configuration.frontendHost + "/manage-email-cds/service/xxx"
 }

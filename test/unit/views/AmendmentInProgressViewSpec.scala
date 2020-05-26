@@ -24,7 +24,8 @@ class AmendmentInProgressViewSpec extends ViewSpec {
 
   private val view = app.injector.instanceOf[amendment_in_progress]
 
-  private val doc = Jsoup.parse(contentAsString(view.render("test@email.com", request, messages)))
+  private val doc = Jsoup.parse(
+    contentAsString(view.render("test@email.com", request, messages)))
 
   "Amendment In Progress page" should {
     "have a correct title" in {
@@ -32,16 +33,22 @@ class AmendmentInProgressViewSpec extends ViewSpec {
     }
 
     "have the correct heading" in {
-      doc.getElementsByTag("h1").text mustBe "You cannot change your email address"
+      doc
+        .getElementsByTag("h1")
+        .text mustBe "You cannot change your email address"
     }
 
     "have the correct content" in {
-      doc.getElementById("info").text mustBe "You recently changed your email address to test@email.com. If you need to change this again, you will need to try again in 2 hours."
+      doc
+        .getElementById("info")
+        .text mustBe "You recently changed your email address to test@email.com. If you need to change this again, you will need to try again in 2 hours."
     }
 
     "have the sign out button" in {
       doc.getElementsByClass("button").text mustBe "Sign out"
-      doc.getElementsByClass("button").attr("href") mustBe "/manage-email-cds/signout"
+      doc
+        .getElementsByClass("button")
+        .attr("href") mustBe "/manage-email-cds/signout"
     }
   }
 }

@@ -24,7 +24,12 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{HttpErrorResponse, ServiceUnavailable, VerifiedEmailRequest, VerifiedEmailResponse}
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{
+  HttpErrorResponse,
+  ServiceUnavailable,
+  VerifiedEmailRequest,
+  VerifiedEmailResponse
+}
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.UpdateVerifiedEmailService
@@ -33,7 +38,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UpdateVerifiedEmailServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
+class UpdateVerifiedEmailServiceSpec
+    extends PlaySpec
+    with MockitoSugar
+    with BeforeAndAfterEach
+    with ScalaFutures {
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private val mockConnector = mock[UpdateVerifiedEmailConnector]
@@ -45,35 +54,61 @@ class UpdateVerifiedEmailServiceSpec extends PlaySpec with MockitoSugar with Bef
   private val dateTime = DateTime.now()
 
   private val bundleIdUpdateVerifiedEmailResponse = VerifiedEmailResponse(
-    UpdateVerifiedEmailResponse(ResponseCommon("OK", None, dateTime, List(MessagingServiceParam(formBundleIdParamName, "testValue")))))
+    UpdateVerifiedEmailResponse(
+      ResponseCommon(
+        "OK",
+        None,
+        dateTime,
+        List(MessagingServiceParam(formBundleIdParamName, "testValue")))
+    )
+  )
   private val businessErrorUpdateVerifiedEmailResponse = VerifiedEmailResponse(
-    UpdateVerifiedEmailResponse(ResponseCommon("OK", Some("004 - Duplicate Acknowledgement Reference"), dateTime, List(MessagingServiceParam(positionParamName, Fail)))))
+    UpdateVerifiedEmailResponse(
+      ResponseCommon(
+        "OK",
+        Some("004 - Duplicate Acknowledgement Reference"),
+        dateTime,
+        List(MessagingServiceParam(positionParamName, Fail))
+      )
+    )
+  )
   private val serviceUnavailableResponse = ServiceUnavailable
 
-  override protected def beforeEach(): Unit = {
+  override protected def beforeEach(): Unit =
     reset(mockConnector)
-  }
 
-  def mockGetEmailVerificationState(response: Either[HttpErrorResponse, VerifiedEmailResponse]): Unit =
-    when(mockConnector.updateVerifiedEmail(any[VerifiedEmailRequest], any[Option[String]])(any[HeaderCarrier])) thenReturn Future.successful(response)
+  def mockGetEmailVerificationState(
+      response: Either[HttpErrorResponse, VerifiedEmailResponse]): Unit =
+    when(
+      mockConnector.updateVerifiedEmail(
+        any[VerifiedEmailRequest],
+        any[Option[String]])(any[HeaderCarrier])) thenReturn Future
+      .successful(response)
 
   "Calling UpdateVerifiedEmailService updateVerifiedEmail" should {
     "return Some(true) when VerifiedEmailResponse returned with bundleId" in {
       mockGetEmailVerificationState(Right(bundleIdUpdateVerifiedEmailResponse))
 
-      service.updateVerifiedEmail(None, email, eoriNumber).futureValue mustBe Some(true)
+      service
+        .updateVerifiedEmail(None, email, eoriNumber)
+        .futureValue mustBe Some(true)
     }
 
     "return None when VerifiedEmailResponse returned without bundleId" in {
-      mockGetEmailVerificationState(Right(businessErrorUpdateVerifiedEmailResponse))
+      mockGetEmailVerificationState(
+        Right(businessErrorUpdateVerifiedEmailResponse))
 
-      service.updateVerifiedEmail(None, email, eoriNumber).futureValue mustBe Some(false)
+      service
+        .updateVerifiedEmail(None, email, eoriNumber)
+        .futureValue mustBe Some(false)
     }
 
     "return None when HttpErrorResponse returned" in {
       mockGetEmailVerificationState(Left(serviceUnavailableResponse))
 
-      service.updateVerifiedEmail(None, email, eoriNumber).futureValue mustBe None
+      service
+        .updateVerifiedEmail(None, email, eoriNumber)
+        .futureValue mustBe None
     }
   }
 }

@@ -22,27 +22,29 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
-import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
+import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.views.html.amendment_in_progress
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.ExecutionContext
 
-class AmendmentInProgressController @Inject()(actions: Actions,
-                                              view: amendment_in_progress,
-                                              emailCacheService: EmailCacheService,
-                                              mcc: MessagesControllerComponents)
-                                             (implicit override val messagesApi: MessagesApi, ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+class AmendmentInProgressController @Inject()(
+  actions: Actions,
+  view: amendment_in_progress,
+  save4LaterService: Save4LaterService,
+  mcc: MessagesControllerComponents
+)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
-    emailCacheService.fetch(request.user.internalId) map {
-      _.fold {
-        Logger.warn("[AmendmentInProgressController][show] - emailStatus not found")
-        Redirect(SignOutController.signOut())
-      } {
-        emailDetails =>
+  def show: Action[AnyContent] =
+    (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
+      save4LaterService.fetchEmail(request.user.internalId) map {
+        _.fold {
+          Logger.warn("[AmendmentInProgressController][show] - emailStatus not found")
+          Redirect(SignOutController.signOut())
+        } { emailDetails =>
           Ok(view(emailDetails.newEmail))
+        }
       }
     }
-  }
 }

@@ -21,16 +21,21 @@ import uk.gov.hmrc.emailaddress.EmailAddress
 
 object Validation {
 
-  def validEmail: Constraint[String] = Constraint({
-    case e if e.trim.isEmpty => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.empty"))
-    case e if e.length > 50 => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.too-long"))
-    case e if !EmailAddress.isValid(e) => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.wrong-format"))
-    case _ => Valid
-  })
+  def validEmail: Constraint[String] =
+    Constraint({
+      case e if e.trim.isEmpty =>
+        Invalid(ValidationError("customs.emailfrontend.errors.valid-email.empty"))
+      case e if e.length > 50 =>
+        Invalid(ValidationError("customs.emailfrontend.errors.valid-email.too-long"))
+      case e if !EmailAddress.isValid(e) =>
+        Invalid(ValidationError("customs.emailfrontend.errors.valid-email.wrong-format"))
+      case _ => Valid
+    })
 
-  def validYesNo(errorMessage: String): Constraint[Option[Boolean]] = Constraint({
-    case None => Invalid(ValidationError(errorMessage))
-    case _ => Valid
-  })
+  def validYesNo(errorMessage: String): Constraint[Option[Boolean]] =
+    Constraint({
+      case None => Invalid(ValidationError(errorMessage))
+      case _    => Valid
+    })
 
 }
