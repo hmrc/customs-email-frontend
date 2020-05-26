@@ -32,21 +32,31 @@ class AmendmentInProgressControllerSpec extends ControllerSpec {
 
   private val view = app.injector.instanceOf[amendment_in_progress]
   private val mockSave4LaterService = mock[Save4LaterService]
-  private val controller = new AmendmentInProgressController(fakeAction, view, mockSave4LaterService, mcc)
+  private val controller = new AmendmentInProgressController(
+    fakeAction,
+    view,
+    mockSave4LaterService,
+    mcc)
 
   "AmendmentInProgressController" should {
     "have a status of SEE_OTHER when the email status is not found " in withAuthorisedUser() {
-      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
+        .thenReturn(Future.successful(None))
 
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/signout")
+      redirectLocation(eventualResult).value should endWith(
+        "/manage-email-cds/signout")
     }
 
     "have a status of OK when email found in cache and verification in progress" in withAuthorisedUser() {
-      when(mockSave4LaterService.fetchEmail(meq(InternalId("internalId")))(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
+      when(
+        mockSave4LaterService.fetchEmail(meq(InternalId("internalId")))(
+          any[HeaderCarrier],
+          any[ExecutionContext]))
+        .thenReturn(Future.successful(
+          Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
 
       val eventualResult = controller.show(request)
 

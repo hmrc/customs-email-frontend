@@ -16,19 +16,29 @@
 
 package acceptance.specs
 
-import acceptance.wiremockstub.{StubAuthClient, StubSave4Later, StubSubscriptionDisplay}
+import acceptance.wiremockstub.{
+  StubAuthClient,
+  StubSave4Later,
+  StubSubscriptionDisplay
+}
 import common.pages.{FetchEmailThereIsAProblemWithTheServicePage, StartPage}
 import utils.SpecHelper
 
 class FetchEmailErrorSpec
-    extends AcceptanceTestSpec with SpecHelper with StubAuthClient with StubSave4Later with StubSubscriptionDisplay {
+    extends AcceptanceTestSpec
+    with SpecHelper
+    with StubAuthClient
+    with StubSave4Later
+    with StubSubscriptionDisplay {
 
-  feature("Show 'There is a problem with the service' page when user tries to the email") {
+  feature(
+    "Show 'There is a problem with the service' page when user tries to the email") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario("User should see 'There is a problem with the service' when incorrect details are provided") {
+    scenario(
+      "User should see 'There is a problem with the service' when incorrect details are provided") {
 
       Given("user is on the 'Start' page")
       authenticate(randomInternalId, randomEoriNumber)
@@ -45,7 +55,8 @@ class FetchEmailErrorSpec
       verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
     }
 
-    scenario("User should see 'There is a problem with the service' when data could not be found") {
+    scenario(
+      "User should see 'There is a problem with the service' when data could not be found") {
 
       Given("user is on the 'Start' page")
       authenticate(randomInternalId, randomEoriNumber)
@@ -62,7 +73,8 @@ class FetchEmailErrorSpec
       verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
     }
 
-    scenario("User should see 'There is a problem with the service' when there is an error in processing the request") {
+    scenario(
+      "User should see 'There is a problem with the service' when there is an error in processing the request") {
 
       Given("user is on the 'Start' page")
       authenticate(randomInternalId, randomEoriNumber)
@@ -79,7 +91,8 @@ class FetchEmailErrorSpec
       verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
     }
 
-    scenario("User should see 'There is a problem with the service' when there fetching an email is unsuccessful") {
+    scenario(
+      "User should see 'There is a problem with the service' when there fetching an email is unsuccessful") {
 
       Given("user is on the 'Start' page")
       authenticate(randomInternalId, randomEoriNumber)

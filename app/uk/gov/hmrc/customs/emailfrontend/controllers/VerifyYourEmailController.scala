@@ -22,17 +22,17 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, EoriRequest}
-import uk.gov.hmrc.customs.emailfrontend.services.EmailCacheService
+import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_your_email
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class VerifyYourEmailController @Inject()(
-  actions: Actions,
-  view: verify_your_email,
-  emailCacheService: EmailCacheService,
-  mcc: MessagesControllerComponents
+                                           actions: Actions,
+                                           view: verify_your_email,
+                                           save4LaterService: Save4LaterService,
+                                           mcc: MessagesControllerComponents
 )(implicit override val messagesApi: MessagesApi, ex: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -40,7 +40,7 @@ class VerifyYourEmailController @Inject()(
     (actions.auth
       andThen actions.isPermitted
       andThen actions.isEnrolled).async { implicit request =>
-      emailCacheService.routeBasedOnAmendment(request.user.internalId)(
+      save4LaterService.routeBasedOnAmendment(request.user.internalId)(
         redirectWithEmail,
         Future.successful(Redirect(SignOutController.signOut()))
       )

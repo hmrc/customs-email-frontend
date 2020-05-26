@@ -21,10 +21,17 @@ import acceptance.wiremockstub._
 import utils.SpecHelper
 
 class UpdateVerifiedEmailErrorSpec
-    extends AcceptanceTestSpec with SpecHelper with StubSave4Later with StubAuthClient with StubEmailVerification
-    with StubCustomsDataStore with StubSubscriptionDisplay with StubUpdateVerifiedEmail {
+    extends AcceptanceTestSpec
+    with SpecHelper
+    with StubSave4Later
+    with StubAuthClient
+    with StubEmailVerification
+    with StubCustomsDataStore
+    with StubSubscriptionDisplay
+    with StubUpdateVerifiedEmail {
 
-  feature("Show 'There is a problem with the service' page when user tries to update the verified email") {
+  feature(
+    "Show 'There is a problem with the service' page when user tries to update the verified email") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
@@ -58,7 +65,8 @@ class UpdateVerifiedEmailErrorSpec
       stubUpdateVerifiedBadRequest()
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
-      Then("the user should be on 'Sorry, there is a problem with the service' page")
+      Then(
+        "the user should be on 'Sorry, there is a problem with the service' page")
       verifyCurrentPage(EmailNotSavedThereIsAProblemWithTheServicePage)
     }
 
@@ -92,7 +100,8 @@ class UpdateVerifiedEmailErrorSpec
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
 
-      Then("the user should be on 'Sorry, there is a problem with the service' page")
+      Then(
+        "the user should be on 'Sorry, there is a problem with the service' page")
       verifyCurrentPage(EmailNotSavedThereIsAProblemWithTheServicePage)
     }
 
@@ -126,11 +135,13 @@ class UpdateVerifiedEmailErrorSpec
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
 
-      Then("the user should be on 'Sorry, there is a problem with the service' page")
+      Then(
+        "the user should be on 'Sorry, there is a problem with the service' page")
       verifyCurrentPage(EmailNotSavedThereIsAProblemWithTheServicePage)
     }
 
-    scenario("Show 'There is a problem with the service' page when updating a verified email address is unsuccessful") {
+    scenario(
+      "Show 'There is a problem with the service' page when updating a verified email address is unsuccessful") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
@@ -158,7 +169,8 @@ class UpdateVerifiedEmailErrorSpec
       clickOn(CheckYourEmailAddressPage.yesEmailAddressCss)
       clickContinue()
 
-      Then("the user should be on 'Sorry, there is a problem with the service' page")
+      Then(
+        "the user should be on 'Sorry, there is a problem with the service' page")
       verifyCurrentPage(EmailNotSavedThereIsAProblemWithTheServicePage)
     }
   }

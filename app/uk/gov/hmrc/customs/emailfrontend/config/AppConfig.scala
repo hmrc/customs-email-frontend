@@ -40,11 +40,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val appName: String = config.get[String]("appName")
 
-  val save4LaterBaseUrl: String =
-    servicesConfig.baseUrl("cachable.short-lived-cache")
-  val save4LaterDomain: String =
-    config.get[String]("microservice.services.cachable.short-lived-cache.domain")
-
   val emailVerificationBaseUrl: String =
     servicesConfig.baseUrl("email-verification")
   val emailVerificationContext: String =

@@ -26,10 +26,11 @@ import play.twirl.api.Html
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
-import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService, Save4LaterService}
+import uk.gov.hmrc.customs.emailfrontend.services.{
+  EmailVerificationService,
+  Save4LaterService
+}
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
-import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
 
@@ -52,7 +53,8 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
 
     "have a status of OK when email found in cache" in withAuthorisedUser() {
       when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(
+          Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
       val eventualResult = controller.show(request)
 
@@ -60,29 +62,36 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
     }
 
     "have a status of SEE_OTHER when email not found in cache on show" in withAuthorisedUser() {
-      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
+        .thenReturn(Future.successful(None))
 
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/signout")
+      redirectLocation(eventualResult).value should endWith(
+        "/manage-email-cds/signout")
     }
 
     "have a status of SEE_OTHER when email not found in cache on submit" in withAuthorisedUser() {
-      when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
+        .thenReturn(Future.successful(None))
 
-      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "")
+      val request: Request[AnyContentAsFormUrlEncoded] =
+        requestWithForm("isYes" -> "")
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/signout")
+      redirectLocation(eventualResult).value should endWith(
+        "/manage-email-cds/signout")
     }
 
     "have a status of BAD_REQUEST when no selection is provided" in withAuthorisedUser() {
       when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(
+          Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
-      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "")
+      val request: Request[AnyContentAsFormUrlEncoded] =
+        requestWithForm("isYes" -> "")
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe BAD_REQUEST
@@ -90,34 +99,43 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
 
     "have a status of SEE_OTHER when no is selected" in withAuthorisedUser() {
       when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-      when(mockSave4LaterService.remove(any())(any(), any())).thenReturn(Future.successful(()))
+        .thenReturn(
+          Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+      when(mockSave4LaterService.remove(any())(any(), any()))
+        .thenReturn(Future.successful(()))
 
-      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "false")
+      val request: Request[AnyContentAsFormUrlEncoded] =
+        requestWithForm("isYes" -> "false")
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/change-email-address/create")
+      redirectLocation(eventualResult).value should endWith(
+        "/manage-email-cds/change-email-address/create")
     }
 
     "have a status of SEE_OTHER when user clicks back on the successful request or uses already complete bookmarked request within 2 hours" in withAuthorisedUser() {
       when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
+        .thenReturn(Future.successful(
+          Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
 
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/cannot-change-email")
+      redirectLocation(eventualResult).value should endWith(
+        "/manage-email-cds/cannot-change-email")
     }
 
     "redirect to 'there is a problem with the service' page" in withAuthorisedUser() {
-      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
+      when(mockErrorHandler.problemWithService()(any()))
+        .thenReturn(Html("Sorry, there is a problem with the service"))
 
-      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("email" -> "")
+      val request: Request[AnyContentAsFormUrlEncoded] =
+        requestWithForm("email" -> "")
       val eventualResult = controller.problemWithService()(request)
 
       status(eventualResult) shouldBe BAD_REQUEST
-      contentAsString(eventualResult).contains("Sorry, there is a problem with the service") shouldBe true
+      contentAsString(eventualResult).contains(
+        "Sorry, there is a problem with the service") shouldBe true
     }
   }
 
@@ -125,47 +143,63 @@ class CheckYourEmailControllerSpec extends ControllerSpec with ScalaFutures {
 
     "redirect to Verify Your Email  page when email yet not verified" in withAuthorisedUser() {
       when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(
+          Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
       when(mockSave4LaterService.saveEmail(any(), any())(any()))
         .thenReturn(Future.successful(()))
-      when(mockEmailVerificationService.createEmailVerificationRequest(any(), any(), any())(any()))
+      when(
+        mockEmailVerificationService
+          .createEmailVerificationRequest(any(), any(), any())(any()))
         .thenReturn(Future.successful(Some(false)))
 
-      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "true")
+      val request: Request[AnyContentAsFormUrlEncoded] =
+        requestWithForm("isYes" -> "true")
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/email-address-confirmed")
+      redirectLocation(eventualResult).value should endWith(
+        "/manage-email-cds/email-address-confirmed")
     }
 
     "redirect to Email Confirmed page when email already verified" in withAuthorisedUser() {
       when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-      when(mockEmailVerificationService.createEmailVerificationRequest(any(), any(), any())(any()))
+        .thenReturn(
+          Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+      when(
+        mockEmailVerificationService
+          .createEmailVerificationRequest(any(), any(), any())(any()))
         .thenReturn(Future.successful(Some(true)))
 
-      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "true")
+      val request: Request[AnyContentAsFormUrlEncoded] =
+        requestWithForm("isYes" -> "true")
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/confirm-email-address")
+      redirectLocation(eventualResult).value should endWith(
+        "/manage-email-cds/confirm-email-address")
     }
 
     "show 'there is a problem with service' page when createEmailVerificationRequest failed" in withAuthorisedUser() {
       when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(
+          Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any(), any(), any())(any()))
+      when(
+        mockEmailVerificationService
+          .createEmailVerificationRequest(any(), any(), any())(any()))
         .thenReturn(Future.successful(None))
 
-      when(mockErrorHandler.problemWithService()(any())).thenReturn(Html("Sorry, there is a problem with the service"))
+      when(mockErrorHandler.problemWithService()(any()))
+        .thenReturn(Html("Sorry, there is a problem with the service"))
 
-      val request: Request[AnyContentAsFormUrlEncoded] = requestWithForm("isYes" -> "true")
+      val request: Request[AnyContentAsFormUrlEncoded] =
+        requestWithForm("isYes" -> "true")
 
       val eventualResult = controller.submit(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/problem-with-this-service")
+      redirectLocation(eventualResult).value should endWith(
+        "/problem-with-this-service")
     }
   }
 }

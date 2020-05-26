@@ -45,7 +45,8 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
 
     "parse the json to model VerifiedEmailResponse when status text is available" in {
 
-      Json.parse("""{
+      Json
+        .parse("""{
           |  "updateVerifiedEmailResponse": {
           |    "responseCommon": {
           |      "status": "OK",
@@ -59,12 +60,15 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
           |      ]
           |    }
           |  }
-          |}""".stripMargin).as[VerifiedEmailResponse]
+          |}""".stripMargin)
+        .as[VerifiedEmailResponse]
     }
     "parse the json to model VerifiedEmailResponse when returnParameter is Nil should throw exception" in {
 
       intercept[IllegalArgumentException] {
-        Json.parse("""{
+        Json
+          .parse(
+            """{
                        |  "updateVerifiedEmailResponse": {
                        |    "responseCommon": {
                        |      "status": "OK",
@@ -73,7 +77,8 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
                        |      "returnParameters": []
                        |    }
                        |  }
-                       |}""".stripMargin).as[VerifiedEmailResponse]
+                       |}""".stripMargin)
+          .as[VerifiedEmailResponse]
       }
     }
   }

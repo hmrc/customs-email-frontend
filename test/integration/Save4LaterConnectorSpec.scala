@@ -29,7 +29,8 @@ import utils.WireMockRunner
 
 class Save4LaterConnectorSpec extends IntegrationSpec with WireMockRunner {
 
-  override implicit val patienceConfig = PatienceConfig(timeout = scaled(Span(20, Seconds)))
+  override implicit val patienceConfig = PatienceConfig(
+    timeout = scaled(Span(20, Seconds)))
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(

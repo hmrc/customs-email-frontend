@@ -40,10 +40,10 @@ class AuthLoginStubPage extends BasePage with SpecHelper {
   val submitButtonCss: By = By.cssSelector(".button")
 
   def login(
-    credId: String,
-    affinityType: String = "Individual",
-    credentialRole: String = "User",
-    eori: String = "ZZ123456789000"
+      credId: String,
+      affinityType: String = "Individual",
+      credentialRole: String = "User",
+      eori: String = "ZZ123456789000"
   ): Unit = {
     enterText(credIdName)(credId)
 
@@ -51,11 +51,13 @@ class AuthLoginStubPage extends BasePage with SpecHelper {
     val selectAffinity = new Select(affinityDropDown)
     selectAffinity.selectByValue(affinityType)
 
-    val credentialRoleDropDown = webDriver.findElement(By.name("credentialRole"))
+    val credentialRoleDropDown =
+      webDriver.findElement(By.name("credentialRole"))
     val selectCredentialRole = new Select(credentialRoleDropDown)
     selectCredentialRole.selectByValue(credentialRole)
 
-    enterText(redirectUrlName)(Configuration.frontendHost + "/manage-email-cds/start")
+    enterText(redirectUrlName)(
+      Configuration.frontendHost + "/manage-email-cds/start")
     enterText(enrolmentKey)("HMRC-CUS-ORG")
     enterText(identifierName)("EORINumber")
     enterText(identifierValue)(eori)

@@ -27,7 +27,11 @@ import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
+import uk.gov.hmrc.customs.emailfrontend.model.{
+  EmailDetails,
+  InternalId,
+  ReferrerName
+}
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -36,12 +40,17 @@ import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
-class Save4LaterServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
+class Save4LaterServiceSpec
+    extends PlaySpec
+    with MockitoSugar
+    with BeforeAndAfterEach
+    with ScalaFutures {
   private val mockSave4LaterConnector = mock[Save4LaterConnector]
   private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private val internalId = InternalId("internalId-123")
   private val timestamp = DateTimeUtil.dateTime
-  private val emailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
+  private val emailDetails =
+    EmailDetails(None, "test@test.com", Some(timestamp))
   private val defaultTimeout: FiniteDuration = 5 seconds
   private val emailKey = "email"
   private val referrerKey = "referrer"
@@ -62,7 +71,9 @@ class Save4LaterServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAft
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(emailKey),
           ArgumentMatchers.eq(emailDetails)
-        )(any[HeaderCarrier], any[Reads[EmailDetails]], any[Writes[EmailDetails]])
+        )(any[HeaderCarrier],
+          any[Reads[EmailDetails]],
+          any[Writes[EmailDetails]])
       ).thenReturn(Future.successful(()))
 
       val result: Unit = service
@@ -73,7 +84,9 @@ class Save4LaterServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAft
 
     "fetch the emailDetails for the users InternalId" in {
       when(
-        mockSave4LaterConnector.get[EmailDetails](ArgumentMatchers.eq(internalId.id), ArgumentMatchers.eq(emailKey))(
+        mockSave4LaterConnector.get[EmailDetails](
+          ArgumentMatchers.eq(internalId.id),
+          ArgumentMatchers.eq(emailKey))(
           any[HeaderCarrier],
           any[Reads[EmailDetails]],
           any[Writes[EmailDetails]]
@@ -92,7 +105,9 @@ class Save4LaterServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAft
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(referrerKey),
           ArgumentMatchers.eq(referrerName)
-        )(any[HeaderCarrier], any[Reads[ReferrerName]], any[Writes[ReferrerName]])
+        )(any[HeaderCarrier],
+          any[Reads[ReferrerName]],
+          any[Writes[ReferrerName]])
       ).thenReturn(Future.successful(()))
 
       val result: Unit = service
@@ -103,7 +118,9 @@ class Save4LaterServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAft
 
     "fetch the referrer for the users InternalId" in {
       when(
-        mockSave4LaterConnector.get[ReferrerName](ArgumentMatchers.eq(internalId.id), ArgumentMatchers.eq(referrerKey))(
+        mockSave4LaterConnector.get[ReferrerName](
+          ArgumentMatchers.eq(internalId.id),
+          ArgumentMatchers.eq(referrerKey))(
           any[HeaderCarrier],
           any[Reads[ReferrerName]],
           any[Writes[ReferrerName]]
@@ -117,7 +134,9 @@ class Save4LaterServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAft
     }
 
     "remove the id" in {
-      when(mockSave4LaterConnector.delete(ArgumentMatchers.eq(internalId.id))(any[HeaderCarrier]))
+      when(
+        mockSave4LaterConnector.delete(ArgumentMatchers.eq(internalId.id))(
+          any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
 
       val result = service

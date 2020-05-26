@@ -45,7 +45,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class EmailVerificationServiceSpec
-    extends PlaySpec with ScalaFutures with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach {
+    extends PlaySpec
+    with ScalaFutures
+    with MockitoSugar
+    with BeforeAndAfterAll
+    with BeforeAndAfterEach {
   private val mockConnector = mock[EmailVerificationConnector]
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
@@ -61,13 +65,17 @@ class EmailVerificationServiceSpec
   override protected def beforeEach(): Unit =
     reset(mockConnector)
 
-  def mockGetEmailVerificationState(emailAddress: String)(response: Future[EmailVerificationStateResponse]): Unit =
+  def mockGetEmailVerificationState(emailAddress: String)(
+      response: Future[EmailVerificationStateResponse]): Unit =
     when(
-      mockConnector.getEmailVerificationState(ArgumentMatchers.eq(emailAddress))(ArgumentMatchers.any[HeaderCarrier])
+      mockConnector.getEmailVerificationState(
+        ArgumentMatchers.eq(emailAddress))(ArgumentMatchers.any[HeaderCarrier])
     ) thenReturn response
 
-  def mockCreateEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)(
-    response: Future[EmailVerificationRequestResponse]
+  def mockCreateEmailVerificationRequest(details: EmailDetails,
+                                         continueUrl: String,
+                                         eoriNumber: String)(
+      response: Future[EmailVerificationRequestResponse]
   ): Unit =
     when(
       mockConnector.createEmailVerificationRequest(
@@ -83,7 +91,8 @@ class EmailVerificationServiceSpec
 
       "return Some(true)" in {
 
-        mockGetEmailVerificationState(email)(Future.successful(Right(EmailVerified)))
+        mockGetEmailVerificationState(email)(
+          Future.successful(Right(EmailVerified)))
         val res: Option[Boolean] = {
           service.isEmailVerified(email).futureValue
         }
@@ -94,7 +103,8 @@ class EmailVerificationServiceSpec
 
         "return Some(false)" in {
 
-          mockGetEmailVerificationState(email)(Future.successful(Right(EmailNotVerified)))
+          mockGetEmailVerificationState(email)(
+            Future.successful(Right(EmailNotVerified)))
           val res: Option[Boolean] = {
             service.isEmailVerified(email).futureValue
           }
@@ -107,7 +117,8 @@ class EmailVerificationServiceSpec
         "return None" in {
 
           mockGetEmailVerificationState(email)(
-            Future.successful(Left(EmailVerificationStateErrorResponse(BAD_REQUEST, "")))
+            Future.successful(
+              Left(EmailVerificationStateErrorResponse(BAD_REQUEST, "")))
           )
           val res: Option[Boolean] = {
             service.isEmailVerified(email).futureValue
@@ -123,11 +134,17 @@ class EmailVerificationServiceSpec
     "the email verification request is sent successfully" should {
 
       "return Some(true)" in {
-        mockCreateEmailVerificationRequest(emailDetails, continueUrl, eoriNumber)(
+        mockCreateEmailVerificationRequest(emailDetails,
+                                           continueUrl,
+                                           eoriNumber)(
           Future.successful(Right(EmailVerificationRequestSent))
         )
         val res: Option[Boolean] = {
-          service.createEmailVerificationRequest(emailDetails, continueUrl, eoriNumber).futureValue
+          service
+            .createEmailVerificationRequest(emailDetails,
+                                            continueUrl,
+                                            eoriNumber)
+            .futureValue
         }
         res mustBe Some(true)
       }
@@ -137,11 +154,17 @@ class EmailVerificationServiceSpec
 
       "return Some(false)" in {
 
-        mockCreateEmailVerificationRequest(emailDetails, continueUrl, eoriNumber)(
+        mockCreateEmailVerificationRequest(emailDetails,
+                                           continueUrl,
+                                           eoriNumber)(
           Future.successful(Right(EmailAlreadyVerified))
         )
         val res: Option[Boolean] = {
-          service.createEmailVerificationRequest(emailDetails, continueUrl, eoriNumber).futureValue
+          service
+            .createEmailVerificationRequest(emailDetails,
+                                            continueUrl,
+                                            eoriNumber)
+            .futureValue
         }
         res mustBe Some(false)
       }
@@ -150,11 +173,18 @@ class EmailVerificationServiceSpec
     "the email address verification request failed" should {
 
       "return None" in {
-        mockCreateEmailVerificationRequest(emailDetails, continueUrl, eoriNumber)(
-          Future.successful(Left(EmailVerificationRequestFailure(BAD_REQUEST, "")))
+        mockCreateEmailVerificationRequest(emailDetails,
+                                           continueUrl,
+                                           eoriNumber)(
+          Future.successful(
+            Left(EmailVerificationRequestFailure(BAD_REQUEST, "")))
         )
         val res: Option[Boolean] = {
-          service.createEmailVerificationRequest(emailDetails, continueUrl, eoriNumber).futureValue
+          service
+            .createEmailVerificationRequest(emailDetails,
+                                            continueUrl,
+                                            eoriNumber)
+            .futureValue
         }
         res mustBe None
       }

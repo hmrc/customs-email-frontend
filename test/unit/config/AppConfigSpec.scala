@@ -26,7 +26,8 @@ class AppConfigSpec extends ControllerSpec {
     "have referrer key mapping in messages.en properties" in {
       appConfig.referrerName.map(
         referrerName =>
-          messagesApi.messages("en")(s"customs.emailfrontend.email-confirmed.redirect.info.${referrerName.name}") != ""
+          messagesApi.messages("en")(
+            s"customs.emailfrontend.email-confirmed.redirect.info.${referrerName.name}") != ""
       )
     }
 
@@ -44,12 +45,6 @@ class AppConfigSpec extends ControllerSpec {
     }
     "have feedbackSurveyUrl defined" in {
       appConfig.feedbackUrl shouldBe "http://localhost:9514/feedback/manage-email-cds"
-    }
-    "have save4LaterDomain defined" in {
-      appConfig.save4LaterDomain shouldBe "save4later"
-    }
-    "have save4LaterBaseUrl defined" in {
-      appConfig.save4LaterBaseUrl shouldBe "http://localhost:9272"
     }
     "have emailVerificationBaseUrl defined" in {
       appConfig.emailVerificationBaseUrl shouldBe "http://localhost:9744"

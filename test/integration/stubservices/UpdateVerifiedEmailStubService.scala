@@ -119,12 +119,14 @@ object UpdateVerifiedEmailStubService {
     stubUpdateVerifiedEmailRequest(badRequestResponse, BAD_REQUEST)
 
   def stubServiceUnavailable() =
-    stubUpdateVerifiedEmailRequest(serviceUnavailableResponse, INTERNAL_SERVER_ERROR)
+    stubUpdateVerifiedEmailRequest(serviceUnavailableResponse,
+                                   INTERNAL_SERVER_ERROR)
 
   def stubForbidden() =
     stubUpdateVerifiedEmailRequest(forbiddenResponse, FORBIDDEN)
 
-  private def stubUpdateVerifiedEmailRequest(response: String, status: Int): Unit =
+  private def stubUpdateVerifiedEmailRequest(response: String,
+                                             status: Int): Unit =
     stubFor(
       put(urlMatching(expectedUrl))
         .withRequestBody(equalToJson(verifiedEmailRequest))

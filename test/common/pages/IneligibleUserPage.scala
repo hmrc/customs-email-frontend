@@ -23,13 +23,16 @@ abstract class IneligibleUserPage extends BasePage {
 }
 
 object IneligibleUserPage extends IneligibleUserPage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/ineligible/no-enrolment"
+  override val url
+    : String = Configuration.frontendHost + "/manage-email-cds/ineligible/no-enrolment"
 }
 
 object IneligibleUserNotAdminPage extends IneligibleUserPage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/ineligible/not-admin"
+  override val url
+    : String = Configuration.frontendHost + "/manage-email-cds/ineligible/not-admin"
 }
 
 object IneligibleUserAgentPage extends IneligibleUserPage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/ineligible/is-agent"
+  override val url
+    : String = Configuration.frontendHost + "/manage-email-cds/ineligible/is-agent"
 }

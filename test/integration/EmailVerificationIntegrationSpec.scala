@@ -39,7 +39,9 @@ import uk.gov.hmrc.http._
 import utils.Constants._
 import utils.WireMockRunner
 
-class EmailVerificationIntegrationSpec extends IntegrationSpec with WireMockRunner {
+class EmailVerificationIntegrationSpec
+    extends IntegrationSpec
+    with WireMockRunner {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
@@ -118,7 +120,9 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec with WireMockRunn
         EmailVerificationStubService.stubVerificationRequestSent()
         val expected = Right(EmailVerificationRequestSent)
         val result = connector
-          .createEmailVerificationRequest(emailDetails, expectedContinueUrl, eoriNumber)
+          .createEmailVerificationRequest(emailDetails,
+                                          expectedContinueUrl,
+                                          eoriNumber)
           .futureValue
 
         result mustBe expected
@@ -130,7 +134,9 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec with WireMockRunn
         EmailVerificationStubService.stubEmailAlreadyVerified()
         val expected = Right(EmailAlreadyVerified)
         val result: EmailVerificationRequestResponse = connector
-          .createEmailVerificationRequest(emailDetails, expectedContinueUrl, eoriNumber)
+          .createEmailVerificationRequest(emailDetails,
+                                          expectedContinueUrl,
+                                          eoriNumber)
           .futureValue
 
         result mustBe expected
@@ -147,7 +153,9 @@ class EmailVerificationIntegrationSpec extends IntegrationSpec with WireMockRunn
           )
         )
         val result: EmailVerificationRequestResponse = connector
-          .createEmailVerificationRequest(emailDetails, expectedContinueUrl, eoriNumber)
+          .createEmailVerificationRequest(emailDetails,
+                                          expectedContinueUrl,
+                                          eoriNumber)
           .futureValue
 
         result mustBe expected

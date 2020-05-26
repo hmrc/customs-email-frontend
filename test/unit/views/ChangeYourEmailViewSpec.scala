@@ -28,17 +28,27 @@ class ChangeYourEmailViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[change_your_email]
   private val form: Form[Email] = Forms.emailForm
   private val email: String = "email@test.com"
-  private val formWithEmptyError: Form[Email] = Forms.emailForm.bind(Map("email" -> ""))
-  private val formWithWrongFormatError: Form[Email] = Forms.emailForm.bind(Map("email" -> "invalid"))
+  private val formWithEmptyError: Form[Email] =
+    Forms.emailForm.bind(Map("email" -> ""))
+  private val formWithWrongFormatError: Form[Email] =
+    Forms.emailForm.bind(Map("email" -> "invalid"))
   private val formWithTooLongError: Form[Email] =
-    Forms.emailForm.bind(Map("email" -> "abcdefghijklmnopqrstuvwxyz1234567890@abcdefghijklmnopqrstuvwxyz1234567890"))
-  private val doc: Document = Jsoup.parse(contentAsString(view.render(form, email, request, messages)))
+    Forms.emailForm.bind(Map(
+      "email" -> "abcdefghijklmnopqrstuvwxyz1234567890@abcdefghijklmnopqrstuvwxyz1234567890"))
+  private val doc: Document =
+    Jsoup.parse(contentAsString(view.render(form, email, request, messages)))
   private val docWithEmptyError: Document =
-    Jsoup.parse(contentAsString(view.render(formWithEmptyError, email, request, messages)))
+    Jsoup.parse(
+      contentAsString(
+        view.render(formWithEmptyError, email, request, messages)))
   private val docWithWrongFormatError: Document =
-    Jsoup.parse(contentAsString(view.render(formWithWrongFormatError, email, request, messages)))
+    Jsoup.parse(
+      contentAsString(
+        view.render(formWithWrongFormatError, email, request, messages)))
   private val docWithTooLongError: Document =
-    Jsoup.parse(contentAsString(view.render(formWithTooLongError, email, request, messages)))
+    Jsoup.parse(
+      contentAsString(
+        view.render(formWithTooLongError, email, request, messages)))
 
   "Email page" should {
     "have the correct title" in {
@@ -50,21 +60,33 @@ class ChangeYourEmailViewSpec extends ViewSpec {
     }
 
     "have the correct label" in {
-      doc.getElementsByTag("label").text mustBe "We'll use your new email address to replace email@test.com"
+      doc
+        .getElementsByTag("label")
+        .text mustBe "We'll use your new email address to replace email@test.com"
     }
 
     "display correct error when no email is entered" in {
-      docWithEmptyError.getElementById("errors").text contains "Enter your email address"
-      docWithEmptyError.getElementsByClass("error-message").text mustBe "Enter your email address"
+      docWithEmptyError
+        .getElementById("errors")
+        .text contains "Enter your email address"
+      docWithEmptyError
+        .getElementsByClass("error-message")
+        .text mustBe "Enter your email address"
     }
 
     "display correct error when email is entered with wrong format" in {
-      docWithWrongFormatError.getElementById("errors").text contains "Enter a valid email address"
-      docWithWrongFormatError.getElementsByClass("error-message").text mustBe "Enter a valid email address"
+      docWithWrongFormatError
+        .getElementById("errors")
+        .text contains "Enter a valid email address"
+      docWithWrongFormatError
+        .getElementsByClass("error-message")
+        .text mustBe "Enter a valid email address"
     }
 
     "display correct error when email is entered which is too long" in {
-      docWithTooLongError.getElementById("errors").text contains "The email address must be 50 characters or less"
+      docWithTooLongError
+        .getElementById("errors")
+        .text contains "The email address must be 50 characters or less"
       docWithTooLongError
         .getElementsByClass("error-message")
         .text mustBe "The email address must be 50 characters or less"

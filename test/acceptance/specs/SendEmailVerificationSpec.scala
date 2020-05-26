@@ -16,12 +16,21 @@
 
 package acceptance.specs
 
-import common.pages.{CheckYourEmailAddressPage, StartPage, VerifyYourEmailAddressPage, WhatIsYourEmailPage}
+import common.pages.{
+  CheckYourEmailAddressPage,
+  StartPage,
+  VerifyYourEmailAddressPage,
+  WhatIsYourEmailPage
+}
 import acceptance.wiremockstub._
 import utils.SpecHelper
 
 class SendEmailVerificationSpec
-    extends AcceptanceTestSpec with SpecHelper with StubAuthClient with StubSave4Later with StubEmailVerification
+    extends AcceptanceTestSpec
+    with SpecHelper
+    with StubAuthClient
+    with StubSave4Later
+    with StubEmailVerification
     with StubSubscriptionDisplay {
 
   val randomInternalId = generateRandomNumberString()
@@ -64,7 +73,9 @@ class SendEmailVerificationSpec
     scenario("individual user amends the email and submits for verification") {
 
       Given("the user has successfully logged in")
-      authenticate(randomInternalId, randomEoriNumber, affinityGroup = "Individual")
+      authenticate(randomInternalId,
+                   randomEoriNumber,
+                   affinityGroup = "Individual")
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)
       verifyCurrentPage(StartPage)

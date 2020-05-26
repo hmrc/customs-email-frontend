@@ -34,15 +34,21 @@ class StartPageViewSpec extends ViewSpec {
     }
 
     "have the correct heading" in {
-      doc.getElementsByTag("h1").text mustBe "Manage your email address for the Customs Declaration Service"
+      doc
+        .getElementsByTag("h1")
+        .text mustBe "Manage your email address for the Customs Declaration Service"
     }
 
     "have the correct text explaining what the service is for" in {
       doc
         .getElementById("bulletP")
         .text mustBe "Use this service to change or verify the email address we use to send you:"
-      doc.getElementById("b1").text mustBe "updates on changes to the Customs Declaration Service"
-      doc.getElementById("b2").text mustBe "notifications of new import statements and payments"
+      doc
+        .getElementById("b1")
+        .text mustBe "updates on changes to the Customs Declaration Service"
+      doc
+        .getElementById("b2")
+        .text mustBe "notifications of new import statements and payments"
       doc.getElementById("b3").text mustBe "export declaration notifications"
     }
 
@@ -60,11 +66,17 @@ class StartPageViewSpec extends ViewSpec {
 
     "have the correct related content" in {
       doc.getElementById("subsection-title").text mustBe "Related content"
-      doc.getElementById("link1").text mustBe "Check the status of an application you have already made"
+      doc
+        .getElementById("link1")
+        .text mustBe "Check the status of an application you have already made"
       doc.getElementById("link1").attr("href") mustBe "gg-sign-in?details="
 
-      doc.getElementById("link2").text mustBe "Check if you need to register with HMRC for importing or exporting"
-      doc.getElementById("link2").attr("href") mustBe "/version20/eori-check-start"
+      doc
+        .getElementById("link2")
+        .text mustBe "Check if you need to register with HMRC for importing or exporting"
+      doc
+        .getElementById("link2")
+        .attr("href") mustBe "/version20/eori-check-start"
 
       doc.getElementById("link3").text mustBe "The Duty Deferment Scheme"
       doc
@@ -72,10 +84,14 @@ class StartPageViewSpec extends ViewSpec {
         .attr("href") mustBe "https://www.gov.uk/government/publications/notice-101-deferring-duty-vat-and-other-charges?_nfpb=true&_pageLabel=pageVAT_ShowContent&id=HMCE_CL_000013&propertyType=document"
 
       doc.getElementById("link4").text mustBe "VAT refunds on imported goods"
-      doc.getElementById("link4").attr("href") mustBe "https://www.gov.uk/duty-relief-for-imports-and-exports"
+      doc
+        .getElementById("link4")
+        .attr("href") mustBe "https://www.gov.uk/duty-relief-for-imports-and-exports"
 
       doc.getElementById("link5").text mustBe "Tariff data"
-      doc.getElementById("link5").attr("href") mustBe "https://www.gov.uk/trade-tariff"
+      doc
+        .getElementById("link5")
+        .attr("href") mustBe "https://www.gov.uk/trade-tariff"
     }
   }
 

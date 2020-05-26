@@ -23,7 +23,8 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
 
 class ProblemWithThisServiceViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[problem_with_this_service]
-  private val doc: Document = Jsoup.parse(contentAsString(view.render(request, messages)))
+  private val doc: Document =
+    Jsoup.parse(contentAsString(view.render(request, messages)))
 
   "Problem With This Service page" should {
     "have the correct title" in {
@@ -31,16 +32,22 @@ class ProblemWithThisServiceViewSpec extends ViewSpec {
     }
 
     "have the correct heading" in {
-      doc.getElementsByTag("h1").text mustBe "Sorry, there is a problem with the service"
+      doc
+        .getElementsByTag("h1")
+        .text mustBe "Sorry, there is a problem with the service"
     }
 
     "have the correct content" in {
-      doc.getElementById("info").text mustBe "Your email has not been updated. Try again later."
+      doc
+        .getElementById("info")
+        .text mustBe "Your email has not been updated. Try again later."
     }
 
     "have the sign out button" in {
       doc.getElementsByClass("button").text mustBe "Sign out"
-      doc.getElementsByClass("button").attr("href") mustBe "/manage-email-cds/signout"
+      doc
+        .getElementsByClass("button")
+        .attr("href") mustBe "/manage-email-cds/signout"
     }
   }
 }

@@ -31,7 +31,8 @@ object Configuration {
   private val defaultTestEnvironment = LOCAL
 
   private lazy val currentEnvironment =
-    Option(System.getProperty("environment")) map withNameEither getOrElse Right(defaultTestEnvironment) match {
+    Option(System.getProperty("environment")) map withNameEither getOrElse Right(
+      defaultTestEnvironment) match {
       case Left(message) => throw new IllegalArgumentException(message)
       case Right(value)  => value
     }
@@ -44,8 +45,9 @@ object Configuration {
   }
 
   lazy val frontendHost: String = forCurrentEnv {
-    case QA    => "https://www.qa.tax.service.gov.uk"
-    case DEV   => "https://www.development.tax.service.gov.uk"
-    case LOCAL => Option(System.getProperty("host")).getOrElse("http://localhost:" + port)
+    case QA  => "https://www.qa.tax.service.gov.uk"
+    case DEV => "https://www.development.tax.service.gov.uk"
+    case LOCAL =>
+      Option(System.getProperty("host")).getOrElse("http://localhost:" + port)
   }
 }

@@ -41,20 +41,28 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EmailVerificationConnectorSpec extends PlaySpec with ScalaFutures with MockitoSugar with BeforeAndAfter {
+class EmailVerificationConnectorSpec
+    extends PlaySpec
+    with ScalaFutures
+    with MockitoSugar
+    with BeforeAndAfter {
 
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
   private val mockHttpClient = mock[HttpClient]
 
-  val connector = new EmailVerificationConnector(mockHttpClient, mockAppConfig, mockAuditable)
+  val connector =
+    new EmailVerificationConnector(mockHttpClient, mockAppConfig, mockAuditable)
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   before {
     reset(mockAuditable, mockAppConfig, mockHttpClient)
-    doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
+    doNothing()
+      .when(mockAuditable)
+      .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
     when(mockAppConfig.emailVerificationWithContext).thenReturn("testUrl")
-    when(mockAppConfig.emailVerificationTemplateId).thenReturn("verifyEmailAddress")
+    when(mockAppConfig.emailVerificationTemplateId)
+      .thenReturn("verifyEmailAddress")
     when(mockAppConfig.emailVerificationLinkExpiryDuration).thenReturn("P3D")
   }
 
@@ -69,7 +77,8 @@ class EmailVerificationConnectorSpec extends PlaySpec with ScalaFutures with Moc
           )(any(), any(), any[HeaderCarrier], any())
         ).thenReturn(Future.successful(Right(EmailVerified)))
 
-        val result = connector.getEmailVerificationState("email-address").futureValue
+        val result =
+          connector.getEmailVerificationState("email-address").futureValue
 
         result mustBe Right(EmailVerified)
       }
@@ -78,7 +87,9 @@ class EmailVerificationConnectorSpec extends PlaySpec with ScalaFutures with Moc
     "the email is not verified" should {
       "return an EmailNotVerified response" in {
         when(
-          mockHttpClient.POST[JsObject, EmailVerificationStateResponse](any(), any(), any())(
+          mockHttpClient.POST[JsObject, EmailVerificationStateResponse](any(),
+                                                                        any(),
+                                                                        any())(
             any(),
             any(),
             any[HeaderCarrier],
@@ -86,7 +97,8 @@ class EmailVerificationConnectorSpec extends PlaySpec with ScalaFutures with Moc
           )
         ).thenReturn(Future.successful(Right(EmailNotVerified)))
 
-        val result = connector.getEmailVerificationState("email-address").futureValue
+        val result =
+          connector.getEmailVerificationState("email-address").futureValue
 
         result mustBe Right(EmailNotVerified)
       }
@@ -95,17 +107,22 @@ class EmailVerificationConnectorSpec extends PlaySpec with ScalaFutures with Moc
     "the email service provides an unexpected state" should {
       "return an EmailVerificationStateErrorResponse" in {
         when(
-          mockHttpClient.POST[JsObject, EmailVerificationStateResponse](any(), any(), any())(
+          mockHttpClient.POST[JsObject, EmailVerificationStateResponse](any(),
+                                                                        any(),
+                                                                        any())(
             any(),
             any(),
             any[HeaderCarrier],
             any()
           )
-        ).thenReturn(Future.successful(Left(EmailVerificationStateErrorResponse(500, "Internal Server Error"))))
+        ).thenReturn(Future.successful(Left(
+          EmailVerificationStateErrorResponse(500, "Internal Server Error"))))
 
-        val result = connector.getEmailVerificationState("email-address").futureValue
+        val result =
+          connector.getEmailVerificationState("email-address").futureValue
 
-        result mustBe Left(EmailVerificationStateErrorResponse(500, "Internal Server Error"))
+        result mustBe Left(
+          EmailVerificationStateErrorResponse(500, "Internal Server Error"))
       }
     }
   }
@@ -144,7 +161,10 @@ class EmailVerificationConnectorSpec extends PlaySpec with ScalaFutures with Moc
     "the email is already verified" should {
       "return an EmailAlreadyVerified" in {
         when(
-          mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](any(), any(), any())(
+          mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](
+            any(),
+            any(),
+            any())(
             any(),
             any(),
             any[HeaderCarrier],
@@ -153,7 +173,10 @@ class EmailVerificationConnectorSpec extends PlaySpec with ScalaFutures with Moc
         ).thenReturn(Future.successful(Right(EmailAlreadyVerified)))
 
         val result = connector
-          .createEmailVerificationRequest(EmailDetails(None, "email-address", None), "test-continue-url", "EORINumber")
+          .createEmailVerificationRequest(
+            EmailDetails(None, "email-address", None),
+            "test-continue-url",
+            "EORINumber")
           .futureValue
 
         result mustBe Right(EmailAlreadyVerified)
@@ -163,7 +186,10 @@ class EmailVerificationConnectorSpec extends PlaySpec with ScalaFutures with Moc
     "the request is not successful" should {
       "return an Internal Server Error" in {
         when(
-          mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](any(), any(), any())(
+          mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](
+            any(),
+            any(),
+            any())(
             any(),
             any(),
             any[HeaderCarrier],
@@ -171,14 +197,21 @@ class EmailVerificationConnectorSpec extends PlaySpec with ScalaFutures with Moc
           )
         ).thenReturn(
           Future
-            .successful(Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR, "Internal server error")))
+            .successful(
+              Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR,
+                                                   "Internal server error")))
         )
 
         val result = connector
-          .createEmailVerificationRequest(EmailDetails(None, "email-address", None), "test-continue-url", "EORINumber")
+          .createEmailVerificationRequest(
+            EmailDetails(None, "email-address", None),
+            "test-continue-url",
+            "EORINumber")
           .futureValue
 
-        result mustBe Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR, "Internal server error"))
+        result mustBe Left(
+          EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR,
+                                          "Internal server error"))
       }
     }
   }

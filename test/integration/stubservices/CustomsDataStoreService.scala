@@ -23,7 +23,9 @@ import utils.WireMockRunner
 
 trait CustomsDataStoreService extends WireMockRunner {
 
-  def returnCustomsDataStoreResponse(url: String, request: String, status: Int): Unit =
+  def returnCustomsDataStoreResponse(url: String,
+                                     request: String,
+                                     status: Int): Unit =
     stubFor(
       post(urlEqualTo(url))
         .withRequestBody(equalToJson(request))

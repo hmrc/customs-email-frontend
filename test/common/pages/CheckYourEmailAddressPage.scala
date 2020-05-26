@@ -20,7 +20,8 @@ import org.openqa.selenium.By
 import utils.Configuration
 
 class CheckYourEmailAddressPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/check-email-address"
+  override val url
+    : String = Configuration.frontendHost + "/manage-email-cds/check-email-address"
   override val title = "Check your email address"
 
   val emailAddressId: By = By.id("cya-answer-id")

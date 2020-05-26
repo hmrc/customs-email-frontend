@@ -23,9 +23,11 @@ import play.mvc.Http.Status._
 
 object EmailVerificationStubService {
 
-  def expectedGetUrl(email: String) = s"/email-verification/verified-email-addresses/$email"
+  def expectedGetUrl(email: String) =
+    s"/email-verification/verified-email-addresses/$email"
 
-  private val expectedVerifiedEmailPostUrl = "/email-verification/verified-email-check"
+  private val expectedVerifiedEmailPostUrl =
+    "/email-verification/verified-email-check"
 
   private val expectedPostUrl = "/email-verification/verification-requests"
 
@@ -53,7 +55,9 @@ object EmailVerificationStubService {
     stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, "", NOT_FOUND)
 
   def stubEmailVerifiedInternalServerError() =
-    stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, internalServerErrorResponse, INTERNAL_SERVER_ERROR)
+    stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl,
+                                 internalServerErrorResponse,
+                                 INTERNAL_SERVER_ERROR)
 
   def stubVerificationRequestSent() =
     stubVerificationRequest(expectedPostUrl, "", CREATED)
@@ -62,9 +66,13 @@ object EmailVerificationStubService {
     stubVerificationRequest(expectedPostUrl, "", CONFLICT)
 
   def stubVerificationRequestError() =
-    stubVerificationRequest(expectedPostUrl, internalServerErrorResponse, INTERNAL_SERVER_ERROR)
+    stubVerificationRequest(expectedPostUrl,
+                            internalServerErrorResponse,
+                            INTERNAL_SERVER_ERROR)
 
-  def stubTheVerifiedEmailResponse(url: String, response: String, status: Int): Unit =
+  def stubTheVerifiedEmailResponse(url: String,
+                                   response: String,
+                                   status: Int): Unit =
     stubFor(
       post(urlEqualTo(url))
         .willReturn(
@@ -75,7 +83,9 @@ object EmailVerificationStubService {
         )
     )
 
-  def stubVerificationRequest(url: String, response: String, status: Int): Unit =
+  def stubVerificationRequest(url: String,
+                              response: String,
+                              status: Int): Unit =
     stubFor(
       post(urlMatching(url))
         .withRequestBody(equalToJson(verificationRequestJson()))

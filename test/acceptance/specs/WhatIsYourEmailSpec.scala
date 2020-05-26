@@ -21,10 +21,16 @@ import common.pages._
 import utils.SpecHelper
 
 class WhatIsYourEmailSpec
-    extends AcceptanceTestSpec with SpecHelper with StubSave4Later with StubAuthClient with StubEmailVerification
-    with StubCustomsDataStore with StubSubscriptionDisplay {
+    extends AcceptanceTestSpec
+    with SpecHelper
+    with StubSave4Later
+    with StubAuthClient
+    with StubEmailVerification
+    with StubCustomsDataStore
+    with StubSubscriptionDisplay {
 
-  feature("Show 'What is your email' page when the email address is not verified") {
+  feature(
+    "Show 'What is your email' page when the email address is not verified") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()

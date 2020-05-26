@@ -26,7 +26,8 @@ trait StubCustomsDataStore {
 
   private val customsDataStoreGraphQl = "/customs-data-store/graphql"
 
-  private val customsDataStoreContextPath: UrlPattern = urlMatching(customsDataStoreGraphQl)
+  private val customsDataStoreContextPath: UrlPattern = urlMatching(
+    customsDataStoreGraphQl)
 
   def stubCustomsDataStoreOkResponse(): Unit =
     stubFor(

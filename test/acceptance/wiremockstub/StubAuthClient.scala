@@ -34,10 +34,10 @@ trait StubAuthClient {
     """.stripMargin
 
   def authenticate(
-    internalId: String,
-    eoriNumber: String,
-    credentialRole: String = "User",
-    affinityGroup: String = "Organisation"
+      internalId: String,
+      eoriNumber: String,
+      credentialRole: String = "User",
+      affinityGroup: String = "Organisation"
   ): StubMapping =
     stubFor(
       post(urlEqualTo(authUrl))
@@ -63,10 +63,10 @@ trait StubAuthClient {
     )
 
   def authenticateGGUserAsAgentWithNoCDSEnrolment(
-    internalId: String,
-    eoriNumber: String,
-    credentialRole: String,
-    affinityGroup: String
+      internalId: String,
+      eoriNumber: String,
+      credentialRole: String,
+      affinityGroup: String
   ): StubMapping =
     stubFor(
       post(urlEqualTo(authUrl))
@@ -80,7 +80,8 @@ trait StubAuthClient {
         )
     )
 
-  def authenticateGGUserWithError(internalId: String, reason: String): StubMapping =
+  def authenticateGGUserWithError(internalId: String,
+                                  reason: String): StubMapping =
     stubFor(
       post(urlEqualTo(authUrl))
         .withRequestBody(equalToJson(authRequestJson))

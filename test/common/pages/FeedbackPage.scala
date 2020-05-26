@@ -16,11 +16,8 @@
 
 package common.pages
 
-import org.openqa.selenium.By
-import utils.Configuration
-
 class FeedbackPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/feedback/manage-email-cds"
+  override val url: String = "/feedback/manage-email-cds"
   override val title = "Give feedback - GOV.UK"
 }
 

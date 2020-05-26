@@ -65,11 +65,13 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
 
     "contain email when present in response" in {
       subscriptionDisplayResponse.email shouldBe Some("test@email.com")
-      subscriptionDisplayResponse.emailVerificationTimestamp shouldBe Some("2019-09-06T12:30:59Z")
+      subscriptionDisplayResponse.emailVerificationTimestamp shouldBe Some(
+        "2019-09-06T12:30:59Z")
     }
 
     "contain status when present in response" in {
-      noFormBundleSubscriptionDisplayResponse.statusText shouldBe Some("005 - No form bundle found")
+      noFormBundleSubscriptionDisplayResponse.statusText shouldBe Some(
+        "005 - No form bundle found")
     }
 
     "return None when email is not present in response" in {

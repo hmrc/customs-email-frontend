@@ -69,7 +69,9 @@ object Save4LaterService {
   def stubSave4LaterNotFoundDELETE() =
     stubSave4LaterDeleteResponse(expectedDeleteUrl, NOT_FOUND)
 
-  def stubSave4LaterGETResponse(url: String, response: String, status: Int): Unit =
+  def stubSave4LaterGETResponse(url: String,
+                                response: String,
+                                status: Int): Unit =
     stubFor(
       get(urlMatching(url))
         .willReturn(
@@ -80,7 +82,9 @@ object Save4LaterService {
         )
     )
 
-  def stubSave4LaterPUTResponse(url: String, response: String, status: Int): Unit =
+  def stubSave4LaterPUTResponse(url: String,
+                                response: String,
+                                status: Int): Unit =
     stubFor(
       put(urlMatching(url))
         .withRequestBody(containing(emailJsonAsString))

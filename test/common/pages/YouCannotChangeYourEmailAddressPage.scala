@@ -20,7 +20,8 @@ import org.openqa.selenium.By
 import utils.Configuration
 
 class YouCannotChangeYourEmailAddressPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/cannot-change-email"
+  override val url
+    : String = Configuration.frontendHost + "/manage-email-cds/cannot-change-email"
   override val title = "You cannot change your email address"
 
   val recentlyChangedEmailTextCss: By = By.cssSelector("#info")
@@ -29,4 +30,5 @@ class YouCannotChangeYourEmailAddressPage extends BasePage {
     "You recently changed your email address to new-john.doe@example.com. If you need to change this again, you will need to try again in 2 hours."
 }
 
-object YouCannotChangeYourEmailAddressPage extends YouCannotChangeYourEmailAddressPage
+object YouCannotChangeYourEmailAddressPage
+    extends YouCannotChangeYourEmailAddressPage

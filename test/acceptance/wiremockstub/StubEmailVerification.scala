@@ -23,7 +23,8 @@ import play.mvc.Http.MimeTypes.JSON
 
 trait StubEmailVerification {
 
-  private val emailVerificationPostUrl = "/email-verification/verification-requests"
+  private val emailVerificationPostUrl =
+    "/email-verification/verification-requests"
   private val verifiedEmailPostUrl = "/email-verification/verified-email-check"
   private val verifiedEmailContextPath = urlMatching(verifiedEmailPostUrl)
 

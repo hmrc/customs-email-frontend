@@ -34,7 +34,8 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite {
   implicit val timeout: Timeout = 30 seconds
   private val messageApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val messages: Messages = MessagesImpl(Lang("en"), messageApi)
-  val request: Request[String] = Request(FakeRequest("GET", "/").withCSRFToken, "")
+  val request: Request[String] =
+    Request(FakeRequest("GET", "/").withCSRFToken, "")
 
   val env: Environment = Environment.simple()
   val config: Configuration = Configuration.load(env)

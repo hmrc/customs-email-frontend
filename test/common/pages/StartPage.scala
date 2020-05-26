@@ -20,8 +20,10 @@ import org.openqa.selenium.By
 import utils.Configuration
 
 class StartPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/start"
-  override val title = "Manage your email address for the Customs Declaration Service"
+  override val url
+    : String = Configuration.frontendHost + "/manage-email-cds/start"
+  override val title =
+    "Manage your email address for the Customs Declaration Service"
 
   val startNowButton: By = By.linkText("Start now")
 }

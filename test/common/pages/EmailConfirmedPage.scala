@@ -20,7 +20,8 @@ import org.openqa.selenium.By
 import utils.Configuration
 
 class EmailConfirmedPage extends BasePage {
-  override val url: String = Configuration.frontendHost + "/manage-email-cds/email-address-confirmed"
+  override val url
+    : String = Configuration.frontendHost + "/manage-email-cds/email-address-confirmed"
   override val title = "Email address confirmed"
 
   val verifyEmailConfirmedTextPartOne: By = By.id("info1")

@@ -37,7 +37,11 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class UpdateVerifiedEmailConnectorSpec extends PlaySpec with ScalaFutures with MockitoSugar with BeforeAndAfter {
+class UpdateVerifiedEmailConnectorSpec
+    extends PlaySpec
+    with ScalaFutures
+    with MockitoSugar
+    with BeforeAndAfter {
 
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
@@ -45,31 +49,47 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec with ScalaFutures with M
 
   private val forbiddenException = new ForbiddenException("testMessage")
   private val badRequestException = new BadRequestException("testMessage")
-  private val internalServerException = new InternalServerException("testMessage")
+  private val internalServerException = new InternalServerException(
+    "testMessage")
   private val unhandledException = new MethodNotAllowedException("testMessage")
 
-  private val badRequest = Upstream4xxResponse("testMessage", BAD_REQUEST, BAD_REQUEST)
-  private val forbidden = Upstream4xxResponse("testMessage", FORBIDDEN, FORBIDDEN)
-  private val internalServerError = Upstream5xxResponse("testMessage", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)
+  private val badRequest =
+    Upstream4xxResponse("testMessage", BAD_REQUEST, BAD_REQUEST)
+  private val forbidden =
+    Upstream4xxResponse("testMessage", FORBIDDEN, FORBIDDEN)
+  private val internalServerError = Upstream5xxResponse("testMessage",
+                                                        INTERNAL_SERVER_ERROR,
+                                                        INTERNAL_SERVER_ERROR)
 
   val dateTime = DateTime.now()
-  private val requestDetail = RequestDetail("idType", "idNumber", "test@email.com", dateTime)
+  private val requestDetail =
+    RequestDetail("idType", "idNumber", "test@email.com", dateTime)
   private val requestCommon = RequestCommon()
 
   private val verifiedEmailResponse = VerifiedEmailResponse(
-    UpdateVerifiedEmailResponse(ResponseCommon("OK", None, dateTime, List(MessagingServiceParam("name", "value"))))
+    UpdateVerifiedEmailResponse(
+      ResponseCommon("OK",
+                     None,
+                     dateTime,
+                     List(MessagingServiceParam("name", "value"))))
   )
 
-  private val verifiedEmailRequest = VerifiedEmailRequest(UpdateVerifiedEmailRequest(requestCommon, requestDetail))
+  private val verifiedEmailRequest = VerifiedEmailRequest(
+    UpdateVerifiedEmailRequest(requestCommon, requestDetail))
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  val connector = new UpdateVerifiedEmailConnector(mockAppConfig, mockHttpClient, mockAuditable)
+  val connector = new UpdateVerifiedEmailConnector(mockAppConfig,
+                                                   mockHttpClient,
+                                                   mockAuditable)
 
   before {
     reset(mockAuditable, mockAppConfig, mockHttpClient)
-    doNothing().when(mockAuditable).sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-    when(mockAppConfig.updateVerifiedEmailUrl).thenReturn("testUrl/update-verified-email")
+    doNothing()
+      .when(mockAuditable)
+      .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
+    when(mockAppConfig.updateVerifiedEmailUrl)
+      .thenReturn("testUrl/update-verified-email")
   }
 
   "Calling updateVerifiedEmail" should {
@@ -87,7 +107,9 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec with ScalaFutures with M
         )
       ).thenReturn(Future.successful(verifiedEmailResponse))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest, Some("old-email-address")).futureValue
+      val result = connector
+        .updateVerifiedEmail(verifiedEmailRequest, Some("old-email-address"))
+        .futureValue
       result mustBe Right(verifiedEmailResponse)
     }
 
@@ -105,7 +127,8 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec with ScalaFutures with M
         )
       ).thenReturn(Future.failed(forbiddenException))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
+      val result =
+        connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(Forbidden)
     }
 
@@ -123,7 +146,8 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec with ScalaFutures with M
         )
       ).thenReturn(Future.failed(forbidden))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
+      val result =
+        connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(Forbidden)
     }
 
@@ -141,7 +165,8 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec with ScalaFutures with M
         )
       ).thenReturn(Future.failed(badRequestException))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
+      val result =
+        connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(BadRequest)
     }
 
@@ -159,7 +184,8 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec with ScalaFutures with M
         )
       ).thenReturn(Future.failed(badRequest))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
+      val result =
+        connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(BadRequest)
     }
 
@@ -177,7 +203,8 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec with ScalaFutures with M
         )
       ).thenReturn(Future.failed(internalServerException))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
+      val result =
+        connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(ServiceUnavailable)
     }
 
@@ -195,7 +222,8 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec with ScalaFutures with M
         )
       ).thenReturn(Future.failed(internalServerError))
 
-      val result = connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
+      val result =
+        connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
       result mustBe Left(ServiceUnavailable)
     }
 
@@ -213,7 +241,8 @@ class UpdateVerifiedEmailConnectorSpec extends PlaySpec with ScalaFutures with M
         )
       ).thenReturn(Future.failed(unhandledException))
 
-      val result = await(connector.updateVerifiedEmail(verifiedEmailRequest, None))
+      val result =
+        await(connector.updateVerifiedEmail(verifiedEmailRequest, None))
       result mustBe Left(UnhandledException)
     }
   }

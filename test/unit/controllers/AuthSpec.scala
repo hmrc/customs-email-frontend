@@ -23,8 +23,14 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
-import uk.gov.hmrc.customs.emailfrontend.services.{EmailCacheService, EmailVerificationService, Save4LaterService}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{change_your_email, what_is_your_email}
+import uk.gov.hmrc.customs.emailfrontend.services.{
+  EmailVerificationService,
+  Save4LaterService
+}
+import uk.gov.hmrc.customs.emailfrontend.views.html.{
+  change_your_email,
+  what_is_your_email
+}
 
 import scala.concurrent.Future
 
@@ -36,7 +42,8 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
   private val verifyView = app.injector.instanceOf[what_is_your_email]
   private val mockSave4LaterService = mock[Save4LaterService]
   private val mockErrorHandler = mock[ErrorHandler]
-  private val mockSubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
+  private val mockSubscriptionDisplayConnector =
+    mock[SubscriptionDisplayConnector]
   private val mockEmailVerificationService = mock[EmailVerificationService]
 
   private val controller = new WhatIsYourEmailController(
@@ -49,14 +56,16 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
     mockEmailVerificationService,
     mockErrorHandler
   )
-  when(mockSave4LaterService.fetchEmail(any())(any(), any())).thenReturn(Future.successful(None))
+  when(mockSave4LaterService.fetchEmail(any())(any(), any()))
+    .thenReturn(Future.successful(None))
 
   "Accessing a controller that requires a user to be authorised" should {
 
     "allow a fully authorised user access the page" in withAuthorisedUser() {
       val result = controller.show(request)
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) should contain("/manage-email-cds/change-email-address/create")
+      redirectLocation(result) should contain(
+        "/manage-email-cds/change-email-address/create")
     }
 
     "not allow an authorised user without any enrolments to access the page" in withAuthorisedUserWithoutEnrolments {
@@ -83,14 +92,16 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/ineligible/no-enrolment")
+      redirectLocation(eventualResult).value should endWith(
+        "/manage-email-cds/ineligible/no-enrolment")
     }
 
     "show 'ineligible user - agent' page for an authorised agent with no enrolments" in withAuthorisedAgentWithoutCDSEnrolment {
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith("/manage-email-cds/ineligible/is-agent")
+      redirectLocation(eventualResult).value should endWith(
+        "/manage-email-cds/ineligible/is-agent")
     }
   }
 }

@@ -32,11 +32,14 @@ trait SpecHelper extends Matchers {
   def navigateTo: Page => Unit = page => webDriver.navigate().to(page.url)
 
   def waitForPresenceOfElement(locator: By): WebElement =
-    new WebDriverWait(webDriver, 10).until(ExpectedConditions.presenceOfElementLocated(locator))
+    new WebDriverWait(webDriver, 10)
+      .until(ExpectedConditions.presenceOfElementLocated(locator))
 
   def verifyCurrentPage: BasePage => Assertion = page => {
-    new WebDriverWait(webDriver, 5).until(ExpectedConditions.urlContains(page.url))
-    assert(webDriver.getTitle contentEquals page.title, s"Page title: '${webDriver.getTitle}' not as expected")
+    new WebDriverWait(webDriver, 5)
+      .until(ExpectedConditions.urlContains(page.url))
+    assert(webDriver.getTitle contentEquals page.title,
+           s"Page title: '${webDriver.getTitle}' not as expected")
   }
 
   def enterText(locator: By): String => Unit = text => {
@@ -45,7 +48,8 @@ trait SpecHelper extends Matchers {
   }
 
   def assertIsTextVisible(locator: By): String => Boolean = text => {
-    new WebDriverWait(webDriver, 10).until(ExpectedConditions.textToBePresentInElementLocated(locator, text))
+    new WebDriverWait(webDriver, 10)
+      .until(ExpectedConditions.textToBePresentInElementLocated(locator, text))
   }
 
   def clickContinue(): Unit = {
@@ -58,6 +62,7 @@ trait SpecHelper extends Matchers {
     webDriver.findElement(locator).click()
   }
 
-  def generateRandomNumberString(): String = (1 to 10).map(_ => Random.nextInt(10)).mkString
+  def generateRandomNumberString(): String =
+    (1 to 10).map(_ => Random.nextInt(10)).mkString
 
 }

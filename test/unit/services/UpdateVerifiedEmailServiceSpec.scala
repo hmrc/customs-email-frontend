@@ -38,7 +38,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UpdateVerifiedEmailServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
+class UpdateVerifiedEmailServiceSpec
+    extends PlaySpec
+    with MockitoSugar
+    with BeforeAndAfterEach
+    with ScalaFutures {
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private val mockConnector = mock[UpdateVerifiedEmailConnector]
@@ -51,7 +55,11 @@ class UpdateVerifiedEmailServiceSpec extends PlaySpec with MockitoSugar with Bef
 
   private val bundleIdUpdateVerifiedEmailResponse = VerifiedEmailResponse(
     UpdateVerifiedEmailResponse(
-      ResponseCommon("OK", None, dateTime, List(MessagingServiceParam(formBundleIdParamName, "testValue")))
+      ResponseCommon(
+        "OK",
+        None,
+        dateTime,
+        List(MessagingServiceParam(formBundleIdParamName, "testValue")))
     )
   )
   private val businessErrorUpdateVerifiedEmailResponse = VerifiedEmailResponse(
@@ -69,27 +77,38 @@ class UpdateVerifiedEmailServiceSpec extends PlaySpec with MockitoSugar with Bef
   override protected def beforeEach(): Unit =
     reset(mockConnector)
 
-  def mockGetEmailVerificationState(response: Either[HttpErrorResponse, VerifiedEmailResponse]): Unit =
-    when(mockConnector.updateVerifiedEmail(any[VerifiedEmailRequest], any[Option[String]])(any[HeaderCarrier])) thenReturn Future
+  def mockGetEmailVerificationState(
+      response: Either[HttpErrorResponse, VerifiedEmailResponse]): Unit =
+    when(
+      mockConnector.updateVerifiedEmail(
+        any[VerifiedEmailRequest],
+        any[Option[String]])(any[HeaderCarrier])) thenReturn Future
       .successful(response)
 
   "Calling UpdateVerifiedEmailService updateVerifiedEmail" should {
     "return Some(true) when VerifiedEmailResponse returned with bundleId" in {
       mockGetEmailVerificationState(Right(bundleIdUpdateVerifiedEmailResponse))
 
-      service.updateVerifiedEmail(None, email, eoriNumber).futureValue mustBe Some(true)
+      service
+        .updateVerifiedEmail(None, email, eoriNumber)
+        .futureValue mustBe Some(true)
     }
 
     "return None when VerifiedEmailResponse returned without bundleId" in {
-      mockGetEmailVerificationState(Right(businessErrorUpdateVerifiedEmailResponse))
+      mockGetEmailVerificationState(
+        Right(businessErrorUpdateVerifiedEmailResponse))
 
-      service.updateVerifiedEmail(None, email, eoriNumber).futureValue mustBe Some(false)
+      service
+        .updateVerifiedEmail(None, email, eoriNumber)
+        .futureValue mustBe Some(false)
     }
 
     "return None when HttpErrorResponse returned" in {
       mockGetEmailVerificationState(Left(serviceUnavailableResponse))
 
-      service.updateVerifiedEmail(None, email, eoriNumber).futureValue mustBe None
+      service
+        .updateVerifiedEmail(None, email, eoriNumber)
+        .futureValue mustBe None
     }
   }
 }

@@ -25,8 +25,13 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.{Duration, FiniteDuration}
 
 trait IntegrationSpec
-    extends PlaySpec with ScalaFutures with Eventually with IntegrationPatience with BeforeAndAfter
-    with BeforeAndAfterAll with GuiceOneAppPerSuite {
+    extends PlaySpec
+    with ScalaFutures
+    with Eventually
+    with IntegrationPatience
+    with BeforeAndAfter
+    with BeforeAndAfterAll
+    with GuiceOneAppPerSuite {
   implicit val defaultTimeout: FiniteDuration = 5 seconds
 
   implicit def extractAwait[A](future: Future[A]): A = await[A](future)

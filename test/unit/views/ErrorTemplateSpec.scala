@@ -26,7 +26,13 @@ class ErrorTemplateSpec extends ViewSpec {
   private val view = app.injector.instanceOf[error_template]
 
   private val doc: Document =
-    Jsoup.parse(contentAsString(view.render("Some Title", "Some Heading", "Some Message Content", request, messages)))
+    Jsoup.parse(
+      contentAsString(
+        view.render("Some Title",
+                    "Some Heading",
+                    "Some Message Content",
+                    request,
+                    messages)))
 
   "standardErrorTemplate" should {
     "have the correct title" in {

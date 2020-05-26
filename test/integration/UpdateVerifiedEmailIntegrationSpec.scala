@@ -28,7 +28,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.Constants._
 import utils.WireMockRunner
 
-class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec with WireMockRunner {
+class UpdateVerifiedEmailIntegrationSpec
+    extends IntegrationSpec
+    with WireMockRunner {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
@@ -105,7 +107,8 @@ class UpdateVerifiedEmailIntegrationSpec extends IntegrationSpec with WireMockRu
 
     "service returned non fatal" should {
       "return non unhandled response" in {
-        UpdateVerifiedEmailStubService.stubEmailUpdatedResponseWithStatus("", 502)
+        UpdateVerifiedEmailStubService.stubEmailUpdatedResponseWithStatus("",
+                                                                          502)
         val expected = Left(UnhandledException)
         val result = connector.updateVerifiedEmail(request, None).futureValue
 

@@ -137,7 +137,8 @@ trait StubUpdateVerifiedEmail {
     stubUpdateVerifiedEmailRequest(badRequestResponse, BAD_REQUEST)
 
   def stubUpdateVerifiedServiceUnavailable() =
-    stubUpdateVerifiedEmailRequest(serviceUnavailableResponse, INTERNAL_SERVER_ERROR)
+    stubUpdateVerifiedEmailRequest(serviceUnavailableResponse,
+                                   INTERNAL_SERVER_ERROR)
 
   def stubUpdateVerified200FailResponse() =
     stubUpdateVerifiedEmailRequest(failResponse200, OK)
@@ -145,7 +146,8 @@ trait StubUpdateVerifiedEmail {
   def stubUpdateVerifiedForbidden() =
     stubUpdateVerifiedEmailRequest(forbiddenResponse, FORBIDDEN)
 
-  private def stubUpdateVerifiedEmailRequest(response: String, status: Int): Unit =
+  private def stubUpdateVerifiedEmailRequest(response: String,
+                                             status: Int): Unit =
     stubFor(
       put(urlMatching(expectedUrl))
         .willReturn(

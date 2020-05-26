@@ -18,7 +18,10 @@ package unit.controllers
 
 import play.api.mvc.Session
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.emailfrontend.controllers.{ApplicationController, SignOutController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.{
+  ApplicationController,
+  SignOutController
+}
 import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 
 class SignOutControllerSpec extends ControllerSpec {
@@ -29,7 +32,8 @@ class SignOutControllerSpec extends ControllerSpec {
     "redirect to feedback survey" in withAuthorisedUser() {
       val result = controller.signOut(request)
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result).value should endWith("/feedback/manage-email-cds")
+      redirectLocation(result).value should endWith(
+        "/feedback/manage-email-cds")
     }
 
     "clear the session once the user signs out" in withAuthorisedUser() {

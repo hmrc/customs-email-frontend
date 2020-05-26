@@ -27,10 +27,14 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 class CheckYourEmailViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[check_your_email]
   private val form: Form[YesNo] = Forms.confirmEmailForm
-  private val formWithEmptyError: Form[YesNo] = Forms.confirmEmailForm.bind(Map("isYes" -> ""))
-  private val doc: Document = Jsoup.parse(contentAsString(view.render(form, "test@email.com", request, messages)))
+  private val formWithEmptyError: Form[YesNo] =
+    Forms.confirmEmailForm.bind(Map("isYes" -> ""))
+  private val doc: Document = Jsoup.parse(
+    contentAsString(view.render(form, "test@email.com", request, messages)))
   private val docWithEmptyError: Document =
-    Jsoup.parse(contentAsString(view.render(formWithEmptyError, "test@email.com", request, messages)))
+    Jsoup.parse(
+      contentAsString(
+        view.render(formWithEmptyError, "test@email.com", request, messages)))
 
   "Confirm Email page" should {
     "have the correct title" in {
@@ -43,11 +47,15 @@ class CheckYourEmailViewSpec extends ViewSpec {
 
     "have the correct content" in {
       doc.getElementsByTag("dt").text mustBe "Email address"
-      doc.getElementById("whatNext").text mustBe "We'll send you a link to confirm your email address."
+      doc
+        .getElementById("whatNext")
+        .text mustBe "We'll send you a link to confirm your email address."
     }
 
     "have the correct field heading" in {
-      doc.getElementsByClass("heading-medium").text mustBe "Is this the email address you want to use?"
+      doc
+        .getElementsByClass("heading-medium")
+        .text mustBe "Is this the email address you want to use?"
     }
 
     "have the correct text on options" in {
@@ -57,8 +65,12 @@ class CheckYourEmailViewSpec extends ViewSpec {
     }
 
     "have the correct error when an option isn't selected" in {
-      docWithEmptyError.getElementById("errors").text contains "Tell us if this is the correct email address"
-      docWithEmptyError.getElementsByClass("error-message").text mustBe "Tell us if this is the correct email address"
+      docWithEmptyError
+        .getElementById("errors")
+        .text contains "Tell us if this is the correct email address"
+      docWithEmptyError
+        .getElementsByClass("error-message")
+        .text mustBe "Tell us if this is the correct email address"
     }
   }
 }
