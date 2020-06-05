@@ -31,6 +31,14 @@ class AppConfigSpec extends ControllerSpec {
       )
     }
 
+    "have reportAProblemNonJSUrl defined" in {
+      appConfig.reportAProblemNonJSUrl shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=CDS"
+    }
+
+    "have reportAProblemPartialUrl defined" in {
+      appConfig.reportAProblemPartialUrl shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=CDS"
+    }
+
     "have assetsPrefix defined" in {
       appConfig.assetsPrefix shouldBe "https://www.development.tax.service.gov.uk/assets/3.4.0"
     }
