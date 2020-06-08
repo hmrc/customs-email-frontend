@@ -29,7 +29,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   private val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
   private val assetsUrl = config.get[String]("assets.url")
-  private val serviceIdentifier = config.get("microservice.services.contact-frontend.serviceIdentifier")
+  private val serviceIdentifier = config.get[String]("microservice.services.contact-frontend.serviceIdentifier")
 
   val assetsPrefix: String = assetsUrl + config.get[String]("assets.version")
   val analyticsToken: String = config.get[String](s"google-analytics.token")
