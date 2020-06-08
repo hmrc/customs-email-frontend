@@ -32,11 +32,11 @@ class AppConfigSpec extends ControllerSpec {
     }
 
     "have reportAProblemNonJSUrl defined" in {
-      appConfig.reportAProblemNonJSUrl shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=CDS"
+      appConfig.reportAProblemNonJSUrl shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=manage-email-cds"
     }
 
     "have reportAProblemPartialUrl defined" in {
-      appConfig.reportAProblemPartialUrl shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=CDS"
+      appConfig.reportAProblemPartialUrl shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=manage-email-cds"
     }
 
     "have assetsPrefix defined" in {
