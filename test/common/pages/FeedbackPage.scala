@@ -16,8 +16,10 @@
 
 package common.pages
 
+import utils.Configuration
+
 class FeedbackPage extends BasePage {
-  override val url: String = "/feedback/manage-email-cds"
+  override val url: String = if(Configuration.frontendHost == "local") "localhost:9514/feedback/manage-email-cds" else "/feedback/manage-email-cds"
   override val title = "Give feedback - GOV.UK"
 }
 
