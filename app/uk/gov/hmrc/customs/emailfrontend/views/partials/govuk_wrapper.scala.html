@@ -56,7 +56,7 @@
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/custom.css")" type="text/css">
 }
 
-@isLoggedIn = @{!request.session.isEmpty && request.session.get("userId").isDefined}
+@isLoggedIn = @{!request.session.isEmpty && request.session.get("authToken").isDefined}
 
 @headerNavLinks = {@if(isLoggedIn) {
 <ul id="proposition-link" class="header__menu__proposition-links">
