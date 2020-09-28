@@ -22,31 +22,18 @@ import com.typesafe.config.Config
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import org.openqa.selenium.Cookie
-import org.scalatest.{
-  BeforeAndAfterAll,
-  BeforeAndAfterEach,
-  FeatureSpec,
-  GivenWhenThen
-}
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, FeatureSpec, GivenWhenThen}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.Codecs
-import uk.gov.hmrc.crypto.{
-  ApplicationCrypto,
-  CryptoGCMWithKeysFromConfig,
-  PlainText
-}
+import uk.gov.hmrc.crypto.{ApplicationCrypto, CryptoGCMWithKeysFromConfig, PlainText}
 import uk.gov.hmrc.http.SessionKeys
 import utils.{Configuration, Constants, WireMockRunner}
 import utils.Configuration.webDriver
 
 trait AcceptanceTestSpec
-    extends FeatureSpec
-    with GivenWhenThen
-    with GuiceOneServerPerSuite
-    with BeforeAndAfterAll
-    with BeforeAndAfterEach
+    extends FeatureSpec with GivenWhenThen with GuiceOneServerPerSuite with BeforeAndAfterAll with BeforeAndAfterEach
     with WireMockRunner {
   override lazy val port = Configuration.port
 
@@ -85,34 +72,29 @@ trait AcceptanceTestSpec
     }
 
     def encode(data: Map[String, String]): String = {
-      val encoded = data
-        .map {
-          case (k, v) =>
-            URLEncoder.encode(k, UTF_8) + "=" + URLEncoder.encode(v, UTF_8)
-        }
-        .mkString("&")
+      val encoded = data.map {
+        case (k, v) =>
+          URLEncoder.encode(k, UTF_8) + "=" + URLEncoder.encode(v, UTF_8)
+      }.mkString("&")
       sign(encoded, applicationSecret) + "-" + encoded
     }
     sessionCookieCrypto.encrypt(PlainText(encode(sessionData))).value
   }
 
-  def addUserInSession() = {
+  def addUserInSession() =
     webDriver manage () addCookie new Cookie(
       "mdtp",
-      encryptSessionData(Map(SessionKeys.userId -> "/auth/oid/some-oid")))
-  }
+      encryptSessionData(Map(SessionKeys.authToken -> "Bearer randomtoken"))
+    )
 
-  override def beforeAll: Unit = {
+  override def beforeAll: Unit =
     startMockServer()
-  }
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     resetMockServer()
-  }
 
-  override def afterAll: Unit = {
+  override def afterAll: Unit =
     stopMockServer()
-  }
 
   sys.addShutdownHook(webDriver.quit())
 }
