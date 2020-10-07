@@ -4,5 +4,3 @@
 ->         /template                                                   template.Routes
 
 GET        /admin/metrics                                              com.kenshoo.play.metrics.MetricsController.metrics
-
-GET         /customs/register-for-cds/accessibility-statement                      @uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController.accessibilityStatement()

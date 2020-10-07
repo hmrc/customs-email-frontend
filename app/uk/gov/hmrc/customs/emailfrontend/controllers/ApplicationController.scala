@@ -22,6 +22,7 @@ import play.api.mvc.Results.Ok
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
+import uk.gov.hmrc.customs.emailfrontend.views.html.accessibility_statement
 
 @Singleton
 class ApplicationController @Inject()(actions: Actions, view: start_page, accessibilityStatementView: accessibility_statement)(

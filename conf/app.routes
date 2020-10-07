@@ -29,3 +29,5 @@ GET         /ineligible/:ineligible                             uk.gov.hmrc.cust
 GET         /cannot-change-email                                uk.gov.hmrc.customs.emailfrontend.controllers.AmendmentInProgressController.show
 
 GET         /language/:lang                                     uk.gov.hmrc.customs.emailfrontend.controllers.EmailLanguageController.switchToLanguage(lang: String)
+
+GET         /accessibility-statement                      uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController.accessibilityStatement()

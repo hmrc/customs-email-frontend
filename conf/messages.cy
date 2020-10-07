@@ -58,3 +58,49 @@ customs.emailfrontend.phase-banner-beta=BETA
 customs.emailfrontend.phase-banner1=Mae hwn yn wasanaeth newydd – bydd eich
 customs.emailfrontend.phase-banner2=adborth
 customs.emailfrontend.phase-banner3=yn ein helpu i''w wella.
+
+#accessibility statement
+accessibility-statement.heading-and-title=Datganiad hygyrchedd ar gyfer Cael rhif EORI
+accessibility-statement.paragraph1=Mae’r datganiad hygyrchedd hwn yn esbonio pa mor hygyrch yw’r gwasanaeth hwn, beth i’w wneud os ydych yn cael anhawster i’w ddefnyddio, a sut i roi gwybod am broblemau hygyrchedd gyda’r gwasanaeth.
+accessibility-statement.paragraph2=Mae’r gwasanaeth hwn yn rhan o wefan ehangach GOV.UK. Mae <a href=”https://www.gov.uk/help/accessibility”>datganiad hygyrchedd</a> ar wahân ar gyfer prif wefan GOV.UK.
+accessibility-statement.paragraph3=Mae’r dudalen hon yn cynnwys gwybodaeth am y gwasanaeth ‘Cael rhif EORI’ yn unig, sydd ar gael yn <a href="https://www.tax.service.gov.uk/customs/register-for-cds/">https://www.tax.service.gov.uk/customs/register-for-cds/</a>.
+accessibility-statement.using-service=Defnyddio’r gwasanaeth hwn
+accessibility-statement.what-do=Mae’r gwasanaeth hwn ar gyfer defnyddwyr y mae angen rhif EORI arnynt i symud nwyddau i’r UE neu allan ohono (gan gynnwys y DU).
+accessibility-statement.using-service.paragraph=Mae’r gwasanaeth hwn yn cael ei redeg gan Gyllid a Thollau EM (CThEM). Rydym am i gymaint o bobl â phosibl allu defnyddio’r gwasanaeth hwn. Mae hyn yn golygu y dylech allu:
+accessibility-statement.using-service.bullet1=newid lliwiau, lefelau cyferbyniad a ffontiau
+accessibility-statement.using-service.bullet2=chwyddo’r sgrin hyd at 300% heb i’r testun ddisgyn oddi ar y sgrin
+accessibility-statement.using-service.bullet3=mynd o ddechrau’r gwasanaeth i’r diwedd gan ddefnyddio bysellfwrdd yn unig
+accessibility-statement.using-service.bullet4=mynd o ddechrau’r gwasanaeth i’r diwedd gan ddefnyddio meddalwedd adnabod lleferydd
+accessibility-statement.using-service.bullet5=gwrando ar y gwasanaeth drwy ddefnyddio darllenydd sgrin (gan gynnwys y fersiynau diweddaraf o JAWS, NVDA a VoiceOver)
+accessibility-statement.using-service.paragraph2=Rydym hefyd wedi sicrhau bod y testun a ddefnyddir yn y gwasanaeth mor syml â phosibl i’w ddeall.
+accessibility-statement.using-service.paragraph3=Mae gan <a class=”govuk-link” href=”https://mcmw.abilitynet.org.uk/”>AbilityNet</a> gyngor ar wneud eich dyfais yn haws i’w defnyddio os oes gennych anabledd.
+accessibility-statement.how-accessible=Pa mor hygyrch yw’r gwasanaeth hwn
+accessibility-statement.how-accessible.paragraph1=Mae’r gwasanaeth hwn yn cydymffurfio’n rhannol â <a class=”govuk-link” href=”https://www.w3.org/TR/WCAG21/”>safon AA Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1</a>.
+accessibility-statement.how-accessible.paragraph2=Mae’n bosibl y bydd rhai pobl yn cael anhawster i ddefnyddio rhannau o’r gwasanaeth hwn:
+accessibility-statement.how-accessible.bullet1=nid yw cysylltiadau osgoi yn bresennol, neu nid ydynt yn gweithio yn ôl y disgwyl
+accessibility-statement.how-accessible.bullet2=Nid yw ffocws defnyddwyr wedi’i drapio o fewn y ddeialog ‘terfyn amser’ pan ddefnyddir dyfais symudol. Wrth ddefnyddio VoiceOver, mae’r cynnwys oddi tanodd yn cael ei ddarllen yn uchel, er nad yw’n weladwy.
+accessibility-statement.difficulty-using-service=Beth i’w wneud os ydych yn cael anhawster wrth ddefnyddio’r gwasanaeth hwn
+accessibility-statement.difficulty-using-service.bullet-intro=Os ydych yn cael anhawster wrth ddefnyddio’r gwasanaeth hwn, cysylltwch â ni drwy:
+accessibility-statement.difficulty-using-service.bullet1=<a href=”https://www.tax.service.gov.uk/shortforms/form/EORIContact”>ffurflen ar-lein</a>
+accessibility-statement.difficulty-using-service.bullet2=ffonio 0300 200 3705
+accessibility-statement.reporting-problems=Rhoi gwybod am broblemau hygyrchedd gyda’r gwasanaeth hwn
+accessibility-statement.reporting-problems.paragraph=Rydym bob amser yn ceisio gwella hygyrchedd y gwasanaeth hwn. Os byddwch yn dod o hyd i unrhyw broblem nad yw wedi’i rhestru ar y dudalen hon, neu os ydych o’r farn nad ydym yn bodloni gofynion hygyrchedd, gallwch <a href=”https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=CDS”>roi gwybod am y broblem hygyrchedd</a>.
+accessibility-statement.not-happy=Beth i’w wneud os nad ydych yn hapus â sut rydym yn ymateb i’ch cwyn
+accessibility-statement.not-happy.paragraph=Mae’r Comisiwn Cydraddoldeb a Hawliau Dynol (EHRC) yn gyfrifol am orfodi Rheoliadau Hygyrchedd Cyrff Sector Cyhoeddus (Gwefannau a Chymwysiadau Symudol) (Rhif 2) 2018 (y ‘rheoliadau hygyrchedd’). Os nad ydych yn hapus â sut rydym yn ymateb i’ch cwyn, <a href=""https://www.equalityadvisoryservice.com/"">cysylltwch â’r Gwasanaeth Cynghori a Chymorth Cydraddoldeb</a> (EASS), neu’r <a href=""https://www.equalityni.org/Home"">Equality Commission for Northern Ireland</a> (ECNI) os ydych yn byw yng Ngogledd Iwerddon.
+accessibility-statement.contact-us=Cysylltu â ni dros y ffôn neu gael ymweliad personol gennym
+accessibility-statement.contact-us.paragraph1=Rydym yn cynnig gwasanaeth text relay os ydych yn fyddar, â nam ar eich clyw neu os oes gennych nam ar eich lleferydd.
+accessibility-statement.contact-us.paragraph2=Gallwn ddarparu dehonglydd Iaith Arwyddion Prydain (BSL), neu gallwch drefnu ymweliad gan ymgynghorydd CThEM i’ch helpu i gwblhau’r gwasanaeth.
+accessibility-statement.contact-us.paragraph3=Gwybodaeth am sut i <a href=”https://www.gov.uk/dealing-hmrc-additional-needs”>gysylltu â ni</a>.
+accessibility-statement.technical-information=Gwybodaeth dechnegol am hygyrchedd y gwasanaeth hwn
+accessibility-statement.technical-information.paragraph1=Mae CThEM wedi ymrwymo i wneud y gwasanaeth hwn yn hygyrch, yn unol â Rheoliadau Hygyrchedd Cyrff Sector Cyhoeddus (Gwefannau a Chymwysiadau Symudol) (Rhif 2) 2018.
+accessibility-statement.non-accessible=Cynnwys nad yw’n hygyrch
+accessibility-statement.non-accessible.paragraph1=Nid yw’r cynnwys a restrir isod yn hygyrch oherwydd y rhesymau canlynol.
+accessibility-statement.non-accessible.heading4=Diffyg cydymffurfio â’r rheoliadau hygyrchedd
+accessibility-statement.non-accessible.paragraph2=Nid yw cysylltiadau ‘Ewch yn syth i’r prif gynnwys’ ar gael, sy’n golygu nad yw defnyddwyr yn gallu osgoi’r prif elfennau llywio wrth lywio’r tudalennau. Mae hyn yn methu maen prawf llwyddiant 2.4.1 (Bypass Blocks) Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
+accessibility-statement.non-accessible.paragraph3=Nid yw’r ffocws wedi’i drapio o fewn y ddeialog ‘terfyn amser’, sy’n golygu bod defnyddwyr yn gallu mynd heibio i’r opsiynau a chael mynediad at elfennau tudalen sydd y tu ôl i’r ddeialog. Gall hyn ddrysu rhai defnyddwyr, na allant o reidrwydd weld yr hyn sy’n digwydd ar y sgrin. Mae hyn yn methu maen prawf llwyddiant 2.4.3 (Focus Order) Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
+accessibility-statement.non-accessible.paragraph4=Caiff datrysiadau ar gyfer y problemau uchod eu profi ar 14 Hydref 2020.
+accessibility-statement.technical-information.paragraph2=Mae’r gwasanaeth hwn yn cydymffurfio’n rhannol â <a href=”https://www.w3.org/TR/WCAG21/”>safon AA Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1</a>.
+accessibility-statement.how-tested=Sut gwnaethom brofi’r gwasanaeth hwn
+accessibility-statement.how-tested.paragraph1=Cafodd y gwasanaeth ei brofi ddiwethaf ar 11 Mehefin 2020 a gwiriwyd ei fod yn cydymffurfio â safon ‘AA’ Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
+accessibility-statement.how-tested.paragraph2=Adeiladwyd y gwasanaeth gan ddefnyddio rhannau a brofwyd gan y <a href=”http://www.digitalaccessibilitycentre.org/”>Ganolfan Hygyrchedd Digidol</a>. Profwyd y gwasanaeth llawn gan CThEM, ac roedd y gwaith o brofi’r gwasanaeth yn cynnwys defnyddwyr anabl.
+accessibility-statement.how-tested.paragraph3=Paratowyd y dudalen hon ar 23 Medi 2019.
