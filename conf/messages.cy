@@ -60,6 +60,7 @@ customs.emailfrontend.phase-banner2=adborth
 customs.emailfrontend.phase-banner3=yn ein helpu i''w wella.
 
 #accessibility statement
+footer.accessibility=Datganiad Hygyrchedd
 accessibility-statement.heading-and-title=Datganiad hygyrchedd ar gyfer Cael rhif EORI
 accessibility-statement.paragraph1=Mae’r datganiad hygyrchedd hwn yn esbonio pa mor hygyrch yw’r gwasanaeth hwn, beth i’w wneud os ydych yn cael anhawster i’w ddefnyddio, a sut i roi gwybod am broblemau hygyrchedd gyda’r gwasanaeth.
 accessibility-statement.paragraph2=Mae’r gwasanaeth hwn yn rhan o wefan ehangach GOV.UK. Mae <a href=”https://www.gov.uk/help/accessibility”>datganiad hygyrchedd</a> ar wahân ar gyfer prif wefan GOV.UK.

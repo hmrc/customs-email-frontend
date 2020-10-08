@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.customs.emailfrontend.controllers.routes.EmailLanguageController._
 @import uk.gov.hmrc.customs.emailfrontend.controllers.EmailLanguageController._
 @import play.api.i18n.Lang
+@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.ApplicationController
 
 @this(header_nav: HeaderNav,
       head: Head,
@@ -100,7 +101,15 @@
 }
 
 @footerTop = {}
-@footerLinks = {}
+@accessibilityStatementLink = {
+<li>
+    <a href="@ApplicationController.accessibilityStatement().url" target="_blank">@messages("footer.accessibility")</a>
+</li>
+}
+
+@footerLinks = {
+    @footer_links(additionalLinks = Some(accessibilityStatementLink))
+}
 
 @mainContentHeader = {
     @if(contentHeader.isDefined) {
@@ -121,4 +130,4 @@
       sidebar = sidebar)
 }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(headContent, bodyEnd, insideHeader, afterHeader, footerTop, Some(footer_links()), true)(content)
+@hmrcGovUkTemplate(Some(title), bodyClasses)(headContent, bodyEnd, insideHeader, afterHeader, footerTop, Some(footerLinks), true)(content)

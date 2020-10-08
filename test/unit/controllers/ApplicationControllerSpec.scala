@@ -38,5 +38,10 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       val result = controller.keepAlive(request)
       status(result) shouldBe OK
     }
+
+    "allow  the user to access the accessibility statement page" in {
+      val result = controller.accessibilityStatement(request)
+      status(result) shouldBe OK
+    }
   }
 }

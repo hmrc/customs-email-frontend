@@ -74,6 +74,7 @@ customs.emailfrontend.phase-banner2=feedback
 customs.emailfrontend.phase-banner3=will help us to improve it.
 
 #accessibility statement
+footer.accessibility=Accessibility Statement
 accessibility-statement.heading-and-title=Accessibility statement for Manage your email address for the Customs Declaration Service
 accessibility-statement.paragraph1=This accessibility statement explains how accessible this service is, what to do if you have difficulty using it, and how to report accessibility problems with the service.
 accessibility-statement.paragraph2=This service is part of the wider GOV.UK website. There is a separate <a href="https://www.gov.uk/help/accessibility">accessibility statement</a> for the main GOV.UK website.
