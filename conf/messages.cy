@@ -61,12 +61,12 @@ customs.emailfrontend.phase-banner3=yn ein helpu i''w wella.
 
 #accessibility statement
 footer.accessibility=Datganiad Hygyrchedd
-accessibility-statement.heading-and-title=Datganiad hygyrchedd ar gyfer Cael rhif EORI
+accessibility-statement.heading-and-title=Datganiad hygyrchedd ar gyfer Rheoli’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datgan Tollau
 accessibility-statement.paragraph1=Mae’r datganiad hygyrchedd hwn yn esbonio pa mor hygyrch yw’r gwasanaeth hwn, beth i’w wneud os ydych yn cael anhawster i’w ddefnyddio, a sut i roi gwybod am broblemau hygyrchedd gyda’r gwasanaeth.
 accessibility-statement.paragraph2=Mae’r gwasanaeth hwn yn rhan o wefan ehangach GOV.UK. Mae <a href=”https://www.gov.uk/help/accessibility”>datganiad hygyrchedd</a> ar wahân ar gyfer prif wefan GOV.UK.
-accessibility-statement.paragraph3=Mae’r dudalen hon yn cynnwys gwybodaeth am y gwasanaeth ‘Cael rhif EORI’ yn unig, sydd ar gael yn <a href="https://www.tax.service.gov.uk/customs/register-for-cds/">https://www.tax.service.gov.uk/customs/register-for-cds/</a>.
+accessibility-statement.paragraph3=Mae’r dudalen hon ond yn cynnwys gwybodaeth am y gwasanaeth ‘Rheoli’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datgan Tollau’, sydd ar gael yn <a href="https://www.tax.service.gov.uk/customs/register-for-cds/"> https://www.tax.service.gov.uk/customs/register-for-cds/</a>.
 accessibility-statement.using-service=Defnyddio’r gwasanaeth hwn
-accessibility-statement.what-do=Mae’r gwasanaeth hwn ar gyfer defnyddwyr y mae angen rhif EORI arnynt i symud nwyddau i’r UE neu allan ohono (gan gynnwys y DU).
+accessibility-statement.what-do=Mae’r gwasanaeth hwn ar gyfer newid neu ddilysu’r cyfeiriad e-bost rydym yn ei ddefnyddio i anfon diweddariadau neu newidiadau atoch ynghylch y Gwasanaeth Datgan Tollau (CDS) yn ogystal â hysbysiadau o daliadau a datganiadau mewnforio newydd.
 accessibility-statement.using-service.paragraph=Mae’r gwasanaeth hwn yn cael ei redeg gan Gyllid a Thollau EM (CThEM). Rydym am i gymaint o bobl â phosibl allu defnyddio’r gwasanaeth hwn. Mae hyn yn golygu y dylech allu:
 accessibility-statement.using-service.bullet1=newid lliwiau, lefelau cyferbyniad a ffontiau
 accessibility-statement.using-service.bullet2=chwyddo’r sgrin hyd at 300% heb i’r testun ddisgyn oddi ar y sgrin
