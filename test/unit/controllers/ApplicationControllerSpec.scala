@@ -20,11 +20,13 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController
 import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
+import uk.gov.hmrc.customs.emailfrontend.views.html.accessibility_statement
 
 class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val view = app.injector.instanceOf[start_page]
-  private val controller = new ApplicationController(fakeAction, view)
+  private val accessibilityStatement = app.injector.instanceOf[accessibility_statement]
+  private val controller = new ApplicationController(fakeAction, view, accessibilityStatement)
 
   "ApplicationController" should {
     "allow  the user to access the start page" in {
@@ -34,6 +36,11 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
     "allow users to refresh their session" in {
       val result = controller.keepAlive(request)
+      status(result) shouldBe OK
+    }
+
+    "allow  the user to access the accessibility statement page" in {
+      val result = controller.accessibilityStatement(request)
       status(result) shouldBe OK
     }
   }

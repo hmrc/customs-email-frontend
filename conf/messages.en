@@ -73,3 +73,49 @@ customs.emailfrontend.phase-banner1=This is a new service – your
 customs.emailfrontend.phase-banner2=feedback
 customs.emailfrontend.phase-banner3=will help us to improve it.
 
+#accessibility statement
+footer.accessibility=Accessibility Statement
+accessibility-statement.heading-and-title=Accessibility statement for Manage your email address for the Customs Declaration Service
+accessibility-statement.paragraph1=This accessibility statement explains how accessible this service is, what to do if you have difficulty using it, and how to report accessibility problems with the service.
+accessibility-statement.paragraph2=This service is part of the wider GOV.UK website. There is a separate <a href="https://www.gov.uk/help/accessibility">accessibility statement</a> for the main GOV.UK website.
+accessibility-statement.paragraph3=This page only contains information about the Manage your email for the Customs Declaration Service, available at <a href="https://www.tax.service.gov.uk/customs/register-for-cds/"> https://www.tax.service.gov.uk/customs/register-for-cds/</a>.
+accessibility-statement.using-service=Using the service
+accessibility-statement.what-do=This service is for changing or verifying the email address we use to send you updates on changes to the Customs Declaration Service (CDS) and notifications of new import statements and payments.
+accessibility-statement.using-service.paragraph=This service is run by HM Revenue and Customs (HMRC). We want as many people as possible to be able to use this service. This means you should be able to:
+accessibility-statement.using-service.bullet1=change colours, contrast levels and fonts
+accessibility-statement.using-service.bullet2=zoom in up to 300% without the text spilling off the screen
+accessibility-statement.using-service.bullet3=get from the start of the service to the end using just a keyboard
+accessibility-statement.using-service.bullet4=get from the start of the service to the end using speech recognition software
+accessibility-statement.using-service.bullet5=listen to the service using a screen reader (including the most recent versions of JAWS, NVDA and VoiceOver)
+accessibility-statement.using-service.paragraph2=We have also made the text in the service as simple as possible to understand.
+accessibility-statement.using-service.paragraph3=<a class="govuk-link" href="https://mcmw.abilitynet.org.uk/">AbilityNet</a> has advice on making your device easier to use if you have a disability.
+accessibility-statement.how-accessible=How accessible this service is
+accessibility-statement.how-accessible.paragraph1=This service is partially compliant with the <a class="govuk-link" href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines version 2.1 AA standard</a>.
+accessibility-statement.how-accessible.paragraph2=Some people may find parts of this service difficult to use:
+accessibility-statement.how-accessible.bullet1=skip links are not present or do not function as expected
+accessibility-statement.how-accessible.bullet2=users’ focus is not trapped within the timeout dialog when using a mobile device meaning bleed through occurred using VoiceOver
+accessibility-statement.difficulty-using-service=What to do if you have difficulty using this service
+accessibility-statement.difficulty-using-service.bullet-intro=If you have difficulty using this service, contact us by:
+accessibility-statement.difficulty-using-service.bullet1=<a href="https://www.tax.service.gov.uk/shortforms/form/EORIContact">online form</a>
+accessibility-statement.difficulty-using-service.bullet2=call 0300 322 7067
+accessibility-statement.reporting-problems=Reporting accessibility problems with this service
+accessibility-statement.reporting-problems.paragraph=We are always looking to improve the accessibility of this service. If you find any problems that are not listed on this page or think we are not meeting accessibility requirements, you can <a href="https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=CDS">report the accessibility problem</a>.
+accessibility-statement.not-happy=What to do if you are not happy with how we respond to your complaint
+accessibility-statement.not-happy.paragraph=The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the ‘accessibility regulations’). If you are not happy with how we respond to your complaint, <a href="https://www.equalityadvisoryservice.com/">contact the Equality Advisory and Support Service</a> (EASS), or the <a href="https://www.equalityni.org/Home">Equality Commission for Northern Ireland</a> (ECNI) if you live in Northern Ireland.
+accessibility-statement.contact-us=Contacting us by phone or getting a visit from us in person
+accessibility-statement.contact-us.paragraph1=We provide a text relay service if you are deaf, hearing impaired or have a speech impediment.
+accessibility-statement.contact-us.paragraph2=We can provide a British Sign Language (BSL) interpreter, or you can arrange a visit from an HMRC advisor to help you complete the service.
+accessibility-statement.contact-us.paragraph3=Find out how to <a href="https://www.gov.uk/dealing-hmrc-additional-needs">contact us</a>.
+accessibility-statement.technical-information=Technical information about this service’s accessibility
+accessibility-statement.technical-information.paragraph1=HMRC is committed to making this service accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.
+accessibility-statement.non-accessible=Non-accessible content
+accessibility-statement.non-accessible.paragraph1=The content listed below is non-accessible for the following reasons.
+accessibility-statement.non-accessible.heading4=Non-compliance with the accessibility regulations
+accessibility-statement.non-accessible.paragraph2=‘Skip to main content’ links are not available which means users are unable to bypass the main navigation elements when navigating the pages. This fails WCAG 2.1 success criterion 2.4.1 (Bypass Blocks).
+accessibility-statement.non-accessible.paragraph3=Focus is not trapped within the timeout dialog, which means users are able to navigate past the options and access the page elements behind the dialog. This can be disorientating for some users who may be unable to see what is happening on screen. This fails WCAG 2.1 success criterion 2.4.3 (Focus Order).
+accessibility-statement.non-accessible.paragraph4=Fixes for the above issues will be tested on 14 October 2020.
+accessibility-statement.technical-information.paragraph2=This service is partially compliant with the <a href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines version 2.1 AA standard</a>.
+accessibility-statement.how-tested=How we tested this service
+accessibility-statement.how-tested.paragraph1=The service was last tested on 11 June 2020 and was checked for compliance with WCAG 2.1 AA.
+accessibility-statement.how-tested.paragraph2=The service was built using parts that were tested by the <a href="http://www.digitalaccessibilitycentre.org/">Digital Accessibility Centre</a>. The full service was tested by HMRC and included disabled users.
+accessibility-statement.how-tested.paragraph3=This page was prepared on 23 September 2019.
