@@ -75,11 +75,11 @@ customs.emailfrontend.phase-banner3=will help us to improve it.
 
 #accessibility statement
 footer.accessibility=Accessibility Statement
-accessibility-statement.heading-and-title=Accessibility statement for Manage your email address for the Customs Declaration Service
+accessibility-statement.heading-and-title=Accessibility statement for Manage your email for the Customs Declaration Service
 accessibility-statement.paragraph1=This accessibility statement explains how accessible this service is, what to do if you have difficulty using it, and how to report accessibility problems with the service.
 accessibility-statement.paragraph2=This service is part of the wider GOV.UK website. There is a separate <a href="https://www.gov.uk/help/accessibility">accessibility statement</a> for the main GOV.UK website.
-accessibility-statement.paragraph3=This page only contains information about the Manage your email for the Customs Declaration Service, available at <a href="https://www.tax.service.gov.uk/customs/register-for-cds/"> https://www.tax.service.gov.uk/customs/register-for-cds/</a>.
-accessibility-statement.using-service=Using the service
+accessibility-statement.paragraph3=This page only contains information about the Manage your email for the Customs Declaration Service, available at <a href="https://www.tax.service.gov.uk/manage-email-cds"> https://www.tax.service.gov.uk/manage-email-cds</a>.
+accessibility-statement.using-service=Using this service
 accessibility-statement.what-do=This service is for changing or verifying the email address we use to send you updates on changes to the Customs Declaration Service (CDS) and notifications of new import statements and payments.
 accessibility-statement.using-service.paragraph=This service is run by HM Revenue and Customs (HMRC). We want as many people as possible to be able to use this service. This means you should be able to:
 accessibility-statement.using-service.bullet1=change colours, contrast levels and fonts
@@ -93,7 +93,7 @@ accessibility-statement.how-accessible=How accessible this service is
 accessibility-statement.how-accessible.paragraph1=This service is partially compliant with the <a class="govuk-link" href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines version 2.1 AA standard</a>.
 accessibility-statement.how-accessible.paragraph2=Some people may find parts of this service difficult to use:
 accessibility-statement.how-accessible.bullet1=skip links are not present or do not function as expected
-accessibility-statement.how-accessible.bullet2=users’ focus is not trapped within the timeout dialog when using a mobile device meaning bleed through occurred using VoiceOver
+accessibility-statement.how-accessible.bullet2=users’ focus is not trapped within the timeout dialog when using a mobile device meaning bleed through occurs using VoiceOver
 accessibility-statement.difficulty-using-service=What to do if you have difficulty using this service
 accessibility-statement.difficulty-using-service.bullet-intro=If you have difficulty using this service, contact us by:
 accessibility-statement.difficulty-using-service.bullet1=<a href="https://www.tax.service.gov.uk/shortforms/form/EORIContact">online form</a>
