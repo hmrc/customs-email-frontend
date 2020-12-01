@@ -78,8 +78,8 @@ accessibility-statement.using-service.paragraph3=Mae gan <a class=”govuk-link�
 accessibility-statement.how-accessible=Pa mor hygyrch yw’r gwasanaeth hwn
 accessibility-statement.how-accessible.paragraph1=Mae’r gwasanaeth hwn yn cydymffurfio’n rhannol â <a class=”govuk-link” href=”https://www.w3.org/TR/WCAG21/”>safon AA Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1</a>.
 accessibility-statement.how-accessible.paragraph2=Mae’n bosibl y bydd rhai pobl yn cael anhawster i ddefnyddio rhannau o’r gwasanaeth hwn:
-accessibility-statement.how-accessible.bullet1=nid yw cysylltiadau osgoi yn bresennol, neu nid ydynt yn gweithio yn ôl y disgwyl
-accessibility-statement.how-accessible.bullet2=Nid yw ffocws defnyddwyr wedi’i drapio o fewn y ddeialog ‘terfyn amser’ pan ddefnyddir dyfais symudol. Wrth ddefnyddio VoiceOver, mae’r cynnwys oddi tanodd yn cael ei ddarllen yn uchel, er nad yw’n weladwy.
+accessibility-statement.how-accessible.bullet1=Nid yw ffocws defnyddwyr wedi’i drapio o fewn y ddeialog ‘terfyn amser’ pan ddefnyddir dyfais symudol. Wrth ddefnyddio VoiceOver, mae’r cynnwys oddi tanodd yn cael ei ddarllen yn uchel, er nad yw’n weladwy.
+accessibility-statement.how-accessible.bullet2=nid yw’r lliwiau a ddefnyddir i ddangos ffocws y bysellfwrdd yn bodloni’r gofynion sylfaenol o ran cyferbynnedd lliwiau
 accessibility-statement.difficulty-using-service=Beth i’w wneud os ydych yn cael anhawster wrth ddefnyddio’r gwasanaeth hwn
 accessibility-statement.difficulty-using-service.bullet-intro=Os ydych yn cael anhawster wrth ddefnyddio’r gwasanaeth hwn, cysylltwch â ni drwy:
 accessibility-statement.difficulty-using-service.bullet1=<a href=”https://www.tax.service.gov.uk/shortforms/form/EORIContact”>ffurflen ar-lein</a>
@@ -97,11 +97,12 @@ accessibility-statement.technical-information.paragraph1=Mae CThEM wedi ymrwymo 
 accessibility-statement.non-accessible=Cynnwys nad yw’n hygyrch
 accessibility-statement.non-accessible.paragraph1=Nid yw’r cynnwys a restrir isod yn hygyrch oherwydd y rhesymau canlynol.
 accessibility-statement.non-accessible.heading4=Diffyg cydymffurfio â’r rheoliadau hygyrchedd
-accessibility-statement.non-accessible.paragraph2=Nid yw cysylltiadau ‘Ewch yn syth i’r prif gynnwys’ ar gael, sy’n golygu nad yw defnyddwyr yn gallu osgoi’r prif elfennau llywio wrth lywio’r tudalennau. Mae hyn yn methu maen prawf llwyddiant 2.4.1 (Bypass Blocks) Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
-accessibility-statement.non-accessible.paragraph3=Nid yw’r ffocws wedi’i drapio o fewn y ddeialog ‘terfyn amser’, sy’n golygu bod defnyddwyr yn gallu mynd heibio i’r opsiynau a chael mynediad at elfennau tudalen sydd y tu ôl i’r ddeialog. Gall hyn ddrysu rhai defnyddwyr, na allant o reidrwydd weld yr hyn sy’n digwydd ar y sgrin. Mae hyn yn methu maen prawf llwyddiant 2.4.3 (Focus Order) Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
-accessibility-statement.non-accessible.paragraph4=Caiff datrysiadau ar gyfer y problemau uchod eu profi ar 14 Hydref 2020.
+accessibility-statement.non-accessible.paragraph2=Nid yw’r ffocws wedi’i drapio o fewn y ddeialog ‘terfyn amser’, sy’n golygu bod defnyddwyr yn gallu mynd heibio i’r opsiynau a chael mynediad at elfennau tudalen sydd y tu ôl i’r ddeialog. Gall hyn ddrysu rhai defnyddwyr, na allant o reidrwydd weld yr hyn sy’n digwydd ar y sgrin. Mae hyn yn methu maen prawf llwyddiant 2.4.3 (Focus Order) Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
+accessibility-statement.non-accessible.paragraph3=Nid yw dangosydd ffocws y bysellfwrdd ar gyfer elfennau, gan gynnwys cysylltiadau, yn bodloni’r gofynion o ran cymarebau cyferbynnedd lliw. Mae’n bosibl y bydd defnyddwyr yn ei chael hi’n anodd llywio’r dudalen gan ddefnyddio bysellfwrdd gan y gallent dybio nad yw ffocws y bysellfwrdd yn bresennol. Mae hyn yn methu maen prawf llwyddiant 1.4.11 (non-text contrast ratio) Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
+accessibility-statement.non-accessible.paragraph4=Caiff datrysiadau ar gyfer y problemau uchod eu profi awythnos yn cychwyn 14 Ionawr 2020.
+
 accessibility-statement.technical-information.paragraph2=Mae’r gwasanaeth hwn yn cydymffurfio’n rhannol â <a href=”https://www.w3.org/TR/WCAG21/”>safon AA Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1</a>.
 accessibility-statement.how-tested=Sut gwnaethom brofi’r gwasanaeth hwn
-accessibility-statement.how-tested.paragraph1=Cafodd y gwasanaeth ei brofi ddiwethaf ar 11 Mehefin 2020 a gwiriwyd ei fod yn cydymffurfio â safon ‘AA’ Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
+accessibility-statement.how-tested.paragraph1=Cafodd y gwasanaeth ei brofi ddiwethaf ar 14 Hydref 2020 a gwiriwyd ei fod yn cydymffurfio â safon ‘AA’ Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
 accessibility-statement.how-tested.paragraph2=Adeiladwyd y gwasanaeth gan ddefnyddio rhannau a brofwyd gan y <a href=”http://www.digitalaccessibilitycentre.org/”>Ganolfan Hygyrchedd Digidol</a>. Profwyd y gwasanaeth llawn gan CThEM, ac roedd y gwaith o brofi’r gwasanaeth yn cynnwys defnyddwyr anabl.
-accessibility-statement.how-tested.paragraph3=Paratowyd y dudalen hon ar 23 Medi 2019.
+accessibility-statement.how-tested.paragraph3=Paratowyd y dudalen hon ar 23 Medi 2019. Cafodd ei diweddaru ddiwethaf ar 3 Rhagfyr 2020.
