@@ -99,7 +99,7 @@ accessibility-statement.non-accessible.paragraph1=Nid yw’r cynnwys a restrir i
 accessibility-statement.non-accessible.heading4=Diffyg cydymffurfio â’r rheoliadau hygyrchedd
 accessibility-statement.non-accessible.paragraph2=Nid yw’r ffocws wedi’i drapio o fewn y ddeialog ‘terfyn amser’, sy’n golygu bod defnyddwyr yn gallu mynd heibio i’r opsiynau a chael mynediad at elfennau tudalen sydd y tu ôl i’r ddeialog. Gall hyn ddrysu rhai defnyddwyr, na allant o reidrwydd weld yr hyn sy’n digwydd ar y sgrin. Mae hyn yn methu maen prawf llwyddiant 2.4.3 (Focus Order) Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
 accessibility-statement.non-accessible.paragraph3=Nid yw dangosydd ffocws y bysellfwrdd ar gyfer elfennau, gan gynnwys cysylltiadau, yn bodloni’r gofynion o ran cymarebau cyferbynnedd lliw. Mae’n bosibl y bydd defnyddwyr yn ei chael hi’n anodd llywio’r dudalen gan ddefnyddio bysellfwrdd gan y gallent dybio nad yw ffocws y bysellfwrdd yn bresennol. Mae hyn yn methu maen prawf llwyddiant 1.4.11 (non-text contrast ratio) Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
-accessibility-statement.non-accessible.paragraph4=Caiff datrysiadau ar gyfer y problemau uchod eu profi awythnos yn cychwyn 14 Ionawr 2020.
+accessibility-statement.non-accessible.paragraph4=Caiff datrysiadau ar gyfer y problemau uchod eu profi awythnos yn cychwyn 18 Ionawr 2021.
 
 accessibility-statement.technical-information.paragraph2=Mae’r gwasanaeth hwn yn cydymffurfio’n rhannol â <a href=”https://www.w3.org/TR/WCAG21/”>safon AA Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1</a>.
 accessibility-statement.how-tested=Sut gwnaethom brofi’r gwasanaeth hwn
