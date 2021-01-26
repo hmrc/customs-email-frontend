@@ -40,8 +40,10 @@ class SignOutControllerSpec extends ControllerSpec {
     "clear the session once the user signs out" in withAuthorisedUser() {
       status(controller.signOut(request)) shouldBe SEE_OTHER
       val view = app.injector.instanceOf[start_page]
-      val accessibilityStatement = app.injector.instanceOf[accessibility_statement]
-      val startPageController = new ApplicationController(fakeAction, view, accessibilityStatement)
+      val accessibilityStatement =
+        app.injector.instanceOf[accessibility_statement]
+      val startPageController =
+        new ApplicationController(fakeAction, view, accessibilityStatement)
       val result = startPageController.show(request)
       session(result) shouldBe Session.emptyCookie
     }

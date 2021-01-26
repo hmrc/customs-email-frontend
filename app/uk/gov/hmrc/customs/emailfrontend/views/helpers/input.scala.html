@@ -60,7 +60,7 @@
                     <span class="form-hint" id="@(field.id)-hint">@elements.args.get('_hintText)</span>
                 }
                 @if(allErrors.nonEmpty) {
-                    @allErrors.map { error => <span class="error-message">@messages(error)</span> }
+                    @allErrors.map { error => <span class="error-message">@error</span> }
                 }
             @if(isLabelH1 && allErrors.nonEmpty) {
             </div>

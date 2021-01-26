@@ -23,7 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.http.{ForbiddenException, _}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -46,7 +46,7 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
     } recover {
       case _: BadRequestException | Upstream4xxResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
       case _: ForbiddenException | Upstream4xxResponse(_, FORBIDDEN, _, _)    => Left(Forbidden)
-      case _: InternalServerException | Upstream5xxResponse(_, INTERNAL_SERVER_ERROR, _) =>
+      case _: InternalServerException | Upstream5xxResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
         Left(ServiceUnavailable)
       case NonFatal(e) =>
         Logger.error(

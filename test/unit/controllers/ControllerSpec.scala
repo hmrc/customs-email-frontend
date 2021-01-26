@@ -24,13 +24,13 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.FakeRequest
-import play.api.{Configuration, Environment, Mode, Play}
+import play.api.{Configuration, Environment, Play}
 import play.utils.OrderPreserving.groupBy
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.ActionsImpl
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import unit.AuthBuilder
 
 import scala.concurrent.ExecutionContext
@@ -54,8 +54,7 @@ trait ControllerSpec
 
   implicit val config: Configuration = Configuration.load(env)
 
-  private val serviceConfig =
-    new ServicesConfig(config, new RunMode(config, Mode.Dev))
+  private val serviceConfig = new ServicesConfig(config)
 
   implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig)
 

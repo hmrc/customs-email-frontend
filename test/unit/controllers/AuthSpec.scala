@@ -84,7 +84,7 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
       val result = controller.show(request)
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) should contain(
-        "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fmanage-email-cds%2Fchange-email-address&origin=customs-email-frontend"
+        "/bas-gateway/sign-in?continue_url=http%3A%2F%2Flocalhost%3A9898%2Fmanage-email-cds%2Fchange-email-address&origin=customs-email-frontend"
       )
     }
 

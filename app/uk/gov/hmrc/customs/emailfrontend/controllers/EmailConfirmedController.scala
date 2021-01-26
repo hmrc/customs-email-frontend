@@ -27,7 +27,7 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, 
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, EoriRequest}
 import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailVerificationService, Save4LaterService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 

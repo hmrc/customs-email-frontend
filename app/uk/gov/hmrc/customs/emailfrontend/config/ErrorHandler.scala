@@ -22,7 +22,7 @@ import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
 import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
-import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
+import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 
 @Singleton
 class ErrorHandler @Inject()(

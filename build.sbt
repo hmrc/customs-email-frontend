@@ -1,6 +1,6 @@
 import sbt.Configurations.config
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings}
-import uk.gov.hmrc.SbtArtifactory
+import uk.gov.hmrc.gitstamp.GitStampPlugin.gitStampSettings
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "customs-email-frontend"
@@ -10,7 +10,7 @@ lazy val IntegrationTest = config("it") extend Test
 lazy val EndToEndTest = config("endtoend") extend Test
 lazy val testConfig = Seq(EndToEndTest, AcceptanceTest, IntegrationTest, Test)
 
-lazy val commonSettings: Seq[Setting[_]] = scalaSettings ++ publishingSettings ++ defaultSettings()
+lazy val commonSettings: Seq[Setting[_]] = scalaSettings ++ publishingSettings ++ defaultSettings() ++ gitStampSettings
 
 lazy val unitTestSettings =
   inConfig(Test)(Defaults.testTasks) ++
@@ -22,10 +22,11 @@ lazy val unitTestSettings =
       addTestReportOption(Test, "test-reports")
     )
 
+def integrationTestFilter(name: String): Boolean = name startsWith "integration"
 lazy val integrationTestSettings =
   inConfig(IntegrationTest)(Defaults.testTasks) ++
     Seq(
-      testOptions in IntegrationTest := Seq(Tests.Filters(Seq(filterTestsOnPackageName("integration")))),
+      testOptions in IntegrationTest := Seq(Tests.Filter(integrationTestFilter)),
       testOptions in IntegrationTest += Tests.Argument(TestFrameworks.ScalaTest, "-oD"),
       fork in IntegrationTest := false,
       parallelExecution in IntegrationTest := false,
@@ -67,9 +68,10 @@ lazy val scoverageSettings = {
 }
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
+  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .configs(testConfig: _*)
   .settings(
+    scalaVersion := "2.12.10",
     majorVersion := 0,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     scoverageSettings,
