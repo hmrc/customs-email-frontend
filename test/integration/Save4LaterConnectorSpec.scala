@@ -29,8 +29,8 @@ import utils.WireMockRunner
 
 class Save4LaterConnectorSpec extends IntegrationSpec with WireMockRunner {
 
-//  override implicit val patienceConfig = PatienceConfig(
-//    timeout = scaled(Span(20, Seconds)))
+  override implicit val patienceConfig = PatienceConfig(
+    timeout = scaled(Span(20, Seconds)))
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
@@ -65,7 +65,7 @@ class Save4LaterConnectorSpec extends IntegrationSpec with WireMockRunner {
       save4LaterConnector
         .get[EmailDetails](id, emailKey)
         .futureValue mustBe Some(emailJson.as[EmailDetails])
-//      eventually(AuditService.verifyAuditWrite())
+      eventually(AuditService.verifyAuditWrite())
     }
 
     "return successful response with NOT FOUND status" in {
@@ -73,7 +73,7 @@ class Save4LaterConnectorSpec extends IntegrationSpec with WireMockRunner {
       save4LaterConnector
         .get[EmailDetails](id, emailKey)
         .futureValue mustBe None
-//      eventually(AuditService.verifyAuditWrite())
+      eventually(AuditService.verifyAuditWrite())
     }
 
     "return a response with BAD REQUEST exception for Get" in {
@@ -89,7 +89,7 @@ class Save4LaterConnectorSpec extends IntegrationSpec with WireMockRunner {
     "return successful response with Created status and response body" in {
       stubSave4LaterPUT()
       await(save4LaterConnector.put[EmailDetails](id, emailKey, emailJson)) mustBe (())
-//      eventually(AuditService.verifyXAuditWrite(2))
+      eventually(AuditService.verifyXAuditWrite(2))
     }
 
     "return a response with BAD REQUEST exception for Put" in {
