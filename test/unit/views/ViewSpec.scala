@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import play.api.i18n.{Lang, Messages, MessagesApi, MessagesImpl}
 import play.api.mvc.Request
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.FakeRequest
-import play.api.{Configuration, Environment, Mode}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.duration._
 
@@ -39,7 +39,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   val env: Environment = Environment.simple()
   val config: Configuration = Configuration.load(env)
-  val serviceConfig = new ServicesConfig(config, new RunMode(config, Mode.Dev))
+  val serviceConfig = new ServicesConfig(config)
 
   implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig)
 

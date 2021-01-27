@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,10 @@ class SignOutControllerSpec extends ControllerSpec {
     "clear the session once the user signs out" in withAuthorisedUser() {
       status(controller.signOut(request)) shouldBe SEE_OTHER
       val view = app.injector.instanceOf[start_page]
-      val accessibilityStatement = app.injector.instanceOf[accessibility_statement]
-      val startPageController = new ApplicationController(fakeAction, view, accessibilityStatement)
+      val accessibilityStatement =
+        app.injector.instanceOf[accessibility_statement]
+      val startPageController =
+        new ApplicationController(fakeAction, view, accessibilityStatement)
       val result = startPageController.show(request)
       session(result) shouldBe Session.emptyCookie
     }

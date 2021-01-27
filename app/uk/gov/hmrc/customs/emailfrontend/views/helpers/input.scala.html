@@ -1,5 +1,5 @@
 @*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@
                     <span class="form-hint" id="@(field.id)-hint">@elements.args.get('_hintText)</span>
                 }
                 @if(allErrors.nonEmpty) {
-                    @allErrors.map { error => <span class="error-message">@messages(error)</span> }
+                    @allErrors.map { error => <span class="error-message">@error</span> }
                 }
             @if(isLabelH1 && allErrors.nonEmpty) {
             </div>

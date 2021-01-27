@@ -1,6 +1,8 @@
 import sbt.Configurations.config
-import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings}
-import uk.gov.hmrc.SbtArtifactory
+import sbt.Keys.testGrouping
+import sbt.Tests.{Group, SubProcess}
+import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings, targetJvm}
+import uk.gov.hmrc.gitstamp.GitStampPlugin.gitStampSettings
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "customs-email-frontend"
@@ -10,8 +12,14 @@ lazy val IntegrationTest = config("it") extend Test
 lazy val EndToEndTest = config("endtoend") extend Test
 lazy val testConfig = Seq(EndToEndTest, AcceptanceTest, IntegrationTest, Test)
 
-lazy val commonSettings: Seq[Setting[_]] = scalaSettings ++ publishingSettings ++ defaultSettings()
+lazy val commonSettings: Seq[Setting[_]] = scalaSettings ++ publishingSettings ++ defaultSettings() ++ gitStampSettings
 
+def forkedJvmPerTestConfig(tests: Seq[TestDefinition], packages: String*): Seq[Group] =
+  tests.groupBy(_.name.takeWhile(_ != '.')).filter(packageAndTests => packages contains packageAndTests._1) map {
+    case (packg, theTests) =>
+      Group(packg, theTests, SubProcess(ForkOptions()))
+  } toSeq
+  
 lazy val unitTestSettings =
   inConfig(Test)(Defaults.testTasks) ++
     Seq(
@@ -22,14 +30,16 @@ lazy val unitTestSettings =
       addTestReportOption(Test, "test-reports")
     )
 
+def integrationTestFilter(name: String): Boolean = name startsWith "integration"
 lazy val integrationTestSettings =
   inConfig(IntegrationTest)(Defaults.testTasks) ++
     Seq(
-      testOptions in IntegrationTest := Seq(Tests.Filters(Seq(filterTestsOnPackageName("integration")))),
+      testOptions in IntegrationTest := Seq(Tests.Filter(integrationTestFilter)),
       testOptions in IntegrationTest += Tests.Argument(TestFrameworks.ScalaTest, "-oD"),
       fork in IntegrationTest := false,
       parallelExecution in IntegrationTest := false,
-      addTestReportOption(IntegrationTest, "int-test-reports")
+      addTestReportOption(IntegrationTest, "int-test-reports"),
+      testGrouping in IntegrationTest := forkedJvmPerTestConfig((definedTests in Test).value, "integration")      
     )
 
 lazy val acceptanceTestSettings =
@@ -63,13 +73,15 @@ lazy val scoverageSettings = {
     ScoverageKeys.coverageMinimum := 98.90,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
-    parallelExecution in Test := true)
+    parallelExecution in Test := false)
 }
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
+  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .configs(testConfig: _*)
   .settings(
+    scalaVersion := "2.12.10",
+    targetJvm := "jvm-1.8",
     majorVersion := 0,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     scoverageSettings,

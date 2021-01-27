@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 
 @Singleton
 class EmailLanguageController @Inject()(config: Configuration, languageUtils: LanguageUtils, cc: ControllerComponents)
-    extends LanguageController(config, languageUtils, cc) {
+    extends LanguageController(languageUtils, cc) {
   override protected def fallbackURL: String = "/customs/manage-email-cds"
   def langToCall(lang: String): String => Call = EmailLanguageController.routeToSwitchLanguage
 
