@@ -35,6 +35,7 @@ lazy val integrationTestSettings =
   inConfig(IntegrationTest)(Defaults.testTasks) ++
     Seq(
       testOptions in IntegrationTest := Seq(Tests.Filter(integrationTestFilter)),
+      testOptions in IntegrationTest += Tests.Argument(TestFrameworks.ScalaTest, "-oD"),
       fork in IntegrationTest := false,
       parallelExecution in IntegrationTest := false,
       addTestReportOption(IntegrationTest, "int-test-reports"),
