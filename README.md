@@ -54,6 +54,8 @@ the name key in the config file. In the below example it is ***customs-finance**
 If the service name is in `application.conf` then the url context will be `"/manage-email-cds/service/:service-name/"` for example if `customs-finance` has to use the service then the url would be `http://localhost:9898/manage-email-cds/service/customs-finance`
 Also please make sure that you update below message key for english and welsh accordingly for continue url
 `
+customs.emailfrontend.email-confirmed.redirect.info.{referrer-services.name}
+e.g.
 customs.emailfrontend.email-confirmed.redirect.info.customs-finance
 `
 You'll need to use a Government Gateway account with CDS enrolment to access most pages as they are authenticated.
