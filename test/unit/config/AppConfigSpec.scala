@@ -87,7 +87,8 @@ class AppConfigSpec extends ControllerSpec {
     "have referrerName defined" in {
       appConfig.referrerName shouldBe Seq(
         ReferrerName("customs-finance", "/customs/payment-records"),
-        ReferrerName("customs-exports", "/xyz")
+        ReferrerName("customs-exports", "/customs-declare-exports/"),
+        ReferrerName("cds-file-upload", "/cds-file-upload-service/")
       )
     }
   }

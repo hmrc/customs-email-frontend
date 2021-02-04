@@ -45,10 +45,12 @@ class EmailConfirmedViewSpec extends ViewSpec {
                     request,
                     messages)))
 
+  val sampleContinueUrl = "/some-service-name"
+
   private val docForFinance: Document =
-    docWithContinueUrl(Some("customs-finance"), Some("/customs-finance"))
+    docWithContinueUrl(Some("customs-finance"), Some(sampleContinueUrl))
   private val docForExports: Document =
-    docWithContinueUrl(Some("customs-exports"), Some("/customs-exports"))
+    docWithContinueUrl(Some("customs-exports"), Some(sampleContinueUrl))
 
   "Confirm Email page" should {
     "have the correct title" in {
@@ -93,7 +95,7 @@ class EmailConfirmedViewSpec extends ViewSpec {
       docForFinance
         .getElementById("info3")
         .select("a[href]")
-        .attr("href") mustBe "/customs-finance"
+        .attr("href") mustBe sampleContinueUrl
       docForFinance
         .text() must not include "Until then we will send CDS emails to"
     }
@@ -101,11 +103,12 @@ class EmailConfirmedViewSpec extends ViewSpec {
     "have a correct link text and href when continueUrl is available from exports" in {
       docForExports
         .getElementById("info3")
-        .text mustBe "You can now continue to Redirect to customs exports."
+        .text mustBe "You can now continue to create, view and manage declarations on the CDS exports declaration online service."
+
       docForExports
         .getElementById("info3")
         .select("a[href]")
-        .attr("href") mustBe "/customs-exports"
+        .attr("href") mustBe sampleContinueUrl
     }
   }
 }

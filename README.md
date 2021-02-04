@@ -34,30 +34,40 @@ To start the app using SBT simply use the command
 
     sbt run
 
-from the terminal, visit [this link](http://localhost:9898/customs-email-frontend/start) to see the app running.
+from the terminal, visit [this link](http://localhost:9898/manage-email-cds/start) to see the app running.
 
+You'll need to use a Government Gateway account with CDS enrolment to access most pages as they are authenticated.
+So login via the [auth-login-stub](http://localhost:9949/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fmanage-email-cds%2Fstart) first to proceed with a journey.
 
-#### Verify an email from another MDTP Service
+#### Integrating this service into your user journeys
 
-If any MDTP frontend service wants to use email-frontend for email verification then you will need to check if your service name and continue url is in application.conf and if not please 
-update the application.conf with your service name, continue url in the referrer-services and also the message properties file and raise a pull request. Please note the message property is derived from
-the name key in the config file. In the below example it is ***customs-finance***
+If another MDTP frontend service wants to use customs-email-frontend for email updating or verification then you will need to 
+* add your service 'name' and 'continueUrl' keys into the application.conf
+* define the link text offered to the user to return to your service in the message properties files (please note the message property key's suffix should match your service 'name' value defined in the application.conf file).
+* add new tests to `unit.views.EmailConfirmedViewSpec` and `unit.config.AppConfigSpec` 
+* create a new branch and raise a pull request once you have finished. 
+
+Here is an example for the ***customs-finance*** service
+
+**application.conf**
 
             referrer-services : {
               name = "customs-finance",
               continueUrl = "/customs/payment-records"
             }
             
-            customs.emailfrontend.email-confirmed.redirect.info.customs-finance
+**messages.en**
+
+            customs.emailfrontend.email-confirmed.redirect.info.customs-finance=You can now continue to <a href="{0}">Get your import VAT and duty adjustment statements.</a>
+
+Please make sure that you update the message keys for both english and welsh languages!
             
+To provide a link from your service to the customs-email-frontend you need to create a url with the following pattern:
 
-If the service name is in `application.conf` then the url context will be `"/manage-email-cds/service/:service-name/"` for example if `customs-finance` has to use the service then the url would be `http://localhost:9898/manage-email-cds/service/customs-finance`
-Also please make sure that you update below message key for english and welsh accordingly for continue url
+    /manage-email-cds/service/:service-name/
 
-            customs.emailfrontend.email-confirmed.redirect.info.{referrer-services.name}
-            e.g. customs.emailfrontend.email-confirmed.redirect.info.customs-finance    
-
-You'll need to use a Government Gateway account with CDS enrolment to access most pages as they are authenticated.
+Where `:service-name` equals your service 'name' value defined in application.conf. 
+So for example for ***customs-finance***  the url would be `http://localhost:9898/manage-email-cds/service/customs-finance`
 
 ### License
 
