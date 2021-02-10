@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package common.pages
+package uk.gov.hmrc.customs.emailfrontend.services
 
-import utils.Configuration
+import org.joda.time.{DateTime, DateTimeZone}
 
-class FeedbackPage extends BasePage {
-  override val url: String =
-    if (Configuration.frontendHost == "local")
-      "localhost:9514/feedback/manage-email-cds"
-    else "/feedback/manage-email-cds"
-  override val title = "Give feedback - GOV.UK"
+import java.time.{Clock, ZoneId, ZonedDateTime}
+
+class DateTimeService {
+  val UtcZoneId = ZoneId.of("UTC")
+  def nowUtc(): DateTime = new DateTime(Clock.systemUTC().instant().toEpochMilli, DateTimeZone.UTC)
+  def zonedDateTimeUtc: ZonedDateTime = ZonedDateTime.now(UtcZoneId)
 }
-
-object FeedbackPage extends FeedbackPage

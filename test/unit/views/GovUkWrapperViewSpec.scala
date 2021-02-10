@@ -28,7 +28,8 @@ class GovUkWrapperViewSpec extends ViewSpec {
   "GovUK Wrapper" should {
     "have a Sign Out link when signed in" in {
 
-      val request2 = FakeRequest("GET", "/").withSession("authToken" -> "Bearer randomToken")
+      val request2 =
+        FakeRequest("GET", "/").withSession("authToken" -> "Bearer randomToken")
       val doc = Jsoup.parse(contentAsString(view("title")(request2, messages)))
       doc.body().getElementById("sign-out").text mustBe "Sign out"
     }
