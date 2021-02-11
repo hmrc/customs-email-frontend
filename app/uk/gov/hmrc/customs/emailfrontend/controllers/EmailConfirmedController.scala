@@ -25,7 +25,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, EoriRequest}
-import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, EmailVerificationService, Save4LaterService, UpdateVerifiedEmailService}
+import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, DateTimeService, EmailVerificationService, Save4LaterService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -39,7 +39,8 @@ class EmailConfirmedController @Inject()(
   emailVerificationService: EmailVerificationService,
   updateVerifiedEmailService: UpdateVerifiedEmailService,
   mcc: MessagesControllerComponents,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  dateTimeService: DateTimeService
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -62,19 +63,20 @@ class EmailConfirmedController @Inject()(
       else Future.successful(Redirect(VerifyYourEmailController.show()))
     } yield redirect
 
-  private[this] def updateEmail(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] =
+  private[this] def updateEmail(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
+    val timestamp = dateTimeService.nowUtc()
     updateVerifiedEmailService
-      .updateVerifiedEmail(details.currentEmail, details.newEmail, request.eori.id)
+      .updateVerifiedEmail(details.currentEmail, details.newEmail, request.eori.id, timestamp)
       .flatMap {
         case Some(true) =>
-          save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(DateTimeUtil.dateTime)))
-          customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), details.newEmail)
+          save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(timestamp)))
+          customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), details.newEmail, timestamp)
           save4LaterService.fetchReferrer(request.user.internalId).map { referrer =>
             Ok(view(details.newEmail, details.currentEmail, referrer.map(_.name), referrer.map(_.continueUrl)))
           }
         case _ => Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))
       }
-
+  }
   def problemWithService(): Action[AnyContent] = actions.auth.async { implicit request =>
     Future.successful(BadRequest(errorHandler.problemWithService()))
   }

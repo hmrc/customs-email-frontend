@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
+import org.joda.time.DateTime
 import play.api.Logger
-
-import javax.inject.{Inject, Singleton}
-import play.api.libs.json.{JsValue, Json}
+import play.api.http.HeaderNames.CONTENT_TYPE
+import play.api.http.MimeTypes
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.model.Eori
+import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -36,15 +36,14 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
 
   private[connectors] lazy val url: String = appConfig.customsDataStoreUrl
 
-  def storeEmailAddress(eori: Eori, email: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+  def storeEmailAddress(eori: Eori, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
 
-    val timestamp = dateTimeService.nowUtc().toString
-    val request = s""" { "eori": "${eori.id}", "address": "$email", "timestamp": "$timestamp" }"""
+    val request = UpdateEmail(eori, email, timestamp)
 
-    auditRequest("DataStoreEmailRequestSubmitted", Map("eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp))
+    auditRequest("DataStoreEmailRequestSubmitted", Map("eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
 
     httpClient
-      .doPost[JsValue](url, Json.parse(request), Seq("Content-Type" -> "application/json"))(implicitly, hc, ec)
+      .doPost[UpdateEmail](url, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))(implicitly, hc, ec)
       .map { response =>
         auditResponse("DataStoreResponseReceived", response, url)
         response

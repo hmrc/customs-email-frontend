@@ -16,6 +16,7 @@
 
 package unit.services
 
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -23,8 +24,12 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
+import play.api.libs.json.Json
+import play.mvc.BodyParser.Json
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailResponse
+import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.customs.emailfrontend.services.CustomsDataStoreService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -45,28 +50,28 @@ class CustomsDataStoreServiceSpec
 
   val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
   val email = "abc@def.com"
-
+  val dateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
   override protected def beforeEach(): Unit =
     reset(mockConnector)
 
   "Customs Data Store Service" should {
     "return a status OK when data store request is successful" in {
-      when(mockConnector.storeEmailAddress(any(), any())(any()))
+      when(mockConnector.storeEmailAddress(any(), any(), any())(any()))
         .thenReturn(Future.successful(HttpResponse(OK)))
 
       service
-        .storeEmail(enrolmentIdentifier, email)
+        .storeEmail(enrolmentIdentifier, email, dateTime)
         .futureValue
         .status mustBe OK
     }
   }
 
   "return a status BAD_REQUEST when data store request is successful" in {
-    when(mockConnector.storeEmailAddress(any(), any())(any()))
+    when(mockConnector.storeEmailAddress(any(), any(), any())(any()))
       .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
     service
-      .storeEmail(enrolmentIdentifier, email)
+      .storeEmail(enrolmentIdentifier, email, dateTime)
       .futureValue
       .status mustBe BAD_REQUEST
   }

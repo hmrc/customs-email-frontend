@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
+import org.joda.time.DateTime
+
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.http.Status.OK
@@ -31,8 +33,8 @@ class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataSt
   implicit ec: ExecutionContext
 ) {
 
-  def storeEmail(enrolmentId: EnrolmentIdentifier, email: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email) map { response =>
+  def storeEmail(enrolmentId: EnrolmentIdentifier, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+    customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email, timestamp) map { response =>
       response.status match {
         case OK =>
           Logger.debug("CustomsDataStore: data store request is successful")
