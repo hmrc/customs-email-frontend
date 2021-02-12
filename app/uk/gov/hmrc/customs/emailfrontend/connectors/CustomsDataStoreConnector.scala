@@ -16,39 +16,42 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import javax.inject.{Inject, Singleton}
-import play.api.libs.json.{JsValue, Json}
+import org.joda.time.DateTime
+import play.api.Logger
+import play.api.http.HeaderNames.CONTENT_TYPE
+import play.api.http.MimeTypes
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.model.Eori
-import uk.gov.hmrc.http.logging.Authorization
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
+import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)(
+class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable, dateTimeService: DateTimeService)(
   implicit ec: ExecutionContext
 ) {
 
   private[connectors] lazy val url: String = appConfig.customsDataStoreUrl
 
-  def storeEmailAddress(eori: Eori, email: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    val query =
-      s"""{"query" : "mutation {byEori(eoriHistory:{eori:\\"${eori.id}\\"}, notificationEmail:{address:\\"$email\\"})}"}"""
-    val header: HeaderCarrier =
-      hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.customsDataStoreToken}")))
+  def storeEmailAddress(eori: Eori, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
 
-    val detail = Map("eori number" -> eori.id, "emailAddress" -> email)
-    auditRequest("DataStoreEmailRequestSubmitted", detail)
+    val request = UpdateEmail(eori, email, timestamp)
+
+    auditRequest("DataStoreEmailRequestSubmitted", Map("eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
 
     httpClient
-      .doPost[JsValue](url, Json.parse(query), Seq("Content-Type" -> "application/json"))(implicitly, header, ec)
+      .doPost[UpdateEmail](url, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))(implicitly, hc, ec)
       .map { response =>
         auditResponse("DataStoreResponseReceived", response, url)
         response
-      }
+      }.recoverWith {
+      case e: Throwable =>
+        Logger.error(s"Call to data stored failed url=$url, exception=$e")
+        Future.failed(e)
+    }
   }
 
   private def auditRequest(transactionName: String, detail: Map[String, String])(implicit hc: HeaderCarrier): Unit =

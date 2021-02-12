@@ -33,6 +33,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.{
 }
 import uk.gov.hmrc.customs.emailfrontend.services.{
   CustomsDataStoreService,
+  DateTimeService,
   EmailVerificationService,
   Save4LaterService,
   UpdateVerifiedEmailService
@@ -52,7 +53,8 @@ class EmailConfirmedControllerSpec
   private val mockEmailVerificationService = mock[EmailVerificationService]
   private val mockUpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
   private val mockErrorHandler = mock[ErrorHandler]
-
+  private val mockDateTimeService = mock[DateTimeService]
+  private val testDateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
   private val controller = new EmailConfirmedController(
     fakeAction,
     view,
@@ -61,16 +63,20 @@ class EmailConfirmedControllerSpec
     mockEmailVerificationService,
     mockUpdateVerifiedEmailService,
     mcc,
-    mockErrorHandler
+    mockErrorHandler,
+    mockDateTimeService
   )
 
-  override protected def beforeEach(): Unit =
+  override protected def beforeEach(): Unit = {
     reset(
       mockCustomsDataStoreService,
       mockEmailVerificationService,
       mockSave4LaterService,
-      mockUpdateVerifiedEmailService
+      mockUpdateVerifiedEmailService,
+      mockDateTimeService
     )
+    when(mockDateTimeService.nowUtc()).thenReturn(testDateTime)
+  }
 
   "EmailConfirmedController" should {
     "have a status of OK " when {
@@ -87,7 +93,8 @@ class EmailConfirmedControllerSpec
           mockUpdateVerifiedEmailService
             .updateVerifiedEmail(meq(None),
                                  meq("abc@def.com"),
-                                 meq("GB1234567890"))(any[HeaderCarrier])
+                                 meq("GB1234567890"),
+                                 meq(testDateTime))(any[HeaderCarrier])
         ).thenReturn(Future.successful(Some(true)))
         when(
           mockSave4LaterService.remove(meq(InternalId("internalId")))(any(),
@@ -105,7 +112,8 @@ class EmailConfirmedControllerSpec
         when(
           mockCustomsDataStoreService
             .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
-                        meq("abc@def.com"))(any[HeaderCarrier])
+                        meq("abc@def.com"),
+                        meq(testDateTime))(any[HeaderCarrier])
         ).thenReturn(Future.successful(HttpResponse(OK)))
 
         val eventualResult = controller.show(request)
@@ -124,7 +132,8 @@ class EmailConfirmedControllerSpec
           mockUpdateVerifiedEmailService
             .updateVerifiedEmail(meq(None),
                                  meq("abc@def.com"),
-                                 meq("GB1234567890"))(any[HeaderCarrier])
+                                 meq("GB1234567890"),
+                                 meq(testDateTime))(any[HeaderCarrier])
         ).thenReturn(Future.successful(Some(true)))
         when(
           mockSave4LaterService
@@ -136,14 +145,15 @@ class EmailConfirmedControllerSpec
         when(
           mockCustomsDataStoreService
             .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
-                        meq("abc@def.com"))(any[HeaderCarrier])
+                        meq("abc@def.com"),
+                        meq(testDateTime))(any[HeaderCarrier])
         ).thenReturn(Future.successful(HttpResponse(OK)))
 
         val eventualResult = controller.show(request)
         status(eventualResult) shouldBe OK
 
-        verify(mockCustomsDataStoreService, times(1)).storeEmail(any(), any())(
-          any[HeaderCarrier])
+        verify(mockCustomsDataStoreService, times(1))
+          .storeEmail(any(), any(), any())(any[HeaderCarrier])
       }
     }
 
@@ -154,7 +164,8 @@ class EmailConfirmedControllerSpec
       when(
         mockCustomsDataStoreService
           .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
-                      meq("abc@def.com"))(any[HeaderCarrier])
+                      meq("abc@def.com"),
+                      meq(testDateTime))(any[HeaderCarrier])
       ).thenReturn(Future.successful(HttpResponse(OK)))
       when(
         mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(
@@ -175,7 +186,8 @@ class EmailConfirmedControllerSpec
       when(
         mockCustomsDataStoreService
           .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
-                      meq("abc@def.com"))(any[HeaderCarrier])
+                      meq("abc@def.com"),
+                      meq(testDateTime))(any[HeaderCarrier])
       ).thenReturn(Future.successful(HttpResponse(OK)))
       when(
         mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(
@@ -221,7 +233,8 @@ class EmailConfirmedControllerSpec
         mockUpdateVerifiedEmailService
           .updateVerifiedEmail(meq(None),
                                meq("abc@def.com"),
-                               meq("GB1234567890"))(any[HeaderCarrier])
+                               meq("GB1234567890"),
+                               meq(testDateTime))(any[HeaderCarrier])
       ).thenReturn(Future.successful(None))
       when(mockErrorHandler.problemWithService()(any()))
         .thenReturn(Html("Sorry, there is a problem with the service"))
@@ -243,7 +256,8 @@ class EmailConfirmedControllerSpec
         mockUpdateVerifiedEmailService
           .updateVerifiedEmail(meq(None),
                                meq("abc@def.com"),
-                               meq("GB1234567890"))(any[HeaderCarrier])
+                               meq("GB1234567890"),
+                               meq(testDateTime))(any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(false)))
       when(mockErrorHandler.problemWithService()(any()))
         .thenReturn(Html("Sorry, there is a problem with the service"))
@@ -261,14 +275,14 @@ class EmailConfirmedControllerSpec
       redirectLocation(eventualResult).value should endWith(
         "/manage-email-cds/ineligible/no-enrolment")
 
-      verify(mockCustomsDataStoreService, times(0)).storeEmail(any(), any())(
-        any[HeaderCarrier])
+      verify(mockCustomsDataStoreService, times(0))
+        .storeEmail(any(), any(), any())(any[HeaderCarrier])
       verify(mockEmailVerificationService, times(0))
         .isEmailVerified(any())(any[HeaderCarrier])
       verify(mockSave4LaterService, times(0))
         .fetchEmail(any())(any[HeaderCarrier], any[ExecutionContext])
       verify(mockUpdateVerifiedEmailService, times(0))
-        .updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
+        .updateVerifiedEmail(any(), any(), any(), any())(any[HeaderCarrier])
     }
 
     "redirect to 'there is a problem with the service' page" in withAuthorisedUser() {

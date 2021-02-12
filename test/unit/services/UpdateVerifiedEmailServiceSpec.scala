@@ -51,7 +51,7 @@ class UpdateVerifiedEmailServiceSpec
 
   private val eoriNumber = "GBXXXXXXXXXXXX"
   private val email = "test@email.com"
-  private val dateTime = DateTime.now()
+  private val dateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
 
   private val bundleIdUpdateVerifiedEmailResponse = VerifiedEmailResponse(
     UpdateVerifiedEmailResponse(
@@ -90,7 +90,7 @@ class UpdateVerifiedEmailServiceSpec
       mockGetEmailVerificationState(Right(bundleIdUpdateVerifiedEmailResponse))
 
       service
-        .updateVerifiedEmail(None, email, eoriNumber)
+        .updateVerifiedEmail(None, email, eoriNumber, dateTime)
         .futureValue mustBe Some(true)
     }
 
@@ -99,7 +99,7 @@ class UpdateVerifiedEmailServiceSpec
         Right(businessErrorUpdateVerifiedEmailResponse))
 
       service
-        .updateVerifiedEmail(None, email, eoriNumber)
+        .updateVerifiedEmail(None, email, eoriNumber, dateTime)
         .futureValue mustBe Some(false)
     }
 
@@ -107,7 +107,7 @@ class UpdateVerifiedEmailServiceSpec
       mockGetEmailVerificationState(Left(serviceUnavailableResponse))
 
       service
-        .updateVerifiedEmail(None, email, eoriNumber)
+        .updateVerifiedEmail(None, email, eoriNumber, dateTime)
         .futureValue mustBe None
     }
   }

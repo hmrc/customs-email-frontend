@@ -16,6 +16,7 @@
 
 package unit.connectors
 
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -26,7 +27,8 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
-import uk.gov.hmrc.customs.emailfrontend.model.Eori
+import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
+import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.HttpClient
@@ -43,56 +45,58 @@ class CustomsDataStoreConnectorSpec
   private val mockHttp = mock[HttpClient]
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
+  private val mockDateTimeService = mock[DateTimeService]
   private implicit val hc = HeaderCarrier()
 
   val testConnector =
-    new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
+    new CustomsDataStoreConnector(mockAppConfig,
+                                  mockHttp,
+                                  mockAuditable,
+                                  mockDateTimeService)
 
-  val url = "/customs-data-store/graphql"
+  val url = "/customs-data-store/update-email"
   val testEori = Eori("GB1234556789")
   val testEmail = "email@test.com"
-  val query =
-    s"""{"query" : "mutation {byEori(eoriHistory:{eori:\\"${testEori.id}\\"}, notificationEmail:{address:\\"$testEmail\\"})}"}"""
-  val token = "secret-token"
+  val testDateTime = new DateTime("2021-01-01T11:11:11.111Z")
+  val requestBody = UpdateEmail(testEori, testEmail, testDateTime)
   val headers = Seq("Content-Type" -> "application/json")
-  val header: HeaderCarrier =
-    hc.copy(authorization = Some(Authorization(s"Bearer $token")))
 
   override def beforeEach(): Unit = {
     reset(mockHttp, mockAuditable, mockAppConfig)
     when(mockAppConfig.customsDataStoreUrl).thenReturn(url)
-    when(mockAppConfig.customsDataStoreToken).thenReturn(token)
+    when(mockDateTimeService.nowUtc())
+      .thenReturn(testDateTime)
   }
 
   "CustomsDataStoreConnector" should {
     "successfully send a query request to customs data store and return the OK response" in {
       when(
-        mockHttp.doPost(meq(url), meq(Json.parse(query)), meq(headers))(
+        mockHttp.doPost(meq(url), meq(requestBody), meq(headers))(
           any(),
-          meq(header),
+          meq(hc),
           any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(200)))
       doNothing()
         .when(mockAuditable)
         .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
       testConnector
-        .storeEmailAddress(testEori, testEmail)
+        .storeEmailAddress(testEori, testEmail, testDateTime)
         .futureValue
         .status mustBe 200
     }
 
     "return the failure response from customs data store" in {
       when(
-        mockHttp.doPost(meq(url), meq(Json.parse(query)), meq(headers))(
+        mockHttp.doPost(meq(url), meq(requestBody), meq(headers))(
           any(),
-          meq(header),
+          meq(hc),
           any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(400)))
       doNothing()
         .when(mockAuditable)
         .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
       testConnector
-        .storeEmailAddress(testEori, testEmail)
+        .storeEmailAddress(testEori, testEmail, testDateTime)
         .futureValue
         .status mustBe 400
     }

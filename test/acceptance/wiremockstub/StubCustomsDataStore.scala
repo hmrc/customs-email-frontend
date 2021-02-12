@@ -24,14 +24,14 @@ import play.mvc.Http.MimeTypes.JSON
 
 trait StubCustomsDataStore {
 
-  private val customsDataStoreGraphQl = "/customs-data-store/graphql"
+  private val customsDataStoreUrl = "/customs-data-store/update-email"
 
   private val customsDataStoreContextPath: UrlPattern = urlMatching(
-    customsDataStoreGraphQl)
+    customsDataStoreUrl)
 
   def stubCustomsDataStoreOkResponse(): Unit =
     stubFor(
-      post(urlEqualTo(customsDataStoreGraphQl))
+      post(urlEqualTo(customsDataStoreUrl))
         .willReturn(
           aResponse()
             .withStatus(Status.OK)
