@@ -18,7 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.model
 
 import org.joda.time.DateTime
 import play.api.libs.json.{Format, JsString, JsValue, Json, Reads, Writes}
-case class UpdateEmail(eori: Eori, email: String, timestamp: DateTime)
+case class UpdateEmail(eori: Eori, address: String, timestamp: DateTime)
 
 object UpdateEmail {
 
