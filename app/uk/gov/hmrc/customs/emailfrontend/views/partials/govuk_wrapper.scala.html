@@ -20,6 +20,8 @@
 @import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
 @import views.html.layouts.GovUkTemplate
 @import views.html.language_selection
+@import views.html.helper.CSPNonce
+@import uk.gov.hmrc.play.views.html.layouts.TrackingConsentSnippet
 @import uk.gov.hmrc.customs.emailfrontend.controllers.routes.EmailLanguageController._
 @import uk.gov.hmrc.customs.emailfrontend.controllers.EmailLanguageController._
 @import play.api.i18n.Lang
@@ -34,7 +36,8 @@
       main_content: MainContent,
       reportAProblemLink: ReportAProblemLink,
       hmrcGovUkTemplate: GovUkTemplate,
-      appConfig: AppConfig)
+      appConfig: AppConfig,
+      trackingConsentSnippet: TrackingConsentSnippet)
 
 @(title: String,
   mainClass: Option[String] = None,
@@ -51,8 +54,8 @@
       linkElem = None,
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
-    <!-- Google Tag Manager -->
-    <script src="@routes.Assets.versioned("javascripts/google-tag-manager.js")" type="text/javascript"></script>
+    <!-- Tracking consent -->
+    @trackingConsentSnippet(nonce = CSPNonce.get)
     <noscript><meta http-equiv="refresh" content="900;url=/manage-email-cds/signout" /></noscript>
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/custom.css")" type="text/css">
 }
@@ -77,9 +80,6 @@
 }
 
 @afterHeader = {
-    <!-- Google Tag Manager (noscript) -->
-            <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-            <!-- End Google Tag Manager (noscript) -->
    <div class="centered-content">
         <div class="service-info"></div>
         <div class="beta-banner internal-beta-banner">
