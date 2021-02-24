@@ -24,8 +24,6 @@ class StartPageViewSpec extends ViewSpec {
 
   private val view = app.injector.instanceOf[start_page]
 
-  private val eori = "AB123456789"
-
   private val doc = Jsoup.parse(contentAsString(view.render(request, messages)))
 
   "Start page" should {

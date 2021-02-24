@@ -26,9 +26,6 @@ class IneligibleUserViewSpec extends ViewSpec {
 
   private val view = app.injector.instanceOf[ineligible_user]
 
-  private val doc: Document = Jsoup.parse(
-    contentAsString(view.render(Ineligible.NoEnrolment, request, messages)))
-
   "IneligibleUser with no cds enrolment" should {
     val doc: Document = Jsoup.parse(
       contentAsString(view.render(Ineligible.NoEnrolment, request, messages)))

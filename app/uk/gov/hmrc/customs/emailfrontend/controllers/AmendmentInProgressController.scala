@@ -17,14 +17,14 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.Inject
-import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.views.html.amendment_in_progress
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.ExecutionContext
 
@@ -40,7 +40,7 @@ class AmendmentInProgressController @Inject()(
     (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
       save4LaterService.fetchEmail(request.user.internalId) map {
         _.fold {
-          Logger.warn("[AmendmentInProgressController][show] - emailStatus not found")
+          CdsLogger.warn("[AmendmentInProgressController][show] - emailStatus not found")
           Redirect(SignOutController.signOut())
         } { emailDetails =>
           Ok(view(emailDetails.newEmail))

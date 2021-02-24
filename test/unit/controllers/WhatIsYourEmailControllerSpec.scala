@@ -54,7 +54,6 @@ class WhatIsYourEmailControllerSpec
   private val internalId = "InternalID"
   private val jsonValue = Json.toJson("emailStatus")
   private val data = Map(internalId -> jsonValue)
-  private val cacheMap = CacheMap(internalId, data)
   private val someSubscriptionDisplayResponse =
     SubscriptionDisplayResponse(Some("test@test.com"),
                                 Some(emailVerificationTimeStamp),

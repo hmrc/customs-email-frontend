@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.Inject
-import play.api.Logger
+import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
@@ -27,7 +27,7 @@ import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -55,7 +55,7 @@ class CheckYourEmailController @Inject()(
   def submit: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
     save4LaterService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
-        Logger.warn("[CheckYourEmailController][submit] - emailStatus cache none, user logged out")
+        CdsLogger.warn("[CheckYourEmailController][submit] - emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
       } { emailDetails =>
         confirmEmailForm.bindFromRequest.fold(formWithErrors => {

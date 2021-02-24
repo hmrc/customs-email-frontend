@@ -17,13 +17,14 @@
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import javax.inject.Inject
-import play.api.Logger
 import play.mvc.Http.Status._
+import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.http.{ForbiddenException, _}
 import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -49,7 +50,7 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
       case _: InternalServerException | Upstream5xxResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
         Left(ServiceUnavailable)
       case NonFatal(e) =>
-        Logger.error(
+        CdsLogger.error(
           s"[UpdateVerifiedEmailConnector][updateVerifiedEmail] update-verified-email. url: $url, error: ${e.getMessage}"
         )
         Left(UnhandledException)

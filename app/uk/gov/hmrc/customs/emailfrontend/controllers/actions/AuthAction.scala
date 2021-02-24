@@ -18,7 +18,8 @@ package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, credentialRole, internalId}
@@ -59,7 +60,7 @@ class AuthAction(
             )
           )
         case _ => {
-          Logger.warn("AuthAction[refine] internalId or allEnrolments is missing")
+          CdsLogger.warn("AuthAction[refine] internalId or allEnrolments is missing")
           throw InsufficientEnrolments()
         }
       } recover withAuthOrRedirect(request)

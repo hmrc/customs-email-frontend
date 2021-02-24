@@ -114,7 +114,7 @@ class EmailConfirmedControllerSpec
             .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
                         meq("abc@def.com"),
                         meq(testDateTime))(any[HeaderCarrier])
-        ).thenReturn(Future.successful(HttpResponse(OK)))
+        ).thenReturn(Future.successful(HttpResponse(OK, "")))
 
         val eventualResult = controller.show(request)
         status(eventualResult) shouldBe OK
@@ -147,7 +147,7 @@ class EmailConfirmedControllerSpec
             .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
                         meq("abc@def.com"),
                         meq(testDateTime))(any[HeaderCarrier])
-        ).thenReturn(Future.successful(HttpResponse(OK)))
+        ).thenReturn(Future.successful(HttpResponse(OK, "")))
 
         val eventualResult = controller.show(request)
         status(eventualResult) shouldBe OK
@@ -166,7 +166,7 @@ class EmailConfirmedControllerSpec
           .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
                       meq("abc@def.com"),
                       meq(testDateTime))(any[HeaderCarrier])
-      ).thenReturn(Future.successful(HttpResponse(OK)))
+      ).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(
         mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(
           any[HeaderCarrier]))
@@ -188,7 +188,7 @@ class EmailConfirmedControllerSpec
           .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
                       meq("abc@def.com"),
                       meq(testDateTime))(any[HeaderCarrier])
-      ).thenReturn(Future.successful(HttpResponse(OK)))
+      ).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(
         mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(
           any[HeaderCarrier]))

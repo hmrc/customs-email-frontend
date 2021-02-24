@@ -43,8 +43,6 @@ object Save4LaterService {
   val regexIntId =
     "([0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12})"
 
-  private val intId = "a14b5b18-9444-4ea1-99ad-a667047682ad"
-
   val email = EmailDetails(None, "john.doe@example.com", None)
   val emailJson = Json.toJson(email)
   val emailJsonAsString = Json.toJson(email).toString()

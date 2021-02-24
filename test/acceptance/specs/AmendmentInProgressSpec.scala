@@ -27,8 +27,6 @@ import common.pages.{
   StartPage,
   YouCannotChangeYourEmailAddressPage
 }
-import org.openqa.selenium.Cookie
-import uk.gov.hmrc.http.SessionKeys
 import utils.SpecHelper
 
 class AmendmentInProgressSpec

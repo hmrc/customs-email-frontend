@@ -21,8 +21,6 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.joda.time.DateTime
 import play.api.http.Status
 import play.api.libs.json.Json
-import uk.gov.hmrc.crypto.CompositeSymmetricCrypto.aes
-import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 
 trait StubSave4Later {

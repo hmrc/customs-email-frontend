@@ -18,9 +18,9 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import controllers.Assets.NO_CONTENT
 import org.joda.time.DateTime
-import play.api.Logger
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
+import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -36,10 +36,10 @@ class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataSt
     customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email, timestamp) map { response =>
       response.status match {
         case NO_CONTENT =>
-          Logger.debug("CustomsDataStore: data store request is successful")
+          CdsLogger.debug("CustomsDataStore: data store request is successful")
           response
         case _ =>
-          Logger.warn(s"CustomsDataStore: data store request is failed with status ${response.status}")
+          CdsLogger.warn(s"CustomsDataStore: data store request is failed with status ${response.status}")
           response
       }
     }

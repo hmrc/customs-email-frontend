@@ -17,8 +17,6 @@
 package integration
 
 import integration.stubservices.UpdateVerifiedEmailStubService
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
+import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
@@ -143,7 +143,7 @@ class WhatIsYourEmailController @Inject()(
 
   private def handleNonFatalException()(implicit request: EoriRequest[AnyContent]): PartialFunction[Throwable, Result] = {
     case NonFatal(e) => {
-      Logger.error(s"Subscription display failed with ${e.getMessage}")
+      CdsLogger.error(s"Subscription display failed with ${e.getMessage}")
       Redirect(routes.WhatIsYourEmailController.problemWithService())
     }
   }

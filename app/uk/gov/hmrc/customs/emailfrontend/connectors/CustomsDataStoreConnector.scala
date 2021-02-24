@@ -17,11 +17,11 @@
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import org.joda.time.DateTime
-import play.api.Logger
 import play.api.http.HeaderNames.CONTENT_TYPE
 import play.api.http.MimeTypes
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
@@ -48,7 +48,7 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
         response
       }.recoverWith {
       case e: Throwable =>
-        Logger.error(s"Call to data stored failed url=$url, exception=$e")
+        CdsLogger.error(s"Call to data stored failed url=$url, exception=$e")
         Future.failed(e)
     }
   }

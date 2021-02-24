@@ -32,7 +32,6 @@ class ServiceNameControllerSpec extends ControllerSpec {
 
   private val mockSave4LaterService = mock[Save4LaterService]
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
-  private val internalId = "internalID"
   private val unitResponse: Unit = ()
 
   private val controller =

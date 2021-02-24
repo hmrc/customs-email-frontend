@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import play.api.Logger
 import play.api.libs.json.{JsResult, JsValue, Reads}
+import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 
 case class SubscriptionDisplayResponse(
   email: Option[String],
@@ -41,7 +41,7 @@ object SubscriptionDisplayResponse {
             .validateOpt[String]
 
         } yield {
-          statusText.foreach(text => Logger.debug(s"[SubscriptionDisplayResponse][statusText] - $text"))
+          statusText.foreach(text => CdsLogger.debug(s"[SubscriptionDisplayResponse][statusText] - $text"))
           SubscriptionDisplayResponse(email, emailVerificationTimestamp, statusText, paramValue)
         }
     }

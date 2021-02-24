@@ -31,11 +31,15 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, MethodNotAllowedException, _}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{
+  HeaderCarrier,
+  HttpClient,
+  HttpReads,
+  MethodNotAllowedException,
+  _
+}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class UpdateVerifiedEmailConnectorSpec
     extends PlaySpec
@@ -54,12 +58,12 @@ class UpdateVerifiedEmailConnectorSpec
   private val unhandledException = new MethodNotAllowedException("testMessage")
 
   private val badRequest =
-    Upstream4xxResponse("testMessage", BAD_REQUEST, BAD_REQUEST)
+    UpstreamErrorResponse("testMessage", BAD_REQUEST, BAD_REQUEST)
   private val forbidden =
-    Upstream4xxResponse("testMessage", FORBIDDEN, FORBIDDEN)
-  private val internalServerError = Upstream5xxResponse("testMessage",
-                                                        INTERNAL_SERVER_ERROR,
-                                                        INTERNAL_SERVER_ERROR)
+    UpstreamErrorResponse("testMessage", FORBIDDEN, FORBIDDEN)
+  private val internalServerError = UpstreamErrorResponse("testMessage",
+                                                          INTERNAL_SERVER_ERROR,
+                                                          INTERNAL_SERVER_ERROR)
 
   val dateTime = DateTime.now()
   private val requestDetail =
