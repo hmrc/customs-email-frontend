@@ -16,28 +16,27 @@
 
 package unit.connectors
 
+import controllers.Assets.{NOT_FOUND, NO_CONTENT}
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
-import uk.gov.hmrc.http.logging.Authorization
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 class CustomsDataStoreConnectorSpec
-    extends PlaySpec
+    extends WordSpec
+    with Matchers
     with ScalaFutures
     with MockitoSugar
     with BeforeAndAfterEach {
@@ -49,10 +48,7 @@ class CustomsDataStoreConnectorSpec
   private implicit val hc = HeaderCarrier()
 
   val testConnector =
-    new CustomsDataStoreConnector(mockAppConfig,
-                                  mockHttp,
-                                  mockAuditable,
-                                  mockDateTimeService)
+    new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
 
   val url = "/customs-data-store/update-email"
   val testEori = Eori("GB1234556789")
@@ -75,14 +71,14 @@ class CustomsDataStoreConnectorSpec
           any(),
           meq(hc),
           any[ExecutionContext]))
-        .thenReturn(Future.successful(HttpResponse(200)))
+        .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
       doNothing()
         .when(mockAuditable)
         .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
       testConnector
         .storeEmailAddress(testEori, testEmail, testDateTime)
         .futureValue
-        .status mustBe 200
+        .status shouldBe NO_CONTENT
     }
 
     "return the failure response from customs data store" in {
@@ -91,14 +87,23 @@ class CustomsDataStoreConnectorSpec
           any(),
           meq(hc),
           any[ExecutionContext]))
-        .thenReturn(Future.successful(HttpResponse(400)))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
       doNothing()
         .when(mockAuditable)
         .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
       testConnector
         .storeEmailAddress(testEori, testEmail, testDateTime)
         .futureValue
-        .status mustBe 400
+        .status shouldBe NOT_FOUND
     }
+
+    "UpdateEmail model object serializes correctly" in {
+      val updateEmail = UpdateEmail(testEori, testEmail, testDateTime)
+      Json
+        .toJson(updateEmail)
+        .toString() shouldBe """{"eori":"GB1234556789","address":"email@test.com","timestamp":"2021-01-01T11:11:11Z"}"""
+    }
+
   }
+
 }

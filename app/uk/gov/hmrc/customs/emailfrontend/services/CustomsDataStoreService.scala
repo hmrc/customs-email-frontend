@@ -16,16 +16,15 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
+import controllers.Assets.NO_CONTENT
 import org.joda.time.DateTime
-
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import play.api.http.Status.OK
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -36,7 +35,7 @@ class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataSt
   def storeEmail(enrolmentId: EnrolmentIdentifier, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email, timestamp) map { response =>
       response.status match {
-        case OK =>
+        case NO_CONTENT =>
           Logger.debug("CustomsDataStore: data store request is successful")
           response
         case _ =>
