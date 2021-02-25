@@ -24,12 +24,8 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
-import play.api.libs.json.Json
-import play.mvc.BodyParser.Json
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailResponse
-import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.customs.emailfrontend.services.CustomsDataStoreService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -57,7 +53,7 @@ class CustomsDataStoreServiceSpec
   "Customs Data Store Service" should {
     "return a status OK when data store request is successful" in {
       when(mockConnector.storeEmailAddress(any(), any(), any())(any()))
-        .thenReturn(Future.successful(HttpResponse(OK)))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       service
         .storeEmail(enrolmentIdentifier, email, dateTime)
@@ -68,7 +64,7 @@ class CustomsDataStoreServiceSpec
 
   "return a status BAD_REQUEST when data store request is successful" in {
     when(mockConnector.storeEmailAddress(any(), any(), any())(any()))
-      .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
+      .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
 
     service
       .storeEmail(enrolmentIdentifier, email, dateTime)

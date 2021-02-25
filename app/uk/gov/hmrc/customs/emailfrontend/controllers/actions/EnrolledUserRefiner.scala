@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
-import play.api.Logger
+import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
@@ -35,7 +35,7 @@ class EnrolledUserRefiner(implicit override val executionContext: ExecutionConte
     }
 
     Future.successful(enrolmentExists(request.user.eori) orElse None toRight {
-      Logger.warn("[EnrolledUserRefiner] CDS Enrolment is missing")
+      CdsLogger.warn("[EnrolledUserRefiner] CDS Enrolment is missing")
       Redirect(IneligibleUserController.show(Ineligible.NoEnrolment))
     })
   }

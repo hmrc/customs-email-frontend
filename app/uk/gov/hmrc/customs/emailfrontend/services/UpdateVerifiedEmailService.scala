@@ -17,16 +17,14 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.joda.time.DateTime
-
-import javax.inject.Inject
-import play.api.Logger
-import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
+import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateVerifiedEmailConnector)(
@@ -49,17 +47,17 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
       case Right(res)
           if res.updateVerifiedEmailResponse.responseCommon.returnParameters
             .exists(msp => msp.paramName == formBundleIdParamName) =>
-        Logger.debug("[UpdateVerifiedEmailService][updateVerifiedEmail] - successfully updated verified email")
+        CdsLogger.debug("[UpdateVerifiedEmailService][updateVerifiedEmail] - successfully updated verified email")
         Some(true)
       case Right(res) =>
         val statusText = res.updateVerifiedEmailResponse.responseCommon.statusText
-        Logger.debug(
+        CdsLogger.debug(
           "[UpdateVerifiedEmailService][updateVerifiedEmail]" +
             s" - updating verified email unsuccessful with business error/status code: ${statusText.getOrElse("Status text empty")}"
         )
         Some(false)
       case Left(res) =>
-        Logger.warn(
+        CdsLogger.warn(
           s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with response: $res"
         )
         None

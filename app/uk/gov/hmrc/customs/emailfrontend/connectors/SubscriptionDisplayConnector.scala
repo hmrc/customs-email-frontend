@@ -24,6 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, SubscriptionDisplayResponse}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

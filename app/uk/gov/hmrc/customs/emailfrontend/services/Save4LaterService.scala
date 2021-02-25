@@ -17,9 +17,9 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
+import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.AmendmentInProgressController
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
@@ -38,7 +38,7 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector)(impl
   def fetchEmail(
     internalId: InternalId
   )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailDetails]] = {
-    Logger.info("retrieving email address and timestamp from save 4 later")
+    CdsLogger.info("retrieving email address and timestamp from save 4 later")
     save4LaterConnector.get[EmailDetails](internalId.id, emailKey)
   }
 
@@ -46,19 +46,19 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector)(impl
     internalId: InternalId,
     referrerName: ReferrerName
   )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = {
-    Logger.info("saving referrer name and referrer url  from mongo")
+    CdsLogger.info("saving referrer name and referrer url  from mongo")
     save4LaterConnector.put[ReferrerName](internalId.id, referrerKey, referrerName)
   }
 
   def fetchReferrer(
     internalId: InternalId
   )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[ReferrerName]] = {
-    Logger.info("retrieving referrer name and referrer  from mongo")
+    CdsLogger.info("retrieving referrer name and referrer  from mongo")
     save4LaterConnector.get[ReferrerName](internalId.id, referrerKey)
   }
 
   def remove(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = {
-    Logger.info("removing cached data from  mongo")
+    CdsLogger.info("removing cached data from  mongo")
     save4LaterConnector.delete(internalId.id)
   }
 
@@ -74,19 +74,19 @@ object Save4LaterService {
     )(implicit hc: HeaderCarrier, executionContext: ExecutionContext) =
       save4LaterService.fetchEmail(internalId).flatMap {
         case Some(data) if data.amendmentInProgress => {
-          Logger.info("email amendment in-progress")
+          CdsLogger.info("email amendment in-progress")
           Future.successful(Redirect(AmendmentInProgressController.show()))
         }
         case Some(EmailDetails(_, _, Some(_))) => {
-          Logger.info("email amendment completed")
+          CdsLogger.info("email amendment completed")
           save4LaterService.remove(internalId).flatMap(_ => noEmail)
         }
         case Some(details @ EmailDetails(_, _, None)) => {
-          Logger.info("email amendment not determined")
+          CdsLogger.info("email amendment not determined")
           redirectBasedOnEmailStatus(details)
         }
         case _ => {
-          Logger.info("email details not found in the cache")
+          CdsLogger.info("email details not found in the cache")
           noEmail
         }
       }

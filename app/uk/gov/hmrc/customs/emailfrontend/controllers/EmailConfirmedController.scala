@@ -20,7 +20,6 @@ import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
-import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}

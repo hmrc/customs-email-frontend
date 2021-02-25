@@ -36,9 +36,8 @@ import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.FiniteDuration
-import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
+import scala.concurrent.duration.{FiniteDuration, _}
 
 class Save4LaterServiceSpec
     extends PlaySpec
