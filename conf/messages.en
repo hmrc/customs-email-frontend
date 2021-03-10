@@ -74,6 +74,8 @@ customs.emailfrontend.phase-banner1=This is a new service – your
 customs.emailfrontend.phase-banner2=feedback
 customs.emailfrontend.phase-banner3=will help us to improve it.
 
+customs.language.toggle.visually.hidden=Newid yr iaith ir Gymraeg
+
 #accessibility statement
 footer.accessibility=Accessibility Statement
 accessibility-statement.heading-and-title=Accessibility statement for Manage your email for the Customs Declaration Service

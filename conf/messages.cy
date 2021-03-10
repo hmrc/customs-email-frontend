@@ -53,6 +53,8 @@ customs.emailfrontend.you-cant-use-service.heading=Ni allwch ddefnyddio’r gwas
 customs.emailfrontend.verification-in-progress.title-and-heading=Ni allwch newid eich cyfeiriad e-bost
 customs.emailfrontend.verification-in-progress.info=Rydych wedi newid eich cyfeiriad e-bost i {0} yn ddiweddar. Os oes angen i chi newid hwn eto, bydd yn rhaid i chi roi cynnig arall arni ymhen 2 awr.
 
+customs.language.toggle.visually.hidden=Change the language to English
+
 #phase banner
 customs.emailfrontend.phase-banner-beta=BETA
 customs.emailfrontend.phase-banner1=Mae hwn yn wasanaeth newydd – bydd eich
