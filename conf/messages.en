@@ -35,6 +35,7 @@ customs.emailfrontend.email-confirmed.info2=Until then we will send CDS emails t
 customs.emailfrontend.email-confirmed.redirect.info.customs-finance=You can now continue to <a href="{0}">Get your import VAT and duty adjustment statements.</a>
 customs.emailfrontend.email-confirmed.redirect.info.customs-exports=You can now continue to create, view and manage declarations on the <a href="{0}">CDS exports declaration online service.</a>
 customs.emailfrontend.email-confirmed.redirect.info.cds-file-upload=You can now continue to <a href="{0}">add a customs document to a CDS declaration.</a>
+customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=You can now continue to <a href="{0}">enter your Movement Reference Number.</a>
 customs.emailfrontend.verify-email.title=Verify your email address
 customs.emailfrontend.verify-email.para1=We have sent an email to {0}. Click on the link in the email to verify your email address.
 customs.emailfrontend.verify-email.para2=You can <a href="{0}">change your email address</a> if it is not correct.
