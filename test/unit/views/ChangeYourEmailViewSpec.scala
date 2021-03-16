@@ -33,15 +33,22 @@ class ChangeYourEmailViewSpec extends ViewSpec {
   private val formWithWrongFormatError: Form[Email] =
     Forms.emailForm.bind(Map("email" -> "invalid"))
   private val formWithTooLongError: Form[Email] =
-    Forms.emailForm.bind(Map("email" -> "abcdefghijklmnopqrstuvwxyz1234567890@abcdefghijklmnopqrstuvwxyz1234567890"))
+    Forms.emailForm.bind(Map(
+      "email" -> "abcdefghijklmnopqrstuvwxyz1234567890@abcdefghijklmnopqrstuvwxyz1234567890"))
   private val doc: Document =
     Jsoup.parse(contentAsString(view.render(form, email, request, messages)))
   private val docWithEmptyError: Document =
-    Jsoup.parse(contentAsString(view.render(formWithEmptyError, email, request, messages)))
+    Jsoup.parse(
+      contentAsString(
+        view.render(formWithEmptyError, email, request, messages)))
   private val docWithWrongFormatError: Document =
-    Jsoup.parse(contentAsString(view.render(formWithWrongFormatError, email, request, messages)))
+    Jsoup.parse(
+      contentAsString(
+        view.render(formWithWrongFormatError, email, request, messages)))
   private val docWithTooLongError: Document =
-    Jsoup.parse(contentAsString(view.render(formWithTooLongError, email, request, messages)))
+    Jsoup.parse(
+      contentAsString(
+        view.render(formWithTooLongError, email, request, messages)))
 
   "Email page" should {
     val expectedText = "Enter a new email address"

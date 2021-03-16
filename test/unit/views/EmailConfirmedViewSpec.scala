@@ -51,6 +51,8 @@ class EmailConfirmedViewSpec extends ViewSpec {
     docWithContinueUrl(Some("customs-finance"), Some(sampleContinueUrl))
   private val docForExports: Document =
     docWithContinueUrl(Some("customs-exports"), Some(sampleContinueUrl))
+  private val docForCdsReimbursementClaim: Document =
+    docWithContinueUrl(Some("cds-reimbursement-claim"), Some(sampleContinueUrl))
 
   "Confirm Email page" should {
     "have the correct title" in {
@@ -106,6 +108,17 @@ class EmailConfirmedViewSpec extends ViewSpec {
         .text mustBe "You can now continue to create, view and manage declarations on the CDS exports declaration online service."
 
       docForExports
+        .getElementById("info3")
+        .select("a[href]")
+        .attr("href") mustBe sampleContinueUrl
+    }
+
+    "have a correct link text and href when continueUrl is available from cds reimbursement claim" in {
+      docForCdsReimbursementClaim
+        .getElementById("info3")
+        .text mustBe "You can now continue to enter your Movement Reference Number."
+
+      docForCdsReimbursementClaim
         .getElementById("info3")
         .select("a[href]")
         .attr("href") mustBe sampleContinueUrl
