@@ -35,7 +35,7 @@
 
 @main_template(messages("customs.emailfrontend.confirm-your-email.title-and-heading")) {
 
-    @helpers.errorSummary(confirmEmailForm)
+    @helpers.errorSummary(confirmEmailForm, focusOverrides = Map("isYes" -> "isYes-true"))
 
     @helper.form(CheckYourEmailController.submit(),'id -> "confirmEmailForm") {
         @CSRF.formField
