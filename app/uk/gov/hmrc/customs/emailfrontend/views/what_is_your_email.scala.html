@@ -40,7 +40,7 @@
 
     @helpers.errorSummary(emailForm)
 
-    @helper.form(WhatIsYourEmailController.verifySubmit(),'id -> "emailForm") {
+    @helper.form(WhatIsYourEmailController.verifySubmit(),'id -> "emailForm", 'novalidate -> "novalidate") {
         @CSRF.formField
 
         @inputText(
