@@ -30,6 +30,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   private val assetsUrl = config.get[String]("assets.url")
   private val serviceIdentifier = config.get[String]("microservice.services.contact-frontend.serviceIdentifier")
+  lazy val autoCompleteEnabled: Boolean = config.get[Boolean]("autocomplete-enabled")
 
   val assetsPrefix: String = assetsUrl + config.get[String]("assets.version")
   val analyticsToken: String = config.get[String](s"google-analytics.token")

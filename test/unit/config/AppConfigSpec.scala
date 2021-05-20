@@ -69,6 +69,9 @@ class AppConfigSpec extends ControllerSpec {
     "have appName defined" in {
       appConfig.appName shouldBe "customs-email-frontend"
     }
+    "have autocomplete-enabled defined" in {
+      appConfig.autoCompleteEnabled shouldBe true
+    }
     "have customsHodsProxyBaseUrl defined" in {
       appConfig.customsHodsProxyBaseUrl shouldBe "http://localhost:8989"
     }

@@ -20,7 +20,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
+import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.services.{
@@ -42,6 +42,7 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
   private val verifyView = app.injector.instanceOf[what_is_your_email]
   private val mockSave4LaterService = mock[Save4LaterService]
   private val mockErrorHandler = mock[ErrorHandler]
+  private val mockConfig = mock[AppConfig]
   private val mockSubscriptionDisplayConnector =
     mock[SubscriptionDisplayConnector]
   private val mockEmailVerificationService = mock[EmailVerificationService]
@@ -54,7 +55,8 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
     mcc,
     mockSubscriptionDisplayConnector,
     mockEmailVerificationService,
-    mockErrorHandler
+    mockErrorHandler,
+    mockConfig
   )
   when(mockSave4LaterService.fetchEmail(any())(any(), any()))
     .thenReturn(Future.successful(None))
