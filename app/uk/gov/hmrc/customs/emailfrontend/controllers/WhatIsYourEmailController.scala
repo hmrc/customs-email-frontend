@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
+import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{CheckYourEmailController, EmailConfirmedController, WhatIsYourEmailController}
@@ -42,7 +42,8 @@ class WhatIsYourEmailController @Inject()(
   mcc: MessagesControllerComponents,
   subscriptionDisplayConnector: SubscriptionDisplayConnector,
   emailVerificationService: EmailVerificationService,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  appConfig: AppConfig                                         
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -70,7 +71,7 @@ class WhatIsYourEmailController @Inject()(
       details =>
         details.currentEmail.fold(Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))) {
           currentEmail =>
-            Future.successful(Ok(view(emailForm, currentEmail)))
+            Future.successful(Ok(view(emailForm, currentEmail, appConfig)))
       },
       subscriptionDisplay
     )
@@ -79,7 +80,7 @@ class WhatIsYourEmailController @Inject()(
   private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) =
     subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), Some(emailVerificationTimeStamp), _, _) =>
-        Future.successful(Ok(view(emailForm, email)))
+        Future.successful(Ok(view(emailForm, email, appConfig)))
       case SubscriptionDisplayResponse(Some(email), _, _, _) =>
         Future.successful(Redirect(WhatIsYourEmailController.verify()))
       case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
@@ -104,7 +105,7 @@ class WhatIsYourEmailController @Inject()(
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).map {
           case SubscriptionDisplayResponse(Some(email), _, _, _) =>
-            BadRequest(view(formWithErrors, email))
+            BadRequest(view(formWithErrors, email, appConfig))
           case _ => Redirect(routes.WhatIsYourEmailController.problemWithService())
         } recover {
           handleNonFatalException()

@@ -24,7 +24,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
+import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.model._
@@ -49,6 +49,7 @@ class WhatIsYourEmailControllerSpec
     mock[SubscriptionDisplayConnector]
   private val mockEmailVerificationService = mock[EmailVerificationService]
   private val mockErrorHandler = mock[ErrorHandler]
+  private val mockConfig = mock[AppConfig]
   private val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
 
   private val internalId = "InternalID"
@@ -74,7 +75,8 @@ class WhatIsYourEmailControllerSpec
     mcc,
     mockSubscriptionDisplayConnector,
     mockEmailVerificationService,
-    mockErrorHandler
+    mockErrorHandler,
+    mockConfig
   )
 
   override protected def beforeEach(): Unit =

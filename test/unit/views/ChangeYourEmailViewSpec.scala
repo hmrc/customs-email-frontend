@@ -20,6 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms
 import uk.gov.hmrc.customs.emailfrontend.model.Email
 import uk.gov.hmrc.customs.emailfrontend.views.html.change_your_email
@@ -34,13 +35,13 @@ class ChangeYourEmailViewSpec extends ViewSpec {
     Forms.emailForm.bind(Map("email" -> "invalid"))
   private val formWithTooLongError: Form[Email] =
     Forms.emailForm.bind(Map("email" -> "abcdefghijklmnopqrstuvwxyz1234567890@abcdefghijklmnopqrstuvwxyz1234567890"))
-  private val doc: Document = Jsoup.parse(contentAsString(view.render(form, email, request, messages)))
+  private val doc: Document = Jsoup.parse(contentAsString(view.render(form, email, appConfig, request, messages)))
   private val docWithEmptyError: Document =
-    Jsoup.parse(contentAsString(view.render(formWithEmptyError, email, request, messages)))
+    Jsoup.parse(contentAsString(view.render(formWithEmptyError, email, appConfig, request, messages)))
   private val docWithWrongFormatError: Document =
-    Jsoup.parse(contentAsString(view.render(formWithWrongFormatError, email, request, messages)))
+    Jsoup.parse(contentAsString(view.render(formWithWrongFormatError, email, appConfig, request, messages)))
   private val docWithTooLongError: Document =
-    Jsoup.parse(contentAsString(view.render(formWithTooLongError, email, request, messages)))
+    Jsoup.parse(contentAsString(view.render(formWithTooLongError, email, appConfig, request, messages)))
 
   "Email page" should {
     val expectedText = "Enter a new email address"
@@ -57,6 +58,12 @@ class ChangeYourEmailViewSpec extends ViewSpec {
       doc
         .getElementsByTag("label")
         .text mustBe "We'll use your new email address to replace email@test.com"
+    }
+
+    "have correct attributes for email input" in {
+      doc.body().getElementById("email").attr("type") mustBe "email"
+      doc.body().getElementById("email").attr("spellcheck") mustBe "false"
+      doc.body().getElementById("email").attr("autocomplete") mustBe "email"
     }
 
     "display correct error when no email is entered" in {
