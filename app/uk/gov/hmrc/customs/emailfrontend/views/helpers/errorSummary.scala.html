@@ -32,7 +32,7 @@
                     ) { fieldName =>
                         @defining(
                             error.args.nonEmpty match {
-                                case _ => fieldName + "-field"
+                                case _ => fieldName
                             }
                         ) { anchor: String =>
                             <li>

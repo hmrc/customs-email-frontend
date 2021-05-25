@@ -29,7 +29,7 @@
     elements.args.getOrElse('_legend, "").asInstanceOf[String]
 }
 
-<div id="@field.id-field" class="form-group">
+<div id="@field.id-field" class="form-group @if(elements.hasErrors){form-group-error}">
     <fieldset id="@field.id-fieldset">
 
         <legend>
@@ -39,9 +39,6 @@
             </h1>
             }
 
-            @if(elements.hasErrors) {
-            <div class="form-group-error">
-            }
             @if(!isLegendH1){
             <span class="heading-medium">
                 @legend
@@ -52,12 +49,8 @@
             }
             @if(elements.hasErrors) {
                 @elements.errors.map { error => <span class="error-message">@error</span> }
-            </div>
             }
         </legend>
-        @if(elements.hasErrors) {
-        <div class="form-group-error">
-        }
         @radioOptions.map { case (value, label) =>
             @defining(s"${elements.field.name}-${value.toLowerCase.replace(" ", "_")}") { inputId =>
                 <div class="multiple-choice">
@@ -76,9 +69,6 @@
                 </div>
             }
 
-        }
-        @if(elements.hasErrors) {
-        </div>
         }
     </fieldset>
 </div>

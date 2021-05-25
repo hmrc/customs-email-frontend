@@ -53,22 +53,19 @@
     @head(
       linkElem = None,
       headScripts = None)
-    <meta charset="utf-8">
     <meta name="format-detection" content="telephone=no" />
     <!-- Tracking consent -->
     @trackingConsentSnippet(nonce = CSPNonce.get)
-    <noscript><meta http-equiv="refresh" content="900;url=/manage-email-cds/signout" /></noscript>
+    <noscript><meta http-equiv="refresh" content="900; url=/manage-email-cds/signout" /></noscript>
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/custom.css")" type="text/css">
 }
 
 @isLoggedIn = @{!request.session.isEmpty && request.session.get("authToken").isDefined}
 
 @headerNavLinks = {@if(isLoggedIn) {
-<ul id="proposition-link" class="header__menu__proposition-links">
     <li class="u--no-print">
         <a class="link--no-underline" href="/manage-email-cds/signout" id="sign-out">@messages("customs.emailfrontend.sign-out")</a>
     </li>
-</ul>
     }
 }
 
