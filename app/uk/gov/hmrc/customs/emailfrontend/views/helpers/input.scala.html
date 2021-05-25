@@ -85,7 +85,7 @@ elements.args.getOrElse('autocomplete, "").asInstanceOf[String]
             'ariaowns -> "aria-owns")
             name="@elements.field.name"
             id="@elements.field.name"
-            spellcheck="false",
+            spellcheck="false"
             class="form-control @if(allErrors.nonEmpty) {form-control-error}"
             @if(elements.args.contains('autocomplete)) { autocomplete="@elements.args.get('autocomplete)" }
             value="@elements.field.value" />
