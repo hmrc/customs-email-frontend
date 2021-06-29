@@ -41,7 +41,7 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
     val url = s"$save4laterUrl/$id/$key"
     CdsLogger.info(s"[$LoggerComponentId][call] GET: $url")
     http.GET[HttpResponse](url) map { response =>
-      CdsLogger.info(s"[$LoggerComponentId][call] complete for call to $url and headers ${hc.headers}")
+      CdsLogger.info(s"[$LoggerComponentId][call] complete for call to $url and header carrier $hc")
 
       response.status match {
         case OK => {
@@ -57,7 +57,7 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
     } recoverWith {
       case NonFatal(e) =>
         CdsLogger.error(
-          s"[$LoggerComponentId][call] request failed for call to $url and headers ${hc.headers}: ${e.getMessage}",
+          s"[$LoggerComponentId][call] request failed for call to $url and header carrier $hc: ${e.getMessage}",
           e
         )
         Future.failed(e)
@@ -73,7 +73,7 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
     CdsLogger.info(s"[$LoggerComponentId][call] PUT: $url")
     auditCallRequest(url, payload)
     http.PUT[JsValue, HttpResponse](url, payload) map { response =>
-      CdsLogger.info(s"[$LoggerComponentId][call] complete for call to $url and headers ${hc.headers}")
+      CdsLogger.info(s"[$LoggerComponentId][call] complete for call to $url and header carrier $hc")
       auditCallResponse(url, response.status)
       response.status match {
         case NO_CONTENT | CREATED | OK => ()
@@ -82,7 +82,7 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
     } recoverWith {
       case NonFatal(e) =>
         CdsLogger.error(
-          s"[$LoggerComponentId][call] request failed for call to $url and headers ${hc.headers}: ${e.getMessage}",
+          s"[$LoggerComponentId][call] request failed for call to $url and header carrier $hc: ${e.getMessage}",
           e
         )
         Future.failed(e)
@@ -94,7 +94,7 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
     CdsLogger.info(s"[$LoggerComponentId][call] DELETE: $url")
     auditCallRequest(url, JsNull)
     http.DELETE[HttpResponse](url) map { response =>
-      CdsLogger.info(s"[$LoggerComponentId][call] complete for call to $url and headers ${hc.headers}")
+      CdsLogger.info(s"[$LoggerComponentId][call] complete for call to $url and header carrier $hc")
       auditCallResponse(url, response.status)
       response.status match {
         case NO_CONTENT => ()
@@ -103,7 +103,7 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
     } recoverWith {
       case NonFatal(e) =>
         CdsLogger.error(
-          s"[$LoggerComponentId][call] request failed for call to $url and headers ${hc.headers}: ${e.getMessage}",
+          s"[$LoggerComponentId][call] request failed for call to $url and header carrier $hc: ${e.getMessage}",
           e
         )
         Future.failed(e)

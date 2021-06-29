@@ -16,7 +16,7 @@
 
 package unit.model
 
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse

@@ -29,13 +29,13 @@ class WhatIsYourEmailSpec
     with StubCustomsDataStore
     with StubSubscriptionDisplay {
 
-  feature(
+  Feature(
     "Show 'What is your email' page when the email address is not verified") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario("Show 'What is your email' page when email is not verified") {
+    Scenario("Show 'What is your email' page when email is not verified") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
@@ -55,7 +55,7 @@ class WhatIsYourEmailSpec
       verifySubscriptionDisplayIsCalled(1, randomEoriNumber)
     }
 
-    scenario("Show 'What is your email' page when email is not available") {
+    Scenario("Show 'What is your email' page when email is not available") {
       authenticate(randomInternalId, randomEoriNumber)
       save4LaterWithNoData(randomInternalId)
       navigateTo(StartPage)

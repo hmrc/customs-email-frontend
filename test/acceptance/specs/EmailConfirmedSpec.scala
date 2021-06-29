@@ -30,12 +30,12 @@ class EmailConfirmedSpec
     with StubSubscriptionDisplay
     with StubUpdateVerifiedEmail {
 
-  feature("Show Email confirmed to user when the email address is verified") {
+  Feature("Show Email confirmed to user when the email address is verified") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario(
+    Scenario(
       "Show email confirmed page without sending email verification link when user email address is verified") {
 
       Given("the user has successfully logged in")
@@ -77,7 +77,7 @@ class EmailConfirmedSpec
       verifyUpdateVerifiedEmailIsCalled(1)
     }
 
-    scenario(
+    Scenario(
       "Show 'Email confirmed' page when user returns to the service after verifying the email address but could not successfully update the email address"
     ) {
 
@@ -135,7 +135,7 @@ class EmailConfirmedSpec
       verifyUpdateVerifiedEmailIsCalled(1)
     }
 
-    scenario(
+    Scenario(
       "Show 'Check your email' page when user returns to the service without verifying the email address") {
 
       Given("the user has successfully logged in")
@@ -185,7 +185,7 @@ class EmailConfirmedSpec
       verifyEmailVerifiedIsCalled(1)
     }
 
-    scenario(
+    Scenario(
       "Show verify your email page when user does not verify the email and tries to access the 'Email Confirmed' page"
     ) {
 

@@ -16,6 +16,7 @@
 
 package unit.controllers
 
+import org.scalatest.matchers.should.Matchers._
 import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.model.Ineligible

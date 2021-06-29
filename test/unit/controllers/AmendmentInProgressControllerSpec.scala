@@ -25,7 +25,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.views.html.amendment_in_progress
 import uk.gov.hmrc.http.HeaderCarrier
-
+import org.scalatest.matchers.should.Matchers._
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmendmentInProgressControllerSpec extends ControllerSpec {

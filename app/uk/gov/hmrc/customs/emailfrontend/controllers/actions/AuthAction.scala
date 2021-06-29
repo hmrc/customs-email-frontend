@@ -27,8 +27,8 @@ import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.IneligibleUserController
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Ineligible, InternalId, LoggedInUser}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,8 +45,7 @@ class AuthAction(
     config.get[String]("external-url.company-auth-frontend.continue-url")
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
-    implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised(AuthProviders(GovernmentGateway))
       .retrieve(allEnrolments and internalId and affinityGroup and credentialRole) {

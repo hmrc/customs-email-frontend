@@ -16,6 +16,7 @@
 
 package unit.config
 
+import org.scalatest.matchers.should.Matchers._
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import unit.controllers.ControllerSpec
 

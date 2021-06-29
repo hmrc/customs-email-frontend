@@ -23,6 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
 import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
 import unit.controllers.ControllerSpec
+import org.scalatest.matchers.should.Matchers._
 
 class ErrorHandlerSpec extends ControllerSpec with ScalaFutures {
 

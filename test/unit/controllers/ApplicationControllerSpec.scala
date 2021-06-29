@@ -21,6 +21,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController
 import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 import uk.gov.hmrc.customs.emailfrontend.views.html.accessibility_statement
+import org.scalatest.matchers.should.Matchers._
 
 class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 

@@ -23,14 +23,9 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
-import uk.gov.hmrc.customs.emailfrontend.services.{
-  EmailVerificationService,
-  Save4LaterService
-}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{
-  change_your_email,
-  what_is_your_email
-}
+import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
+import uk.gov.hmrc.customs.emailfrontend.views.html.{change_your_email, what_is_your_email}
+import org.scalatest.matchers.should.Matchers._
 
 import scala.concurrent.Future
 

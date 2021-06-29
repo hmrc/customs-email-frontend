@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import controllers.Assets.NO_CONTENT
 import org.joda.time.DateTime
+import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger

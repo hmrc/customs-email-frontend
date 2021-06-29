@@ -7,6 +7,9 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "customs-email-frontend"
 
+targetJvm := "jvm-1.8"
+scalaVersion := "2.12.12"
+
 lazy val AcceptanceTest = config("acceptance") extend (Test)
 lazy val IntegrationTest = config("it") extend Test
 lazy val EndToEndTest = config("endtoend") extend Test

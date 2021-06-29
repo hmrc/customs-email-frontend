@@ -20,7 +20,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms
 import uk.gov.hmrc.customs.emailfrontend.model.Email
 import uk.gov.hmrc.customs.emailfrontend.views.html.change_your_email

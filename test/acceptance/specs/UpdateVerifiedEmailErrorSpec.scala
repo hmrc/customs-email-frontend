@@ -30,13 +30,13 @@ class UpdateVerifiedEmailErrorSpec
     with StubSubscriptionDisplay
     with StubUpdateVerifiedEmail {
 
-  feature(
+  Feature(
     "Show 'There is a problem with the service' page when user tries to update the verified email") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario(
+    Scenario(
       "Show 'There is a problem with the service' page when user tries to update the verified email with incorrect data") {
 
       Given("the user has successfully logged in")
@@ -70,7 +70,7 @@ class UpdateVerifiedEmailErrorSpec
       verifyCurrentPage(EmailNotSavedThereIsAProblemWithTheServicePage)
     }
 
-    scenario(
+    Scenario(
       "Show 'There is a problem with the service' page when a restricted user tries to update the verified email address") {
 
       Given("the user has successfully logged in")
@@ -105,7 +105,7 @@ class UpdateVerifiedEmailErrorSpec
       verifyCurrentPage(EmailNotSavedThereIsAProblemWithTheServicePage)
     }
 
-    scenario(
+    Scenario(
       "Show 'There is a problem with the service' page when there is a technical error while updating the verified email address") {
 
       Given("the user has successfully logged in")
@@ -140,7 +140,7 @@ class UpdateVerifiedEmailErrorSpec
       verifyCurrentPage(EmailNotSavedThereIsAProblemWithTheServicePage)
     }
 
-    scenario(
+    Scenario(
       "Show 'There is a problem with the service' page when updating a verified email address is unsuccessful") {
 
       Given("the user has successfully logged in")

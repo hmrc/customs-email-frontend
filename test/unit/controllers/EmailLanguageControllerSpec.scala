@@ -16,11 +16,9 @@
 
 package unit.controllers
 
+import org.scalatest.matchers.should.Matchers._
 import play.api.i18n.Lang
-import uk.gov.hmrc.customs.emailfrontend.controllers.{
-  EmailLanguageController,
-  routes
-}
+import uk.gov.hmrc.customs.emailfrontend.controllers.{EmailLanguageController, routes}
 import uk.gov.hmrc.play.language.LanguageUtils
 
 class EmailLanguageControllerSpec extends ControllerSpec {

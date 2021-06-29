@@ -23,12 +23,12 @@ import utils.SpecHelper
 class AmendmentInProgressSpec
     extends AcceptanceTestSpec with StubSave4Later with StubAuthClient with SpecHelper with StubEmailVerification with StubSubscriptionDisplay {
 
-  feature("Amendment already in progress") {
+  Feature("Amendment already in progress") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario(
+    Scenario(
       "User returning to the service within 2 hours after successfully amending the email") {
 
       Given("the user has successfully amended the email")
@@ -45,7 +45,7 @@ class AmendmentInProgressSpec
       verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
     }
 
-    scenario("User returning to the service after 2 hours of successfully amending the email") {
+    Scenario("User returning to the service after 2 hours of successfully amending the email") {
 
       Given("the user has successfully amended the email")
       authenticate(randomInternalId, randomEoriNumber)

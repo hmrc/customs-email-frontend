@@ -31,13 +31,13 @@ class FetchEmailErrorSpec
     with StubSave4Later
     with StubSubscriptionDisplay {
 
-  feature(
+  Feature(
     "Show 'There is a problem with the service' page when user tries to the email") {
 
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario(
+    Scenario(
       "User should see 'There is a problem with the service' when incorrect details are provided") {
 
       Given("user is on the 'Start' page")
@@ -56,7 +56,7 @@ class FetchEmailErrorSpec
       verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
     }
 
-    scenario(
+    Scenario(
       "User should see 'There is a problem with the service' when data could not be found") {
 
       Given("user is on the 'Start' page")
@@ -75,7 +75,7 @@ class FetchEmailErrorSpec
       verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
     }
 
-    scenario(
+    Scenario(
       "User should see 'There is a problem with the service' when there is an error in processing the request") {
 
       Given("user is on the 'Start' page")
@@ -94,7 +94,7 @@ class FetchEmailErrorSpec
       verifyCurrentPage(FetchEmailThereIsAProblemWithTheServicePage)
     }
 
-    scenario(
+    Scenario(
       "User should see 'There is a problem with the service' when there fetching an email is unsuccessful") {
 
       Given("user is on the 'Start' page")

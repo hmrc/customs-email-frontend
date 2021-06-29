@@ -20,7 +20,7 @@ import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.Json
+import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -28,12 +28,8 @@ import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.customs.emailfrontend.services.{
-  EmailVerificationService,
-  Save4LaterService
-}
+import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.views.html._
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 
 import scala.concurrent.Future
@@ -52,9 +48,6 @@ class WhatIsYourEmailControllerSpec
   private val mockConfig = mock[AppConfig]
   private val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
 
-  private val internalId = "InternalID"
-  private val jsonValue = Json.toJson("emailStatus")
-  private val data = Map(internalId -> jsonValue)
   private val someSubscriptionDisplayResponse =
     SubscriptionDisplayResponse(Some("test@test.com"),
                                 Some(emailVerificationTimeStamp),

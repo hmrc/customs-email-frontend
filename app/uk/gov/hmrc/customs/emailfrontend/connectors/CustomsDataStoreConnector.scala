@@ -42,7 +42,7 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
     auditRequest("DataStoreEmailRequestSubmitted", Map("eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
 
     httpClient
-      .doPost[UpdateEmail](url, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))(implicitly, hc, ec)
+      .POST[UpdateEmail, HttpResponse](url, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
       .map { response =>
         auditResponse("DataStoreResponseReceived", response, url)
         response

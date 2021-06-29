@@ -16,6 +16,7 @@
 
 package endtoend.specs
 
-import org.scalatest.{FeatureSpec, GivenWhenThen}
+import org.scalatest.GivenWhenThen
+import org.scalatest.featurespec.AnyFeatureSpec
 
-trait EndToEndTestSpec extends FeatureSpec with GivenWhenThen
+trait EndToEndTestSpec extends AnyFeatureSpec with GivenWhenThen

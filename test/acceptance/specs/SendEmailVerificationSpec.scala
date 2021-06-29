@@ -36,9 +36,9 @@ class SendEmailVerificationSpec
   val randomInternalId = generateRandomNumberString()
   val randomEoriNumber = "GB" + generateRandomNumberString()
 
-  feature("Send email to user for verification") {
+  Feature("Send email to user for verification") {
 
-    scenario("organisation user amends the email and submits for verification") {
+    Scenario("organisation user amends the email and submits for verification") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId, randomEoriNumber)
@@ -71,7 +71,7 @@ class SendEmailVerificationSpec
       assertIsTextVisible(VerifyYourEmailAddressPage.verifyEmailId)("b@a.com")
     }
 
-    scenario("individual user amends the email and submits for verification") {
+    Scenario("individual user amends the email and submits for verification") {
 
       Given("the user has successfully logged in")
       authenticate(randomInternalId,

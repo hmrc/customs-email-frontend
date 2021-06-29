@@ -19,7 +19,8 @@ package utils
 import common.pages.BasePage
 import org.openqa.selenium.support.ui.{ExpectedConditions, WebDriverWait}
 import org.openqa.selenium.{By, WebDriver, WebElement}
-import org.scalatest.{Assertion, Matchers}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.Assertion
 import org.scalatestplus.selenium.Page
 
 import scala.util.Random
