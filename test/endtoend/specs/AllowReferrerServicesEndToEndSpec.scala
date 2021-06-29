@@ -18,13 +18,11 @@ package endtoend.specs
 
 import common.pages.{
   AuthLoginStubPage,
-  ChangeYourEmailAddressPage,
   CheckYourEmailAddressPage,
   EmailConfirmedPage,
   FeedbackPage,
   ListedOnReferrerPage,
   NotListedOnReferrerPage,
-  ReferrerPage,
   StartPage,
   WhatIsYourEmailPage
 }
@@ -34,10 +32,10 @@ class AllowReferrerServicesEndToEndSpec
     extends EndToEndTestSpec
     with SpecHelper {
 
-  feature(
+  Feature(
     "Allow users to verify email address when they are available in the referrer list") {
 
-    scenario(
+    Scenario(
       "User should be allowed to verify email address when redirected from 'customs-finance'") {
       Given(
         "the user is successfully logged in 'customs-finance' service and the email address is not verified")
@@ -68,7 +66,7 @@ class AllowReferrerServicesEndToEndSpec
       clickOn(EmailConfirmedPage.signOutId)
     }
 
-    scenario(
+    Scenario(
       "User should be allowed to verify email address when redirected from a service which is not on the referrer list"
     ) {
       Given(

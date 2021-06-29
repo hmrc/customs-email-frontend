@@ -16,14 +16,11 @@
 
 package unit.controllers
 
+import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.Session
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.emailfrontend.controllers.{
-  ApplicationController,
-  SignOutController
-}
-import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
-import uk.gov.hmrc.customs.emailfrontend.views.html.accessibility_statement
+import uk.gov.hmrc.customs.emailfrontend.controllers.{ApplicationController, SignOutController}
+import uk.gov.hmrc.customs.emailfrontend.views.html.{accessibility_statement, start_page}
 
 class SignOutControllerSpec extends ControllerSpec {
 

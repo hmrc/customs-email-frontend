@@ -28,9 +28,9 @@ class IneligibleUserSpec
   lazy val randomEoriNumber = "GB" + generateRandomNumberString()
   lazy val randomInternalId = generateRandomNumberString()
 
-  feature("Show ineligible user page for unauthorised users") {
+  Feature("Show ineligible user page for unauthorised users") {
 
-    scenario("A user having no CDS enrolment tries to amend email address") {
+    Scenario("A user having no CDS enrolment tries to amend email address") {
 
       Given("the user has no CDS enrolment")
       authenticateGGUserWithError(randomInternalId, "InsufficientEnrolments")
@@ -68,7 +68,7 @@ class IneligibleUserSpec
 
     }
 
-    scenario("A user with an assistant account tries to amend email") {
+    Scenario("A user with an assistant account tries to amend email") {
 
       Given("the user has is an assistant on the account")
       authenticate(randomInternalId, randomEoriNumber, "assistant")
@@ -81,7 +81,7 @@ class IneligibleUserSpec
       verifyCurrentPage(IneligibleUserNotAdminPage)
     }
 
-    scenario("A user with an agent account tries to amend email") {
+    Scenario("A user with an agent account tries to amend email") {
 
       Given("the user is an agent on the account for an organisation")
       authenticate(randomInternalId, randomEoriNumber, "user", "Agent")
@@ -94,7 +94,7 @@ class IneligibleUserSpec
       verifyCurrentPage(IneligibleUserAgentPage)
     }
 
-    scenario(
+    Scenario(
       "A user with an agent account having no CDS enrolment tries to amend email") {
 
       Given("the user is an agent on the account for an organisation")
@@ -111,7 +111,7 @@ class IneligibleUserSpec
       verifyCurrentPage(IneligibleUserAgentPage)
     }
 
-    scenario(
+    Scenario(
       "An assistant user with an organisation account having no CDS enrolment tries to amend email") {
 
       Given("the user is an agent on the account for an organisation")

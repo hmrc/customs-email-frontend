@@ -20,16 +20,14 @@ import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
-import uk.gov.hmrc.customs.emailfrontend.services.{
-  EmailVerificationService,
-  Save4LaterService
-}
+import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 
 import scala.concurrent.Future

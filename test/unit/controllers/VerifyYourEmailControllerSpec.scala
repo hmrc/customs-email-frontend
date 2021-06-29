@@ -19,6 +19,7 @@ package unit.controllers
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
+import org.scalatest.matchers.should.Matchers._
 import play.api.test.Helpers._
 import uk.gov.hmrc.customs.emailfrontend.controllers.VerifyYourEmailController
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails

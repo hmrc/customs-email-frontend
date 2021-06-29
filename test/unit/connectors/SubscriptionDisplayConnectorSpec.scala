@@ -67,7 +67,7 @@ class SubscriptionDisplayConnectorSpec
   "SubscriptionDisplayConnector" should {
     "successfully send a query request return SubscriptionDisplayResponse with email inside" in {
       when(
-        mockHttp.GET(meq(url), any[Seq[(String, String)]])(
+        mockHttp.GET(meq(url), any[Seq[(String, String)]], any[Seq[(String, String)]])(
           any[HttpReads[SubscriptionDisplayResponse]],
           any[HeaderCarrier],
           any[ExecutionContext]
@@ -83,7 +83,7 @@ class SubscriptionDisplayConnectorSpec
 
     "successfully send a query request return SubscriptionDisplayResponse with none for a value inside" in {
       when(
-        mockHttp.GET(meq(url), any[Seq[(String, String)]])(
+        mockHttp.GET(meq(url), any[Seq[(String, String)]], any[Seq[(String, String)]])(
           any[HttpReads[SubscriptionDisplayResponse]],
           any[HeaderCarrier],
           any[ExecutionContext]

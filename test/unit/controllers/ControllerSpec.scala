@@ -17,7 +17,9 @@
 package unit.controllers
 
 import akka.stream.Materializer
-import org.scalatest.{Matchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.MessagesApi
@@ -36,7 +38,7 @@ import unit.AuthBuilder
 import scala.concurrent.ExecutionContext
 
 trait ControllerSpec
-    extends WordSpec
+    extends AnyWordSpec
     with Matchers
     with MockitoSugar
     with GuiceOneAppPerSuite

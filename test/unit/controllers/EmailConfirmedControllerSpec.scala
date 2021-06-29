@@ -20,24 +20,15 @@ import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{times, verify, _}
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers._
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.Helpers.{status, _}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController
-import uk.gov.hmrc.customs.emailfrontend.model.{
-  EmailDetails,
-  InternalId,
-  ReferrerName
-}
-import uk.gov.hmrc.customs.emailfrontend.services.{
-  CustomsDataStoreService,
-  DateTimeService,
-  EmailVerificationService,
-  Save4LaterService,
-  UpdateVerifiedEmailService
-}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
+import uk.gov.hmrc.customs.emailfrontend.services._
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 

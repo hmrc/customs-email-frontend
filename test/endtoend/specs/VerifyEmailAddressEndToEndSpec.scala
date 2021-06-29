@@ -21,11 +21,11 @@ import utils.SpecHelper
 
 class VerifyEmailAddressEndToEndSpec extends EndToEndTestSpec with SpecHelper {
 
-  feature("Amend email address") {
+  Feature("Amend email address") {
 
     lazy val credId = generateRandomNumberString()
 
-    scenario(
+    Scenario(
       "User returns to the service to amend an email address within 2 hours and should be redirected to 'You cannot change' page"
     ) {
       Given("the user has successfully changed the email address")
