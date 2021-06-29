@@ -17,8 +17,8 @@
 package acceptance.specs
 
 import java.net.URLEncoder
-
 import com.typesafe.config.Config
+
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import org.openqa.selenium.Cookie
@@ -29,7 +29,7 @@ import org.scalatest.{
   GivenWhenThen
 }
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.Application
+import play.api.{Application, Mode}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.Codecs
 import uk.gov.hmrc.crypto.{

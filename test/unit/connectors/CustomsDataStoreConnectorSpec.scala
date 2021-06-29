@@ -16,13 +16,13 @@
 
 package unit.connectors
 
-import controllers.Assets.{NOT_FOUND, NO_CONTENT}
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.http.Status.{NOT_FOUND, NO_CONTENT}
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
@@ -67,10 +67,10 @@ class CustomsDataStoreConnectorSpec
   "CustomsDataStoreConnector" should {
     "successfully send a query request to customs data store and return the OK response" in {
       when(
-        mockHttp.doPost(meq(url), meq(requestBody), meq(headers))(
-          any(),
-          meq(hc),
-          any[ExecutionContext]))
+        mockHttp.POST[UpdateEmail, HttpResponse](
+          meq(url),
+          meq(requestBody),
+          meq(headers))(any(), any(), meq(hc), any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
       doNothing()
         .when(mockAuditable)
@@ -83,10 +83,10 @@ class CustomsDataStoreConnectorSpec
 
     "return the failure response from customs data store" in {
       when(
-        mockHttp.doPost(meq(url), meq(requestBody), meq(headers))(
-          any(),
-          meq(hc),
-          any[ExecutionContext]))
+        mockHttp.POST[UpdateEmail, HttpResponse](
+          meq(url),
+          meq(requestBody),
+          meq(headers))(any(), any(), meq(hc), any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
       doNothing()
         .when(mockAuditable)
