@@ -38,6 +38,7 @@ class Save4LaterConnectorSpec extends IntegrationSpec with WireMockRunner {
         "microservice.services.customs-email-proxy.host" -> wireMockHost,
         "microservice.services.customs-email-proxy.port" -> wireMockPort,
         "auditing.enabled" -> true,
+        "metrics.enabled" -> true,
         "auditing.consumer.baseUri.host" -> wireMockHost,
         "auditing.consumer.baseUri.port" -> wireMockPort
       )

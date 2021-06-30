@@ -92,7 +92,9 @@ class AppConfigSpec extends ControllerSpec {
         ReferrerName("customs-finance", "/customs/payment-records"),
         ReferrerName("customs-exports", "/customs-declare-exports/"),
         ReferrerName("cds-file-upload", "/cds-file-upload-service/"),
-        ReferrerName("cds-reimbursement-claim", "/claim-for-reimbursement-of-import-duties/enter-movement-reference-number/")
+        ReferrerName(
+          "cds-reimbursement-claim",
+          "/claim-for-reimbursement-of-import-duties/enter-movement-reference-number/")
       )
     }
   }

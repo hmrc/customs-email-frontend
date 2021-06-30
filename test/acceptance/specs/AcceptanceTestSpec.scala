@@ -17,8 +17,8 @@
 package acceptance.specs
 
 import java.net.URLEncoder
-
 import com.typesafe.config.Config
+
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import org.openqa.selenium.Cookie
