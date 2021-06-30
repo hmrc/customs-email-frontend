@@ -29,7 +29,7 @@ import org.scalatest.{
   GivenWhenThen
 }
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.{Application, Mode}
+import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.Codecs
 import uk.gov.hmrc.crypto.{
