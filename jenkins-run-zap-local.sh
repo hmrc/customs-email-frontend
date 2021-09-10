@@ -6,5 +6,3 @@
 # sbt -Dapplication.router=testOnlyDoNotUseInAppConf.Routes "run 9830" (start customs-rosm-frontend from local source)
 
 sbt -Dbrowser=remote-chrome -Dzap.proxy=true -Dport=9898 manageemail:test
-
-
