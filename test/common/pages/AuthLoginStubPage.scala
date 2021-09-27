@@ -16,9 +16,9 @@
 
 package common.pages
 
-import utils.TestEnvironment._
 import org.openqa.selenium.By
 import org.openqa.selenium.support.ui.Select
+import utils.TestEnvironment._
 import utils.{Configuration, SpecHelper}
 
 class AuthLoginStubPage extends BasePage with SpecHelper {
@@ -37,7 +37,7 @@ class AuthLoginStubPage extends BasePage with SpecHelper {
   val identifierName: By = By.id("input-0-0-name")
   val identifierValue: By = By.id("input-0-0-value")
 
-  val submitButtonCss: By = By.cssSelector(".button")
+  val submitButtonId: By = By.id("submit")
 
   def login(
       credId: String,
@@ -62,7 +62,7 @@ class AuthLoginStubPage extends BasePage with SpecHelper {
     enterText(identifierName)("EORINumber")
     enterText(identifierValue)(eori)
 
-    clickOn(submitButtonCss)
+    clickOn(submitButtonId)
   }
 
 }
