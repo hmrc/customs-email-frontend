@@ -32,8 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)
                                          (implicit ec: ExecutionContext) extends Logging {
 
-  private[connectors] lazy val url: String = appConfig.customsDataStoreUrl
-
   def storeEmailAddress(eori: Eori, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
 
     val request = UpdateEmail(eori, email, timestamp)
@@ -41,19 +39,19 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
     auditRequest("DataStoreEmailRequestSubmitted", Map("eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
 
     httpClient
-      .POST[UpdateEmail, HttpResponse](url, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
+      .POST[UpdateEmail, HttpResponse](appConfig.customsDataStoreUrl, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
       .map { response =>
-        auditResponse("DataStoreResponseReceived", response, url)
+        auditResponse("DataStoreResponseReceived", response, appConfig.customsDataStoreUrl)
         response
       }.recoverWith {
       case e: Throwable =>
-        logger.error(s"Call to data stored failed url=$url, exception=$e")
+        logger.error(s"Call to data stored failed url=${appConfig.customsDataStoreUrl}, exception=$e")
         Future.failed(e)
     }
   }
 
   private def auditRequest(transactionName: String, detail: Map[String, String])(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(transactionName = transactionName, path = url, detail = detail, auditType = "DataStoreRequest")
+    audit.sendDataEvent(transactionName = transactionName, path = appConfig.customsDataStoreUrl, detail = detail, auditType = "DataStoreRequest")
 
   private def auditResponse(transactionName: String, response: HttpResponse, url: String)(
     implicit hc: HeaderCarrier

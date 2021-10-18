@@ -17,8 +17,6 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import play.api.Logging
-
-import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
@@ -30,6 +28,7 @@ import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Sav
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourEmailController @Inject()(actions: Actions,
@@ -53,7 +52,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
     Future.successful(Ok(view(confirmEmailForm, details.newEmail)))
 
   def submit: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
-    save4LaterService.fetchEmail(request.user.internalId) flatMap {
+    save4LaterService.fetchEmail(request.user.internalId).flatMap {
       _.fold {
         logger.warn("emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
@@ -68,7 +67,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
   private def submitNewDetails(internalId: InternalId, details: EmailDetails, eori: String)(
     implicit request: Request[AnyContent]
   ): Future[Result] =
-    emailVerificationService.createEmailVerificationRequest(details, EmailConfirmedController.show().url, eori) flatMap {
+    emailVerificationService.createEmailVerificationRequest(details, EmailConfirmedController.show().url, eori).flatMap {
       case Some(true) => Future.successful(Redirect(VerifyYourEmailController.show()))
       case Some(false) =>
         save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>

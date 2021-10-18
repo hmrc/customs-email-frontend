@@ -29,14 +29,10 @@ object EmailVerificationStateHttpParser extends Logging {
     override def read(method: String, url: String, response: HttpResponse): EmailVerificationStateResponse =
       response.status match {
         case OK =>
-          logger.debug(
-            "Email Verified"
-          )
+          logger.debug("Email Verified")
           Right(EmailVerified)
         case NOT_FOUND =>
-          logger.warn(
-            "Email not verified"
-          )
+          logger.warn("Email not verified")
           Right(EmailNotVerified)
         case status =>
           logger.warn(s"Unexpected Response, Status $status returned, with response: ${response.body}")

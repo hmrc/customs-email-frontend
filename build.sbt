@@ -15,7 +15,7 @@ lazy val testConfig = Seq(EndToEndTest, AcceptanceTest, IntegrationTest, Test)
 lazy val commonSettings: Seq[Setting[_]] = scalaSettings ++ publishingSettings ++ defaultSettings() ++ gitStampSettings
 
 def forkedJvmPerTestConfig(tests: Seq[TestDefinition], packages: String*): Seq[Group] =
-  tests.groupBy(_.name.takeWhile(_ != '.')).filter(packageAndTests => packages contains packageAndTests._1) map {
+  tests.groupBy(_.name.takeWhile(_ != '.')).filter(packageAndTests => packages contains packageAndTests._1).map {
     case (packg, theTests) =>
       Group(packg, theTests, SubProcess(ForkOptions()))
   } toSeq

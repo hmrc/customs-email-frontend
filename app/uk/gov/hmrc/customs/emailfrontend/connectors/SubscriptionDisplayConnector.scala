@@ -16,39 +16,39 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import java.util.UUID
-
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, SubscriptionDisplayResponse}
-import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HttpClient, _}
 
+import java.util.UUID
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
 class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig, http: HttpClient, auditable: Auditable) {
 
-  private[connectors] lazy val url: String = appConfig.subscriptionDisplayUrl
-
   def subscriptionDisplay(eori: Eori)(implicit hc: HeaderCarrier): Future[SubscriptionDisplayResponse] = {
     val request = ("EORI" -> eori.id) :: buildQueryParams
 
-    http.GET[SubscriptionDisplayResponse](url, request).map { displayResponse =>
-      auditResponse("customs-email-subscription-display", "subscriptionDisplayResponse", displayResponse, url)
+    http.GET[SubscriptionDisplayResponse](appConfig.subscriptionDisplayUrl, request).map { displayResponse =>
+      auditResponse(
+        transactionName = "customs-email-subscription-display",
+        auditType = "subscriptionDisplayResponse",
+        response = displayResponse,
+        url = appConfig.subscriptionDisplayUrl
+      )
       displayResponse
     }
   }
 
-  private def auditResponse(
-    transactionName: String,
-    auditType: String,
-    response: SubscriptionDisplayResponse,
-    url: String
-  )(implicit hc: HeaderCarrier): Unit =
+  private def auditResponse(transactionName: String,
+                            auditType: String,
+                            response: SubscriptionDisplayResponse,
+                            url: String)
+                           (implicit hc: HeaderCarrier): Unit =
     auditable.sendDataEvent(
       transactionName = transactionName,
       path = url,

@@ -29,15 +29,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfig, auditable: Auditable)(
-  implicit ec: ExecutionContext
-) {
-
-  private[connectors] lazy val checkVerifiedEmailUrl: String =
-    s"${appConfig.emailVerificationWithContext}/verified-email-check"
-
-  private[connectors] lazy val createEmailVerificationRequestUrl: String =
-    s"${appConfig.emailVerificationWithContext}/verification-requests"
+class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfig, auditable: Auditable)
+                                          (implicit ec: ExecutionContext) {
 
   def getEmailVerificationState(
     emailAddress: String
@@ -46,9 +39,9 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
       "customs-update-email-verification-state",
       "CustomsUpdateEmailVerificationState",
       emailAddress,
-      checkVerifiedEmailUrl
+      appConfig.checkVerifiedEmailUrl
     )
-    http.POST[JsObject, EmailVerificationStateResponse](checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
+    http.POST[JsObject, EmailVerificationStateResponse](appConfig.checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
   }
 
   def createEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)(
@@ -63,10 +56,10 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
         ContinueUrlKey -> continueUrl
       )
 
-    auditVerificationRequest(details, createEmailVerificationRequestUrl, eoriNumber)
+    auditVerificationRequest(details, appConfig.createEmailVerificationRequestUrl, eoriNumber)
 
     http
-      .POST[JsObject, EmailVerificationRequestResponse](createEmailVerificationRequestUrl, jsonBody)
+      .POST[JsObject, EmailVerificationRequestResponse](appConfig.createEmailVerificationRequestUrl, jsonBody)
   }
 
   private def auditRequest(transactionName: String, auditType: String, emailAddress: String, url: String)(

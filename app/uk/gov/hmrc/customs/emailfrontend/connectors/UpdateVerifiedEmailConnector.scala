@@ -31,16 +31,13 @@ import scala.util.control.NonFatal
 
 class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpClient, audit: Auditable) extends Logging {
 
-  private[connectors] lazy val url: String = appConfig.updateVerifiedEmailUrl
-
-  def updateVerifiedEmail(request: VerifiedEmailRequest, currentEmail: Option[String])(
-    implicit hc: HeaderCarrier
-  ): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
+  def updateVerifiedEmail(request: VerifiedEmailRequest, currentEmail: Option[String])
+                         (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
     val newEmail = request.updateVerifiedEmailRequest.requestDetail.emailAddress
     val eori = request.updateVerifiedEmailRequest.requestDetail.IDNumber
 
     auditRequest(currentEmail, newEmail, eori, "changeEmailAddressVerified")
-    http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](url, request) map { resp =>
+    http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](appConfig.updateVerifiedEmailUrl, request).map { resp =>
       auditRequest(currentEmail, newEmail, eori, "changeEmailAddressConfirmed")
       Right(resp)
     } recover {
@@ -49,20 +46,17 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
       case _: InternalServerException | Upstream5xxResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
         Left(ServiceUnavailable)
       case NonFatal(e) =>
-        logger.error(
-          s"[UpdateVerifiedEmailConnector][updateVerifiedEmail] update-verified-email. url: $url, error: ${e.getMessage}"
-        )
+        logger.error(s"update-verified-email. url: $appConfig.updateVerifiedEmailUrl, error: ${e.getMessage}")
         Left(UnhandledException)
     }
   }
 
-  private def auditRequest(currentEmail: Option[String], newEmail: String, eoriNumber: String, auditType: String)(
-    implicit hc: HeaderCarrier
-  ): Unit =
+  private def auditRequest(currentEmail: Option[String], newEmail: String, eoriNumber: String, auditType: String)
+                          (implicit hc: HeaderCarrier): Unit =
     currentEmail.fold(
       audit.sendDataEvent(
         transactionName = "UpdateVerifiedEmailRequestSubmitted",
-        path = url,
+        path = appConfig.updateVerifiedEmailUrl,
         detail = Map("newEmailAddress" -> newEmail, "eori" -> eoriNumber),
         auditType = auditType
       )
@@ -70,7 +64,7 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
       emailAddress =>
         audit.sendDataEvent(
           transactionName = "UpdateVerifiedEmailRequestSubmitted",
-          path = url,
+          path = appConfig.updateVerifiedEmailUrl,
           detail = Map("currentEmailAddress" -> emailAddress, "newEmailAddress" -> newEmail, "eori" -> eoriNumber),
           auditType = auditType
         )

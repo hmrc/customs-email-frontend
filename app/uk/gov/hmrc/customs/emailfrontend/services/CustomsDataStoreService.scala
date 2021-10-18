@@ -32,7 +32,7 @@ class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataSt
                                        (implicit ec: ExecutionContext) extends Logging {
 
   def storeEmail(enrolmentId: EnrolmentIdentifier, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email, timestamp) map { response =>
+    customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email, timestamp).map { response =>
       response.status match {
         case NO_CONTENT =>
           logger.debug("CustomsDataStore: data store request is successful")
