@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
+import play.api.Logging
+
 import javax.inject.Inject
-import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
@@ -31,15 +32,14 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourEmailController @Inject()(
-  actions: Actions,
-  view: check_your_email,
-  emailVerificationService: EmailVerificationService,
-  mcc: MessagesControllerComponents,
-  save4LaterService: Save4LaterService,
-  errorHandler: ErrorHandler
-)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+class CheckYourEmailController @Inject()(actions: Actions,
+                                         view: check_your_email,
+                                         emailVerificationService: EmailVerificationService,
+                                         mcc: MessagesControllerComponents,
+                                         save4LaterService: Save4LaterService,
+                                         errorHandler: ErrorHandler)
+                                        (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show: Action[AnyContent] =
     (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
@@ -55,7 +55,7 @@ class CheckYourEmailController @Inject()(
   def submit: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
     save4LaterService.fetchEmail(request.user.internalId) flatMap {
       _.fold {
-        CdsLogger.warn("[CheckYourEmailController][submit] - emailStatus cache none, user logged out")
+        logger.warn("emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
       } { emailDetails =>
         confirmEmailForm.bindFromRequest.fold(formWithErrors => {

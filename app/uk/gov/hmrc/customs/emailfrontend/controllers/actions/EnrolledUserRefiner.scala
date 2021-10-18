@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
-import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
+import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
@@ -26,7 +26,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Eori, Eori
 import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolledUserRefiner(implicit override val executionContext: ExecutionContext)
-    extends ActionRefiner[AuthenticatedRequest, EoriRequest] {
+    extends ActionRefiner[AuthenticatedRequest, EoriRequest] with Logging {
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, EoriRequest[A]]] = {
 
     def enrolmentExists: Option[EnrolmentIdentifier] => Option[EoriRequest[A]] = {
@@ -35,7 +35,7 @@ class EnrolledUserRefiner(implicit override val executionContext: ExecutionConte
     }
 
     Future.successful(enrolmentExists(request.user.eori) orElse None toRight {
-      CdsLogger.warn("[EnrolledUserRefiner] CDS Enrolment is missing")
+      logger.warn("CDS Enrolment is missing")
       Redirect(IneligibleUserController.show(Ineligible.NoEnrolment))
     })
   }

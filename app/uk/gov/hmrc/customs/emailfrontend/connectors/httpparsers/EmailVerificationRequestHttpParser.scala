@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers
 
+import play.api.Logging
 import play.api.http.Status.{CONFLICT, CREATED}
-import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object EmailVerificationRequestHttpParser {
+object EmailVerificationRequestHttpParser extends Logging {
 
   type EmailVerificationRequestResponse =
     Either[EmailVerificationRequestFailure, EmailVerificationRequestSuccess]
@@ -29,15 +29,14 @@ object EmailVerificationRequestHttpParser {
     override def read(method: String, url: String, response: HttpResponse): EmailVerificationRequestResponse =
       response.status match {
         case CREATED =>
-          CdsLogger.debug("[CreateEmailVerificationRequestHttpReads][read] - Email request sent successfully")
+          logger.debug("Email request sent successfully")
           Right(EmailVerificationRequestSent)
         case CONFLICT =>
-          CdsLogger.debug("[CreateEmailVerificationRequestHttpReads][read] - Email already verified")
+          logger.debug("Email already verified")
           Right(EmailAlreadyVerified)
         case status =>
-          CdsLogger.warn(
-            "[CreateEmailVerificationRequestHttpParser][CreateEmailVerificationRequestHttpReads][read] - " +
-              s"Failed to create email verification. Received status: $status Response body: ${response.body}"
+          logger.warn(
+            s"Failed to create email verification. Received status: $status Response body: ${response.body}"
           )
           Left(EmailVerificationRequestFailure(status, response.body))
       }

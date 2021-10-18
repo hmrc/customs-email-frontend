@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
+import play.api.Logging
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.AmendmentInProgressController
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
@@ -28,7 +29,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector)(implicit ec: ExecutionContext) {
+class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector)
+                                 (implicit ec: ExecutionContext) extends Logging {
   private val referrerKey = "referrer"
   private val emailKey = "email"
 
@@ -38,7 +40,7 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector)(impl
   def fetchEmail(
     internalId: InternalId
   )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailDetails]] = {
-    CdsLogger.info("retrieving email address and timestamp from save 4 later")
+    logger.info("retrieving email address and timestamp from save 4 later")
     save4LaterConnector.get[EmailDetails](internalId.id, emailKey)
   }
 
@@ -46,25 +48,25 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector)(impl
     internalId: InternalId,
     referrerName: ReferrerName
   )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = {
-    CdsLogger.info("saving referrer name and referrer url  from mongo")
+    logger.info("saving referrer name and referrer url  from mongo")
     save4LaterConnector.put[ReferrerName](internalId.id, referrerKey, referrerName)
   }
 
   def fetchReferrer(
     internalId: InternalId
   )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[ReferrerName]] = {
-    CdsLogger.info("retrieving referrer name and referrer  from mongo")
+    logger.info("retrieving referrer name and referrer  from mongo")
     save4LaterConnector.get[ReferrerName](internalId.id, referrerKey)
   }
 
   def remove(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = {
-    CdsLogger.info("removing cached data from  mongo")
+    logger.info("removing cached data from  mongo")
     save4LaterConnector.delete(internalId.id)
   }
 
 }
 
-object Save4LaterService {
+object Save4LaterService extends Logging {
 
   implicit class EmailCacheServiceHelper(save4LaterService: Save4LaterService) {
 
@@ -74,21 +76,20 @@ object Save4LaterService {
     )(implicit hc: HeaderCarrier, executionContext: ExecutionContext) =
       save4LaterService.fetchEmail(internalId).flatMap {
         case Some(data) if data.amendmentInProgress => {
-          CdsLogger.info("email amendment in-progress")
+          logger.info("email amendment in-progress")
           Future.successful(Redirect(AmendmentInProgressController.show()))
         }
         case Some(EmailDetails(_, _, Some(_))) => {
-          CdsLogger.info("email amendment completed")
+          logger.info("email amendment completed")
           save4LaterService.remove(internalId).flatMap(_ => noEmail)
         }
         case Some(details @ EmailDetails(_, _, None)) => {
-          CdsLogger.info("email amendment not determined")
+          logger.info("email amendment not determined")
           redirectBasedOnEmailStatus(details)
         }
-        case _ => {
-          CdsLogger.info("email details not found in the cache")
+        case _ =>
+          logger.info("email details not found in the cache")
           noEmail
-        }
       }
   }
 

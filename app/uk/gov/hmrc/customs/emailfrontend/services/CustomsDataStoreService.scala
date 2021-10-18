@@ -17,10 +17,10 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.joda.time.DateTime
+import play.api.Logging
 import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
-import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -28,18 +28,17 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector)(
-  implicit ec: ExecutionContext
-) {
+class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector)
+                                       (implicit ec: ExecutionContext) extends Logging {
 
   def storeEmail(enrolmentId: EnrolmentIdentifier, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email, timestamp) map { response =>
       response.status match {
         case NO_CONTENT =>
-          CdsLogger.debug("CustomsDataStore: data store request is successful")
+          logger.debug("CustomsDataStore: data store request is successful")
           response
         case _ =>
-          CdsLogger.warn(s"CustomsDataStore: data store request is failed with status ${response.status}")
+          logger.warn(s"CustomsDataStore: data store request is failed with status ${response.status}")
           response
       }
     }

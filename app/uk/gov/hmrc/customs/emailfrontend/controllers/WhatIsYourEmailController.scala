@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
+import play.api.Logging
+
 import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
@@ -45,7 +46,7 @@ class WhatIsYourEmailController @Inject()(
   errorHandler: ErrorHandler,
   appConfig: AppConfig                                         
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show: Action[AnyContent] =
     (actions.auth
@@ -144,7 +145,7 @@ class WhatIsYourEmailController @Inject()(
 
   private def handleNonFatalException()(implicit request: EoriRequest[AnyContent]): PartialFunction[Throwable, Result] = {
     case NonFatal(e) => {
-      CdsLogger.error(s"Subscription display failed with ${e.getMessage}")
+      logger.error(s"Subscription display failed with ${e.getMessage}")
       Redirect(routes.WhatIsYourEmailController.problemWithService())
     }
   }

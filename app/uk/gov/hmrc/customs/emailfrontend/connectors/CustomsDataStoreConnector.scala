@@ -17,11 +17,11 @@
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import org.joda.time.DateTime
+import play.api.Logging
 import play.api.http.HeaderNames.CONTENT_TYPE
 import play.api.http.MimeTypes
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
@@ -29,9 +29,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)(
-  implicit ec: ExecutionContext
-) {
+class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)
+                                         (implicit ec: ExecutionContext) extends Logging {
 
   private[connectors] lazy val url: String = appConfig.customsDataStoreUrl
 
@@ -48,7 +47,7 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
         response
       }.recoverWith {
       case e: Throwable =>
-        CdsLogger.error(s"Call to data stored failed url=$url, exception=$e")
+        logger.error(s"Call to data stored failed url=$url, exception=$e")
         Future.failed(e)
     }
   }

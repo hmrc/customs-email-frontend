@@ -16,21 +16,20 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import javax.inject.Inject
+import play.api.Logging
 import play.mvc.Http.Status._
-import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
-import uk.gov.hmrc.http.{ForbiddenException, _}
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{ForbiddenException, HttpClient, _}
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 
-class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpClient, audit: Auditable) {
+class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpClient, audit: Auditable) extends Logging {
 
   private[connectors] lazy val url: String = appConfig.updateVerifiedEmailUrl
 
@@ -46,11 +45,11 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
       Right(resp)
     } recover {
       case _: BadRequestException | Upstream4xxResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
-      case _: ForbiddenException | Upstream4xxResponse(_, FORBIDDEN, _, _)    => Left(Forbidden)
+      case _: ForbiddenException | Upstream4xxResponse(_, FORBIDDEN, _, _) => Left(Forbidden)
       case _: InternalServerException | Upstream5xxResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
         Left(ServiceUnavailable)
       case NonFatal(e) =>
-        CdsLogger.error(
+        logger.error(
           s"[UpdateVerifiedEmailConnector][updateVerifiedEmail] update-verified-email. url: $url, error: ${e.getMessage}"
         )
         Left(UnhandledException)
@@ -74,6 +73,6 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpCli
           path = url,
           detail = Map("currentEmailAddress" -> emailAddress, "newEmailAddress" -> newEmail, "eori" -> eoriNumber),
           auditType = auditType
-      )
+        )
     )
 }

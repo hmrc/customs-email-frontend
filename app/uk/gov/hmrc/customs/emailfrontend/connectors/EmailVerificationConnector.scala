@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
@@ -24,9 +23,9 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationKeys._
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.EmailVerificationRequestResponse
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.EmailVerificationStateResponse
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
