@@ -60,7 +60,9 @@ class EmailVerificationConnectorSpec
     doNothing()
       .when(mockAuditable)
       .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
-    when(mockAppConfig.emailVerificationWithContext).thenReturn("testUrl")
+    when(mockAppConfig.checkVerifiedEmailUrl).thenReturn("testUrlCheck")
+    when(mockAppConfig.createEmailVerificationRequestUrl).thenReturn("testUrlCreate")
+
     when(mockAppConfig.emailVerificationTemplateId)
       .thenReturn("verifyEmailAddress")
     when(mockAppConfig.emailVerificationLinkExpiryDuration).thenReturn("P3D")
@@ -71,7 +73,7 @@ class EmailVerificationConnectorSpec
       "return an EmailVerified response" in {
         when(
           mockHttpClient.POST[JsObject, EmailVerificationStateResponse](
-            meq("testUrl/verified-email-check"),
+            meq("testUrlCheck"),
             meq(Json.obj("email" -> "email-address")),
             any()
           )(any(), any(), any[HeaderCarrier], any())
@@ -132,7 +134,7 @@ class EmailVerificationConnectorSpec
       "return an EmailVerificationRequestSent" in {
         when(
           mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](
-            meq("testUrl/verification-requests"),
+            meq("testUrlCreate"),
             meq(
               Json.obj(
                 "email" -> "email-address",

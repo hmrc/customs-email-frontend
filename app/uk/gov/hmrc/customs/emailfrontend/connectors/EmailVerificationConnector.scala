@@ -32,14 +32,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfig, auditable: Auditable)
                                           (implicit ec: ExecutionContext) {
 
-  def getEmailVerificationState(
-    emailAddress: String
-  )(implicit hc: HeaderCarrier): Future[EmailVerificationStateResponse] = {
+  def getEmailVerificationState(emailAddress: String)
+                               (implicit hc: HeaderCarrier): Future[EmailVerificationStateResponse] = {
     auditRequest(
-      "customs-update-email-verification-state",
-      "CustomsUpdateEmailVerificationState",
-      emailAddress,
-      appConfig.checkVerifiedEmailUrl
+      transactionName = "customs-update-email-verification-state",
+      auditType = "CustomsUpdateEmailVerificationState",
+      emailAddress = emailAddress,
+      url = appConfig.checkVerifiedEmailUrl
     )
     http.POST[JsObject, EmailVerificationStateResponse](appConfig.checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
   }

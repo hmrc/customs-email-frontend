@@ -70,9 +70,7 @@ class Save4LaterServiceSpec
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(emailKey),
           ArgumentMatchers.eq(emailDetails)
-        )(any[HeaderCarrier],
-          any[Reads[EmailDetails]],
-          any[Writes[EmailDetails]])
+        )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
       val result: Unit = service
@@ -87,8 +85,7 @@ class Save4LaterServiceSpec
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(emailKey))(
           any[HeaderCarrier],
-          any[Reads[EmailDetails]],
-          any[Writes[EmailDetails]]
+          any[Reads[EmailDetails]]
         )
       ).thenReturn(Future.successful(Some(emailDetails)))
 
@@ -104,9 +101,7 @@ class Save4LaterServiceSpec
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(referrerKey),
           ArgumentMatchers.eq(referrerName)
-        )(any[HeaderCarrier],
-          any[Reads[ReferrerName]],
-          any[Writes[ReferrerName]])
+        )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
       val result: Unit = service
@@ -121,8 +116,7 @@ class Save4LaterServiceSpec
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(referrerKey))(
           any[HeaderCarrier],
-          any[Reads[ReferrerName]],
-          any[Writes[ReferrerName]]
+          any[Reads[ReferrerName]]
         )
       ).thenReturn(Future.successful(Some(referrerName)))
 
