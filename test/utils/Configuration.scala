@@ -41,7 +41,7 @@ object Configuration {
 
   lazy val port: Int = forCurrentEnv {
     case QA | DEV => 80
-    case LOCAL    => Option(System.getProperty("port")).fold(9000)(_.toInt)
+    case LOCAL    => Option(System.getProperty("port")).map(_.toInt).getOrElse(9000)
   }
 
   lazy val frontendHost: String = forCurrentEnv {

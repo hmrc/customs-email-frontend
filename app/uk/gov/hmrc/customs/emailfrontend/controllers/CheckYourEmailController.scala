@@ -53,14 +53,14 @@ class CheckYourEmailController @Inject()(actions: Actions,
 
   def submit: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
     save4LaterService.fetchEmail(request.user.internalId).flatMap {
-      _.fold {
+      case Some(emailDetails) =>
+        confirmEmailForm.bindFromRequest.fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail))),
+          formData => locationByAnswer(request.user.internalId, formData, emailDetails, request.eori.id)
+        )
+      case None =>
         logger.warn("emailStatus cache none, user logged out")
         Future.successful(Redirect(SignOutController.signOut()))
-      } { emailDetails =>
-        confirmEmailForm.bindFromRequest.fold(formWithErrors => {
-          Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail)))
-        }, formData => locationByAnswer(request.user.internalId, formData, emailDetails, request.eori.id))
-      }
     }
   }
 

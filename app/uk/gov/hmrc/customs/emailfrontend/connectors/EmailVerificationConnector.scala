@@ -74,23 +74,21 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
   private def auditVerificationRequest(details: EmailDetails, url: String, eoriNumber: String)(
     implicit hc: HeaderCarrier
   ): Unit =
-    details.currentEmail.fold(
-      auditable.sendDataEvent(
-        transactionName = "UpdateVerifiedEmailRequestSubmitted",
-        path = url,
-        detail = Map("newEmailAddress" -> details.newEmail, "eori" -> eoriNumber),
-        auditType = "changeEmailAddressAttempted"
-      )
-    )(
-      emailAddress =>
+    details.currentEmail match {
+      case Some(emailAddress) =>
         auditable.sendDataEvent(
           transactionName = "UpdateVerifiedEmailRequestSubmitted",
           path = url,
           detail =
             Map("currentEmailAddress" -> emailAddress, "newEmailAddress" -> details.newEmail, "eori" -> eoriNumber),
-          auditType = "changeEmailAddressAttempted"
-      )
-    )
+          auditType = "changeEmailAddressAttempted")
+      case None =>
+        auditable.sendDataEvent(
+          transactionName = "UpdateVerifiedEmailRequestSubmitted",
+          path = url,
+          detail = Map("newEmailAddress" -> details.newEmail, "eori" -> eoriNumber),
+          auditType = "changeEmailAddressAttempted")
+    }
 }
 
 object EmailVerificationKeys {

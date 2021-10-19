@@ -17,8 +17,6 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import play.api.Logging
-
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
@@ -31,22 +29,23 @@ import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Sav
 import uk.gov.hmrc.customs.emailfrontend.views.html._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
 class WhatIsYourEmailController @Inject()(
-  actions: Actions,
-  view: change_your_email,
-  whatIsYourEmailView: what_is_your_email,
-  save4LaterService: Save4LaterService,
-  mcc: MessagesControllerComponents,
-  subscriptionDisplayConnector: SubscriptionDisplayConnector,
-  emailVerificationService: EmailVerificationService,
-  errorHandler: ErrorHandler,
-  appConfig: AppConfig                                         
-)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with Logging {
+                                           actions: Actions,
+                                           view: change_your_email,
+                                           whatIsYourEmailView: what_is_your_email,
+                                           save4LaterService: Save4LaterService,
+                                           mcc: MessagesControllerComponents,
+                                           subscriptionDisplayConnector: SubscriptionDisplayConnector,
+                                           emailVerificationService: EmailVerificationService,
+                                           errorHandler: ErrorHandler,
+                                           appConfig: AppConfig
+                                         )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+  extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show: Action[AnyContent] =
     (actions.auth
@@ -59,21 +58,21 @@ class WhatIsYourEmailController @Inject()(
     }
 
   private def redirectBasedOnEmailStatus(
-    details: EmailDetails
-  )(implicit request: EoriRequest[AnyContent]): Future[Result] =
+                                          details: EmailDetails
+                                        )(implicit request: EoriRequest[AnyContent]): Future[Result] =
     emailVerificationService.isEmailVerified(details.newEmail).map {
-      case Some(true)  => Redirect(EmailConfirmedController.show())
+      case Some(true) => Redirect(EmailConfirmedController.show())
       case Some(false) => Redirect(CheckYourEmailController.show())
-      case None        => ??? //ToDo redirect to retry page  Email Service is down or any other errors
+      case None => ??? //ToDo redirect to retry page  Email Service is down or any other errors
     }
 
   def create: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
       details =>
-        details.currentEmail.fold(Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))) {
-          currentEmail =>
-            Future.successful(Ok(view(emailForm, currentEmail, appConfig)))
-      },
+        details.currentEmail match {
+          case Some(currentEmail) => Future.successful(Ok(view(emailForm, currentEmail, appConfig)))
+          case None => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
+        },
       subscriptionDisplay
     )
   }
@@ -108,13 +107,13 @@ class WhatIsYourEmailController @Inject()(
           case SubscriptionDisplayResponse(Some(email), _, _, _) =>
             BadRequest(view(formWithErrors, email, appConfig))
           case _ => Redirect(routes.WhatIsYourEmailController.problemWithService())
-        } recover {
+        }.recover {
           handleNonFatalException()
         }
       },
       formData => {
         subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
-          case SubscriptionDisplayResponse(currentEmail @ Some(_), _, _, _) => {
+          case SubscriptionDisplayResponse(currentEmail@Some(_), _, _, _) => {
             save4LaterService
               .saveEmail(request.user.internalId, EmailDetails(currentEmail, formData.value, None))
               .map { _ =>
@@ -124,7 +123,7 @@ class WhatIsYourEmailController @Inject()(
           case _ =>
             Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
         }
-      } recover {
+      }.recover {
         handleNonFatalException()
       }
     )

@@ -39,12 +39,11 @@ class AmendmentInProgressController @Inject()(actions: Actions,
   def show: Action[AnyContent] =
     (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
       save4LaterService.fetchEmail(request.user.internalId).map {
-        _.fold {
+        case Some(emailDetails) =>
+          Ok(view(emailDetails.newEmail))
+        case None =>
           logger.warn("emailStatus not found")
           Redirect(SignOutController.signOut())
-        } { emailDetails =>
-          Ok(view(emailDetails.newEmail))
-        }
       }
     }
 }
