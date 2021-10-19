@@ -55,7 +55,7 @@ class ServiceNameControllerSpec extends ControllerSpec {
 
     "redirect to problem-with-service page when service name is not found in the url" in withAuthorisedUser() {
       when(
-        mockSave4LaterService.saveReferrer(any(), meq(ReferrerName("", "")))(
+        mockSave4LaterService.saveReferrer(any(), any())(
           any[HeaderCarrier],
           any[ExecutionContext])
       ).thenReturn(Future.successful(unitResponse))

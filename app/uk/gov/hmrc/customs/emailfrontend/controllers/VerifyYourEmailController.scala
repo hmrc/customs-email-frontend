@@ -28,13 +28,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class VerifyYourEmailController @Inject()(
-                                           actions: Actions,
-                                           view: verify_your_email,
-                                           save4LaterService: Save4LaterService,
-                                           mcc: MessagesControllerComponents
-)(implicit override val messagesApi: MessagesApi, ex: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+class VerifyYourEmailController @Inject()(actions: Actions,
+                                          view: verify_your_email,
+                                          save4LaterService: Save4LaterService,
+                                          mcc: MessagesControllerComponents)
+                                         (implicit override val messagesApi: MessagesApi,
+                                          ex: ExecutionContext)
+  extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] =
     (actions.auth

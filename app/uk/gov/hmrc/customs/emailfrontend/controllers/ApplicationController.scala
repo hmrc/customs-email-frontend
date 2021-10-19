@@ -29,7 +29,7 @@ class ApplicationController @Inject()(actions: Actions,
                                       view: start_page,
                                       accessibilityStatementView: accessibility_statement)
                                      (implicit override val messagesApi: MessagesApi)
-    extends I18nSupport {
+  extends I18nSupport {
 
   def show: Action[AnyContent] = (actions.unauthorised) { implicit request =>
     Ok(view())

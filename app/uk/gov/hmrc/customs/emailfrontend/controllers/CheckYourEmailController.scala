@@ -38,7 +38,7 @@ class CheckYourEmailController @Inject()(actions: Actions,
                                          save4LaterService: Save4LaterService,
                                          errorHandler: ErrorHandler)
                                         (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with Logging {
+  extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show: Action[AnyContent] =
     (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>

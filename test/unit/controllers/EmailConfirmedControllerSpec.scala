@@ -69,10 +69,14 @@ class EmailConfirmedControllerSpec
 
   override protected def beforeEach(): Unit = {
     reset(
+      fakeAction,
+      view,
       mockCustomsDataStoreService,
-      mockEmailVerificationService,
       mockSave4LaterService,
+      mockEmailVerificationService,
       mockUpdateVerifiedEmailService,
+      mcc,
+      mockErrorHandler,
       mockDateTimeService
     )
     when(mockDateTimeService.nowUtc()).thenReturn(testDateTime)

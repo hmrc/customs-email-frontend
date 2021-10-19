@@ -10,7 +10,8 @@ object AppDependencies {
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.6.0",
     "uk.gov.hmrc" %% "emailaddress" % "3.5.0",
     "uk.gov.hmrc" %% "play-language" % "4.11.0-play-28",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.3"
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.3",
+    "org.typelevel" %% "cats-core" % "2.3.0"
   )
 
   val test = Seq(

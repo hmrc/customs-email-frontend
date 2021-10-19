@@ -24,8 +24,9 @@ import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 
 @Singleton
 class EmailLanguageController @Inject()(config: Configuration, languageUtils: LanguageUtils, cc: ControllerComponents)
-    extends LanguageController(languageUtils, cc) {
+  extends LanguageController(languageUtils, cc) {
   override protected def fallbackURL: String = "/customs/manage-email-cds"
+
   def langToCall(lang: String): String => Call = EmailLanguageController.routeToSwitchLanguage
 
   override def languageMap: Map[String, Lang] = EmailLanguageController.languageMap

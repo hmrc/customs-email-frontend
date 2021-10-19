@@ -34,36 +34,33 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class WhatIsYourEmailController @Inject()(
-                                           actions: Actions,
-                                           view: change_your_email,
-                                           whatIsYourEmailView: what_is_your_email,
-                                           save4LaterService: Save4LaterService,
-                                           mcc: MessagesControllerComponents,
-                                           subscriptionDisplayConnector: SubscriptionDisplayConnector,
-                                           emailVerificationService: EmailVerificationService,
-                                           errorHandler: ErrorHandler,
-                                           appConfig: AppConfig
-                                         )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+class WhatIsYourEmailController @Inject()(actions: Actions,
+                                          view: change_your_email,
+                                          whatIsYourEmailView: what_is_your_email,
+                                          save4LaterService: Save4LaterService,
+                                          mcc: MessagesControllerComponents,
+                                          subscriptionDisplayConnector: SubscriptionDisplayConnector,
+                                          emailVerificationService: EmailVerificationService,
+                                          errorHandler: ErrorHandler,
+                                          appConfig: AppConfig)
+                                         (implicit override val messagesApi: MessagesApi,
+                                          ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show: Action[AnyContent] =
-    (actions.auth
-      andThen actions.isPermitted
-      andThen actions.isEnrolled).async { implicit request =>
+    (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
       save4LaterService.routeBasedOnAmendment(request.user.internalId)(
         redirectBasedOnEmailStatus,
         Future.successful(Redirect(WhatIsYourEmailController.create()))
       )
     }
 
-  private def redirectBasedOnEmailStatus(
-                                          details: EmailDetails
-                                        )(implicit request: EoriRequest[AnyContent]): Future[Result] =
+  private def redirectBasedOnEmailStatus(details: EmailDetails)
+                                        (implicit request: EoriRequest[AnyContent]): Future[Result] =
     emailVerificationService.isEmailVerified(details.newEmail).map {
       case Some(true) => Redirect(EmailConfirmedController.show())
       case Some(false) => Redirect(CheckYourEmailController.show())
-      case None => ??? //ToDo redirect to retry page  Email Service is down or any other errors
+      case None => InternalServerError(errorHandler.problemWithService())
     }
 
   def create: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
@@ -79,9 +76,9 @@ class WhatIsYourEmailController @Inject()(
 
   private def subscriptionDisplay()(implicit request: EoriRequest[AnyContent]) =
     subscriptionDisplayConnector.subscriptionDisplay(request.eori).flatMap {
-      case SubscriptionDisplayResponse(Some(email), Some(emailVerificationTimeStamp), _, _) =>
+      case SubscriptionDisplayResponse(Some(email), Some(_), _, _) =>
         Future.successful(Ok(view(emailForm, email, appConfig)))
-      case SubscriptionDisplayResponse(Some(email), _, _, _) =>
+      case SubscriptionDisplayResponse(Some(_), _, _, _) =>
         Future.successful(Redirect(WhatIsYourEmailController.verify()))
       case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
         Future.successful(Redirect(WhatIsYourEmailController.verify()))
@@ -89,7 +86,7 @@ class WhatIsYourEmailController @Inject()(
         Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
       case SubscriptionDisplayResponse(None, _, None, None) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify()))
-    } recover {
+    }.recover {
       handleNonFatalException()
     }
 
