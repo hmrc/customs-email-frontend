@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import partials.main_template
+@import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 
-@this(main_template: main_template)
+@this(layout: Layout)
 @()(implicit request: Request[_], messages: Messages)
 
 @sidebarLinks = @{
@@ -34,7 +34,7 @@
     "</div>"
 }
 
-@main_template(messages("customs.emailfrontend.start.title-and-heading"), Some(Html(sidebarLinks)), timeout = false) {
+@layout(Some(messages("customs.emailfrontend.start.title-and-heading"))) {
     <h1 class="heading-xlarge">@messages("customs.emailfrontend.start.title-and-heading")</h1>
 
     <p id="bulletP">@messages("customs.emailfrontend.start.bullet-intro")</p>

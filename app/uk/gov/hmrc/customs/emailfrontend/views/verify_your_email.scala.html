@@ -14,15 +14,21 @@
  * limitations under the License.
  *@
 
-@import partials.main_template
+@import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 @import uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController
 @import uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController
 @import views.html.helper._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(main_template: main_template)
+
+@this(
+        layout: Layout,
+        p: components.p,
+        h1_xl: components.h1_xl
+)
 @(email: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(messages("customs.emailfrontend.verify-email.title")) {
+@layout(Some(messages("customs.emailfrontend.verify-email.title"))) {
 
 
 
@@ -30,11 +36,9 @@
 
         @CSRF.formField
 
-        <h1 class="heading-xlarge">@messages("customs.emailfrontend.verify-email.title")</h1>
-
-        <p id="p1"> @Html(messages("customs.emailfrontend.verify-email.para1", email)) </p>
-
-        <p id="p2"> @Html(messages("customs.emailfrontend.verify-email.para2", WhatIsYourEmailController.show().url)) </p>
+        @h1_xl(messages("customs.emailfrontend.verify-email.title"))
+        @p(Html(messages("customs.emailfrontend.verify-email.para1", email)))
+        @p(Html(messages("customs.emailfrontend.verify-email.para2", WhatIsYourEmailController.show().url)))
 
         <div class="form-group">
             <details>

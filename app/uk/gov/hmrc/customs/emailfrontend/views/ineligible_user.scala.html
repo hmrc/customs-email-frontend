@@ -15,14 +15,14 @@
  *@
 
 @import play.api.i18n.Lang
-@import partials.main_template
+@import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 @import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
 @import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 
-@this(main_template: main_template)
+@this(layout: Layout)
 @(ineligible:Ineligible.Value)(implicit request: Request[_], messages: Messages)
 
-@main_template(messages("customs.emailfrontend.you-cant-use-service.heading")) {
+@layout(Some(messages("customs.emailfrontend.you-cant-use-service.heading"))) {
 
     <h1 class="heading-xlarge">@messages("customs.emailfrontend.you-cant-use-service.heading")</h1>
 

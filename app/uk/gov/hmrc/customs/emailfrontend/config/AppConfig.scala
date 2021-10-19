@@ -28,11 +28,9 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   
   private val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
-  private val assetsUrl = config.get[String]("assets.url")
   private val serviceIdentifier = config.get[String]("microservice.services.contact-frontend.serviceIdentifier")
   lazy val autoCompleteEnabled: Boolean = config.get[Boolean]("autocomplete-enabled")
 
-  val assetsPrefix: String = assetsUrl + config.get[String]("assets.version")
   val analyticsToken: String = config.get[String](s"google-analytics.token")
   val analyticsHost: String = config.get[String](s"google-analytics.host")
 
@@ -88,4 +86,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
     )
   lazy val referrerName: Seq[ReferrerName] =
     config.get[Seq[ReferrerName]]("referrer-services")
+
+  lazy val timeout: Int = config.get[Int]("timeout.timeout")
+  lazy val countdown: Int = config.get[Int]("timeout.countdown")
 }
