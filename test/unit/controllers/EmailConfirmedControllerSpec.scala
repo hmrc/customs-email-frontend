@@ -44,7 +44,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmailConfirmedControllerSpec
-    extends ControllerSpec
+  extends ControllerSpec
     with BeforeAndAfterEach {
 
   private val view = app.injector.instanceOf[email_confirmed]
@@ -69,237 +69,199 @@ class EmailConfirmedControllerSpec
 
   override protected def beforeEach(): Unit = {
     reset(
-      fakeAction,
-      view,
       mockCustomsDataStoreService,
-      mockSave4LaterService,
       mockEmailVerificationService,
+      mockSave4LaterService,
       mockUpdateVerifiedEmailService,
-      mcc,
-      mockErrorHandler,
       mockDateTimeService
     )
     when(mockDateTimeService.nowUtc()).thenReturn(testDateTime)
   }
 
   "EmailConfirmedController" should {
-    "have a status of OK " when {
+    "return OK " when {
       "email found in cache, email is verified and update verified email is successful" in withAuthorisedUser() {
         when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-          .thenReturn(
-            Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
-        when(
-          mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(
-            any[HeaderCarrier]))
+        when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
-        when(
-          mockUpdateVerifiedEmailService
-            .updateVerifiedEmail(meq(None),
-                                 meq("abc@def.com"),
-                                 meq("GB1234567890"),
-                                 meq(testDateTime))(any[HeaderCarrier])
+
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None),
+          meq("abc@def.com"),
+          meq("GB1234567890"),
+          meq(testDateTime))(any[HeaderCarrier])
         ).thenReturn(Future.successful(Some(true)))
-        when(
-          mockSave4LaterService.remove(meq(InternalId("internalId")))(any(),
-                                                                      any()))
+
+        when(mockSave4LaterService.remove(meq(InternalId("internalId")))(any(), any())).thenReturn(Future.successful(()))
+
+        when(mockSave4LaterService.saveEmail(meq(InternalId("internalId")), any[EmailDetails])(any()))
           .thenReturn(Future.successful(()))
 
-        when(
-          mockSave4LaterService.saveEmail(meq(InternalId("internalId")),
-                                          any[EmailDetails])(any()))
-          .thenReturn(Future.successful(()))
-        when(
-          mockSave4LaterService
-            .fetchReferrer(meq(InternalId("internalId")))(any(), any()))
+        when(mockSave4LaterService.fetchReferrer(meq(InternalId("internalId")))(any(), any()))
           .thenReturn(Future.successful(Some(ReferrerName("abc", "/xyz"))))
-        when(
-          mockCustomsDataStoreService
-            .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
-                        meq("abc@def.com"),
-                        meq(testDateTime))(any[HeaderCarrier])
-        ).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+        when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(HttpResponse(OK, "")))
 
         val eventualResult = controller.show(request)
         status(eventualResult) shouldBe OK
       }
 
+    }
+
+    "return REDIRECT to confirm email page" when {
+      "email found in cache but email is not verified" in withAuthorisedUser() {
+        when(mockSave4LaterService.fetchEmail(any())(any(), any()))
+          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+
+        when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+        when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
+
+        val eventualResult = controller.show(request)
+        status(eventualResult) shouldBe SEE_OTHER
+
+        redirectLocation(eventualResult).value should endWith("/manage-email-cds/confirm-email-address")
+      }
+
+      "when email found in cache but isEmailVerified failed" in withAuthorisedUser() {
+        when(mockSave4LaterService.fetchEmail(any())(any(), any()))
+          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(HttpResponse(OK, "")))
+        when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(None))
+
+        val eventualResult = controller.show(request)
+        status(eventualResult) shouldBe SEE_OTHER
+
+        redirectLocation(eventualResult).value should endWith("/manage-email-cds/confirm-email-address")
+      }
+
+    }
+
+    "return REDIRECT to sign-out page" when {
+      "email not found in cache" in withAuthorisedUser() {
+        when(mockSave4LaterService.fetchEmail(any())(any(), any()))
+          .thenReturn(Future.successful(None))
+
+        val eventualResult = controller.show(request)
+
+        status(eventualResult) shouldBe SEE_OTHER
+        redirectLocation(eventualResult).value should endWith("/manage-email-cds/signout")
+      }
+
+    }
+
+    "return REDIRECT to cannot change email page" when {
+      "user retries the same request(user click back on successful request or refreshes the browser)" in withAuthorisedUser() {
+        when(mockSave4LaterService.fetchEmail(any())(any(), any()))
+          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
+
+        val eventualResult = controller.show(request)
+        status(eventualResult) shouldBe SEE_OTHER
+        redirectLocation(eventualResult).value should endWith("/manage-email-cds/cannot-change-email")
+      }
+    }
+
+    "return REDIRECT to problem page" when {
       "email found in cache, email is verified and update verified email is successful but saving timestamp fails" in withAuthorisedUser() {
         when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-          .thenReturn(
-            Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-        when(
-          mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(
-            any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+
+        when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
-        when(
-          mockUpdateVerifiedEmailService
-            .updateVerifiedEmail(meq(None),
-                                 meq("abc@def.com"),
-                                 meq("GB1234567890"),
-                                 meq(testDateTime))(any[HeaderCarrier])
-        ).thenReturn(Future.successful(Some(true)))
-        when(
-          mockSave4LaterService
-            .saveEmail(meq(InternalId("internalId")),
-                       meq(EmailDetails(None, "abc@def.com", None)))(any())
-        ).thenReturn(Future.failed(new InternalServerException("")))
+
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None), meq("abc@def.com"), meq("GB1234567890"), meq(testDateTime))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(true)))
+
+        when(mockSave4LaterService.saveEmail(meq(InternalId("internalId")), any())(any()))
+          .thenReturn(Future.failed(new InternalServerException("")))
+
         when(mockSave4LaterService.fetchReferrer(any())(any(), any()))
           .thenReturn(Future.successful(Some(ReferrerName("abc", "/xyz"))))
-        when(
-          mockCustomsDataStoreService
-            .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
-                        meq("abc@def.com"),
-                        meq(testDateTime))(any[HeaderCarrier])
-        ).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+        when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")), meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+        when(mockErrorHandler.problemWithService()(any()))
+          .thenReturn(Html("Sorry, there is a problem with the service"))
 
         val eventualResult = controller.show(request)
-        status(eventualResult) shouldBe OK
+        status(eventualResult) shouldBe SEE_OTHER
+        redirectLocation(eventualResult).value should endWith("/problem-with-this-service")
+      }
 
-        verify(mockCustomsDataStoreService, times(1))
-          .storeEmail(any(), any(), any())(any[HeaderCarrier])
+      "save email is failed with Error 400 or 500" in withAuthorisedUser() {
+        when(mockSave4LaterService.fetchEmail(any())(any(), any()))
+          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+
+        when(mockEmailVerificationService.isEmailVerified(any())(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(true)))
+
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None), meq("abc@def.com"), meq("GB1234567890"), meq(testDateTime))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(None))
+
+        when(mockErrorHandler.problemWithService()(any()))
+          .thenReturn(Html("Sorry, there is a problem with the service"))
+
+        val eventualResult = controller.show(request)
+        status(eventualResult) shouldBe SEE_OTHER
+        redirectLocation(eventualResult).value should endWith("/problem-with-this-service")
+      }
+
+      "save email returns 200 with no form bundle id param" in withAuthorisedUser() {
+        when(mockSave4LaterService.fetchEmail(any())(any(), any()))
+          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+
+        when(mockEmailVerificationService.isEmailVerified(any())(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(true)))
+
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None), meq("abc@def.com"), meq("GB1234567890"), meq(testDateTime))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(false)))
+
+        when(mockErrorHandler.problemWithService()(any()))
+          .thenReturn(Html("Sorry, there is a problem with the service"))
+
+        val eventualResult = controller.show(request)
+        status(eventualResult) shouldBe SEE_OTHER
+        redirectLocation(eventualResult).value should endWith(
+          "/problem-with-this-service")
       }
     }
 
-    "have a status of SEE_OTHER when email found in cache but email is not verified" in withAuthorisedUser() {
-      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(
-          Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-      when(
-        mockCustomsDataStoreService
-          .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
-                      meq("abc@def.com"),
-                      meq(testDateTime))(any[HeaderCarrier])
-      ).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(
-        mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(
-          any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(false)))
+    "return REDIRECT to ineligible" when {
+      "user has no enrolments" in withAuthorisedUserWithoutEnrolments {
+        val eventualResult = controller.show(request)
+        status(eventualResult) shouldBe SEE_OTHER
 
-      val eventualResult = controller.show(request)
-      status(eventualResult) shouldBe SEE_OTHER
+        redirectLocation(eventualResult).value should endWith(
+          "/manage-email-cds/ineligible/no-enrolment")
 
-      redirectLocation(eventualResult).value should endWith(
-        "/manage-email-cds/confirm-email-address")
-    }
+        verify(mockCustomsDataStoreService, times(0))
+          .storeEmail(any(), any(), any())(any[HeaderCarrier])
+        verify(mockEmailVerificationService, times(0))
+          .isEmailVerified(any())(any[HeaderCarrier])
+        verify(mockSave4LaterService, times(0))
+          .fetchEmail(any())(any[HeaderCarrier], any[ExecutionContext])
+        verify(mockUpdateVerifiedEmailService, times(0))
+          .updateVerifiedEmail(any(), any(), any(), any())(any[HeaderCarrier])
+      }
 
-    "have a status of SEE_OTHER when email found in cache but isEmailVerified failed" in withAuthorisedUser() {
-      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(
-          Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-      when(
-        mockCustomsDataStoreService
-          .storeEmail(meq(EnrolmentIdentifier("EORINumber", "GB1234567890")),
-                      meq("abc@def.com"),
-                      meq(testDateTime))(any[HeaderCarrier])
-      ).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(
-        mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(
-          any[HeaderCarrier]))
-        .thenReturn(Future.successful(None))
+      "redirect to 'there is a problem with the service' page" in withAuthorisedUser() {
+        when(mockErrorHandler.problemWithService()(any()))
+          .thenReturn(Html("Sorry, there is a problem with the service"))
 
-      val eventualResult = controller.show(request)
-      status(eventualResult) shouldBe SEE_OTHER
+        val request: Request[AnyContentAsFormUrlEncoded] =
+          requestWithForm("email" -> "")
+        val eventualResult = controller.problemWithService()(request)
 
-      redirectLocation(eventualResult).value should endWith(
-        "/manage-email-cds/confirm-email-address")
-    }
-
-    "have a status of SEE_OTHER for show method when email not found in cache" in withAuthorisedUser() {
-      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(Future.successful(None))
-
-      val eventualResult = controller.show(request)
-
-      status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith(
-        "/manage-email-cds/signout")
-    }
-
-    "have a status of SEE_OTHER for show method user retry's the same request(user click back on successful request or refreshes the browser)" in withAuthorisedUser() {
-      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(Future.successful(
-          Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
-      val eventualResult = controller.show(request)
-      status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith(
-        "/manage-email-cds/cannot-change-email")
-    }
-
-    "show 'there is a problem with the service page' when save email is failed with Error 400 or 500" in withAuthorisedUser() {
-      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(
-          Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-      when(
-        mockEmailVerificationService.isEmailVerified(any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(true)))
-      when(
-        mockUpdateVerifiedEmailService
-          .updateVerifiedEmail(meq(None),
-                               meq("abc@def.com"),
-                               meq("GB1234567890"),
-                               meq(testDateTime))(any[HeaderCarrier])
-      ).thenReturn(Future.successful(None))
-      when(mockErrorHandler.problemWithService()(any()))
-        .thenReturn(Html("Sorry, there is a problem with the service"))
-
-      val eventualResult = controller.show(request)
-      status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith(
-        "/problem-with-this-service")
-    }
-
-    "show 'there is a problem with the service page' when save email returns 200 with no form bundle id param" in withAuthorisedUser() {
-      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
-        .thenReturn(
-          Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-      when(
-        mockEmailVerificationService.isEmailVerified(any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(true)))
-      when(
-        mockUpdateVerifiedEmailService
-          .updateVerifiedEmail(meq(None),
-                               meq("abc@def.com"),
-                               meq("GB1234567890"),
-                               meq(testDateTime))(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Some(false)))
-      when(mockErrorHandler.problemWithService()(any()))
-        .thenReturn(Html("Sorry, there is a problem with the service"))
-
-      val eventualResult = controller.show(request)
-      status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith(
-        "/problem-with-this-service")
-    }
-
-    "have a status of OK for user with no enrolments" in withAuthorisedUserWithoutEnrolments {
-      val eventualResult = controller.show(request)
-      status(eventualResult) shouldBe SEE_OTHER
-
-      redirectLocation(eventualResult).value should endWith(
-        "/manage-email-cds/ineligible/no-enrolment")
-
-      verify(mockCustomsDataStoreService, times(0))
-        .storeEmail(any(), any(), any())(any[HeaderCarrier])
-      verify(mockEmailVerificationService, times(0))
-        .isEmailVerified(any())(any[HeaderCarrier])
-      verify(mockSave4LaterService, times(0))
-        .fetchEmail(any())(any[HeaderCarrier], any[ExecutionContext])
-      verify(mockUpdateVerifiedEmailService, times(0))
-        .updateVerifiedEmail(any(), any(), any(), any())(any[HeaderCarrier])
-    }
-
-    "redirect to 'there is a problem with the service' page" in withAuthorisedUser() {
-      when(mockErrorHandler.problemWithService()(any()))
-        .thenReturn(Html("Sorry, there is a problem with the service"))
-
-      val request: Request[AnyContentAsFormUrlEncoded] =
-        requestWithForm("email" -> "")
-      val eventualResult = controller.problemWithService()(request)
-
-      status(eventualResult) shouldBe BAD_REQUEST
-      contentAsString(eventualResult).contains(
-        "Sorry, there is a problem with the service") shouldBe true
+        status(eventualResult) shouldBe BAD_REQUEST
+        contentAsString(eventualResult).contains(
+          "Sorry, there is a problem with the service") shouldBe true
+      }
     }
   }
+
 }

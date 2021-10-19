@@ -65,13 +65,13 @@ class EmailConfirmedController @Inject()(actions: Actions,
       .updateVerifiedEmail(details.currentEmail, details.newEmail, request.eori.id, timestamp)
       .flatMap {
         case Some(true) =>
-          for {
+          (for {
             _ <- save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(timestamp)))
             _ <- customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), details.newEmail, timestamp)
             maybeReferrerName <- save4LaterService.fetchReferrer(request.user.internalId)
           } yield {
             Ok(view(details.newEmail, details.currentEmail, maybeReferrerName.map(_.name), maybeReferrerName.map(_.continueUrl)))
-          }
+          }).recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService())}
 
         case _ =>
           Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))

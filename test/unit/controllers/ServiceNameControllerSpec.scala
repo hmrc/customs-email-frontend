@@ -42,7 +42,7 @@ class ServiceNameControllerSpec extends ControllerSpec {
       when(
         mockSave4LaterService.saveReferrer(
           meq(InternalId("internalId")),
-          meq(ReferrerName("customs-finance", "/finance"))
+          meq(ReferrerName("customs-finance", "/customs/payment-records"))
         )(any[HeaderCarrier], any[ExecutionContext])
       ).thenReturn(Future.successful(unitResponse))
 
