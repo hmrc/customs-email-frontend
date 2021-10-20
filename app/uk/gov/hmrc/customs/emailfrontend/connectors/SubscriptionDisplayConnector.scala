@@ -30,8 +30,8 @@ import scala.concurrent.Future
 @Singleton
 class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig, http: HttpClient, auditable: Auditable) {
 
-  def subscriptionDisplay(eori: Eori)(implicit hc: HeaderCarrier): Future[SubscriptionDisplayResponse] = {
-    val request = ("EORI" -> eori.id) :: buildQueryParams
+  def subscriptionDisplay(eori: String)(implicit hc: HeaderCarrier): Future[SubscriptionDisplayResponse] = {
+    val request = ("EORI" -> eori) :: buildQueryParams
 
     http.GET[SubscriptionDisplayResponse](appConfig.subscriptionDisplayUrl, request).map { displayResponse =>
       auditResponse(

@@ -16,19 +16,18 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import javax.inject.Inject
+import cats.data.OptionT.{fromOption, liftF}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController
+import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import cats.data.OptionT.{fromOption, liftF}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ServiceNameController @Inject()(actions: Actions,
+class ServiceNameController @Inject()(identify: IdentifierAction,
                                       appConfig: AppConfig,
                                       save4LaterService: Save4LaterService,
                                       mcc: MessagesControllerComponents)
@@ -37,14 +36,14 @@ class ServiceNameController @Inject()(actions: Actions,
   extends FrontendController(mcc) with I18nSupport {
 
   def show(name: String): Action[AnyContent] =
-    (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
+    identify.async { implicit request =>
       (for {
         referrerName <- fromOption[Future](appConfig.referrerName.find(_.name == name))
         _ <- liftF(save4LaterService.saveReferrer(request.user.internalId, referrerName))
       }
       yield {
-        Redirect(WhatIsYourEmailController.show())
-      }).getOrElse(Redirect(WhatIsYourEmailController.show()))
+        Redirect(routes.WhatIsYourEmailController.show())
+      }).getOrElse(Redirect(routes.WhatIsYourEmailController.show()))
     }
 }
 

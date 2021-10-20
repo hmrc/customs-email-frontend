@@ -31,7 +31,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   "ApplicationController" should {
     "allow  the user to access the start page" in {
-      val result = controller.show(request)
+      val result = controller.start(request)
       status(result) shouldBe OK
     }
 

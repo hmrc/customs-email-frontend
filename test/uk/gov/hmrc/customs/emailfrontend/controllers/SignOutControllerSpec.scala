@@ -40,7 +40,7 @@ class SignOutControllerSpec extends ControllerSpec {
         app.injector.instanceOf[accessibility_statement]
       val startPageController =
         new ApplicationController(fakeAction, view, accessibilityStatement)
-      val result = startPageController.show(request)
+      val result = startPageController.start(request)
       session(result) shouldBe Session.emptyCookie
     }
   }

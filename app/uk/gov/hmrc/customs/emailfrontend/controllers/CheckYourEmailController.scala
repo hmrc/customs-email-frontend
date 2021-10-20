@@ -20,8 +20,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{EmailConfirmedController, SignOutController, VerifyYourEmailController, WhatIsYourEmailController}
+import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
@@ -31,7 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourEmailController @Inject()(actions: Actions,
+class CheckYourEmailController @Inject()(identify: IdentifierAction,
                                          view: check_your_email,
                                          emailVerificationService: EmailVerificationService,
                                          mcc: MessagesControllerComponents,
@@ -41,52 +40,48 @@ class CheckYourEmailController @Inject()(actions: Actions,
   extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show: Action[AnyContent] =
-    (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
+    identify.async { implicit request =>
       save4LaterService.routeBasedOnAmendment(request.user.internalId)(
-        redirectWithEmail,
-        Future.successful(Redirect(SignOutController.signOut()))
+        details => Future.successful(Ok(view(confirmEmailForm, details.newEmail))),
+        noEmail = Future.successful(Redirect(routes.SignOutController.signOut()))
       )
     }
 
-  private def redirectWithEmail(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] =
-    Future.successful(Ok(view(confirmEmailForm, details.newEmail)))
-
-  def submit: Action[AnyContent] = (actions.auth andThen actions.isEnrolled).async { implicit request =>
+  def submit: Action[AnyContent] = identify.async { implicit request =>
     save4LaterService.fetchEmail(request.user.internalId).flatMap {
       case Some(emailDetails) =>
         confirmEmailForm.bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail))),
-          formData => locationByAnswer(request.user.internalId, formData, emailDetails, request.eori.id)
+          formData => handleYesNo(request.user.internalId, formData, emailDetails, request.user.eori)
         )
       case None =>
         logger.warn("emailStatus cache none, user logged out")
-        Future.successful(Redirect(SignOutController.signOut()))
+        Future.successful(Redirect(routes.SignOutController.signOut()))
     }
   }
 
-  private def submitNewDetails(internalId: InternalId, details: EmailDetails, eori: String)(
-    implicit request: Request[AnyContent]
-  ): Future[Result] =
-    emailVerificationService.createEmailVerificationRequest(details, EmailConfirmedController.show().url, eori).flatMap {
-      case Some(true) => Future.successful(Redirect(VerifyYourEmailController.show()))
+  private def callEmailVerificationService(internalId: InternalId, details: EmailDetails, eori: String)
+                                          (implicit request: Request[AnyContent]): Future[Result] =
+    emailVerificationService.createEmailVerificationRequest(details, routes.EmailConfirmedController.show().url, eori).flatMap {
+      case Some(true) => Future.successful(Redirect(routes.VerifyYourEmailController.show()))
       case Some(false) =>
         save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
-          Redirect(EmailConfirmedController.show())
+          Redirect(routes.EmailConfirmedController.show())
         }
       case None => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService()))
     }
 
-  private def locationByAnswer(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)(
-    implicit request: Request[AnyContent]
-  ): Future[Result] = confirmEmail.isYes match {
-    case Some(true) => submitNewDetails(internalId, details, eori)
-    case _ =>
-      save4LaterService
-        .remove(internalId)
-        .flatMap(_ => Future.successful(Redirect(WhatIsYourEmailController.create())))
-  }
+  private def handleYesNo(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)
+                         (implicit request: Request[AnyContent]): Future[Result] =
+    confirmEmail.isYes match {
+      case Some(true) => callEmailVerificationService(internalId, details, eori)
+      case _ =>
+        save4LaterService
+          .remove(internalId)
+          .flatMap(_ => Future.successful(Redirect(routes.WhatIsYourEmailController.create())))
+    }
 
-  def problemWithService(): Action[AnyContent] = actions.auth.async { implicit request =>
+  def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
     Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

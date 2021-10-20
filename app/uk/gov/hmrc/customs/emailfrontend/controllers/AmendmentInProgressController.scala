@@ -17,33 +17,30 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import play.api.Logging
-
-import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
+import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.views.html.amendment_in_progress
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AmendmentInProgressController @Inject()(actions: Actions,
+class AmendmentInProgressController @Inject()(identify: IdentifierAction,
                                               view: amendment_in_progress,
                                               save4LaterService: Save4LaterService,
                                               mcc: MessagesControllerComponents)
                                              (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with Logging {
 
-  def show: Action[AnyContent] =
-    (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
+  def show: Action[AnyContent] = identify.async { implicit request =>
       save4LaterService.fetchEmail(request.user.internalId).map {
         case Some(emailDetails) =>
           Ok(view(emailDetails.newEmail))
         case None =>
           logger.warn("emailStatus not found")
-          Redirect(SignOutController.signOut())
+          Redirect(routes.SignOutController.signOut())
       }
     }
 }

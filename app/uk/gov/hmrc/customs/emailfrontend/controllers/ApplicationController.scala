@@ -16,30 +16,29 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results.Ok
 import play.api.mvc._
-import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
-import uk.gov.hmrc.customs.emailfrontend.views.html.accessibility_statement
+import uk.gov.hmrc.customs.emailfrontend.views.html.{accessibility_statement, start_page}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ApplicationController @Inject()(actions: Actions,
-                                      view: start_page,
-                                      accessibilityStatementView: accessibility_statement)
+class ApplicationController @Inject()(view: start_page,
+                                      accessibilityStatementView: accessibility_statement,
+                                      mcc: MessagesControllerComponents)
                                      (implicit override val messagesApi: MessagesApi)
-  extends I18nSupport {
+  extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = (actions.unauthorised) { implicit request =>
+  def start: Action[AnyContent] = Action { implicit request =>
     Ok(view())
   }
 
-  def accessibilityStatement: Action[AnyContent] = (actions.unauthorised) { implicit request =>
+  def accessibilityStatement: Action[AnyContent] = Action { implicit request =>
     Ok(accessibilityStatementView())
   }
 
-  def keepAlive: Action[AnyContent] = actions.unauthorised { implicit request =>
+  def keepAlive: Action[AnyContent] = Action { implicit request =>
     Ok("Ok")
   }
 }
