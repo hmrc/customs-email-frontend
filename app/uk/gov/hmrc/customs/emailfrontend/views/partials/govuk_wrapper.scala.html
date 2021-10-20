@@ -26,6 +26,8 @@
 @import uk.gov.hmrc.customs.emailfrontend.controllers.EmailLanguageController._
 @import play.api.i18n.Lang
 @import uk.gov.hmrc.customs.emailfrontend.controllers.routes.ApplicationController
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablink.NewTabLink
 
 @this(header_nav: HeaderNav,
       head: Head,
@@ -37,7 +39,8 @@
       reportAProblemLink: ReportAProblemLink,
       hmrcGovUkTemplate: GovUkTemplate,
       appConfig: AppConfig,
-      trackingConsentSnippet: TrackingConsentSnippet)
+      trackingConsentSnippet: TrackingConsentSnippet,
+      hmrcNewTabLink: HmrcNewTabLink)
 
 @(title: String,
   mainClass: Option[String] = None,
@@ -100,10 +103,16 @@
 
 @footerTop = {}
 @accessibilityStatementLink = {
-<li>
-    <a href="https://www.tax.service.gov.uk/accessibility-statement/manage-email-cds" target="_blank">@messages("footer.accessibility")</a>
-</li>
+@hmrcNewTabLink(
+    NewTabLink(
+        language = Some(messages.lang.toString),
+        classList = Some("govuk-link"),
+        href= Some("https://www.tax.service.gov.uk/accessibility-statement/manage-email-cds"),
+        text = messages("footer.accessibility")
+    )
+)
 }
+
 
 @footerLinks = {
     @footer_links(additionalLinks = Some(accessibilityStatementLink))
