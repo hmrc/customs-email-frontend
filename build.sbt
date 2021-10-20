@@ -28,7 +28,11 @@ lazy val microservice = Project(appName, file("."))
       compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
       "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
     ),
-    routesImport ++= Seq("uk.gov.hmrc.customs.emailfrontend.model.Ineligible")
+    routesImport ++= Seq("uk.gov.hmrc.customs.emailfrontend.model.Ineligible"),
+    TwirlKeys.templateImports ++= Seq(
+      "play.twirl.api.HtmlFormat",
+      "controllers.routes._"
+    ),
 //    routesImport ++= (uk.gov.hmrc.customs.emailfrontend.model.Ineligible.Value)
     // ***************
   )

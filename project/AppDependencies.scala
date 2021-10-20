@@ -24,4 +24,5 @@ object AppDependencies {
     "org.mockito" % "mockito-core" % "3.7.7" % "test, it",
     "com.github.tomakehurst" % "wiremock-jre8" % "2.27.2" % "test, it"
   )
+
 }
