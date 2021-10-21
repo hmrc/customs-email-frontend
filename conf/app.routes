@@ -32,3 +32,4 @@ GET         /cannot-change-email                                      uk.gov.hmr
 GET         /language/:lang                                           uk.gov.hmrc.customs.emailfrontend.controllers.EmailLanguageController.switchToLanguage(lang: String)
 
 GET         /accessibility-statement                                  uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController.accessibilityStatement()
+GET         /test                                                     uk.gov.hmrc.customs.emailfrontend.controllers.Testing.test()

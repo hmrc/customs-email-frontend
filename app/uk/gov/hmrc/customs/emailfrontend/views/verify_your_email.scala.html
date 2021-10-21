@@ -36,11 +36,11 @@
         @p(Html(messages("customs.emailfrontend.verify-email.para2", uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.show().url)))
 
         <div class="form-group">
-            <details>
-                <summary class="summary" role="button" aria-expanded="true">@messages("customs.emailfrontend.verify-email.progressive-disclosure.heading")</summary>
-                <div class="details__inner panel-indent">
-                    <p id="p3">@Html(messages("customs.emailfrontend.verify-email.progressive-disclosure.content" , uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show().url))</p>
-                </div>
+            <details class="govuk-details govuk-!-margin-bottom-8" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">@messages("customs.emailfrontend.verify-email.progressive-disclosure.heading")</span>
+                </summary>
+                <div class="govuk-details__text">@Html(messages("customs.emailfrontend.verify-email.progressive-disclosure.content", uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show().url))</div>
             </details>
         </div>
     }
