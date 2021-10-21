@@ -51,7 +51,7 @@ elements.args.getOrElse('autocomplete, "").asInstanceOf[String]
         }
         <label for="@elements.field.name" @if(!isLabelH1) {class="form-label-bold"}>
             @if(isLabelH1) {
-            <span class="heading-xlarge">@elements.label</span>
+            <span class="govuk-heading-xl">@elements.label</span>
             }
 
             @if(isLabelH1 && allErrors.nonEmpty) {
