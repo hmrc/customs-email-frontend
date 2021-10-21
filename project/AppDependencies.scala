@@ -18,9 +18,9 @@ object AppDependencies {
     "org.scalatest" %% "scalatest" % "3.0.8" % "test",
     "org.jsoup" % "jsoup" % "1.12.1" % "test",
     "com.typesafe.play" %% "play-test" % current % "test",
-    "org.pegdown" % "pegdown" % "1.6.0" % "test, it",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test, it",
-    "org.mockito" % "mockito-core" % "3.7.7" % "test, it",
-    "com.github.tomakehurst" % "wiremock-jre8" % "2.27.2" % "test, it"
+    "org.pegdown" % "pegdown" % "1.6.0" % "test",
+    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test",
+    "org.mockito" % "mockito-core" % "3.7.7" % "test",
+    "com.github.tomakehurst" % "wiremock-jre8" % "2.27.2" % "test"
   )
 }
