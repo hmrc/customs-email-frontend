@@ -24,17 +24,17 @@
 
 @layout(Some(messages("customs.emailfrontend.you-cant-use-service.heading"))) {
 
-    <h1 class="heading-xlarge">@messages("customs.emailfrontend.you-cant-use-service.heading")</h1>
+    <h1 class="govuk-heading-xl">@messages("customs.emailfrontend.you-cant-use-service.heading")</h1>
 
 @if(ineligible == Ineligible.NoEnrolment){
-    <p id="info1">@messages("customs.emailfrontend.you-cant-use-service-NoEnrolment.hint1")</p>
+    <p id="info1" class="govuk-body">@messages("customs.emailfrontend.you-cant-use-service-NoEnrolment.hint1")</p>
 } else if(ineligible == Ineligible.IsAgent){
-    <p id="info1">@messages("customs.emailfrontend.you-cant-use-service-IsAgent.hint1")</p>
-    <p id="info2">@messages("customs.emailfrontend.you-cant-use-service-IsAgent.hint2")</p>
+    <p id="info1" class="govuk-body">@messages("customs.emailfrontend.you-cant-use-service-IsAgent.hint1")</p>
+    <p id="info2" class="govuk-body">@messages("customs.emailfrontend.you-cant-use-service-IsAgent.hint2")</p>
 } else if(ineligible == Ineligible.NotAdmin){
-    <p id="info1">@messages("customs.emailfrontend.you-cant-use-service-NotAdmin.hint1")</p>
-    <p id="info2">@messages("customs.emailfrontend.you-cant-use-service-NotAdmin.hint2")</p>
+    <p id="info1" class="govuk-body">@messages("customs.emailfrontend.you-cant-use-service-NotAdmin.hint1")</p>
+    <p id="info2" class="govuk-body">@messages("customs.emailfrontend.you-cant-use-service-NotAdmin.hint2")</p>
 }
 
-    <a class="button" href="@SignOutController.signOut.url" role="button">@messages("customs.emailfrontend.sign-out")</a>
+    <a class="govuk-button govuk-!-margin-top-2 govuk-!-margin-bottom-8" href="@SignOutController.signOut.url" role="button">@messages("customs.emailfrontend.sign-out")</a>
 }
