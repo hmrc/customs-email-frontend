@@ -1,3 +1,4 @@
+service.name=Rheoli’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datgan Tollau (CDS)
 customs.emailfrontend.service-name=Rheoli’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datgan Tollau (CDS)
 customs.emailfrontend.continue-button=Yn eich blaen
 customs.emailfrontend.back=Yn ôl
@@ -59,6 +60,7 @@ customs.emailfrontend.phase-banner-beta=BETA
 customs.emailfrontend.phase-banner1=Mae hwn yn wasanaeth newydd – bydd eich
 customs.emailfrontend.phase-banner2=adborth
 customs.emailfrontend.phase-banner3=yn ein helpu i''w wella.
+customs.emailfrontend.timeout.title=Rydych ar fin cael eich allgofnodi
 
 #accessibility statement
 footer.accessibility=Datganiad Hygyrchedd

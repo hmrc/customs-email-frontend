@@ -1,0 +1,89 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this()
+@(content: Html)(implicit request: Request[_], messages: Messages)
+
+<div class="govuk-width-container">
+
+    <main class="govuk-main-wrapper " id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-l">@messages("customs.emailfrontend.start.title-and-heading")</h1>
+
+                <p class="govuk-body">@messages("customs.emailfrontend.start.bullet-intro")</p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>@messages("customs.emailfrontend.start.bullet1")</li>
+                    <li>@messages("customs.emailfrontend.start.bullet2")</li>
+                    <li>@messages("customs.emailfrontend.start.bullet3")</li>
+                </ul>
+
+                <a href="#" role="button" draggable="false" class="govuk-button govuk-!-margin-top-2 govuk-!-margin-bottom-8 govuk-button--start" data-module="govuk-button">
+                    @messages("customs.emailfrontend.start.button")
+                    <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+                        <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+                    </svg></a>
+
+                <h2 class="govuk-heading-m">@messages("customs.emailfrontend.start.before-start")</h2>
+
+                <p class="govuk-body">@messages("customs.emailfrontend.start.before-start.p1")</p>
+
+            </div>
+
+            <div class="govuk-grid-column-one-third">
+
+                    <!-- The Related items component is not part of GOV.UK Frontend but will be styled if used in the Prototype Kit -->
+
+                <aside class="app-related-items" role="complementary">
+                    <h2 class="govuk-heading-m" id="subsection-title">
+                    @messages("customs.emailfrontend.start.related-content")
+                    </h2>
+                    <nav role="navigation" aria-labelledby="subsection-title">
+                        <ul class="govuk-list govuk-!-font-size-16">
+                            <li>
+                                <a class="govuk-link"  id="link1" href='gg-sign-in?details='>
+                                @messages("customs.emailfrontend.start.related-content-link1")
+                                </a>
+                            </li>
+                            <li>
+                                <a class="govuk-link"  id="link2" href='/version20/eori-check-start'>
+                                @messages("customs.emailfrontend.start.related-content-link2")
+                                </a>
+                            </li>
+                            <li>
+                                <a class="govuk-link"  id="link3" href='https://www.gov.uk/government/publications/notice-101-deferring-duty-vat-and-other-charges?_nfpb=true&amp;_pageLabel=pageVAT_ShowContent&amp;id=HMCE_CL_000013&amp;propertyType=document'>
+                                @messages("customs.emailfrontend.start.related-content-link3")
+                                </a>
+                            </li>
+                            <li>
+                                <a class="govuk-link"  id="link14" href='https://www.gov.uk/duty-relief-for-imports-and-exports'>
+                                @messages("customs.emailfrontend.start.related-content-link4")
+                                </a>
+                            </li>
+                            <li>
+                                <a class="govuk-link"  id="link5" href='https://www.gov.uk/trade-tariff'>
+                                @messages("customs.emailfrontend.start.related-content-link5")
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside>
+
+            </div>
+        </div>
+    </main>
+</div>

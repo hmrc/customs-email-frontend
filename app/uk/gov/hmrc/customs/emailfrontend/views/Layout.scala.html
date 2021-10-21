@@ -17,32 +17,37 @@
 @import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Tag, Text}
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukBackLink
+@import uk.gov.hmrc.govukfrontend.views.html.components.TwoThirdsMainContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.phasebanner.PhaseBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcLayout, HmrcReportTechnicalIssueHelper}
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTrackingConsentSnippet
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcTimeoutDialog
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
+
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.customs.emailfrontend.views.html.start_page_layout
 
 @this(appConfig: AppConfig,
-        hmrcLayout: HmrcLayout,
-        govukBackLink: GovukBackLink,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        hmrcTimeoutDialog: HmrcTimeoutDialog
-
+    hmrcLayout: HmrcLayout,
+    govukBackLink: GovukBackLink,
+    twoThirdsMainContent: TwoThirdsMainContent,
+    startPageLayout: start_page_layout,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    hmrcTimeoutDialog: HmrcTimeoutDialog
 )
 
 @(pageTitle: Option[String] = None,
         backLink: Option[String] = None,
         helpAndSupport: Boolean = true,
         deskpro: Boolean = true,
+        startPage: Boolean = false,
         welshToggle: Boolean = true,
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css"/>
 
-    @phaseBannerContent = {
+@phaseBannerContent = {
         @messages("customs.emailfrontend.phase-banner1")
             <a class='govuk-link' href='/contact/beta-feedback-unauthenticated?service=CDS-FIN'>@messages("feedback.link")</a>
         @messages("customs.emailfrontend.phase-banner3")
@@ -57,7 +62,7 @@
 
     @additionalHead = {
         @hmrcTimeoutDialog(TimeoutDialog(
-        title = Some(messages("timeout.title")),
+        title = Some(messages("customs.emailfrontend.timeout.title")),
         timeout = Some(appConfig.timeout),
         countdown = Some(appConfig.countdown),
         keepAliveUrl = Some(request.uri),
@@ -73,14 +78,19 @@
         }
     }
 
-@hmrcLayout(
-    pageTitle = pageTitle,
-    serviceUrl = None,
-    signOutUrl = Some("SignoutController.signOut.url"),
-    nonce = CSPNonce.get,
-    backLinkUrl = backLink,
-    additionalHeadBlock = Some(additionalHead),
-    phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
-    isWelshTranslationAvailable = welshToggle,
-    accessibilityStatementUrl = Some("/manage-email-cds/accessibility-statement")
-)(mainContent)
+
+    @hmrcLayout(
+        pageTitle = pageTitle,
+        serviceUrl = None,
+        signOutUrl = Some("SignoutController.signOut.url"),
+        nonce = CSPNonce.get,
+        backLinkUrl = backLink,
+        additionalHeadBlock = Some(additionalHead),
+        phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
+        isWelshTranslationAvailable = welshToggle,
+        accessibilityStatementUrl = Some("/manage-email-cds/accessibility-statement"),
+        mainContentLayout = Some(startPage match {
+            case true =>  startPageLayout(_)
+            case false => twoThirdsMainContent(_)
+        })
+    )(mainContent)

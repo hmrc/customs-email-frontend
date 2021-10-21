@@ -34,7 +34,7 @@
     "</div>"
 }
 
-@layout(Some(messages("customs.emailfrontend.start.title-and-heading"))) {
+@layout(Some(messages("customs.emailfrontend.start.title-and-heading")), startPage = true) {
     <h1 class="heading-xlarge">@messages("customs.emailfrontend.start.title-and-heading")</h1>
 
     <p id="bulletP">@messages("customs.emailfrontend.start.bullet-intro")</p>
@@ -51,3 +51,4 @@
 
     <a class="button button--get-started" href='change-email-address' role="button">@messages("customs.emailfrontend.start.button")</a>
 }
+    </div>
