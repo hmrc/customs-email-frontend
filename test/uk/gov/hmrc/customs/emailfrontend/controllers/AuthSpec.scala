@@ -37,8 +37,7 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
   private val mockSave4LaterService = mock[Save4LaterService]
   private val mockErrorHandler = mock[ErrorHandler]
   private val mockConfig = mock[AppConfig]
-  private val mockSubscriptionDisplayConnector =
-    mock[SubscriptionDisplayConnector]
+  private val mockSubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
   private val mockEmailVerificationService = mock[EmailVerificationService]
 
   private val controller = new WhatIsYourEmailController(
@@ -60,8 +59,7 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
     "allow a fully authorised user access the page" in withAuthorisedUser() {
       val result = controller.show(request)
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) should contain(
-        "/manage-email-cds/change-email-address/create")
+      redirectLocation(result) should contain("/manage-email-cds/change-email-address/create")
     }
 
     "not allow an authorised user without any enrolments to access the page" in withAuthorisedUserWithoutEnrolments {
@@ -69,7 +67,7 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) should contain(ineligibleUrl)
     }
-
+    // if no internalId present is correct url /no-enrolments?
     "not allow an authorised user without an internal id to access the page" in withAuthorisedUserWithoutInternalId {
       val result = controller.show(request)
       status(result) shouldBe SEE_OTHER
@@ -84,20 +82,11 @@ class AuthSpec extends ControllerSpec with BeforeAndAfterEach {
       )
     }
 
-    "show 'ineligible user - no enrolment' page for an authorised user having no eori" in withAuthorisedUserWithoutEori {
+    "show 'ineligible user - no enrolments' page for an authorised agent with no enrolments" in withAuthorisedAgentWithoutCDSEnrolment {
       val eventualResult = controller.show(request)
 
       status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith(
-        "/manage-email-cds/ineligible/no-enrolment")
-    }
-
-    "show 'ineligible user - agent' page for an authorised agent with no enrolments" in withAuthorisedAgentWithoutCDSEnrolment {
-      val eventualResult = controller.show(request)
-
-      status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith(
-        "/manage-email-cds/ineligible/is-agent")
+      redirectLocation(eventualResult).value should endWith("/manage-email-cds/ineligible/no-enrolment")
     }
   }
 }

@@ -17,17 +17,14 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import play.api.i18n.Lang
-import uk.gov.hmrc.customs.emailfrontend.controllers.{
-  EmailLanguageController,
-  routes
-}
+import uk.gov.hmrc.customs.emailfrontend.controllers.{EmailLanguageController, routes}
 import uk.gov.hmrc.play.language.LanguageUtils
 
 class EmailLanguageControllerSpec extends ControllerSpec {
 
   private val languageUtil = app.injector.instanceOf[LanguageUtils]
 
-  val controller = new EmailLanguageController(config, languageUtil, cc)
+  val controller = new EmailLanguageController(languageUtil, cc)
 
   "Email Language Controller" should {
 
@@ -48,5 +45,4 @@ class EmailLanguageControllerSpec extends ControllerSpec {
       controller.languageMap.get("cymraeg") shouldBe Some(Lang("cy"))
     }
   }
-
 }

@@ -24,7 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
 class IneligibleUserControllerSpec extends ControllerSpec {
 
   private val view = app.injector.instanceOf[ineligible_user]
-  private val controller = new IneligibleUserController(fakeAction, view)
+  private val controller = new IneligibleUserController(view, mcc)
 
   "IneligibleUserController" should {
     "have a status of Unauthorised (401)" in withUnauthorisedUser {

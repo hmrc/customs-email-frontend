@@ -42,7 +42,7 @@ class SubscriptionDisplayConnectorSpec
   private implicit val hc = HeaderCarrier()
 
   private val url = "customs-email-proxy/subscription-display"
-  private val testEori = Eori("GB1234556789")
+  private val testEori = "GB1234556789"
   val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(
     Some("test@test.com"),

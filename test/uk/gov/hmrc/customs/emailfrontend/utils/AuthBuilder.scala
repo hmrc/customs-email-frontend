@@ -48,42 +48,40 @@ trait AuthBuilder {
 
   def resetAuthConnector(): Unit = reset(mockAuthConnector)
 
-  def withAuthorisedUser(
-                          eori: Eori = Eori("GB1234567890"),
-                          userInternalId: Option[String] = internId)(test: => Unit) {
-    val userEnrollments: Enrolments = Enrolments(
-      Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
+  def withAuthorisedUser(eori: Eori = Eori("GB1234567890"), userInternalId: Option[String] = internId)(test: => Unit) {
+    val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
     val ag = Some(Organisation)
     val role = Some(User)
     val retrieval = Retrieve(userEnrollments, userInternalId).add(ag).add(role)
-    when(
-      mockAuthConnector.authorise(
-        any(),
-        meq(allEnrolments and internalId and affinityGroup and credentialRole))(
-        any[HeaderCarrier],
-        any[ExecutionContext]
-      )
-    ).thenReturn(Future.successful(retrieval))
+
+    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))
+    (any[HeaderCarrier], any[ExecutionContext]))
+    .thenReturn(Future.successful(retrieval))
+
     test
   }
 
-  def withAuthorisedIndividualUser(eori: Eori = Eori("GB1234567890"),
-                                   userInternalId: Option[String] = internId)(
-                                    test: => Unit
-                                  ) {
-    val userEnrollments: Enrolments = Enrolments(
-      Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
+  def withAuthorisedUserNoInternalId(eori: Eori = Eori("GB1234567890"))(test: => Unit) {
+    val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
+    val ag = Some(Organisation)
+    val role = Some(User)
+    val retrieval = Retrieve(userEnrollments, None).add(ag).add(role)
+
+    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))
+    (any[HeaderCarrier], any[ExecutionContext]))
+      .thenReturn(Future.successful(retrieval))
+
+    test
+  }
+
+  def withAuthorisedIndividualUser(eori: Eori = Eori("GB1234567890"), userInternalId: Option[String] = internId)(test: => Unit) {
+    val userEnrollments: Enrolments = Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)))
     val ag = Some(Individual)
     val role = Some(User)
     val retrieval = Retrieve(userEnrollments, userInternalId).add(ag).add(role)
-    when(
-      mockAuthConnector.authorise(
-        any(),
-        meq(allEnrolments and internalId and affinityGroup and credentialRole))(
-        any[HeaderCarrier],
-        any[ExecutionContext]
-      )
-    ).thenReturn(Future.successful(retrieval))
+    when(mockAuthConnector.authorise(any(), meq(allEnrolments and internalId and affinityGroup and credentialRole))
+    (any[HeaderCarrier], any[ExecutionContext]))
+    .thenReturn(Future.successful(retrieval))
     test
   }
 
@@ -132,7 +130,7 @@ trait AuthBuilder {
   }
 
   def withAuthorisedUserWithoutInternalId(test: => Unit) {
-    withAuthorisedUser(Eori("ZZ111111111"), None)(test)
+    withAuthorisedUserNoInternalId(Eori("ZZ111111111"), None)(test)
   }
 
   def withUnauthorisedUser(test: => Unit) {

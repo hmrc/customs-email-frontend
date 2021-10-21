@@ -28,29 +28,32 @@ import play.api.{Configuration, Environment, Play}
 import play.utils.OrderPreserving.groupBy
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.controllers.actions.ActionsImpl
+import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
+import uk.gov.hmrc.customs.emailfrontend.controllers.actions.{AuthenticatedIdentifierAction, IdentifierAction}
 import uk.gov.hmrc.customs.emailfrontend.utils.AuthBuilder
+import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
+import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-
 import scala.concurrent.ExecutionContext
 
-trait ControllerSpec
-  extends WordSpec
-    with Matchers
-    with MockitoSugar
-    with GuiceOneAppPerSuite
-    with AuthBuilder
-    with OptionValues {
+trait ControllerSpec extends WordSpec with Matchers with MockitoSugar with GuiceOneAppPerSuite
+  with AuthBuilder with OptionValues {
 
   implicit def materializer: Materializer = Play.materializer
 
   implicit def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  implicit def bodyParser: BodyParser[AnyContent] =
-    app.injector.instanceOf[BodyParser[AnyContent]]
+  implicit def bodyParser: BodyParser[AnyContent] = app.injector.instanceOf[BodyParser[AnyContent]]
 
   val env: Environment = Environment.simple()
+
+  private val view = app.injector.instanceOf[error_template]
+
+  private val customErrorView = app.injector.instanceOf[problem_with_this_service]
+
+  private val parser = app.injector.instanceOf[BodyParsers.Default]
+
+  private val errorHandler = new ErrorHandler(messagesApi, view, customErrorView)
 
   implicit val config: Configuration = Configuration.load(env)
 
@@ -58,26 +61,22 @@ trait ControllerSpec
 
   implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig)
 
-  val request: Request[String] =
-    Request(FakeRequest("GET", "/").withCSRFToken, "")
+  val request: Request[String] = Request(FakeRequest("GET", "/").withCSRFToken, "")
 
-  implicit val cc: ControllerComponents =
-    app.injector.instanceOf[ControllerComponents]
+  implicit val cc: ControllerComponents = app.injector.instanceOf[ControllerComponents]
 
   implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
 
-  implicit val mcc: MessagesControllerComponents =
-    app.injector.instanceOf[MessagesControllerComponents]
+  implicit val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
-  val idsRetrievalResult: Option[AffinityGroup] ~ Option[String] =
-    new ~(Option(AffinityGroup.Organisation), Option("userId"))
+  val idsRetrievalResult: Option[AffinityGroup] ~ Option[String] = new ~(Option(AffinityGroup.Organisation), Option("userId"))
 
-  val fakeAction = new ActionsImpl(mockAuthConnector, config, env, mcc)
+//  val fakeAction = new ActionsImpl(mockAuthConnector, config, env, mcc)
 
-  private def formUrlEncodedBody(data: Seq[(String, String)]) =
-    AnyContentAsFormUrlEncoded(groupBy(data)(_._1))
+  val fakeAction = new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, parser)
 
-  def requestWithForm(
-                       data: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
+  private def formUrlEncodedBody(data: Seq[(String, String)]) = AnyContentAsFormUrlEncoded(groupBy(data)(_._1))
+
+  def requestWithForm(data: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
     Request(FakeRequest("GET", "/").withCSRFToken, formUrlEncodedBody(data))
 }

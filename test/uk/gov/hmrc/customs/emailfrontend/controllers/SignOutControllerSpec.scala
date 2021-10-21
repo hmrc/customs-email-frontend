@@ -23,7 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.{accessibility_statement, st
 
 class SignOutControllerSpec extends ControllerSpec {
 
-  val controller = new SignOutController(fakeAction, appConfig)
+  val controller = new SignOutController(fakeAction, appConfig, mcc)
 
   "SignOut Controller" should {
     "redirect to feedback survey" in withAuthorisedUser() {
@@ -39,7 +39,7 @@ class SignOutControllerSpec extends ControllerSpec {
       val accessibilityStatement =
         app.injector.instanceOf[accessibility_statement]
       val startPageController =
-        new ApplicationController(fakeAction, view, accessibilityStatement)
+        new ApplicationController(view, accessibilityStatement, mcc)
       val result = startPageController.start(request)
       session(result) shouldBe Session.emptyCookie
     }

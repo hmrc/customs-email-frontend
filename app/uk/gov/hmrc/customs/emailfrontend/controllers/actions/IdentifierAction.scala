@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
-import com.google.inject.Inject
+import com.google.inject.{ImplementedBy, Inject}
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.{Configuration, Environment}
@@ -34,6 +34,7 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@ImplementedBy(classOf[AuthenticatedIdentifierAction])
 trait IdentifierAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthConnector,

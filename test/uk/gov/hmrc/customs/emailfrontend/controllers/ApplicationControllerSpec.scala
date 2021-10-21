@@ -24,10 +24,8 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.{accessibility_statement, st
 class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val view = app.injector.instanceOf[start_page]
-  private val accessibilityStatement =
-    app.injector.instanceOf[accessibility_statement]
-  private val controller =
-    new ApplicationController(fakeAction, view, accessibilityStatement)
+  private val accessibilityStatement = app.injector.instanceOf[accessibility_statement]
+  private val controller = new ApplicationController(view, accessibilityStatement, mcc)
 
   "ApplicationController" should {
     "allow  the user to access the start page" in {
