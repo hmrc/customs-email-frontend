@@ -16,25 +16,27 @@
 
 @import play.api.i18n.Lang
 @import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
-@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
 @import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 
-@this(layout: Layout)
+@this(
+        layout: Layout,
+        h1_xl: components.h1_xl,
+        p: components.p,
+        button: components.button
+)
 @(ineligible:Ineligible.Value)(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.you-cant-use-service.heading"))) {
-
-    <h1 class="heading-xlarge">@messages("customs.emailfrontend.you-cant-use-service.heading")</h1>
+    @h1_xl(messages("customs.emailfrontend.you-cant-use-service.heading"))
 
 @if(ineligible == Ineligible.NoEnrolment){
-    <p id="info1">@messages("customs.emailfrontend.you-cant-use-service-NoEnrolment.hint1")</p>
+    @p(Html(messages("customs.emailfrontend.you-cant-use-service-NoEnrolment.hint1")))
 } else if(ineligible == Ineligible.IsAgent){
-    <p id="info1">@messages("customs.emailfrontend.you-cant-use-service-IsAgent.hint1")</p>
-    <p id="info2">@messages("customs.emailfrontend.you-cant-use-service-IsAgent.hint2")</p>
+    @p(Html(messages("customs.emailfrontend.you-cant-use-service-IsAgent.hint1")))
+    @p(Html(messages("customs.emailfrontend.you-cant-use-service-IsAgent.hint2")))
 } else if(ineligible == Ineligible.NotAdmin){
-    <p id="info1">@messages("customs.emailfrontend.you-cant-use-service-NotAdmin.hint1")</p>
-    <p id="info2">@messages("customs.emailfrontend.you-cant-use-service-NotAdmin.hint2")</p>
+    @p(Html(messages("customs.emailfrontend.you-cant-use-service-NotAdmin.hint1")))
+    @p(Html(messages("customs.emailfrontend.you-cant-use-service-NotAdmin.hint2")))
 }
-
-    <a class="button" href="@SignOutController.signOut.url" role="button">@messages("customs.emailfrontend.sign-out")</a>
+    @button(messages("customs.emailfrontend.sign-out"), Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut().url))
 }

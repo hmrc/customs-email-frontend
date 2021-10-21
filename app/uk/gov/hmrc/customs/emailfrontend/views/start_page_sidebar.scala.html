@@ -1,0 +1,18 @@
+@this(
+    h2_m: components.h2_m,
+    link: components.link,
+        ul: components.ul
+)
+
+@()(implicit messages: Messages)
+
+@h2_m(messages("customs.emailfrontend.start.related-content"))
+
+@ul(Seq(
+    link("gg-sign-in?details=", "customs.emailfrontend.start.related-content-link1"),
+    link("/version20/eori-check-start", "customs.emailfrontend.start.related-content-link2"),
+    link("https://www.gov.uk/government/publications/notice-101-deferring-duty-vat-and-other-charges?_nfpb=true&amp;_pageLabel=pageVAT_ShowContent&amp;id=HMCE_CL_000013&amp;propertyType=document",
+         "customs.emailfrontend.start.related-content-link3"),
+    link("https://www.gov.uk/duty-relief-for-imports-and-exports", "customs.emailfrontend.start.related-content-link4"),
+    link("https://www.gov.uk/trade-tariff", "customs.emailfrontend.start.related-content-link5")
+))

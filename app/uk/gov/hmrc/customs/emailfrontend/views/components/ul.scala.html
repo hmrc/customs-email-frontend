@@ -1,0 +1,9 @@
+@this()
+
+@(listItems: Seq[Html], classes: String = "govuk-list")
+
+<ul class="@classes">
+    @listItems.map { item =>
+      <li>@item</li>
+    }
+</ul>

@@ -14,9 +14,31 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.customs.emailfrontend.views.html.start_page_sidebar
 @import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
+@import uk.gov.hmrc.govukfrontend.views.html.components
 
-@this(layout: Layout)
+@this(layout: Layout,
+        start_page_sidebar: start_page_sidebar,
+        ul_bullet: components.ul_bullet,
+        h1_l: components.h1_l,
+        p: components.p,
+        button: components.button,
+        h2_m: components.h2_m
+)
+
 @()(implicit request: Request[_], messages: Messages)
-@layout(None, startPage = true) {<>}
+@layout(None, startPage = true, sideBarContent = Some(start_page_sidebar())) {
+    @h1_l(messages("customs.emailfrontend.start.title-and-heading"))
+    @p(Html(messages("customs.emailfrontend.start.bullet-intro")))
+    @ul_bullet(Seq(
+        Html(messages("customs.emailfrontend.start.bullet1")),
+        Html(messages("customs.emailfrontend.start.bullet2")),
+        Html(messages("customs.emailfrontend.start.bullet3"))
+    ))
+
+    @button("customs.emailfrontend.start.button", href = Some("change-email-address"))
+    @h2_m(messages("customs.emailfrontend.start.before-start"))
+    @p(Html(messages("customs.emailfrontend.start.before-start.p1")))
+}
 

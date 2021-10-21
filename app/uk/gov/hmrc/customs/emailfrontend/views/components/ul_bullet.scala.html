@@ -1,0 +1,9 @@
+@this()
+
+@(listItems: Seq[Html])
+
+<ul class="govuk-list govuk-list--bullet">
+    @listItems.map { item =>
+        <li>@item</li>
+    }
+</ul>

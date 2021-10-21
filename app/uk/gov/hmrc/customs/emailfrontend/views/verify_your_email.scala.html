@@ -29,26 +29,20 @@
 @(email: String)(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.verify-email.title"))) {
-
-
-
-    @helper.form(CheckYourEmailController.submit(), 'novalidate -> "novalidate") {
-
+    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.submit(), 'novalidate -> "novalidate") {
         @CSRF.formField
-
         @h1_xl(messages("customs.emailfrontend.verify-email.title"))
         @p(Html(messages("customs.emailfrontend.verify-email.para1", email)))
-        @p(Html(messages("customs.emailfrontend.verify-email.para2", WhatIsYourEmailController.show().url)))
+        @p(Html(messages("customs.emailfrontend.verify-email.para2", uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.show().url)))
 
         <div class="form-group">
             <details>
                 <summary class="summary" role="button" aria-expanded="true">@messages("customs.emailfrontend.verify-email.progressive-disclosure.heading")</summary>
                 <div class="details__inner panel-indent">
-                    <p id="p3">@Html(messages("customs.emailfrontend.verify-email.progressive-disclosure.content" , CheckYourEmailController.show().url))</p>
+                    <p id="p3">@Html(messages("customs.emailfrontend.verify-email.progressive-disclosure.content" , uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show().url))</p>
                 </div>
             </details>
         </div>
     }
-
 }
 

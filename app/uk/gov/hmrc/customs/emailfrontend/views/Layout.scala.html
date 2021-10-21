@@ -24,15 +24,16 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTrackingConsentSnippet
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcTimeoutDialog
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
+@import uk.gov.hmrc.govukfrontend.views.html.components.TwoThirdsOneThirdMainContent
+
 
 @import views.html.helper.CSPNonce
-@import uk.gov.hmrc.customs.emailfrontend.views.html.start_page_layout
 
 @this(appConfig: AppConfig,
     hmrcLayout: HmrcLayout,
     govukBackLink: GovukBackLink,
     twoThirdsMainContent: TwoThirdsMainContent,
-    startPageLayout: start_page_layout,
+    twoThirdsOneThirdMainContent: TwoThirdsOneThirdMainContent,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcTimeoutDialog: HmrcTimeoutDialog
 )
@@ -43,6 +44,7 @@
         deskpro: Boolean = true,
         startPage: Boolean = false,
         welshToggle: Boolean = true,
+        sideBarContent: Option[Html] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css"/>
@@ -53,21 +55,14 @@
         @messages("customs.emailfrontend.phase-banner3")
     }
 
-    @fullPageTitle = @{
-        pageTitle match {
-            case Some(text) => Some(s"$text - ${messages("service.name")} - GOV.UK")
-            case _ => Some(s"${messages("service.name")} - GOV.UK")
-        }
-    }
-
     @additionalHead = {
         @hmrcTimeoutDialog(TimeoutDialog(
         title = Some(messages("customs.emailfrontend.timeout.title")),
         timeout = Some(appConfig.timeout),
         countdown = Some(appConfig.countdown),
         keepAliveUrl = Some(request.uri),
-        signOutUrl = Some("SignoutController.signOut.url"),
-        timeoutUrl = Some("SignoutController.signOut.url")
+        signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut().url),
+        timeoutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut().url)
     ))
     }
 
@@ -82,15 +77,15 @@
     @hmrcLayout(
         pageTitle = pageTitle,
         serviceUrl = None,
-        signOutUrl = Some("SignoutController.signOut.url"),
+        signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut().url),
         nonce = CSPNonce.get,
         backLinkUrl = backLink,
         additionalHeadBlock = Some(additionalHead),
         phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
         isWelshTranslationAvailable = welshToggle,
         accessibilityStatementUrl = Some("/manage-email-cds/accessibility-statement"),
-        mainContentLayout = Some(startPage match {
-            case true =>  startPageLayout(_)
-            case false => twoThirdsMainContent(_)
+        mainContentLayout = Some(sideBarContent match {
+            case Some(value) => twoThirdsOneThirdMainContent(value)
+            case None => twoThirdsMainContent(_)
         })
     )(mainContent)
