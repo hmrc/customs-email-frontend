@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.controllers
+package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{doNothing, reset, when}
+import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfter
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Writes
 import play.api.test.Helpers._
 import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.customs.emailfrontend.model._
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, MethodNotAllowedException, _}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UpdateVerifiedEmailConnectorSpec
-    extends PlaySpec
-    with ScalaFutures
-    with MockitoSugar
-    with BeforeAndAfter {
+class UpdateVerifiedEmailConnectorSpec extends SpecBase with BeforeAndAfter {
 
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
@@ -47,8 +39,7 @@ class UpdateVerifiedEmailConnectorSpec
 
   private val forbiddenException = new ForbiddenException("testMessage")
   private val badRequestException = new BadRequestException("testMessage")
-  private val internalServerException = new InternalServerException(
-    "testMessage")
+  private val internalServerException = new InternalServerException("testMessage")
   private val unhandledException = new MethodNotAllowedException("testMessage")
 
   private val badRequest =
@@ -59,7 +50,7 @@ class UpdateVerifiedEmailConnectorSpec
                                                           INTERNAL_SERVER_ERROR,
                                                           INTERNAL_SERVER_ERROR)
 
-  val dateTime = DateTime.now()
+  private val dateTime: DateTime = DateTime.now()
   private val requestDetail =
     RequestDetail("idType", "idNumber", "test@email.com", dateTime)
   private val requestCommon = RequestCommon()
@@ -83,9 +74,9 @@ class UpdateVerifiedEmailConnectorSpec
 
   before {
     reset(mockAuditable, mockAppConfig, mockHttpClient)
-    doNothing()
+    doNothing
       .when(mockAuditable)
-      .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
+      .sendDataEvent(any, any, any, any)(any[HeaderCarrier])
     when(mockAppConfig.updateVerifiedEmailUrl)
       .thenReturn("testUrl/update-verified-email")
   }
@@ -108,7 +99,7 @@ class UpdateVerifiedEmailConnectorSpec
       val result = connector
         .updateVerifiedEmail(verifiedEmailRequest, Some("old-email-address"))
         .futureValue
-      result mustBe Right(verifiedEmailResponse)
+      result shouldBe Right(verifiedEmailResponse)
     }
 
     "return Left with Forbidden when call returned NotFoundException" in {
@@ -127,7 +118,7 @@ class UpdateVerifiedEmailConnectorSpec
 
       val result =
         connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
-      result mustBe Left(Forbidden)
+      result shouldBe  Left(Forbidden)
     }
 
     "return Left with Forbidden when call returned Upstream4xxResponse with 403" in {
@@ -146,7 +137,7 @@ class UpdateVerifiedEmailConnectorSpec
 
       val result =
         connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
-      result mustBe Left(Forbidden)
+      result shouldBe Left(Forbidden)
     }
 
     "return Left with BadRequest when call returned BadRequestException" in {
@@ -165,7 +156,7 @@ class UpdateVerifiedEmailConnectorSpec
 
       val result =
         connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
-      result mustBe Left(BadRequest)
+      result shouldBe Left(BadRequest)
     }
 
     "return Left with BadRequest when call returned Upstream4xxResponse with 400" in {
@@ -184,7 +175,7 @@ class UpdateVerifiedEmailConnectorSpec
 
       val result =
         connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
-      result mustBe Left(BadRequest)
+      result shouldBe Left(BadRequest)
     }
 
     "return Left with ServiceUnavailable when call returned ServiceUnavailableException" in {
@@ -203,7 +194,7 @@ class UpdateVerifiedEmailConnectorSpec
 
       val result =
         connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
-      result mustBe Left(ServiceUnavailable)
+      result shouldBe Left(ServiceUnavailable)
     }
 
     "return Left with ServiceUnavailable when call returned Upstream5xxResponse with 500" in {
@@ -222,7 +213,7 @@ class UpdateVerifiedEmailConnectorSpec
 
       val result =
         connector.updateVerifiedEmail(verifiedEmailRequest, None).futureValue
-      result mustBe Left(ServiceUnavailable)
+      result shouldBe Left(ServiceUnavailable)
     }
 
     "return Left with not handled exception" in {
@@ -241,7 +232,7 @@ class UpdateVerifiedEmailConnectorSpec
 
       val result =
         await(connector.updateVerifiedEmail(verifiedEmailRequest, None))
-      result mustBe Left(UnhandledException)
+      result shouldBe Left(UnhandledException)
     }
   }
 }

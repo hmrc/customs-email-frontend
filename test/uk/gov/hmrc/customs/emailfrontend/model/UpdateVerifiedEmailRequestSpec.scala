@@ -16,26 +16,23 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json._
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
-import uk.gov.hmrc.customs.emailfrontend.model._
 
 class UpdateVerifiedEmailRequestSpec extends PlaySpec {
 
-  val requestCommon = RequestCommon()
-  val requestDetail = RequestDetail(
+  private val requestCommon = RequestCommon()
+  private val requestDetail = RequestDetail(
     IDType = "EORI",
     IDNumber = "GBXXXXXXXXXXXX",
     emailAddress = "test@email.com",
     emailVerificationTimestamp = DateTimeUtil.dateTime
   )
-  val updateVerifiedEmailRequest =
-    UpdateVerifiedEmailRequest(requestCommon, requestDetail)
-  val verifiedEmailRequest = VerifiedEmailRequest(
-    updateVerifiedEmailRequest = updateVerifiedEmailRequest)
+  private val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
+  private val verifiedEmailRequest = VerifiedEmailRequest(updateVerifiedEmailRequest = updateVerifiedEmailRequest)
 
   "UpdateVerifiedEmailRequest" should {
     "parse the model to correct json format" in {

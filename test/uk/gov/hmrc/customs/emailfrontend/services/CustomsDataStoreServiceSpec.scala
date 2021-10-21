@@ -17,26 +17,17 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
-import uk.gov.hmrc.customs.emailfrontend.services.CustomsDataStoreService
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CustomsDataStoreServiceSpec
-    extends PlaySpec
-    with MockitoSugar
-    with BeforeAndAfterEach
-    with ScalaFutures {
+class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockConnector = mock[CustomsDataStoreConnector]
 
@@ -44,31 +35,31 @@ class CustomsDataStoreServiceSpec
 
   private val service = new CustomsDataStoreService(mockConnector)
 
-  val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
-  val email = "abc@def.com"
-  val dateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
+  private val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
+  private val email = "abc@def.com"
+  private val dateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
   override protected def beforeEach(): Unit =
     reset(mockConnector)
 
   "Customs Data Store Service" should {
     "return a status OK when data store request is successful" in {
-      when(mockConnector.storeEmailAddress(any(), any(), any())(any()))
+      when(mockConnector.storeEmailAddress(any, any, any)(any))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       service
         .storeEmail(enrolmentIdentifier, email, dateTime)
         .futureValue
-        .status mustBe OK
+        .status shouldBe OK
     }
   }
 
   "return a status BAD_REQUEST when data store request is successful" in {
-    when(mockConnector.storeEmailAddress(any(), any(), any())(any()))
+    when(mockConnector.storeEmailAddress(any, any, any)(any))
       .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
 
     service
       .storeEmail(enrolmentIdentifier, email, dateTime)
       .futureValue
-      .status mustBe BAD_REQUEST
+      .status shouldBe BAD_REQUEST
   }
 }

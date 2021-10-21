@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.controllers
+package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{doNothing, reset, when}
+import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
-import uk.gov.hmrc.customs.emailfrontend.model.{Eori, SubscriptionDisplayResponse}
+import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubscriptionDisplayConnectorSpec
-    extends PlaySpec
-    with ScalaFutures
-    with MockitoSugar
-    with BeforeAndAfterEach {
+class SubscriptionDisplayConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockHttp = mock[HttpClient]
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
-  private implicit val hc = HeaderCarrier()
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val url = "customs-email-proxy/subscription-display"
   private val testEori = "GB1234556789"
@@ -72,12 +64,12 @@ class SubscriptionDisplayConnectorSpec
           any[ExecutionContext]
         )
       ).thenReturn(Future.successful(someSubscriptionDisplayResponse))
-      doNothing()
+      doNothing
         .when(mockAuditable)
-        .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
+        .sendDataEvent(any, any, any, any)(any[HeaderCarrier])
       testConnector
         .subscriptionDisplay(testEori)
-        .futureValue mustBe someSubscriptionDisplayResponse
+        .futureValue shouldBe someSubscriptionDisplayResponse
     }
 
     "successfully send a query request return SubscriptionDisplayResponse with none for a value inside" in {
@@ -90,12 +82,12 @@ class SubscriptionDisplayConnectorSpec
           any[ExecutionContext]
         )
       ).thenReturn(Future.successful(noneSubscriptionDisplayResponse))
-      doNothing()
+      doNothing
         .when(mockAuditable)
-        .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
+        .sendDataEvent(any, any, any, any)(any[HeaderCarrier])
       testConnector
         .subscriptionDisplay(testEori)
-        .futureValue mustBe noneSubscriptionDisplayResponse
+        .futureValue shouldBe noneSubscriptionDisplayResponse
     }
   }
 }

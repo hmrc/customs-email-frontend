@@ -14,48 +14,39 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.controllers
+package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.{eq => meq}
+import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT}
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CustomsDataStoreConnectorSpec
-    extends WordSpec
-    with Matchers
-    with ScalaFutures
-    with MockitoSugar
-    with BeforeAndAfterEach {
+class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockHttp = mock[HttpClient]
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
   private val mockDateTimeService = mock[DateTimeService]
-  private implicit val hc = HeaderCarrier()
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  val testConnector =
-    new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
+  private val testConnector = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
 
-  val url = "/customs-data-store/update-email"
-  val testEori = Eori("GB1234556789")
-  val testEmail = "email@test.com"
-  val testDateTime = new DateTime("2021-01-01T11:11:11.111Z")
-  val requestBody = UpdateEmail(testEori, testEmail, testDateTime)
-  val headers = Seq("Content-Type" -> "application/json")
+  private val url = "/customs-data-store/update-email"
+  private val testEori: Eori = Eori("GB1234556789")
+  private val testEmail = "email@test.com"
+  private val testDateTime = new DateTime("2021-01-01T11:11:11.111Z")
+  private val requestBody: UpdateEmail = UpdateEmail(testEori, testEmail, testDateTime)
+  private val headers = Seq("Content-Type" -> "application/json")
 
   override def beforeEach(): Unit = {
     reset(mockHttp, mockAuditable, mockAppConfig)
@@ -70,11 +61,11 @@ class CustomsDataStoreConnectorSpec
         mockHttp.POST[UpdateEmail, HttpResponse](
           meq(url),
           meq(requestBody),
-          meq(headers))(any(), any(), meq(hc), any[ExecutionContext]))
+          meq(headers))(any, any, meq(hc), any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
-      doNothing()
+      doNothing
         .when(mockAuditable)
-        .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
+        .sendDataEvent(any, any, any, any)(any[HeaderCarrier])
       testConnector
         .storeEmailAddress(testEori, testEmail, testDateTime)
         .futureValue
@@ -86,11 +77,11 @@ class CustomsDataStoreConnectorSpec
         mockHttp.POST[UpdateEmail, HttpResponse](
           meq(url),
           meq(requestBody),
-          meq(headers))(any(), any(), meq(hc), any[ExecutionContext]))
+          meq(headers))(any, any, meq(hc), any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
-      doNothing()
+      doNothing
         .when(mockAuditable)
-        .sendDataEvent(any(), any(), any(), any())(any[HeaderCarrier])
+        .sendDataEvent(any, any, any, any)(any[HeaderCarrier])
       testConnector
         .storeEmailAddress(testEori, testEmail, testDateTime)
         .futureValue

@@ -25,7 +25,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, credentialRole}
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
+import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Ineligible, InternalId, LoggedInUser}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -38,20 +38,22 @@ import scala.concurrent.{ExecutionContext, Future}
 trait IdentifierAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthConnector,
-                                              override val config: Configuration,
+                                              appConfig: AppConfig,
                                               override val env: Environment,
                                               errorHandler: ErrorHandler,
                                               val parser: BodyParsers.Default)
                                              (override implicit val executionContext: ExecutionContext)
   extends IdentifierAction with AuthorisedFunctions with AuthRedirects {
 
+  override val config: Configuration = appConfig.config
+
   private lazy val ggSignInRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(Retrievals.allEnrolments and Retrievals.internalId and affinityGroup and credentialRole) {
-      case allEnrolments ~ Some(internalId) ~ affinityGroup ~ credentialRole => {
+    authorised().retrieve(Retrievals.allEnrolments and Retrievals.internalId and Retrievals.affinityGroup and Retrievals.credentialRole) {
+      case allEnrolments ~ Some(internalId) ~ affinityGroup ~ credentialRole =>
         allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
           case Some(eori) =>
             (affinityGroup, credentialRole) match {
@@ -66,14 +68,15 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
                 Future.successful(InternalServerError(errorHandler.problemWithService()(request)))
             }
 
-          case None =>
+          case _ =>
             Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
         }
-      }
     }
   }.recover {
     case _: NoActiveSession => toGGLogin(continueUrl = ggSignInRedirectUrl)
     case _: InsufficientEnrolments => Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment))
+    case _: Throwable => InternalServerError(errorHandler.problemWithService()(request))
+
   }
 
 }

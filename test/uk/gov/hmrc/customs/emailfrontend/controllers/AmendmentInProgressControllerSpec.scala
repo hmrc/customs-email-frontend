@@ -17,49 +17,58 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq => meq}
+import play.api.Application
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.emailfrontend.controllers.AmendmentInProgressController
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
-import uk.gov.hmrc.customs.emailfrontend.views.html.amendment_in_progress
+import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmendmentInProgressControllerSpec extends ControllerSpec {
-
-  private val view = app.injector.instanceOf[amendment_in_progress]
-  private val mockSave4LaterService = mock[Save4LaterService]
-  private val controller = new AmendmentInProgressController(
-    fakeAction,
-    view,
-    mockSave4LaterService,
-    mcc)
+class AmendmentInProgressControllerSpec extends SpecBase {
 
   "AmendmentInProgressController" should {
-    "have a status of SEE_OTHER when the email status is not found " in withAuthorisedUser() {
-      when(mockSave4LaterService.fetchEmail(any())(any(), any()))
+    "have a status of SEE_OTHER when the email status is not found " in {
+
+      val mockSave4LaterService = mock[Save4LaterService]
+
+      when(mockSave4LaterService.fetchEmail(any)(any, any))
         .thenReturn(Future.successful(None))
 
-      val eventualResult = controller.show(request)
+      val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
 
-      status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith(
-        "/manage-email-cds/signout")
+      running(app) {
+
+        val request = FakeRequest(GET, routes.AmendmentInProgressController.show().url)
+
+        val result = route(app, request).value
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe endWith("/manage-email-cds/signout")
+
+      }
+
     }
 
-    "have a status of OK when email found in cache and verification in progress" in withAuthorisedUser() {
-      when(
-        mockSave4LaterService.fetchEmail(meq(InternalId("internalId")))(
-          any[HeaderCarrier],
-          any[ExecutionContext]))
-        .thenReturn(Future.successful(
-          Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
+    "have a status of OK when email found in cache and verification in progress" in {
+      val mockSave4LaterService = mock[Save4LaterService]
 
-      val eventualResult = controller.show(request)
+      when(mockSave4LaterService.fetchEmail(meq(InternalId("internalId")))(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
 
-      status(eventualResult) shouldBe OK
+      val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
+
+      running(app) {
+
+        val request = FakeRequest(GET, routes.AmendmentInProgressController.show().url)
+
+        val result = route(app, request).value
+        status(result) shouldBe OK
+
+      }
+
     }
   }
 }

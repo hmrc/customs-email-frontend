@@ -17,29 +17,20 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
+import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.BAD_REQUEST
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestResponse, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerificationStateErrorResponse, EmailVerificationStateResponse, EmailVerified}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
-import uk.gov.hmrc.customs.emailfrontend.services.EmailVerificationService
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EmailVerificationServiceSpec
-    extends PlaySpec
-    with ScalaFutures
-    with MockitoSugar
-    with BeforeAndAfterAll
-    with BeforeAndAfterEach {
+class EmailVerificationServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val mockConnector = mock[EmailVerificationConnector]
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
@@ -86,7 +77,7 @@ class EmailVerificationServiceSpec
         val res: Option[Boolean] = {
           service.isEmailVerified(email).futureValue
         }
-        res mustBe Some(true)
+        res shouldBe Some(true)
       }
 
       "the email is not verified" should {
@@ -98,7 +89,7 @@ class EmailVerificationServiceSpec
           val res: Option[Boolean] = {
             service.isEmailVerified(email).futureValue
           }
-          res mustBe Some(false)
+          res shouldBe Some(false)
         }
       }
 
@@ -113,7 +104,7 @@ class EmailVerificationServiceSpec
           val res: Option[Boolean] = {
             service.isEmailVerified(email).futureValue
           }
-          res mustBe None
+          res shouldBe None
         }
       }
     }
@@ -136,7 +127,7 @@ class EmailVerificationServiceSpec
                                             eoriNumber)
             .futureValue
         }
-        res mustBe Some(true)
+        res shouldBe Some(true)
       }
     }
 
@@ -156,7 +147,7 @@ class EmailVerificationServiceSpec
                                             eoriNumber)
             .futureValue
         }
-        res mustBe Some(false)
+        res shouldBe Some(false)
       }
     }
 
@@ -176,7 +167,7 @@ class EmailVerificationServiceSpec
                                             eoriNumber)
             .futureValue
         }
-        res mustBe None
+        res shouldBe None
       }
     }
   }

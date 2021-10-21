@@ -38,7 +38,4 @@ class ApplicationController @Inject()(view: start_page,
     Ok(accessibilityStatementView())
   }
 
-  def keepAlive: Action[AnyContent] = Action { implicit request =>
-    Ok("Ok")
-  }
 }

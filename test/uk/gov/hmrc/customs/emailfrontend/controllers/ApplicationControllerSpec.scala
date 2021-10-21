@@ -16,31 +16,36 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import org.scalatest.BeforeAndAfterEach
+import play.api.Application
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController
-import uk.gov.hmrc.customs.emailfrontend.views.html.{accessibility_statement, start_page}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
-class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
-
-  private val view = app.injector.instanceOf[start_page]
-  private val accessibilityStatement = app.injector.instanceOf[accessibility_statement]
-  private val controller = new ApplicationController(view, accessibilityStatement, mcc)
+class ApplicationControllerSpec extends SpecBase {
 
   "ApplicationController" should {
-    "allow  the user to access the start page" in {
-      val result = controller.start(request)
-      status(result) shouldBe OK
+    "allow  the user to access the start page, without auth" in {
+
+      val app: Application = applicationBuilder(disableAuth = true).build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.ApplicationController.start().url)
+        val result = route(app, request).value
+        status(result) shouldBe OK
+      }
+
     }
 
-    "allow users to refresh their session" in {
-      val result = controller.keepAlive(request)
-      status(result) shouldBe OK
-    }
+    "allow  the user to access the accessibility statement page, without auth" in {
 
-    "allow  the user to access the accessibility statement page" in {
-      val result = controller.accessibilityStatement(request)
-      status(result) shouldBe OK
+      val app: Application = applicationBuilder(disableAuth = true).build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.ApplicationController.accessibilityStatement().url)
+        val result = route(app, request).value
+        status(result) shouldBe OK
+      }
+
     }
   }
 }

@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms
-import uk.gov.hmrc.customs.emailfrontend.model.{Email, YesNo}
 
 class FormsSpec extends PlaySpec {
 

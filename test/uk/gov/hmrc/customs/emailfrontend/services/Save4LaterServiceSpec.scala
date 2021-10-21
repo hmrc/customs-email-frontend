@@ -17,36 +17,27 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Span}
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Reads
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
-import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.{FiniteDuration, _}
 
-class Save4LaterServiceSpec
-    extends PlaySpec
-    with MockitoSugar
-    with BeforeAndAfterEach
-    with ScalaFutures {
+class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val mockSave4LaterConnector = mock[Save4LaterConnector]
   private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private val internalId = InternalId("internalId-123")
   private val timestamp = DateTimeUtil.dateTime
   private val emailDetails =
     EmailDetails(None, "test@test.com", Some(timestamp))
-  private val defaultTimeout: FiniteDuration = 5 seconds
+  private val defaultTimeout: FiniteDuration = 5.seconds
   private val emailKey = "email"
   private val referrerKey = "referrer"
   private val referrerName = ReferrerName("customs-finance", "/xyz")
@@ -72,7 +63,7 @@ class Save4LaterServiceSpec
       val result: Unit = service
         .saveEmail(internalId, emailDetails)
         .futureValue
-      result mustBe (())
+      result shouldBe (()) //TODO - ????
     }
 
     "fetch the emailDetails for the users InternalId" in {
@@ -88,7 +79,7 @@ class Save4LaterServiceSpec
       val result = service
         .fetchEmail(internalId)
         .futureValue
-      result mustBe Some(emailDetails)
+      result shouldBe Some(emailDetails)
     }
 
     "save the referrer against the users InternalId" in {
@@ -103,7 +94,7 @@ class Save4LaterServiceSpec
       val result: Unit = service
         .saveReferrer(internalId, referrerName)
         .futureValue
-      result mustBe (())
+      result shouldBe (())
     }
 
     "fetch the referrer for the users InternalId" in {
@@ -119,7 +110,7 @@ class Save4LaterServiceSpec
       val result = service
         .fetchReferrer(internalId)
         .futureValue
-      result mustBe Some(referrerName)
+      result shouldBe Some(referrerName)
     }
 
     "remove the id" in {
@@ -131,7 +122,7 @@ class Save4LaterServiceSpec
       val result = service
         .remove(internalId)
         .futureValue
-      result mustBe (())
+      result shouldBe ()
     }
 
   }

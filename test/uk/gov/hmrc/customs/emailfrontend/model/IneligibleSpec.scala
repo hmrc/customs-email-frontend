@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.scalatest.{EitherValues, MustMatchers, OptionValues, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.{EitherValues, OptionValues}
 import play.api.mvc.{PathBindable, QueryStringBindable}
-import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 
 class IneligibleSpec
-    extends WordSpec
-    with MustMatchers
+    extends AnyWordSpec
+    with Matchers
     with EitherValues
     with OptionValues {
 

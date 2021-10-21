@@ -17,19 +17,23 @@
 package uk.gov.hmrc.customs.emailfrontend.config
 
 import org.jsoup.Jsoup
-import org.scalatest.concurrent.ScalaFutures
+import play.api.i18n.MessagesApi
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.controllers.ControllerSpec
+import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
 import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
 
-class ErrorHandlerSpec extends ControllerSpec with ScalaFutures {
+class ErrorHandlerSpec extends SpecBase {
+
+  private val app = applicationBuilder[FakeIdentifierAgentAction]().build()
 
   private val view = app.injector.instanceOf[error_template]
   private val customView = app.injector.instanceOf[problem_with_this_service]
+  private val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   private val errorHandler = new ErrorHandler(messagesApi, view, customView)
+  private val request = FakeRequest()
 
   "ErrorHandlerSpec" should {
     "define standardErrorTemplate" in {

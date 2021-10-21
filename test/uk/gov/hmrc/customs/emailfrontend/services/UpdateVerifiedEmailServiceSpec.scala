@@ -17,27 +17,18 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{HttpErrorResponse, ServiceUnavailable, VerifiedEmailRequest, VerifiedEmailResponse}
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
 import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.customs.emailfrontend.services.UpdateVerifiedEmailService
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UpdateVerifiedEmailServiceSpec
-    extends PlaySpec
-    with MockitoSugar
-    with BeforeAndAfterEach
-    with ScalaFutures {
+class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private val mockConnector = mock[UpdateVerifiedEmailConnector]
@@ -86,7 +77,7 @@ class UpdateVerifiedEmailServiceSpec
 
       service
         .updateVerifiedEmail(None, email, eoriNumber, dateTime)
-        .futureValue mustBe Some(true)
+        .futureValue shouldBe Some(true)
     }
 
     "return None when VerifiedEmailResponse returned without bundleId" in {
@@ -95,7 +86,7 @@ class UpdateVerifiedEmailServiceSpec
 
       service
         .updateVerifiedEmail(None, email, eoriNumber, dateTime)
-        .futureValue mustBe Some(false)
+        .futureValue shouldBe Some(false)
     }
 
     "return None when HttpErrorResponse returned" in {
@@ -103,7 +94,7 @@ class UpdateVerifiedEmailServiceSpec
 
       service
         .updateVerifiedEmail(None, email, eoriNumber, dateTime)
-        .futureValue mustBe None
+        .futureValue shouldBe None
     }
   }
 }
