@@ -24,9 +24,11 @@
 
 @layout(Some(messages("customs.emailfrontend.verification-in-progress.title-and-heading"))) {
 
-    <h1 class="heading-xlarge">@messages("customs.emailfrontend.verification-in-progress.title-and-heading")</h1>
+    <h1 class="govuk-heading-l">@messages("customs.emailfrontend.verification-in-progress.title-and-heading")</h1>
 
-    <p id="info">@messages("customs.emailfrontend.verification-in-progress.info", email)</p>
+    <p class="govuk-body" id="info">@messages("customs.emailfrontend.verification-in-progress.info", email)</p>
 
-    <a class="button" href="@SignOutController.signOut.url" role="button">@messages("customs.emailfrontend.sign-out")</a>
+    <a href="routes.SignOutController.signOut.url" role="button" draggable="false" class="govuk-button govuk-!-margin-top-2 govuk-!-margin-bottom-8 govuk-button--start" data-module="govuk-button">
+     @messages("customs.emailfrontend.sign-out")
+    </a>
 }
