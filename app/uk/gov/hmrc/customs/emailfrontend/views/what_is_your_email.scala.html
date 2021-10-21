@@ -23,7 +23,8 @@
 @this(layout: Layout,
         input_text: components.input_text,
         button: components.button,
-        errorSummary: components.errorSummary
+        errorSummary: components.errorSummary,
+        h1_xl: components.h1_xl
 )
 
 @(emailForm: Form[Email])(implicit request: Request[_], messages: Messages)
@@ -32,7 +33,8 @@
     @errorSummary(emailForm)
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.verifySubmit(),'id -> "emailForm", 'novalidate -> "novalidate") {
         @CSRF.formField
-        @input_text(emailForm("email"), messages("customs.emailfrontend.change-your-email.label"))
+        @h1_xl(messages("customs.emailfrontend.what-is-your-email.label"))
+        @input_text(emailForm("email"), "")
         @button(messages("customs.emailfrontend.continue-button"))
     }
 }

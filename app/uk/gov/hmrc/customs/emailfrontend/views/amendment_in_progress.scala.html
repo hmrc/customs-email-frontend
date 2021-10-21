@@ -25,7 +25,7 @@
 @(email: String)(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.verification-in-progress.title-and-heading"))) {
-    @h1_xl(messages("customs.emailfrontend.verification-in-progress.title-and-heading")))
+    @h1_xl(messages("customs.emailfrontend.verification-in-progress.title-and-heading"))
     @p(Html(messages("customs.emailfrontend.verification-in-progress.info", email)))
     @button("customs.emailfrontend.sign-out", href = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut().url))
 }

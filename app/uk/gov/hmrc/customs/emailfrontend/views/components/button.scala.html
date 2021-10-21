@@ -18,8 +18,8 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 
-@this(govukButton: GovukButton)
+@this(govukButton: GovukButton, p: p)
 
 @(msg: String, href: Option[String] = None)(implicit messages: Messages)
 
-@govukButton(Button(content = Text(messages(msg)), href = href))
+@p{@govukButton(Button(content = Text(messages(msg)), href = href))}
