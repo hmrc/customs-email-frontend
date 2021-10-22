@@ -39,7 +39,9 @@ class ErrorHandlerSpec extends ControllerSpec with ScalaFutures {
       val doc = Jsoup.parse(contentAsString(result))
       doc.title shouldBe "title"
       doc.body.getElementsByTag("h1").text shouldBe "heading"
-      doc.body.getElementById("main-content").text shouldBe "message"
+      doc.body
+        .getElementById("main-content")
+        .text shouldBe "heading message Is this page not working properly? (opens in new tab)"
     }
 
     "have custom error view to show 'problem with the service' page" in {

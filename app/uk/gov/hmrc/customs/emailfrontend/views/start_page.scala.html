@@ -14,40 +14,31 @@
  * limitations under the License.
  *@
 
-@import partials.main_template
+@import uk.gov.hmrc.customs.emailfrontend.views.html.start_page_sidebar
+@import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
+@import uk.gov.hmrc.govukfrontend.views.html.components
 
-@this(main_template: main_template)
+@this(layout: Layout,
+        start_page_sidebar: start_page_sidebar,
+        ul_bullet: components.ul_bullet,
+        h1_l: components.h1_l,
+        p: components.p,
+        button: components.button,
+        h2_m: components.h2_m
+)
+
 @()(implicit request: Request[_], messages: Messages)
+@layout(None, startPage = true, sideBarContent = Some(start_page_sidebar())) {
+    @h1_l(messages("customs.emailfrontend.start.title-and-heading"))
+    @p(Html(messages("customs.emailfrontend.start.bullet-intro")))
+    @ul_bullet(Seq(
+        Html(messages("customs.emailfrontend.start.bullet1")),
+        Html(messages("customs.emailfrontend.start.bullet2")),
+        Html(messages("customs.emailfrontend.start.bullet3"))
+    ))
 
-@sidebarLinks = @{
-    "<div class='govuk-related-items'>" +
-    "   <h2 class='heading-medium' id='subsection-title'>" + messages("customs.emailfrontend.start.related-content") + "</h2>" +
-    "   <nav role='navigation' aria-labelledby='subsection-title'>" +
-    "       <ul>" +
-    "            <li class='font-xsmall'><a id='link1' href='gg-sign-in?details='>" + messages("customs.emailfrontend.start.related-content-link1") +"</a></li>" +
-    "            <li class='font-xsmall'><a id='link2' href='/version20/eori-check-start'>" + messages("customs.emailfrontend.start.related-content-link2") + "</a></li>" +
-    "            <li class='font-xsmall'><a id='link3' href='https://www.gov.uk/government/publications/notice-101-deferring-duty-vat-and-other-charges?_nfpb=true&amp;_pageLabel=pageVAT_ShowContent&amp;id=HMCE_CL_000013&amp;propertyType=document'>" + messages("customs.emailfrontend.start.related-content-link3") + "</a></li>" +
-    "            <li class='font-xsmall'><a id='link4' href='https://www.gov.uk/duty-relief-for-imports-and-exports'>" + messages("customs.emailfrontend.start.related-content-link4") + "</a></li>" +
-    "            <li class='font-xsmall'><a id='link5' href='https://www.gov.uk/trade-tariff'>" + messages("customs.emailfrontend.start.related-content-link5") + "</a></li>" +
-    "       </ul>" +
-    "   </nav>" +
-    "</div>"
+    @button("customs.emailfrontend.start.button", href = Some("change-email-address"))
+    @h2_m(messages("customs.emailfrontend.start.before-start"))
+    @p(Html(messages("customs.emailfrontend.start.before-start.p1")))
 }
 
-@main_template(messages("customs.emailfrontend.start.title-and-heading"), Some(Html(sidebarLinks)), timeout = false) {
-    <h1 class="heading-xlarge">@messages("customs.emailfrontend.start.title-and-heading")</h1>
-
-    <p id="bulletP">@messages("customs.emailfrontend.start.bullet-intro")</p>
-
-    <ul class="bullets">
-     <li id="b1">@messages("customs.emailfrontend.start.bullet1")</li>
-     <li id="b2">@messages("customs.emailfrontend.start.bullet2")</li>
-     <li id="b3">@messages("customs.emailfrontend.start.bullet3")</li>
-    </ul>
-
-    <h2 class="heading-medium" id="start-before">@messages("customs.emailfrontend.start.before-start")</h2>
-
-    <p id="beforeStart">@messages("customs.emailfrontend.start.before-start.p1")</p>
-
-    <a class="button button--get-started" href='change-email-address' role="button">@messages("customs.emailfrontend.start.button")</a>
-}

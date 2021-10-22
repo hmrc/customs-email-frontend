@@ -16,8 +16,17 @@
 
 package acceptance.specs
 
-import acceptance.wiremockstub.{StubAuthClient, StubEmailVerification, StubSave4Later, StubSubscriptionDisplay}
-import common.pages.{ChangeYourEmailAddressPage, StartPage, YouCannotChangeYourEmailAddressPage}
+import acceptance.wiremockstub.{
+  StubAuthClient,
+  StubEmailVerification,
+  StubSave4Later,
+  StubSubscriptionDisplay
+}
+import common.pages.{
+  ChangeYourEmailAddressPage,
+  StartPage,
+  YouCannotChangeYourEmailAddressPage
+}
 import utils.SpecHelper
 
 class AmendmentInProgressSpec
@@ -33,7 +42,8 @@ class AmendmentInProgressSpec
     lazy val randomInternalId = generateRandomNumberString()
     lazy val randomEoriNumber = "GB" + generateRandomNumberString()
 
-    scenario("User returning to the service within 2 hours after successfully amending the email") {
+    scenario(
+      "User returning to the service within 2 hours after successfully amending the email") {
 
       Given("the user has successfully amended the email")
       authenticate(randomInternalId, randomEoriNumber)
@@ -45,11 +55,13 @@ class AmendmentInProgressSpec
       verifyCurrentPage(StartPage)
       clickOn(StartPage.startNowButton)
 
-      Then("the user should be redirected to 'You cannot change your email address' page")
+      Then(
+        "the user should be redirected to 'You cannot change your email address' page")
       verifyCurrentPage(YouCannotChangeYourEmailAddressPage)
     }
 
-    scenario("User returning to the service after 2 hours of successfully amending the email") {
+    scenario(
+      "User returning to the service after 2 hours of successfully amending the email") {
 
       Given("the user has successfully amended the email")
       authenticate(randomInternalId, randomEoriNumber)

@@ -14,28 +14,35 @@
  * limitations under the License.
  *@
 
-@import play.api.i18n.Lang
-@import partials.main_template
-@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController
+@import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
+@import uk.gov.hmrc.govukfrontend.views.html.components
 
-
-@this(main_template: main_template)
+@this(
+        layout: Layout,
+        h1_xl: components.h1_xl,
+        p: components.p,
+        button: components.button
+)
 @(newEmail: String, prevEmail: Option[String], referrerName: Option[String], referrerUrl: Option[String])(implicit request: Request[_], messages: Messages)
 
-@main_template(messages("customs.emailfrontend.email-confirmed.title-and-heading")) {
+@layout(Some(messages("customs.emailfrontend.email-confirmed.title-and-heading"))) {
 
-    <h1 class="heading-xlarge">@messages("customs.emailfrontend.email-confirmed.title-and-heading")</h1>
-
-    <p id="info1">@Html(messages("customs.emailfrontend.email-confirmed.info1", newEmail))</p>
+    @h1_xl(messages("customs.emailfrontend.email-confirmed.title-and-heading"))
+    @p(Html(messages("customs.emailfrontend.email-confirmed.info1", newEmail)))
 
     @if(referrerUrl.nonEmpty){
         @referrerName.map{ name =>
             @referrerUrl.map{ url =>
-                <p id="info3">@Html(messages(s"customs.emailfrontend.email-confirmed.redirect.info.$name", url))</p>
+                @p(Html(messages(s"customs.emailfrontend.email-confirmed.redirect.info.$name", url)))
             }
         }
     } else {
-        @prevEmail.map{email => <p id="info2">@Html(messages("customs.emailfrontend.email-confirmed.info2", email))</p>}
-        <a class="button" href="@SignOutController.signOut.url" role="button">@messages("customs.emailfrontend.sign-out")</a>
+            @prevEmail.map{email =>
+                @p(Html(messages("customs.emailfrontend.email-confirmed.info2", email)))
+            }
+            @button(
+                messages("customs.emailfrontend.sign-out"),
+                href = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut().url)
+            )
     }
 }
