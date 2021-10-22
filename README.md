@@ -67,5 +67,5 @@ Where `:service-name` equals your service 'name' value defined in application.co
 So for example for ***customs-finance***  the url would be `http://localhost:9898/manage-email-cds/service/customs-finance`
 
 ### License
-
+ 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
