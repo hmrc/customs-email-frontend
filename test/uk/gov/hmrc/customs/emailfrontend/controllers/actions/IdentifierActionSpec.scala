@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IdentifierActionSpec extends SpecBase {
 
-  //TODO - add extra test - no agents / individual?
+  //TODO - no agents / individual?
 
   class Harness(authAction: IdentifierAction) {
     def onPageLoad(): Action[AnyContent] = authAction { _ => Results.Ok }
@@ -79,6 +79,42 @@ class IdentifierActionSpec extends SpecBase {
 
       when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any))
         .thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ Some(User)))
+
+      private val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+      private val controller = new Harness(authAction)
+
+      running(app) {
+        val result = controller.onPageLoad()(FakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.NoEnrolment).url
+      }
+    }
+
+    "redirect the user to ineligible (no-enrolment) when has no credential role" in new Setup {
+      private val mockAuthConnector = mock[AuthConnector]
+
+      private val enrolments = Set(Enrolment("someKey", Seq(EnrolmentIdentifier("someKey", "someValue")), "ACTIVE"))
+
+      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any))
+        .thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ None))
+
+      private val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+      private val controller = new Harness(authAction)
+
+      running(app) {
+        val result = controller.onPageLoad()(FakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.NoEnrolment).url
+      }
+    }
+
+    "redirect the user to ineligible (no-enrolment) when has no affinity group" in new Setup {
+      private val mockAuthConnector = mock[AuthConnector]
+
+      private val enrolments = Set(Enrolment("someKey", Seq(EnrolmentIdentifier("someKey", "someValue")), "ACTIVE"))
+
+      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any))
+        .thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ None ~ Some(User)))
 
       private val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
       private val controller = new Harness(authAction)
