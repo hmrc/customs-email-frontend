@@ -46,5 +46,5 @@ object EmailVerificationRequestHttpParser extends Logging {
 
   object EmailVerificationRequestSent extends EmailVerificationRequestSuccess
 
-  case class EmailVerificationRequestFailure(status: Int, body: String)
+  case class EmailVerificationRequestFailure(status: Int, body: String) extends EmailVerificationRequestSuccess
 }

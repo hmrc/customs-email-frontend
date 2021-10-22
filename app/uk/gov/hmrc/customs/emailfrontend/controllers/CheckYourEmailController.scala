@@ -20,6 +20,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestSent, EmailVerificationRequestSuccess}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
@@ -63,8 +64,8 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
   private def callEmailVerificationService(internalId: InternalId, details: EmailDetails, eori: String)
                                           (implicit request: Request[AnyContent]): Future[Result] =
     emailVerificationService.createEmailVerificationRequest(details, routes.EmailConfirmedController.show().url, eori).flatMap {
-      case Some(true) => Future.successful(Redirect(routes.VerifyYourEmailController.show()))
-      case Some(false) =>
+      case Some(EmailVerificationRequestSent) => Future.successful(Redirect(routes.VerifyYourEmailController.show()))
+      case Some(EmailAlreadyVerified) =>
         save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
           Redirect(routes.EmailConfirmedController.show())
         }

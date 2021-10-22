@@ -18,9 +18,9 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq}
-import play.api.Application
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
@@ -30,15 +30,22 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AmendmentInProgressControllerSpec extends SpecBase {
 
-  "AmendmentInProgressController" should {
-    "have a status of SEE_OTHER when the email status is not found " in {
+  trait Setup {
 
-      val mockSave4LaterService = mock[Save4LaterService]
+    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
+    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+      .overrides(
+        inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
+      )
+      .build()
+
+  }
+
+  "AmendmentInProgressController" should {
+    "have a status of SEE_OTHER when the email status is not found " in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any, any))
         .thenReturn(Future.successful(None))
-
-      val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
 
       running(app) {
 
@@ -46,19 +53,16 @@ class AmendmentInProgressControllerSpec extends SpecBase {
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe endWith("/manage-email-cds/signout")
+        redirectLocation(result).value shouldBe "/manage-email-cds/signout"
 
       }
 
     }
 
-    "have a status of OK when email found in cache and verification in progress" in {
-      val mockSave4LaterService = mock[Save4LaterService]
+    "have a status of OK when email found in cache and verification in progress" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(meq(InternalId("internalId")))(any[HeaderCarrier], any[ExecutionContext]))
+      when(mockSave4LaterService.fetchEmail(any)(any, any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
-
-      val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
 
       running(app) {
 
@@ -66,6 +70,7 @@ class AmendmentInProgressControllerSpec extends SpecBase {
 
         val result = route(app, request).value
         status(result) shouldBe OK
+        //TODO - check has view
 
       }
 
