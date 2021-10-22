@@ -21,7 +21,7 @@ import play.api.{Application, Environment}
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
+import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
@@ -90,10 +90,10 @@ class IdentifierActionSpec extends SpecBase {
       }
     }
 
-    "redirect the user to ineligible (no-enrolment) when has no credential role" in new Setup {
+    "redirect the user (Organisation affinity group) to ineligible (not-admin) when has no credential role" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
 
-      private val enrolments = Set(Enrolment("someKey", Seq(EnrolmentIdentifier("someKey", "someValue")), "ACTIVE"))
+      private val enrolments = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
 
       when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any))
         .thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ None))
@@ -104,14 +104,32 @@ class IdentifierActionSpec extends SpecBase {
       running(app) {
         val result = controller.onPageLoad()(FakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.NoEnrolment).url
+        redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.NotAdmin).url
+      }
+    }
+
+    "redirect the user (Agent affinity group) to ineligible (is-agent) when has no credential role" in new Setup {
+      private val mockAuthConnector = mock[AuthConnector]
+
+      private val enrolments = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
+
+      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any))
+        .thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Agent) ~ None))
+
+      private val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+      private val controller = new Harness(authAction)
+
+      running(app) {
+        val result = controller.onPageLoad()(FakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.IsAgent).url
       }
     }
 
     "redirect the user to ineligible (no-enrolment) when has no affinity group" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
 
-      private val enrolments = Set(Enrolment("someKey", Seq(EnrolmentIdentifier("someKey", "someValue")), "ACTIVE"))
+      private val enrolments = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
 
       when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any))
         .thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ None ~ Some(User)))

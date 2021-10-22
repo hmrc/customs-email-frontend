@@ -65,7 +65,7 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
               case (Some(Agent), _) =>
                 Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.IsAgent)))
               case _ =>
-                Future.successful(InternalServerError(errorHandler.problemWithService()(request)))
+                Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
             }
 
           case _ =>
