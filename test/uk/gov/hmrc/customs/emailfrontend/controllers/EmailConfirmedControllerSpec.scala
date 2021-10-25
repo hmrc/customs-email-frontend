@@ -34,13 +34,9 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq}
-import org.mockito.Mockito.lenient
-import org.scalatest.BeforeAndAfterEach
-import play.api.{Application, inject}
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import play.twirl.api.Html
+import play.api.{Application, inject}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
@@ -49,7 +45,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecB
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class EmailConfirmedControllerSpec extends SpecBase {
 
