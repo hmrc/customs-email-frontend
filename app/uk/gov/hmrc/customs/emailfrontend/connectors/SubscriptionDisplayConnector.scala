@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
+import java.util.UUID
+
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.model.{Eori, SubscriptionDisplayResponse}
+import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HttpClient, _}
-
-import java.util.UUID
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

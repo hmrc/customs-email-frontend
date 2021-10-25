@@ -23,7 +23,6 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, credentialRole}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
@@ -31,7 +30,6 @@ import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Ineligible
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[AuthenticatedIdentifierAction])
@@ -78,9 +76,4 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
     case _: Throwable => InternalServerError(errorHandler.problemWithService()(request))
 
   }
-
 }
-
-
-
-

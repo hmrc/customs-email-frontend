@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole, EnrolmentIdentifier}
 
 case class LoggedInUser(internalId: InternalId,
                         affinityGroup: Option[AffinityGroup],

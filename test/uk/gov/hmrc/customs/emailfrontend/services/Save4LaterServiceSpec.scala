@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.mockito.ArgumentMatchers
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Span}
 import play.api.libs.json.Reads
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
@@ -26,7 +25,6 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.{FiniteDuration, _}
