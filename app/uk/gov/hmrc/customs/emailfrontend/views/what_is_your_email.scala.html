@@ -33,8 +33,11 @@
     @errorSummary(emailForm)
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.verifySubmit(),'id -> "emailForm", 'novalidate -> "novalidate") {
         @CSRF.formField
-        @h1_xl(messages("customs.emailfrontend.what-is-your-email.label"))
-        @input_text(emailForm("email"), "")
+        @h1_xl(messages("customs.emailfrontend.what-is-your-email.label", Some("email-label")))
+        <label class="govuk-label" for="email" aria-label="email"/>
+        <div class="govuk-form-group">
+            <input class="govuk-input" id="email" name="email" type="text" aria-labelledby="email">
+        </div>
         @button(messages("customs.emailfrontend.continue-button"))
     }
 }
