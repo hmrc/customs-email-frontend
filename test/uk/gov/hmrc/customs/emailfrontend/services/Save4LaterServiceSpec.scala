@@ -123,7 +123,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
       val result: Unit = service
         .remove(internalId)
         .futureValue
-      result shouldBe Unit
+      result shouldBe (())
     }
 
   }
