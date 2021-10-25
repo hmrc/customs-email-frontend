@@ -18,6 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.mockito.ArgumentMatchers
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Span}
 import play.api.libs.json.Reads
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
@@ -119,10 +120,10 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
           any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
 
-      val result = service
+      val result: Unit = service
         .remove(internalId)
         .futureValue
-      result shouldBe ()
+      result shouldBe Unit
     }
 
   }

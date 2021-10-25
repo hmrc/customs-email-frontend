@@ -17,53 +17,66 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.joda.time.DateTime
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
-import uk.gov.hmrc.customs.emailfrontend.views.html.verify_your_email
-
+import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import scala.concurrent.Future
 
-class VerifyYourEmailControllerSpec extends ControllerSpec {
+class VerifyYourEmailControllerSpec extends SpecBase {
 
-  private val view = app.injector.instanceOf[verify_your_email]
-  private val mockSave4LaterService = mock[Save4LaterService]
-
-  private val controller =
-    new VerifyYourEmailController(fakeAction, view, mockSave4LaterService, mcc)
+  trait Setup {
+    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
+    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+      .overrides(inject.bind[Save4LaterService].toInstance(mockSave4LaterService))
+      .build()
+  }
 
   "VerifyYourEmailController" should {
-    "redirect to sign out page when no email found in cache" in withAuthorisedUser() {
+    "redirect to sign out page when no email found in cache" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any, any))
         .thenReturn(Future.successful(None))
 
-      val eventualResult = controller.show(request)
+      running(app) {
 
-      status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith(
-        "/manage-email-cds/signout")
+        val request = FakeRequest(GET, routes.VerifyYourEmailController.show().url)
+
+        val result = route(app, request).value
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe "/manage-email-cds/signout"
+      }
     }
 
-    "return status OK when email found in cache" in withAuthorisedUser() {
+    "return status OK when email found in cache" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any, any))
-        .thenReturn(
-          Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
-      val eventualResult = controller.show(request)
+      running(app) {
 
-      status(eventualResult) shouldBe OK
+        val request = FakeRequest(GET, routes.VerifyYourEmailController.show().url)
+
+        val result = route(app, request).value
+        status(result) shouldBe OK
+        contentAsString(result) must include("abc@def.com")
+      }
     }
 
-    "have a status of SEE_OTHER when user clicks browser back on the successful request or uses already complete bookmarked request within 2 hours" in withAuthorisedUser() {
+    "have a status of SEE_OTHER when user clicks browser back on the successful request or uses already complete bookmarked request within 2 hours" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any, any))
-        .thenReturn(Future.successful(
-          Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
 
-      val eventualResult = controller.show(request)
+      running(app) {
 
-      status(eventualResult) shouldBe SEE_OTHER
-      redirectLocation(eventualResult).value should endWith(
-        "/manage-email-cds/cannot-change-email")
+        val request = FakeRequest(GET, routes.VerifyYourEmailController.show().url)
+
+        val result = route(app, request).value
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show().url
+
+      }
     }
   }
 }
