@@ -18,7 +18,7 @@ lazy val microservice = Project(appName, file("."))
       "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.controllers\\.actions\\.ActionsImpl*",
       "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.views\\.html\\.partials\\.main_template*",
       "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.views\\.html\\.helpers*",
-      ".*(BuildInfo|Routes|TestOnly).*").mkString(";")
+      ".*(BuildInfo|Routes|TestOnly).*").mkString(";"),
     ScoverageKeys.coverageMinimumStmtTotal := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
