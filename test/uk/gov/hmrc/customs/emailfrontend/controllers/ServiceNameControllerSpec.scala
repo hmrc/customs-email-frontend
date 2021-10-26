@@ -17,16 +17,14 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.mockito.ArgumentMatchers.{eq => meq}
-import play.api.{Application, inject}
-import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
-import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
+import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.model.{InternalId, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class ServiceNameControllerSpec extends SpecBase {
 
@@ -40,7 +38,7 @@ class ServiceNameControllerSpec extends SpecBase {
   "ServiceNameController" should {
     "redirect to chance-email-address page and store the referred service name in the cache when parameter found in the url" in new Setup {
 
-      when(mockSave4LaterService.saveReferrer(meq(InternalId("fakeInternalId")), meq(ReferrerName("customs-finance", "/customs/payment-records")))(any[HeaderCarrier], any[ExecutionContext]))
+      when(mockSave4LaterService.saveReferrer(meq(InternalId("fakeInternalId")), meq(ReferrerName("customs-finance", "/customs/payment-records")))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Unit))
 
       running(app) {

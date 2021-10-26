@@ -16,13 +16,11 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import play.api.{Application, inject}
+import play.api.Application
 import play.api.mvc.Session
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{accessibility_statement, start_page}
 
 class SignOutControllerSpec extends SpecBase {
 

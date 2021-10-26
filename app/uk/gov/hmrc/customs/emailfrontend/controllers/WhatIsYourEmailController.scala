@@ -85,6 +85,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
         Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
       case SubscriptionDisplayResponse(None, _, None, None) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify()))
+      case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
     }.recover {
       handleNonFatalException()
     }
@@ -138,7 +139,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
     )
   }
 
-  private def handleNonFatalException()(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
+  private def handleNonFatalException(): PartialFunction[Throwable, Result] = {
     case NonFatal(e) => {
       logger.error(s"Subscription display failed with ${e.getMessage}")
       Redirect(routes.WhatIsYourEmailController.problemWithService())

@@ -27,8 +27,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector)
-                                 (implicit ec: ExecutionContext) extends Logging {
+class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector) extends Logging {
   private val referrerKey = "referrer"
   private val emailKey = "email"
 
@@ -37,7 +36,7 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector)
 
   def fetchEmail(
     internalId: InternalId
-  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[EmailDetails]] = {
+  )(implicit hc: HeaderCarrier): Future[Option[EmailDetails]] = {
     logger.info("retrieving email address and timestamp from save 4 later")
     save4LaterConnector.get[EmailDetails](internalId.id, emailKey)
   }
@@ -45,19 +44,19 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector)
   def saveReferrer(
     internalId: InternalId,
     referrerName: ReferrerName
-  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = {
+  )(implicit hc: HeaderCarrier): Future[Unit] = {
     logger.info("saving referrer name and referrer url  from mongo")
     save4LaterConnector.put[ReferrerName](internalId.id, referrerKey, referrerName)
   }
 
   def fetchReferrer(
     internalId: InternalId
-  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[ReferrerName]] = {
+  )(implicit hc: HeaderCarrier): Future[Option[ReferrerName]] = {
     logger.info("retrieving referrer name and referrer  from mongo")
     save4LaterConnector.get[ReferrerName](internalId.id, referrerKey)
   }
 
-  def remove(internalId: InternalId)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = {
+  def remove(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Unit] = {
     logger.info("removing cached data from  mongo")
     save4LaterConnector.delete(internalId.id)
   }

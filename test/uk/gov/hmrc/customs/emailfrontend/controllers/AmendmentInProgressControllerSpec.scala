@@ -17,16 +17,14 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers.{eq => meq}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, inject}
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
+import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class AmendmentInProgressControllerSpec extends SpecBase {
 
@@ -44,7 +42,7 @@ class AmendmentInProgressControllerSpec extends SpecBase {
   "AmendmentInProgressController" should {
     "have a status of SEE_OTHER when the email status is not found " in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any, any))
+      when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(None))
 
       running(app) {
@@ -61,7 +59,7 @@ class AmendmentInProgressControllerSpec extends SpecBase {
 
     "have a status of OK when email found in cache and verification in progress" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any, any))
+      when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
 
       running(app) {

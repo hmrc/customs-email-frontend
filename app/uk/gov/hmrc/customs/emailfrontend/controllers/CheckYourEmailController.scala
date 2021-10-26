@@ -68,7 +68,7 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
         save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
           Redirect(routes.EmailConfirmedController.show())
         }
-      case None => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService()))
+      case _ => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService()))
     }
 
   private def handleYesNo(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)
