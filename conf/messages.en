@@ -1,3 +1,4 @@
+service.name=Manage your email address for CDS
 customs.emailfrontend.service-name=Manage your email address for CDS
 customs.emailfrontend.continue-button=Continue
 customs.emailfrontend.back=Back
@@ -57,6 +58,7 @@ customs.emailfrontend.problem-with-service.info=Your email has not been updated.
 customs.emailfrontend.timeout.message=For your security, we will delete your answers and you will be signed out in
 customs.emailfrontend.timeout.keep-alive-button=Get another 15 minutes
 customs.emailfrontend.timeout.sign-out-button=Sign out now
+customs.emailfrontend.timeout.title = You’re about to be signed out
 
 customs.emailfrontend.you-cant-use-service-NoEnrolment.hint1=The Government Gateway you signed in with does not have access to CDS.
 customs.emailfrontend.you-cant-use-service-IsAgent.hint1=You signed in to Government Gateway with an agent services account.

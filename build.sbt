@@ -13,10 +13,12 @@ lazy val microservice = Project(appName, file("."))
     majorVersion                     := 0,
     scalaVersion                     := "2.12.12",
     libraryDependencies              ++= AppDependencies.compile ++ AppDependencies.test,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;" +
-      ".*javascript.*;.*Routes.*;.*GuiceInjector;" +
-      ".*FeatureSwitchController;" +
-      ".*ControllerConfiguration;.*LanguageSwitchController",
+    ScoverageKeys.coverageExcludedFiles := List("<empty>",
+      "Reverse.*",
+      "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.controllers\\.actions\\.ActionsImpl*",
+      "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.views\\.html\\.partials\\.main_template*",
+      "uk\\.gov\\.hmrc\\.customs\\.emailfrontend\\.views\\.html\\.helpers*",
+      ".*(BuildInfo|Routes|TestOnly).*").mkString(";")
     ScoverageKeys.coverageMinimumStmtTotal := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
@@ -36,7 +38,7 @@ lazy val microservice = Project(appName, file("."))
 //    routesImport ++= (uk.gov.hmrc.customs.emailfrontend.model.Ineligible.Value)
     // ***************
   )
-  .settings(PlayKeys.playDefaultPort := 9394)
+  .settings(PlayKeys.playDefaultPort := 9898)
   .settings(publishingSettings: _*)
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)

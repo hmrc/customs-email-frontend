@@ -1,65 +1,72 @@
 @*
- * Copyright 2021 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *@
-
-@import partials.main_template
+* Copyright 2021 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
+@import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 @import uk.gov.hmrc.customs.emailfrontend.model.YesNo
 @import uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @import views.html.helper._
 
-@this(main_template: main_template)
+@this(
+        layout: Layout,
+        inputRadio: components.inputRadio,
+        h1_xl: components.h1_xl,
+        p: components.p,
+        button: components.button,
+        summary_list: components.summary_list,
+        list_row: components.list_row,
+        errorSummary: components.errorSummary
+
+)
 @(confirmEmailForm: Form[YesNo], email: String)(implicit request: Request[_], messages: Messages)
 
-@inputRadioGroup(field: String, options: Seq[(String, String)]) = {
+@layout(Some(messages("customs.emailfrontend.confirm-your-email.title-and-heading"))) {
 
-    @helpers.inputRadioGroup(
-        confirmEmailForm(field),
-        options,
-        Map.empty,
-        '_legend -> messages("customs.emailfrontend.confirm-your-email.yes-no-label")
-    )
-}
+    @errorSummary(confirmEmailForm)
 
-@main_template(messages("customs.emailfrontend.confirm-your-email.title-and-heading")) {
-
-    @helpers.errorSummary(confirmEmailForm, focusOverrides = Map("isYes" -> "isYes-true"))
-
-    @helper.form(CheckYourEmailController.submit(),'id -> "confirmEmailForm", 'novalidate -> "novalidate") {
+    @helper.form(CheckYourEmailController.submit(), 'id -> "confirmEmailForm", 'novalidate -> "novalidate") {
         @CSRF.formField
+        @h1_xl(messages("customs.emailfrontend.confirm-your-email.title-and-heading"))
 
-        <h1 class="heading-xlarge">@messages("customs.emailfrontend.confirm-your-email.title-and-heading")</h1>
-
-        <dl class="govuk-check-your-answers cya-questions-long form-group">
-            <div>
-                <dt class="cya-question">
-                    @messages("customs.emailfrontend.confirm-your-email.email-address")
-                </dt>
-                <dd class="cya-answer" id="cya-answer-id">
-                    @email
-                </dd>
-            </div>
-        </dl>
-
-        <p id="whatNext">@messages("customs.emailfrontend.confirm-your-email.hint")</p>
-
-        @inputRadioGroup("isYes",
-            Seq("true" -> messages("customs.emailfrontend.confirm-your-email.yes"),
-                "false" -> messages("customs.emailfrontend.confirm-your-email.no"))
+        @summary_list(
+            list_row(Html(messages("customs.emailfrontend.confirm-your-email.email-address")), Html(email))
         )
 
-        <input class="button" type="submit" id="continue" value="@messages("customs.emailfrontend.continue-button")">
+        @p(Html(messages("customs.emailfrontend.confirm-your-email.hint")))
+
+        @inputRadio(
+            confirmEmailForm,
+            messages("customs.emailfrontend.confirm-your-email.yes-no-label"),
+            "isYes",
+            Seq(
+                RadioItem(
+                    value = Some("true"),
+                    content = Text(messages("customs.emailfrontend.confirm-your-email.yes")),
+                    checked = confirmEmailForm("value").value.contains("true")
+                ),
+                RadioItem(
+                    value = Some("false"),
+                    content = Text(messages("customs.emailfrontend.confirm-your-email.no")),
+                    checked = confirmEmailForm("value").value.contains("false")
+                )
+            ),
+            legendAsHeading = false,
+            classes = "govuk-fieldset__legend--m"
+        )
+
+        @button(messages("customs.emailfrontend.continue-button"))
     }
 }

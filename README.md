@@ -66,6 +66,6 @@ To provide a link from your service to the customs-email-frontend you need to cr
 Where `:service-name` equals your service 'name' value defined in application.conf. 
 So for example for ***customs-finance***  the url would be `http://localhost:9898/manage-email-cds/service/customs-finance`
 
-### License
-
+### License 
+ 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").

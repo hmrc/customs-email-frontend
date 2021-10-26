@@ -1,0 +1,5 @@
+@this()
+
+@(msg: String, id: Option[String] = None)
+
+<h2 @{id.fold("")(id => s"id=$id")} class="govuk-heading-m">@msg</h2>

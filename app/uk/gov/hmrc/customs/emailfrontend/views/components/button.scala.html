@@ -14,13 +14,12 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 
-@this(layout: Layout)
+@this(govukButton: GovukButton, p: p)
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
-@layout(pageTitle = Some(pageTitle)) {
- <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
- <p class="govuk-body">@{Text(message).asHtml}</p>
-}
+@(msg: String, href: Option[String] = None)(implicit messages: Messages)
+
+@p{@govukButton(Button(content = Text(messages(msg)), href = href))}
