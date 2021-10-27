@@ -14,22 +14,6 @@
  * limitations under the License.
  */
 
-/*
- * Copyright 2021 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.joda.time.DateTime
@@ -42,9 +26,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.services._
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
-import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
-
 import scala.concurrent.Future
 
 class EmailConfirmedControllerSpec extends SpecBase {
@@ -67,10 +49,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
         inject.bind[DateTimeService].toInstance(mockDateTimeService)
       ).build()
 
-    private val view = app.injector.instanceOf[email_confirmed]
-
     protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
-
 
   }
 

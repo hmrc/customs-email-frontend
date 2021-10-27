@@ -27,7 +27,7 @@ import javax.inject.{Inject, Singleton}
 class SignOutController @Inject()(identify: IdentifierAction, appConfig: AppConfig, mcc: MessagesControllerComponents)(
   implicit override val messagesApi: MessagesApi
 ) extends FrontendController(mcc) with I18nSupport {
-  def signOut: Action[AnyContent] = identify { implicit request =>
+  def signOut: Action[AnyContent] = identify {
     Redirect(appConfig.feedbackUrl).withNewSession
   }
 }
