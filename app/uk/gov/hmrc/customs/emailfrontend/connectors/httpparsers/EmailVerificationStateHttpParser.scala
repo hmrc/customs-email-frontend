@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers
 
+import play.api.Logging
 import play.api.http.Status._
-import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object EmailVerificationStateHttpParser {
+object EmailVerificationStateHttpParser extends Logging {
 
   type EmailVerificationStateResponse =
     Either[EmailVerificationStateErrorResponse, EmailVerificationState]
@@ -29,20 +29,13 @@ object EmailVerificationStateHttpParser {
     override def read(method: String, url: String, response: HttpResponse): EmailVerificationStateResponse =
       response.status match {
         case OK =>
-          CdsLogger.debug(
-            "[GetEmailVerificationStateHttpParser][GetEmailVerificationStateHttpReads][read] - Email Verified"
-          )
+          logger.debug("Email Verified")
           Right(EmailVerified)
         case NOT_FOUND =>
-          CdsLogger.warn(
-            "[GetEmailVerificationStateHttpParser][GetEmailVerificationStateHttpReads][read] - Email not verified"
-          )
+          logger.warn("Email not verified")
           Right(EmailNotVerified)
         case status =>
-          CdsLogger.warn(
-            s"[GetEmailVerificationStateHttpParser][GetEmailVerificationStateHttpReads][read] - " +
-              s"Unexpected Response, Status $status returned, with response: ${response.body}"
-          )
+          logger.warn(s"Unexpected Response, Status $status returned, with response: ${response.body}")
           Left(EmailVerificationStateErrorResponse(status, response.body))
       }
   }

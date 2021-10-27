@@ -16,67 +16,68 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.{SignOutController, VerifyYourEmailController}
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, EoriRequest}
-import uk.gov.hmrc.customs.emailfrontend.services.{CustomsDataStoreService, DateTimeService, EmailVerificationService, Save4LaterService, UpdateVerifiedEmailService}
+import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
+import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EmailDetails}
+import uk.gov.hmrc.customs.emailfrontend.services._
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmailConfirmedController @Inject()(
-  actions: Actions,
-  view: email_confirmed,
-  customsDataStoreService: CustomsDataStoreService,
-  save4LaterService: Save4LaterService,
-  emailVerificationService: EmailVerificationService,
-  updateVerifiedEmailService: UpdateVerifiedEmailService,
-  mcc: MessagesControllerComponents,
-  errorHandler: ErrorHandler,
-  dateTimeService: DateTimeService
-)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+class EmailConfirmedController @Inject()(identify: IdentifierAction,
+                                         view: email_confirmed,
+                                         customsDataStoreService: CustomsDataStoreService,
+                                         save4LaterService: Save4LaterService,
+                                         emailVerificationService: EmailVerificationService,
+                                         updateVerifiedEmailService: UpdateVerifiedEmailService,
+                                         mcc: MessagesControllerComponents,
+                                         errorHandler: ErrorHandler,
+                                         dateTimeService: DateTimeService)
+                                        (implicit override val messagesApi: MessagesApi,
+                                         ec: ExecutionContext)
+  extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] =
-    (actions.auth
-      andThen actions.isPermitted
-      andThen actions.isEnrolled).async { implicit request =>
+    identify.async { implicit request =>
       save4LaterService.routeBasedOnAmendment(request.user.internalId)(
         redirectBasedOnEmailStatus,
-        Future.successful(Redirect(SignOutController.signOut()))
+        Future.successful(Redirect(routes.SignOutController.signOut()))
       )
     }
 
-  private def redirectBasedOnEmailStatus(
-    details: EmailDetails
-  )(implicit request: EoriRequest[AnyContent]): Future[Result] =
+  private def redirectBasedOnEmailStatus(details: EmailDetails)
+                                        (implicit request: AuthenticatedRequest[_]): Future[Result] =
     for {
       verified <- emailVerificationService.isEmailVerified(details.newEmail)
       redirect <- if (verified.contains(true)) updateEmail(details)
-      else Future.successful(Redirect(VerifyYourEmailController.show()))
+      else Future.successful(Redirect(routes.VerifyYourEmailController.show()))
     } yield redirect
 
-  private[this] def updateEmail(details: EmailDetails)(implicit request: EoriRequest[AnyContent]): Future[Result] = {
+  private def updateEmail(details: EmailDetails)(implicit request: AuthenticatedRequest[_]): Future[Result] = {
     val timestamp = dateTimeService.nowUtc()
     updateVerifiedEmailService
-      .updateVerifiedEmail(details.currentEmail, details.newEmail, request.eori.id, timestamp)
+      .updateVerifiedEmail(details.currentEmail, details.newEmail, request.user.eori, timestamp)
       .flatMap {
         case Some(true) =>
-          save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(timestamp)))
-          customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.eori.id), details.newEmail, timestamp)
-          save4LaterService.fetchReferrer(request.user.internalId).map { referrer =>
-            Ok(view(details.newEmail, details.currentEmail, referrer.map(_.name), referrer.map(_.continueUrl)))
-          }
-        case _ => Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))
+          (for {
+            _ <- save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(timestamp)))
+            _ <- customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.user.eori), details.newEmail, timestamp)
+            maybeReferrerName <- save4LaterService.fetchReferrer(request.user.internalId)
+          } yield {
+            Ok(view(details.newEmail, details.currentEmail, maybeReferrerName.map(_.name), maybeReferrerName.map(_.continueUrl)))
+          }).recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService()) }
+
+        case _ =>
+          Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))
       }
   }
-  def problemWithService(): Action[AnyContent] = actions.auth.async { implicit request =>
+
+  def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
     Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

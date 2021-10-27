@@ -16,18 +16,12 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole, EnrolmentIdentifier}
 
-case class LoggedInUser(
-  enrolments: Enrolments,
-  internalId: InternalId,
-  affinityGroup: Option[AffinityGroup],
-  credentialRole: Option[CredentialRole]
-) {
-  lazy val eori: Option[EnrolmentIdentifier] = enrolments.getEnrolment("HMRC-CUS-ORG") flatMap (_.getIdentifier(
-    "EORINumber"
-  ))
-}
+case class LoggedInUser(internalId: InternalId,
+                        affinityGroup: Option[AffinityGroup],
+                        credentialRole: Option[CredentialRole],
+                        eori: String)
 
 case class Eori(id: String)
 

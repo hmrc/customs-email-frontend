@@ -17,9 +17,9 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.joda.time.DateTime
+import play.api.Logging
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
-import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,9 +27,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateVerifiedEmailConnector)(
-  implicit ec: ExecutionContext
-) {
+class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateVerifiedEmailConnector)
+                                          (implicit ec: ExecutionContext) extends Logging {
 
   def updateVerifiedEmail(currentEmail: Option[String], newEmail: String, eori: String, timestamp: DateTime)(
     implicit hc: HeaderCarrier
@@ -47,19 +46,14 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
       case Right(res)
           if res.updateVerifiedEmailResponse.responseCommon.returnParameters
             .exists(msp => msp.paramName == formBundleIdParamName) =>
-        CdsLogger.debug("[UpdateVerifiedEmailService][updateVerifiedEmail] - successfully updated verified email")
+        logger.debug("Successfully updated verified email")
         Some(true)
       case Right(res) =>
         val statusText = res.updateVerifiedEmailResponse.responseCommon.statusText
-        CdsLogger.debug(
-          "[UpdateVerifiedEmailService][updateVerifiedEmail]" +
-            s" - updating verified email unsuccessful with business error/status code: ${statusText.getOrElse("Status text empty")}"
-        )
+        logger.debug(s"Updating verified email unsuccessful with business error/status code: ${statusText.getOrElse("Status text empty")}")
         Some(false)
       case Left(res) =>
-        CdsLogger.warn(
-          s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with response: $res"
-        )
+        logger.warn(s"Updating verified email unsuccessful with response: $res")
         None
     }
   }

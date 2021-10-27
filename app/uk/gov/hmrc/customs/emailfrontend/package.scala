@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.customs
 
-import java.time.Clock
-import java.util.UUID
-
 import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json._
 import uk.gov.hmrc.auth.core.retrieve.{~ => Retrieve}
+
+import java.time.Clock
+import java.util.UUID
 
 package object emailfrontend {
 
@@ -35,15 +35,11 @@ package object emailfrontend {
     def dateTime: DateTime =
       new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC)
 
-    private def dateTimeWritesIsoUtc: Writes[DateTime] = new Writes[DateTime] {
-      def writes(d: org.joda.time.DateTime): JsValue =
-        JsString(d.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC()))
-    }
+    private def dateTimeWritesIsoUtc: Writes[DateTime] = (d: org.joda.time.DateTime) =>
+      JsString(d.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC()))
 
-    private def dateTimeReadsIso: Reads[DateTime] = new Reads[DateTime] {
-      def reads(value: JsValue): JsResult[DateTime] =
-        JsSuccess(ISODateTimeFormat.dateTimeParser.parseDateTime(value.as[String]))
-    }
+    private def dateTimeReadsIso: Reads[DateTime] = (value: JsValue) =>
+      JsSuccess(ISODateTimeFormat.dateTimeParser.parseDateTime(value.as[String]))
 
     implicit val dateTimeReads: Reads[DateTime] = dateTimeReadsIso
     implicit val dateTimeWrites: Writes[DateTime] = dateTimeWritesIsoUtc

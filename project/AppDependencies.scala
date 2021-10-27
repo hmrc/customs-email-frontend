@@ -7,20 +7,17 @@ object AppDependencies {
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.13.0",
     "uk.gov.hmrc" %% "play-frontend-hmrc" % "1.9.0-play-28",
     "uk.gov.hmrc" %% "http-caching-client" % "9.3.0-play-28",
-    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.6.0",
+    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.13.0",
     "uk.gov.hmrc" %% "emailaddress" % "3.5.0",
     "uk.gov.hmrc" %% "play-language" % "4.11.0-play-28",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.3"
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.3",
+    "org.typelevel" %% "cats-core" % "2.3.0"
   )
 
   val test = Seq(
-    "uk.gov.hmrc" %% "webdriver-factory" % "0.16.0",
-    "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-    "org.jsoup" % "jsoup" % "1.12.1" % "test",
-    "com.typesafe.play" %% "play-test" % current % "test",
-    "org.pegdown" % "pegdown" % "1.6.0" % "test",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test",
-    "org.mockito" % "mockito-core" % "3.7.7" % "test",
-    "com.github.tomakehurst" % "wiremock-jre8" % "2.27.2" % "test"
+    "uk.gov.hmrc" %% "bootstrap-test-play-28" % "5.13.0" % Test,
+    "org.jsoup" % "jsoup" % "1.13.1" % Test,
+    "com.vladsch.flexmark" % "flexmark-all" % "0.36.8" % "test, it",
+    "org.mockito" %% "mockito-scala-scalatest" % "1.16.37" % "test, it"
   )
 }

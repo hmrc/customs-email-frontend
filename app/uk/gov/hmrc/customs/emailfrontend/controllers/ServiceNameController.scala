@@ -16,32 +16,34 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import javax.inject.Inject
+import cats.data.OptionT.{fromOption, liftF}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.controllers.actions.Actions
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController
-import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
+import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ServiceNameController @Inject()(
-  actions: Actions,
-  appConfig: AppConfig,
-  save4LaterService: Save4LaterService,
-  mcc: MessagesControllerComponents
-)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+class ServiceNameController @Inject()(identify: IdentifierAction,
+                                      appConfig: AppConfig,
+                                      save4LaterService: Save4LaterService,
+                                      mcc: MessagesControllerComponents)
+                                     (implicit override val messagesApi: MessagesApi,
+                                      ec: ExecutionContext)
+  extends FrontendController(mcc) with I18nSupport {
 
   def show(name: String): Action[AnyContent] =
-    (actions.auth andThen actions.isPermitted andThen actions.isEnrolled).async { implicit request =>
-      val optionalReferrerName: Option[ReferrerName] = appConfig.referrerName.find(_.name == name)
-      optionalReferrerName.map { referrerName =>
-        save4LaterService.saveReferrer(request.user.internalId, referrerName)
-        Future.successful(Redirect(WhatIsYourEmailController.show()))
-      }.getOrElse(Future.successful(Redirect(WhatIsYourEmailController.show())))
+    identify.async { implicit request =>
+      (for {
+        referrerName <- fromOption[Future](appConfig.referrerName.find(_.name == name))
+        _ <- liftF(save4LaterService.saveReferrer(request.user.internalId, referrerName))
+      }
+      yield {
+        Redirect(routes.WhatIsYourEmailController.show())
+      }).getOrElse(Redirect(routes.WhatIsYourEmailController.show()))
     }
 }
+

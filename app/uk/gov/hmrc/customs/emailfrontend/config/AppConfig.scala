@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import scala.collection.JavaConverters._
 
 @Singleton
-class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
+class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesConfig) {
   
   private val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
@@ -75,9 +75,13 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val updateVerifiedEmailUrl: String =
     s"$customsHodsProxyBaseUrl/$updateVerifiedEmailContext"
 
+  lazy val checkVerifiedEmailUrl: String = s"$emailVerificationWithContext/verified-email-check"
+
+  lazy val createEmailVerificationRequestUrl: String = s"$emailVerificationWithContext/verification-requests"
+
   val save4LaterContext: String =
     config.get[String]("microservice.services.customs-email-proxy.mongo-cache.context")
-  val save4LaterUrl: String = s"$customsHodsProxyBaseUrl/$save4LaterContext"
+  lazy val save4LaterUrl: String = s"$customsHodsProxyBaseUrl/$save4LaterContext"
 
   implicit val configLoader: ConfigLoader[Seq[ReferrerName]] =
     ConfigLoader(_.getConfigList).map(

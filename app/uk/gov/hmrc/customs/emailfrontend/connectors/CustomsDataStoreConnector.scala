@@ -17,11 +17,11 @@
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import org.joda.time.DateTime
+import play.api.Logging
 import play.api.http.HeaderNames.CONTENT_TYPE
 import play.api.http.MimeTypes
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.logging.CdsLogger
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
@@ -29,11 +29,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)(
-  implicit ec: ExecutionContext
-) {
-
-  private[connectors] lazy val url: String = appConfig.customsDataStoreUrl
+class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)
+                                         (implicit ec: ExecutionContext) extends Logging {
 
   def storeEmailAddress(eori: Eori, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
 
@@ -42,19 +39,19 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
     auditRequest("DataStoreEmailRequestSubmitted", Map("eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
 
     httpClient
-      .POST[UpdateEmail, HttpResponse](url, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
+      .POST[UpdateEmail, HttpResponse](appConfig.customsDataStoreUrl, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
       .map { response =>
-        auditResponse("DataStoreResponseReceived", response, url)
+        auditResponse("DataStoreResponseReceived", response, appConfig.customsDataStoreUrl)
         response
       }.recoverWith {
       case e: Throwable =>
-        CdsLogger.error(s"Call to data stored failed url=$url, exception=$e")
+        logger.error(s"Call to data stored failed url=${appConfig.customsDataStoreUrl}, exception=$e")
         Future.failed(e)
     }
   }
 
   private def auditRequest(transactionName: String, detail: Map[String, String])(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(transactionName = transactionName, path = url, detail = detail, auditType = "DataStoreRequest")
+    audit.sendDataEvent(transactionName = transactionName, path = appConfig.customsDataStoreUrl, detail = detail, auditType = "DataStoreRequest")
 
   private def auditResponse(transactionName: String, response: HttpResponse, url: String)(
     implicit hc: HeaderCarrier
