@@ -73,12 +73,12 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
           any[HeaderCarrier],
           any[Reads[EmailDetails]]
         )
-      ).thenReturn(Future.successful(Some(emailDetails)))
+      ).thenReturn(Future.successful(Right(emailDetails)))
 
       val result = service
         .fetchEmail(internalId)
         .futureValue
-      result shouldBe Some(emailDetails)
+      result shouldBe Right(emailDetails)
     }
 
     "save the referrer against the users InternalId" in {
@@ -104,12 +104,12 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
           any[HeaderCarrier],
           any[Reads[ReferrerName]]
         )
-      ).thenReturn(Future.successful(Some(referrerName)))
+      ).thenReturn(Future.successful(Right(referrerName)))
 
       val result = service
         .fetchReferrer(internalId)
         .futureValue
-      result shouldBe Some(referrerName)
+      result shouldBe Right(referrerName)
     }
 
     "remove the id" in {

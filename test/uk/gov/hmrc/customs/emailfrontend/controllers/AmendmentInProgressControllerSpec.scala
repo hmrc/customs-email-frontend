@@ -20,6 +20,7 @@ import org.joda.time.DateTime
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, inject}
+import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector.NotFoundError
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
@@ -43,7 +44,7 @@ class AmendmentInProgressControllerSpec extends SpecBase {
     "have a status of SEE_OTHER when the email status is not found " in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+        .thenReturn(Future.successful(Left(NotFoundError)))
 
       running(app) {
 
@@ -60,7 +61,7 @@ class AmendmentInProgressControllerSpec extends SpecBase {
     "have a status of OK when email found in cache and verification in progress" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Right(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
 
       running(app) {
 

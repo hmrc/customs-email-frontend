@@ -21,11 +21,13 @@ import play.api.libs.json._
 import play.mvc.Http.Status._
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector._
 import uk.gov.hmrc.http.{BadRequestException, HttpClient, _}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 import scala.util.control.NonFatal
 
 @Singleton
@@ -34,24 +36,27 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
   val LoggerComponentId = "Save4LaterConnector"
 
   def get[T](id: String, key: String)
-            (implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = {
+            (implicit hc: HeaderCarrier, reads: Reads[T]): Future[Either[ErrorResponse, T]] = {
     val url = s"${appConfig.save4LaterUrl}/$id/$key"
     logger.info(s"GET: $url")
     http.GET[HttpResponse](url).map { response =>
-
       response.status match {
         case OK =>
           auditCallResponse(url, response.json)
-          Some(response.json.as[T])
+          Try(response.json.as[T]) match {
+            case Success(t) => Right(t)
+            case Failure(_) =>
+              logger.error(s"JSON error")
+              Left(JSONError)
+          }
         case NOT_FOUND =>
           auditCallResponse(url, response.status)
-          None
-        case _ => throw new BadRequestException(s"Status:${response.status}")
+          Left(NotFoundError)
+        case _ =>
+          logger.error(s"Request failed for call to $url, status: ${response.status}")
+          Left(APIError(response.status))
       }
-    }.recoverWith {
-      case NonFatal(e) =>
-        logger.error(s"Request failed for call to $url, exception: ${e.getMessage}", e)
-        Future.failed(e)
+    }.recoverWith { case _ => Future.successful(Left(UnknownError))
     }
   }
 
@@ -114,5 +119,19 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
         eventType = "Save4later"
       )
     }
+
+}
+
+object Save4LaterConnector {
+
+  sealed trait ErrorResponse
+
+  case class APIError(status: Int) extends ErrorResponse
+
+  case object JSONError extends ErrorResponse
+
+  case object NotFoundError extends ErrorResponse
+
+  case object UnknownError extends ErrorResponse
 
 }

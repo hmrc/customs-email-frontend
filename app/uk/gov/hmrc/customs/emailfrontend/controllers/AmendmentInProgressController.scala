@@ -19,6 +19,8 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
+import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector.NotFoundError
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.views.html.amendment_in_progress
@@ -30,17 +32,20 @@ import scala.concurrent.ExecutionContext
 class AmendmentInProgressController @Inject()(identify: IdentifierAction,
                                               view: amendment_in_progress,
                                               save4LaterService: Save4LaterService,
+                                              errorHandler: ErrorHandler,
                                               mcc: MessagesControllerComponents)
                                              (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show: Action[AnyContent] = identify.async { implicit request =>
       save4LaterService.fetchEmail(request.user.internalId).map {
-        case Some(emailDetails) =>
+        case Right(emailDetails) =>
           Ok(view(emailDetails.newEmail))
-        case None =>
+        case Left(NotFoundError) =>
           logger.warn("emailStatus not found")
           Redirect(routes.SignOutController.signOut())
+        case Left(_) =>
+          InternalServerError(errorHandler.problemWithService())
       }
     }
 }

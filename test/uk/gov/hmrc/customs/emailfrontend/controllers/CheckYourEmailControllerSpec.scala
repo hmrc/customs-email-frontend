@@ -21,6 +21,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
+import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector.NotFoundError
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
@@ -50,7 +51,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
     "have a status of OK when email found in cache" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(Right(EmailDetails(None, "abc@def.com", None))))
 
       running(app) {
 
@@ -65,7 +66,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
     "have a status of SEE_OTHER when email not found in cache on show" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+        .thenReturn(Future.successful(Left(NotFoundError)))
 
       running(app) {
 
@@ -80,7 +81,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
     "have a status of SEE_OTHER when email not found in cache on submit" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+        .thenReturn(Future.successful(Left(NotFoundError)))
 
       running(app) {
 
@@ -96,7 +97,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
     "have a status of BAD_REQUEST when no selection is provided" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(Right(EmailDetails(None, "abc@def.com", None))))
 
       running(app) {
 
@@ -110,7 +111,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
     }
 
     "have a status of SEE_OTHER when no is selected" in new Setup {
-      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(Right(EmailDetails(None, "abc@def.com", None))))
       when(mockSave4LaterService.remove(any)(any)).thenReturn(Future.successful(()))
 
       running(app) {
@@ -126,7 +127,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
     "have a status of SEE_OTHER when user clicks back on the successful request or user already complete bookmarked request within 2 hours" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Right(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
 
       running(app) {
 
@@ -158,7 +159,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
     "redirect to Email Confirmed page when email is already verified" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(Right(EmailDetails(None, "abc@def.com", None))))
       when(mockSave4LaterService.saveEmail(any, any)(any))
         .thenReturn(Future.successful(()))
       when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
@@ -179,7 +180,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
     "redirect to Verify Your Email page when email yet not verified" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(Right(EmailDetails(None, "abc@def.com", None))))
       when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
         .thenReturn(Future.successful(Some(EmailVerificationRequestSent)))
 
@@ -197,7 +198,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
     "show 'there is a problem with service' page when createEmailVerificationRequest failed" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(Right(EmailDetails(None, "abc@def.com", None))))
 
       when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
         .thenReturn(Future.successful(None))
