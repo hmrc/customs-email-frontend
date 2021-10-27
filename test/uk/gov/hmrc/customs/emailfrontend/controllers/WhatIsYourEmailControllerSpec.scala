@@ -23,7 +23,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, _}
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector.NotFoundError
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
@@ -49,6 +48,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
   }
 
 
+
   private val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), Some(emailVerificationTimeStamp), None, None)
   private val someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp = SubscriptionDisplayResponse(Some("test@test.com"), None, None, None)
@@ -59,7 +59,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentCompleted" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Right(EmailDetails(None, "test@email", Some(DateTime.now().minusDays(2))))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now().minusDays(2))))))
 
       when(mockSave4LaterService.remove(any)(any))
         .thenReturn(Future.successful(()))
@@ -74,9 +74,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of SEE_OTHER for show method when email is not found in cache and email status is AmendmentNotDetermined" in new Setup {
+    "have a status of SEE_OTHER for show method when email is not found in cache and email status is AmendmentNotDetermined" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Left(NotFoundError)))
+        .thenReturn(Future.successful(None))
 
       running(app) {
 
@@ -89,9 +89,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     }
 
-    "have a status of SEE_OTHER for show method when email found in cache with no timestamp and email is verified" in new Setup {
+    "have a status of SEE_OTHER for show method when email found in cache with no timestamp and email is verified" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Right(EmailDetails(None, "test@email", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
 
       when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(true)))
@@ -106,9 +106,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of SEE_OTHER for show method when email found in cache with no timestamp and email is not verified" in new Setup {
+    "have a status of SEE_OTHER for show method when email found in cache with no timestamp and email is not verified" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Right(EmailDetails(None, "test@email", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
 
       when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(false)))
@@ -123,9 +123,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of SEE_OTHER for show method when email found in cache with timestamp for AmendmentInProgress" in new Setup {
+    "have a status of SEE_OTHER for show method when email found in cache with timestamp for AmendmentInProgress" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Right(EmailDetails(None, "test@email", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
 
       running(app) {
 
@@ -137,9 +137,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of SEE_OTHER for show method email is not found in cache " in new Setup {
+    "have a status of SEE_OTHER for show method email is not found in cache " in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Left(NotFoundError)))
+        .thenReturn(Future.successful(None))
 
       running(app) {
 
@@ -151,9 +151,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of OK for create method when verified email found in subscription display response" in new Setup {
+    "have a status of OK for create method when verified email found in subscription display response" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Left(NotFoundError)))
+        .thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -168,9 +168,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of OK for create method when unverified email found in subscription display response" in new Setup {
+    "have a status of OK for create method when unverified email found in subscription display response" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Left(NotFoundError)))
+        .thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp))
@@ -185,9 +185,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of SEE_OTHER for create method when no email found in subscription display response but returned OK" in new Setup {
+    "have a status of SEE_OTHER for create method when no email found in subscription display response but returned OK" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Left(NotFoundError)))
+        .thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(noneSubscriptionDisplayResponse))
@@ -202,9 +202,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of OK for create method when email found in cache with no timestamp" in new Setup {
+    "have a status of OK for create method when email found in cache with no timestamp" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Right(EmailDetails(Some("old@email"), "test@email", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(Some("old@email"), "test@email", None))))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -218,9 +218,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of SEE_OTHER for create method when current email not found in cache with no timestamp" in new Setup {
+    "have a status of SEE_OTHER for create method when current email not found in cache with no timestamp" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Right(EmailDetails(None, "test@email", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -235,9 +235,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of SEE_OTHER for create method when the bookmark url is used and user already completed success amend email journey" in new Setup {
+    "have a status of SEE_OTHER for create method when the bookmark url is used and user already completed success amend email journey" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Right(EmailDetails(None, "test@email", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -254,7 +254,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for create method when unverified email found in subscription display response" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Left(NotFoundError)))
+        .thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp))
@@ -269,9 +269,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "show 'there is a problem with the service' page when subscription display is failed" in new Setup {
+    "show 'there is a problem with the service' page when subscription display is failed" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Left(NotFoundError)))
+        .thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.failed(new HttpException("Failed", BAD_REQUEST)))
@@ -286,9 +286,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email" in new Setup {
+    "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Left(NotFoundError)))
+        .thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
@@ -303,9 +303,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of OK for verify method" in new Setup {
+    "have a status of OK for verify method" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Left(NotFoundError)))
+        .thenReturn(Future.successful(None))
 
       running(app) {
 
@@ -316,9 +316,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of OK for verify method when email found in cache with no timestamp" in new Setup {
+    "have a status of OK for verify method when email found in cache with no timestamp" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Right(EmailDetails(None, "test@email", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
 
       running(app) {
 
@@ -329,9 +329,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of SEE_OTHER for verify method when the bookmark url is used and user already complete success amend email journey " in new Setup {
+    "have a status of SEE_OTHER for verify method when the bookmark url is used and user already complete success amend email journey " in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Right(EmailDetails(None, "test@email", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
 
       running(app) {
 
@@ -355,7 +355,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "show 'there is a problem with the service' page when subscription display return response with no email or status for submit" in new Setup {
+    "show 'there is a problem with the service' page when subscription display return response with no email or status for submit" in new Setup  {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(noneSubscriptionDisplayResponse))
 
@@ -383,7 +383,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of SEE_OTHER when the email is valid" in new Setup {
+    "have a status of SEE_OTHER when the email is valid" in new Setup  {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
@@ -401,7 +401,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "show 'there is a problem with the service' page when subscription display is failed for submit" in new Setup {
+    "show 'there is a problem with the service' page when subscription display is failed for submit" in new Setup  {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.failed(new HttpException("Failed", BAD_REQUEST)))
 
@@ -416,7 +416,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for submit" in new Setup {
+    "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for submit" in new Setup  {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
 
@@ -431,7 +431,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for bad request form" in new Setup {
+    "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for bad request form" in new Setup  {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
 
@@ -456,7 +456,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of SEE_OTHER for verifyEmail method when the email is valid" in new Setup {
+    "have a status of SEE_OTHER for verifyEmail method when the email is valid" in new Setup  {
       when(mockSave4LaterService.saveEmail(any, any)(any))
         .thenReturn(Future.successful(()))
 
@@ -471,7 +471,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "redirect to 'there is a problem with the service' page" in new Setup {
+    "redirect to 'there is a problem with the service' page" in new Setup  {
 
       running(app) {
         val errorHandler = app.injector.instanceOf[ErrorHandler]

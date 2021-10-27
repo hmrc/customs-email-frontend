@@ -21,11 +21,9 @@ import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, inject}
-import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector.NotFoundError
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
-
 import scala.concurrent.Future
 
 class VerifyYourEmailControllerSpec extends SpecBase {
@@ -40,7 +38,7 @@ class VerifyYourEmailControllerSpec extends SpecBase {
   "VerifyYourEmailController" should {
     "redirect to sign out page when no email found in cache" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Left(NotFoundError)))
+        .thenReturn(Future.successful(None))
 
       running(app) {
 
@@ -54,7 +52,7 @@ class VerifyYourEmailControllerSpec extends SpecBase {
 
     "return status OK when email found in cache" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Right(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
       running(app) {
 
@@ -68,7 +66,7 @@ class VerifyYourEmailControllerSpec extends SpecBase {
 
     "have a status of SEE_OTHER when user clicks browser back on the successful request or uses already complete bookmarked request within 2 hours" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Right(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
 
       running(app) {
 

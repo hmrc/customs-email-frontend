@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import cats.data.EitherT
-import cats.data.EitherT._
-import cats.instances.future._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
@@ -68,12 +65,13 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
       .flatMap {
         case Some(true) =>
           (for {
-            _ <- liftF(save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(timestamp))))
-            _ <- liftF(customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.user.eori), details.newEmail, timestamp))
-            maybeReferrerName <- EitherT(save4LaterService.fetchReferrer(request.user.internalId))
+            _ <- save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(timestamp)))
+            _ <- customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.user.eori), details.newEmail, timestamp)
+            maybeReferrerName <- save4LaterService.fetchReferrer(request.user.internalId)
           } yield {
-            Ok(view(details.newEmail, details.currentEmail, Some(maybeReferrerName.name), Some(maybeReferrerName.continueUrl)))
-          }).leftMap { _ => Redirect(routes.EmailConfirmedController.problemWithService())}.merge
+            Ok(view(details.newEmail, details.currentEmail, maybeReferrerName.map(_.name), maybeReferrerName.map(_.continueUrl)))
+          }).recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService()) }
+
         case _ =>
           Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))
       }
