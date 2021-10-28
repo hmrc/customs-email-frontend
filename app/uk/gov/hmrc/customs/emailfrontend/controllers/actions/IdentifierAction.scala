@@ -53,10 +53,6 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
     authorised().retrieve(Retrievals.allEnrolments and Retrievals.internalId and Retrievals.affinityGroup and Retrievals.credentialRole) {
       case allEnrolments ~ Some(internalId) ~ affinityGroup ~ credentialRole =>
         (affinityGroup, credentialRole) match {
-          case (Some(Organisation), None) =>
-            Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NotAdmin)))
-          case (Some(Agent), _) =>
-            Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.IsAgent)))
           case (Some(_), Some(User)) =>
             allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
               case Some(eori) =>
@@ -64,6 +60,10 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
                 block(AuthenticatedRequest(request, loggedInUser))
               case _ => Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
             }
+          case (Some(Organisation), _) =>
+            Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NotAdmin)))
+          case (Some(Agent), _) =>
+            Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.IsAgent)))
           case _ =>
             Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
         }
