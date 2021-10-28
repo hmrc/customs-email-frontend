@@ -52,20 +52,18 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
 
     authorised().retrieve(Retrievals.allEnrolments and Retrievals.internalId and Retrievals.affinityGroup and Retrievals.credentialRole) {
       case allEnrolments ~ Some(internalId) ~ affinityGroup ~ credentialRole =>
-        allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
-          case Some(eori) =>
-            (affinityGroup, credentialRole) match {
-              case (Some(Organisation), Some(User)) =>
+        (affinityGroup, credentialRole) match {
+          case (Some(Organisation), None) =>
+            Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NotAdmin)))
+          case (Some(Agent), _) =>
+            Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.IsAgent)))
+          case (Some(_), Some(User)) =>
+            allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
+              case Some(eori) =>
                 val loggedInUser = LoggedInUser(InternalId(internalId), affinityGroup, credentialRole, eori.value)
                 block(AuthenticatedRequest(request, loggedInUser))
-              case (Some(Organisation), _) =>
-                Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NotAdmin)))
-              case (Some(Agent), _) =>
-                Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.IsAgent)))
-              case _ =>
-                Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
+              case _ => Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
             }
-
           case _ =>
             Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
         }
