@@ -55,7 +55,6 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
         (affinityGroup, credentialRole) match {
           case (Some(Agent), _) =>
             Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.IsAgent)))
-
           case (Some(_), Some(User)) =>
             allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
               case Some(eori) =>
@@ -65,7 +64,6 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
             }
           case (Some(Organisation), _) =>
             Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NotAdmin)))
-
           case _ =>
             Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
         }
