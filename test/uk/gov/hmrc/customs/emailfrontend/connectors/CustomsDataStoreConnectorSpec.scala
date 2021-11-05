@@ -19,7 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.connectors
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfterEach
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, NO_CONTENT}
+import play.api.http.Status.{NOT_FOUND, NO_CONTENT}
 import play.api.libs.json.Json
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
@@ -27,8 +27,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, InternalServerException}
-
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 

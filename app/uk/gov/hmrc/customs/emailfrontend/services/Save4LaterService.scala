@@ -38,7 +38,7 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector) exte
     internalId: InternalId
   )(implicit hc: HeaderCarrier): Future[Option[EmailDetails]] = {
     logger.info("retrieving email address and timestamp from save 4 later")
-    save4LaterConnector.getEmail(internalId.id, emailKey)
+    save4LaterConnector.getEmailDetails(internalId.id, emailKey)
   }
 
   def saveReferrer(
@@ -53,7 +53,7 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector) exte
     internalId: InternalId
   )(implicit hc: HeaderCarrier): Future[Option[ReferrerName]] = {
     logger.info("retrieving referrer name and referrer  from mongo")
-    save4LaterConnector.getReferrer(internalId.id, referrerKey)
+    save4LaterConnector.getReferrerName(internalId.id, referrerKey)
   }
 
   def remove(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Unit] = {

@@ -19,7 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.connectors
 import play.api.http.Status._
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
-import play.api.libs.json.{JsValue, Json, OFormat, Reads}
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout, running}
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, ReferrerName}
@@ -38,13 +38,6 @@ class Save4LaterConnectorSpec extends SpecBase {
       .overrides(inject.bind[HttpClient].toInstance(mockHttpClient)).build()
   }
 
-  case class DummyModel(body: JsValue)
-
-  object DummyModel {
-    implicit val format: OFormat[DummyModel] = Json.format[DummyModel]
-    implicit val reads: Reads[DummyModel] =  Json.reads[DummyModel]
-  }
-
   "Save4LaterConnector" should {
 
     "GET email returns a response with body when OK response received" in new Setup {
@@ -57,7 +50,7 @@ class Save4LaterConnectorSpec extends SpecBase {
       running(app) {
         val connector = app.injector.instanceOf[Save4LaterConnector]
 
-        val result = connector.getEmail("id", "key").futureValue
+        val result = connector.getEmailDetails("id", "key").futureValue
         result shouldBe Some(emailDetails)
       }
     }
@@ -73,7 +66,7 @@ class Save4LaterConnectorSpec extends SpecBase {
       running(app) {
         val connector = app.injector.instanceOf[Save4LaterConnector]
 
-        val result = connector.getReferrer("id", "key").futureValue
+        val result = connector.getReferrerName("id", "key").futureValue
         result shouldBe Some(referrerName)
       }
     }
@@ -86,7 +79,7 @@ class Save4LaterConnectorSpec extends SpecBase {
       running(app) {
         val connector = app.injector.instanceOf[Save4LaterConnector]
 
-        val result = connector.getReferrer("id", "key").futureValue
+        val result = connector.getReferrerName("id", "key").futureValue
         result shouldBe None
       }
     }
@@ -99,7 +92,7 @@ class Save4LaterConnectorSpec extends SpecBase {
       running(app) {
         val connector = app.injector.instanceOf[Save4LaterConnector]
 
-        val result = connector.getEmail("id", "key").futureValue
+        val result = connector.getEmailDetails("id", "key").futureValue
         result shouldBe None
       }
     }

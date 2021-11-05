@@ -67,7 +67,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "fetch the emailDetails for the users InternalId" in {
       when(
-        mockSave4LaterConnector.getEmail(
+        mockSave4LaterConnector.getEmailDetails(
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(emailKey))(
           any[HeaderCarrier],
@@ -98,7 +98,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "fetch the referrer for the users InternalId" in {
       when(
-        mockSave4LaterConnector.getReferrer(
+        mockSave4LaterConnector.getReferrerName(
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(referrerKey))(
           any[HeaderCarrier],

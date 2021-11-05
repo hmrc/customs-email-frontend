@@ -24,7 +24,6 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.http.{BadRequestException, HttpClient, _}
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, ReferrerName}
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.control.NonFatal
@@ -34,8 +33,8 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
 
   val LoggerComponentId = "Save4LaterConnector"
 
-  def getEmail(id: String, key: String)
-            (implicit hc: HeaderCarrier, reads: Reads[EmailDetails]): Future[Option[EmailDetails]] = {
+  def getEmailDetails(id: String, key: String)
+                     (implicit hc: HeaderCarrier, reads: Reads[EmailDetails]): Future[Option[EmailDetails]] = {
 
     val url = s"${appConfig.save4LaterUrl}/$id/$key"
     http.GET[HttpResponse](url).map { response =>
@@ -50,8 +49,8 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
     }
   }
 
-  def getReferrer(id: String, key: String)
-                 (implicit hc: HeaderCarrier, reads: Reads[ReferrerName]): Future[Option[ReferrerName]] = {
+  def getReferrerName(id: String, key: String)
+                     (implicit hc: HeaderCarrier, reads: Reads[ReferrerName]): Future[Option[ReferrerName]] = {
 
     val url = s"${appConfig.save4LaterUrl}/$id/$key"
     http.GET[HttpResponse](url).map { response =>
