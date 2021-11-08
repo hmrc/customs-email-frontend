@@ -21,13 +21,13 @@ import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT}
 import play.api.libs.json.Json
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -72,7 +72,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
         .status shouldBe NO_CONTENT
     }
 
-    "return the failure response from customs data store" in {
+    "return NOT_FOUND response from customs data store" in {
       when(
         mockHttp.POST[UpdateEmail, HttpResponse](
           meq(url),
@@ -88,13 +88,25 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
         .status shouldBe NOT_FOUND
     }
 
+    "return the BAD_REQUEST exception response from customs data store" in {
+
+      val badRequestException = new BadRequestException("testMessage")
+
+      when(mockHttp.POST[UpdateEmail, HttpResponse](meq(url), meq(requestBody), meq(headers))
+        (any, any, meq(hc), any[ExecutionContext]))
+        .thenReturn(Future.failed(badRequestException))
+
+      doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
+
+      assertThrows[BadRequestException](await(testConnector.storeEmailAddress(testEori, testEmail, testDateTime)))
+
+    }
+
     "UpdateEmail model object serializes correctly" in {
       val updateEmail = UpdateEmail(testEori, testEmail, testDateTime)
       Json
         .toJson(updateEmail)
         .toString() shouldBe """{"eori":"GB1234556789","address":"email@test.com","timestamp":"2021-01-01T11:11:11Z"}"""
     }
-
   }
-
 }

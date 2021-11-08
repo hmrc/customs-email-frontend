@@ -19,7 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.services
 import org.mockito.ArgumentMatchers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.time.{Millis, Span}
-import play.api.libs.json.Reads
+import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
@@ -67,7 +67,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "fetch the emailDetails for the users InternalId" in {
       when(
-        mockSave4LaterConnector.get[EmailDetails](
+        mockSave4LaterConnector.getEmailDetails(
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(emailKey))(
           any[HeaderCarrier],
@@ -98,7 +98,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "fetch the referrer for the users InternalId" in {
       when(
-        mockSave4LaterConnector.get[ReferrerName](
+        mockSave4LaterConnector.getReferrerName(
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(referrerKey))(
           any[HeaderCarrier],

@@ -22,8 +22,8 @@ import play.mvc.Http.Status._
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.http.{BadRequestException, HttpClient, _}
-
 import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, ReferrerName}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.control.NonFatal
@@ -33,25 +33,29 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
 
   val LoggerComponentId = "Save4LaterConnector"
 
-  def get[T](id: String, key: String)
-            (implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = {
-    val url = s"${appConfig.save4LaterUrl}/$id/$key"
-    logger.info(s"GET: $url")
-    http.GET[HttpResponse](url).map { response =>
+  def getEmailDetails(id: String, key: String)
+                     (implicit hc: HeaderCarrier, reads: Reads[EmailDetails]): Future[Option[EmailDetails]] = {
 
-      response.status match {
-        case OK =>
-          auditCallResponse(url, response.json)
-          Some(response.json.as[T])
-        case NOT_FOUND =>
-          auditCallResponse(url, response.status)
-          None
-        case _ => throw new BadRequestException(s"Status:${response.status}")
-      }
-    }.recoverWith {
-      case NonFatal(e) =>
-        logger.error(s"Request failed for call to $url, exception: ${e.getMessage}", e)
-        Future.failed(e)
+    val url = s"${appConfig.save4LaterUrl}/$id/$key"
+    http.GET[EmailDetails](url).map { response =>
+      auditCallResponse[EmailDetails](url, response)
+      Some(response)
+    }.recover {
+      case e => logger.error(s"Unable to get Email Details :${e.getMessage}")
+        None
+    }
+  }
+
+  def getReferrerName(id: String, key: String)
+                     (implicit hc: HeaderCarrier, reads: Reads[ReferrerName]): Future[Option[ReferrerName]] = {
+
+    val url = s"${appConfig.save4LaterUrl}/$id/$key"
+    http.GET[ReferrerName](url).map { response =>
+      auditCallResponse[ReferrerName](url, response)
+      Some(response)
+    }.recover {
+      case e => logger.error(s"Unable to get Referrer :${e.getMessage}")
+        None
     }
   }
 
