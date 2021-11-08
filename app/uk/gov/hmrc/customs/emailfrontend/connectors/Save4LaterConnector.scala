@@ -37,12 +37,9 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
                      (implicit hc: HeaderCarrier, reads: Reads[EmailDetails]): Future[Option[EmailDetails]] = {
 
     val url = s"${appConfig.save4LaterUrl}/$id/$key"
-    http.GET[HttpResponse](url).map { response =>
-      response.status match {
-        case OK =>
-          auditCallResponse(url, response.json)
-          response.json.asOpt[EmailDetails]
-      }
+    http.GET[EmailDetails](url).map { response =>
+      auditCallResponse[EmailDetails](url, response)
+      Some(response)
     }.recover {
       case e => logger.error(s"Unable to get Email Details :${e.getMessage}")
         None
@@ -53,12 +50,9 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
                      (implicit hc: HeaderCarrier, reads: Reads[ReferrerName]): Future[Option[ReferrerName]] = {
 
     val url = s"${appConfig.save4LaterUrl}/$id/$key"
-    http.GET[HttpResponse](url).map { response =>
-      response.status match {
-        case OK =>
-          auditCallResponse(url, response.json)
-          response.json.asOpt[ReferrerName]
-      }
+    http.GET[ReferrerName](url).map { response =>
+      auditCallResponse[ReferrerName](url, response)
+      Some(response)
     }.recover {
       case e => logger.error(s"Unable to get Referrer :${e.getMessage}")
         None

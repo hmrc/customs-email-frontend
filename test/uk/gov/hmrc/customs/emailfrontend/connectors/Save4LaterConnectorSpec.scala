@@ -44,8 +44,8 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       private val emailDetails = EmailDetails(None, "test@test.com", None)
 
-      when(mockHttpClient.GET[HttpResponse](any, any, any)(any[HttpReads[HttpResponse]], any, any))
-        .thenReturn(Future.successful(HttpResponse(OK, Json.toJson(emailDetails), Map.empty[String, Seq[String]])))
+      when(mockHttpClient.GET[EmailDetails](any, any, any)(any, any, any))
+        .thenReturn(Future.successful(emailDetails))
 
       running(app) {
         val connector = app.injector.instanceOf[Save4LaterConnector]
@@ -59,9 +59,8 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       private val referrerName = ReferrerName("Name", "continueUrl")
 
-
-      when(mockHttpClient.GET[HttpResponse](any, any, any)(any[HttpReads[HttpResponse]], any, any))
-        .thenReturn(Future.successful(HttpResponse(OK, Json.toJson(referrerName), Map.empty[String, Seq[String]])))
+      when(mockHttpClient.GET[ReferrerName](any, any, any)(any, any, any))
+        .thenReturn(Future.successful(referrerName))
 
       running(app) {
         val connector = app.injector.instanceOf[Save4LaterConnector]
