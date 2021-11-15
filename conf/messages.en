@@ -32,7 +32,7 @@ customs.emailfrontend.confirm-your-email.yes=Yes, this is the email address I wa
 customs.emailfrontend.confirm-your-email.no=No, I need to change this email
 customs.emailfrontend.email-confirmed.title-and-heading=Email address confirmed
 customs.emailfrontend.email-confirmed.info1=Your email address <strong class="bold">{0}</strong> will be active in 2 hours.
-customs.emailfrontend.email-confirmed.info2=Until then we will send CDS emails to <strong class="bold">{0}</strong>.
+customs.emailfrontend.email-confirmed.info2=Until then we will send CDS emails to {0}.
 customs.emailfrontend.email-confirmed.redirect.info.customs-finance=You can now continue to <a href="{0}">Get your import VAT and duty adjustment statements.</a>
 customs.emailfrontend.email-confirmed.redirect.info.customs-exports=You can now continue to create, view and manage declarations on the <a href="{0}">CDS exports declaration online service.</a>
 customs.emailfrontend.email-confirmed.redirect.info.cds-file-upload=You can now continue to <a href="{0}">add a customs document to a CDS declaration.</a>

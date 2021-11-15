@@ -29,7 +29,7 @@ customs.emailfrontend.confirm-your-email.yes=Iawn, dyma’r cyfeiriad e-bost rwy
 customs.emailfrontend.confirm-your-email.no=Na, mae angen i mi newid y cyfeiriad e-bost hwn
 customs.emailfrontend.email-confirmed.title-and-heading=Cyfeiriad e-bost wedi’i gadarnhau
 customs.emailfrontend.email-confirmed.info1=Bydd eich cyfeiriad e-bost <strong class="bold">{0}</strong> yn dod i rym ymhen 2 awr.
-customs.emailfrontend.email-confirmed.info2=Tan hynny, byddwn yn anfon e-byst CDS i <strong class="bold">{0}</strong>.
+customs.emailfrontend.email-confirmed.info2=Tan hynny, byddwn yn anfon e-byst CDS i {0}.
 customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=Gallwch nawr barhau i <a href="{0}">fynd i mewn i'ch Movement Reference Number.</a>
 customs.emailfrontend.verify-email.title=Cadarnhau’ch cyfeiriad e-bost
 customs.emailfrontend.verify-email.para1=Cliciwch ar y cysylltiad yn yr e-bost rydym wedi’i anfon at <strong class="bold">{0}</strong> i gadarnhau’ch cyfeiriad e-bost
