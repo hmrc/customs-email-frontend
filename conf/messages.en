@@ -20,8 +20,8 @@ customs.emailfrontend.start.related-content-link3=The Duty Deferment Scheme
 customs.emailfrontend.start.related-content-link4=VAT refunds on imported goods
 customs.emailfrontend.start.related-content-link5=Tariff data
 
-customs.emailfrontend.change-your-email.title-and-heading=Enter a new email address
-customs.emailfrontend.change-your-email.label=We''ll use your new email address to replace {0}
+customs.emailfrontend.change-your-email.title-and-heading=Enter your email address
+customs.emailfrontend.change-your-email.label=You need to verify <strong class="bold">{0}</strong> or change it
 customs.emailfrontend.what-is-your-email.label=What is your email address?
 customs.emailfrontend.what-is-your-email.title-and-heading=What is your email address?
 customs.emailfrontend.confirm-your-email.title-and-heading=Check your email address
@@ -37,11 +37,11 @@ customs.emailfrontend.email-confirmed.redirect.info.customs-finance=You can now 
 customs.emailfrontend.email-confirmed.redirect.info.customs-exports=You can now continue to create, view and manage declarations on the <a href="{0}">CDS exports declaration online service.</a>
 customs.emailfrontend.email-confirmed.redirect.info.cds-file-upload=You can now continue to <a href="{0}">add a customs document to a CDS declaration.</a>
 customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=You can now continue to <a href="{0}">enter your Movement Reference Number.</a>
-customs.emailfrontend.verify-email.title=Verify your email address
-customs.emailfrontend.verify-email.para1=We have sent an email to {0}. Click on the link in the email to verify your email address.
+customs.emailfrontend.verify-email.title=Confirm your email address
+customs.emailfrontend.verify-email.para1=Click on the link in the email we''ve sent to <strong class="bold">{0}</strong> to confirm your email address.
 customs.emailfrontend.verify-email.para2=You can <a href="{0}">change your email address</a> if it is not correct.
 customs.emailfrontend.verify-email.progressive-disclosure.heading=I did not get an email
-customs.emailfrontend.verify-email.progressive-disclosure.content=Check your junk folder. If it is not there we can <a href="{0}">send it again</a>. If we send your email again, any previous links will stop working.
+customs.emailfrontend.verify-email.progressive-disclosure.content=Check your spam or junk mail folders. If it's not there we can <a href="{0}">send it again</a>. If we send your email again, any previous links will stop working.
 
 #error messages
 customs.emailfrontend.error-summary.problem=There is a problem.
