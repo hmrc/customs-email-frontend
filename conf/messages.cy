@@ -18,7 +18,7 @@ customs.emailfrontend.start.related-content-link3=Y Cynllun Gohirio Tollau
 customs.emailfrontend.start.related-content-link4=Ad-daliadau TAW ar nwyddau wedi’u mewnforio
 customs.emailfrontend.start.related-content-link5=Data tariffau
 customs.emailfrontend.change-your-email.title-and-heading=Nodwch eich cyfeiriad e-bost
-customs.emailfrontend.change-your-email.label=Mae angen i chi ddilysu {0} neu ei newid
+customs.emailfrontend.change-your-email.label=Mae angen i chi ddilysu <strong class="bold">{0}</strong> neu ei newid
 customs.emailfrontend.what-is-your-email.label=Beth yw’ch cyfeiriad e-bost?
 customs.emailfrontend.what-is-your-email.title-and-heading=Beth yw’ch cyfeiriad e-bost?
 customs.emailfrontend.confirm-your-email.title-and-heading=Gwirio’ch cyfeiriad e-bost
@@ -33,7 +33,6 @@ customs.emailfrontend.email-confirmed.info2=Tan hynny, byddwn yn anfon e-byst CD
 customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=Gallwch nawr barhau i <a href="{0}">fynd i mewn i'ch Movement Reference Number.</a>
 customs.emailfrontend.verify-email.title=Cadarnhau’ch cyfeiriad e-bost
 customs.emailfrontend.verify-email.para1=Cliciwch ar y cysylltiad yn yr e-bost rydym wedi’i anfon at <strong class="bold">{0}</strong> i gadarnhau’ch cyfeiriad e-bost
-customs.emailfrontend.verify-email.para2=Gallwch <a href="{0}">newid eich cyfeiriad e-bost</a> os nad yw’n gywir.
 customs.emailfrontend.verify-email.progressive-disclosure.heading=Ches i ddim e-bost
 customs.emailfrontend.verify-email.progressive-disclosure.content=Gwiriwch eich ffolderi e-byst sbam neu sothach. Os nad yw’r e-bost yno, gallwn <a href="{0}">ei hanfon eto</a>. Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio
 customs.emailfrontend.error-summary.problem=Mae problem wedi codi.
