@@ -35,7 +35,7 @@
     name = field.name,
     value = field.value,
     label = Label(
-        content = Text(label)
+        content = HtmlContent(Html(label))
     ),
     errorMessage = field.error.map(e => ErrorMessage(
         content = Text(messages(e.message))

@@ -17,8 +17,8 @@ customs.emailfrontend.start.related-content-link2=Gwirio a oes rhaid i chi gofre
 customs.emailfrontend.start.related-content-link3=Y Cynllun Gohirio Tollau
 customs.emailfrontend.start.related-content-link4=Ad-daliadau TAW ar nwyddau wedi’u mewnforio
 customs.emailfrontend.start.related-content-link5=Data tariffau
-customs.emailfrontend.change-your-email.title-and-heading=Nodwch gyfeiriad e-bost newydd
-customs.emailfrontend.change-your-email.label=Byddwn yn defnyddio’ch cyfeiriad e-bost newydd i ddisodli {0}
+customs.emailfrontend.change-your-email.title-and-heading=Nodwch eich cyfeiriad e-bost
+customs.emailfrontend.change-your-email.label=Mae angen i chi ddilysu <strong class="bold">{0}</strong> neu ei newid
 customs.emailfrontend.what-is-your-email.label=Beth yw’ch cyfeiriad e-bost?
 customs.emailfrontend.what-is-your-email.title-and-heading=Beth yw’ch cyfeiriad e-bost?
 customs.emailfrontend.confirm-your-email.title-and-heading=Gwirio’ch cyfeiriad e-bost
@@ -29,13 +29,12 @@ customs.emailfrontend.confirm-your-email.yes=Iawn, dyma’r cyfeiriad e-bost rwy
 customs.emailfrontend.confirm-your-email.no=Na, mae angen i mi newid y cyfeiriad e-bost hwn
 customs.emailfrontend.email-confirmed.title-and-heading=Cyfeiriad e-bost wedi’i gadarnhau
 customs.emailfrontend.email-confirmed.info1=Bydd eich cyfeiriad e-bost <strong class="bold">{0}</strong> yn dod i rym ymhen 2 awr.
-customs.emailfrontend.email-confirmed.info2=Tan hynny, byddwn yn anfon e-byst CDS i <strong class="bold">{0}</strong>.
+customs.emailfrontend.email-confirmed.info2=Tan hynny, byddwn yn anfon e-byst CDS i {0}.
 customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=Gallwch nawr barhau i <a href="{0}">fynd i mewn i'ch Movement Reference Number.</a>
-customs.emailfrontend.verify-email.title=Dilyswch eich cyfeiriad e-bost
-customs.emailfrontend.verify-email.para1=Rydym wedi anfon e-bost i {0}. Cliciwch ar y cysylltiad yn yr e-bost i ddilysu’ch cyfeiriad e-bost.
-customs.emailfrontend.verify-email.para2=Gallwch <a href="{0}">newid eich cyfeiriad e-bost</a> os nad yw’n gywir.
+customs.emailfrontend.verify-email.title=Cadarnhau’ch cyfeiriad e-bost
+customs.emailfrontend.verify-email.para1=Cliciwch ar y cysylltiad yn yr e-bost rydym wedi’i anfon at <strong class="bold">{0}</strong> i gadarnhau’ch cyfeiriad e-bost
 customs.emailfrontend.verify-email.progressive-disclosure.heading=Ches i ddim e-bost
-customs.emailfrontend.verify-email.progressive-disclosure.content=Chwiliwch yn eich ffolder sothach. Os nad yw’r neges yno, gallwn <a href="{0}">ei hanfon eto</a>. Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio.
+customs.emailfrontend.verify-email.progressive-disclosure.content=Gwiriwch eich ffolderi e-byst sbam neu sothach. Os nad yw’r e-bost yno, gallwn <a href="{0}">ei hanfon eto</a>. Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio
 customs.emailfrontend.error-summary.problem=Mae problem wedi codi.
 customs.emailfrontend.errors.valid-email.empty=Nodwch eich cyfeiriad e-bost
 customs.emailfrontend.errors.valid-email.too-long=Mae’n rhaid i’r cyfeiriad e-bost fod yn 50 o gymeriadau neu lai
