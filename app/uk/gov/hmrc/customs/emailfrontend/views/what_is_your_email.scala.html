@@ -36,7 +36,7 @@
         @h1_xl(messages("customs.emailfrontend.what-is-your-email.label", Some("email-label")))
         <label class="govuk-label" for="email" aria-label="email"/>
         <div class="govuk-form-group">
-            <input class="govuk-input" id="email" name="email" type="text" aria-labelledby="email">
+            <input class="govuk-input" id="email" name="email" type="text" aria-labelledby="email" autocomplete="on">
         </div>
         @button(messages("customs.emailfrontend.continue-button"))
     }
