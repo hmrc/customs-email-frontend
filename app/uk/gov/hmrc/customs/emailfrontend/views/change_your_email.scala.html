@@ -33,7 +33,7 @@
 
     @errorSummary(emailForm)
 
-    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.submit(),'id -> "emailForm", 'novalidate -> "novalidate") {
+    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.submit(),'id -> "emailForm", 'novalidate -> "novalidate", 'autocomplete -> "email") {
         @CSRF.formField
         @h1_xl(messages("customs.emailfrontend.change-your-email.title-and-heading"))
         @input_text(emailForm("email"), messages("customs.emailfrontend.change-your-email.label", email))
