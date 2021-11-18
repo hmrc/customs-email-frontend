@@ -20,10 +20,11 @@ import play.api.Logging
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
+import uk.gov.hmrc.customs.emailfrontend.connectors.{ErrorResponse, Save4LaterConnector}
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.AmendmentInProgressController
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -31,32 +32,25 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector) exte
   private val referrerKey = "referrer"
   private val emailKey = "email"
 
-  def saveEmail(internalId: InternalId, emailDetails: EmailDetails)(implicit hc: HeaderCarrier): Future[Unit] =
+  def saveEmail(internalId: InternalId, emailDetails: EmailDetails)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, Unit]] =
     save4LaterConnector.put[EmailDetails](internalId.id, emailKey, emailDetails)
 
-  def fetchEmail(
-    internalId: InternalId
-  )(implicit hc: HeaderCarrier): Future[Option[EmailDetails]] = {
+  def fetchEmail(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[EmailDetails]] = {
     logger.info("retrieving email address and timestamp from save 4 later")
     save4LaterConnector.getEmailDetails(internalId.id, emailKey)
   }
 
-  def saveReferrer(
-    internalId: InternalId,
-    referrerName: ReferrerName
-  )(implicit hc: HeaderCarrier): Future[Unit] = {
+  def saveReferrer(internalId: InternalId, referrerName: ReferrerName)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, Unit]] = {
     logger.info("saving referrer name and referrer url  from mongo")
     save4LaterConnector.put[ReferrerName](internalId.id, referrerKey, referrerName)
   }
 
-  def fetchReferrer(
-    internalId: InternalId
-  )(implicit hc: HeaderCarrier): Future[Option[ReferrerName]] = {
+  def fetchReferrer(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[ReferrerName]] = {
     logger.info("retrieving referrer name and referrer  from mongo")
     save4LaterConnector.getReferrerName(internalId.id, referrerKey)
   }
 
-  def remove(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Unit] = {
+  def remove(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, Unit]] = {
     logger.info("removing cached data from  mongo")
     save4LaterConnector.delete(internalId.id)
   }

@@ -21,7 +21,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.time.{Millis, Span}
 import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
-import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
+import uk.gov.hmrc.customs.emailfrontend.connectors.{APIError, Save4LaterConnector}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
@@ -57,7 +57,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
           ArgumentMatchers.eq(emailKey),
           ArgumentMatchers.eq(emailDetails)
         )(any[HeaderCarrier])
-      ).thenReturn(Future.successful(()))
+      ).thenReturn(Future.successful(Right()))
 
       val result: Unit = service
         .saveEmail(internalId, emailDetails)
@@ -88,7 +88,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
           ArgumentMatchers.eq(referrerKey),
           ArgumentMatchers.eq(referrerName)
         )(any[HeaderCarrier])
-      ).thenReturn(Future.successful(()))
+      ).thenReturn(Future.successful(Right()))
 
       val result: Unit = service
         .saveReferrer(internalId, referrerName)
@@ -116,7 +116,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
       when(
         mockSave4LaterConnector.delete(ArgumentMatchers.eq(internalId.id))(
           any[HeaderCarrier]))
-        .thenReturn(Future.successful(()))
+        .thenReturn(Future.successful(Right()))
 
       val result: Unit = service
         .remove(internalId)

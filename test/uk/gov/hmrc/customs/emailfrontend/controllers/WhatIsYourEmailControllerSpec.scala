@@ -62,7 +62,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now().minusDays(2))))))
 
       when(mockSave4LaterService.remove(any)(any))
-        .thenReturn(Future.successful(()))
+        .thenReturn(Future.successful(Right()))
 
       running(app) {
 
@@ -388,7 +388,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       when(mockSave4LaterService.saveEmail(any, meq(EmailDetails(Some("test@test.com"), "valid@email.com", None)))(any))
-        .thenReturn(Future.successful(()))
+        .thenReturn(Future.successful(Right()))
 
       running(app) {
 
@@ -458,7 +458,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for verifyEmail method when the email is valid" in new Setup  {
       when(mockSave4LaterService.saveEmail(any, any)(any))
-        .thenReturn(Future.successful(()))
+        .thenReturn(Future.successful(Right()))
 
       running(app) {
 

@@ -116,7 +116,10 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
-      assertThrows[BadRequestException](await(connector.delete("id")))
+      running(app) {
+        val result = connector.delete("").futureValue
+        result shouldBe Left(APIError(400))
+      }
     }
 
     "PUT returns unit when NO_CONTENT response received" in new Setup {
@@ -169,8 +172,10 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
-      assertThrows[BadRequestException](await(connector.put("id", "key", testJson)))
-
+      running(app) {
+        val result = connector.put("", "", testJson).futureValue
+        result shouldBe Left(APIError(400))
+      }
     }
   }
 }

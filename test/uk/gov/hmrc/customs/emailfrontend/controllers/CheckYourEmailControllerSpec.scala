@@ -111,7 +111,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
     "have a status of SEE_OTHER when no is selected" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-      when(mockSave4LaterService.remove(any)(any)).thenReturn(Future.successful(()))
+      when(mockSave4LaterService.remove(any)(any)).thenReturn(Future.successful(Right()))
 
       running(app) {
 
@@ -160,7 +160,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
       when(mockSave4LaterService.saveEmail(any, any)(any))
-        .thenReturn(Future.successful(()))
+        .thenReturn(Future.successful(Right()))
       when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
         .thenReturn(Future.successful(Some(EmailAlreadyVerified)))
 
