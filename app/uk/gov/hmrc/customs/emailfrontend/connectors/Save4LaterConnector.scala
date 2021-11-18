@@ -22,6 +22,7 @@ import play.api.libs.json._
 import play.mvc.Http.Status._
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, HttpErrorResponse, UnhandledException}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, ReferrerName}
 import uk.gov.hmrc.http.{HttpClient, _}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -59,7 +60,7 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
   }
 
   def put[T](id: String, key: String, payload: JsValue)
-            (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, Unit]] = {
+            (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
     val url = s"${appConfig.save4LaterUrl}/$id/$key"
     logger.info(s"PUT: $url")
     auditCallRequest(url, payload)
@@ -67,15 +68,15 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
       auditCallResponse(url, response.status)
       response.status match {
         case NO_CONTENT | CREATED | OK => Right(())
-        case _ => Left(APIError(response.status))
+        case _ => Left(BadRequest)
       }
     }.recover {
       case e => logger.error(s"Request failed for call to $url, exception: ${e.getMessage}")
-        Left(UnknownError)
+        Left(UnhandledException)
     }
   }
 
-  def delete[T](id: String)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, Unit]] = {
+  def delete[T](id: String)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
     val url = s"${appConfig.save4LaterUrl}/$id"
     logger.info(s"DELETE: $url")
     auditCallRequest(url, JsNull)
@@ -83,11 +84,11 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
       auditCallResponse(url, response.status)
       response.status match {
         case NO_CONTENT => Right(())
-        case _ => Left(APIError(response.status))
+        case _ => Left(BadRequest)
       }
     }.recover {
       case e => logger.error(s"Request failed for call to $url, exception: ${e.getMessage}")
-        Left(UnknownError)
+        Left(UnhandledException)
     }
   }
 
@@ -113,9 +114,3 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
       )
     }
 }
-
-sealed trait ErrorResponse
-
-case class APIError(status: Int) extends ErrorResponse
-
-case object UnknownError extends ErrorResponse

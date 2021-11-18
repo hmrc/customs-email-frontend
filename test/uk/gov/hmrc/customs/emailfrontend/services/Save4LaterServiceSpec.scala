@@ -19,13 +19,12 @@ package uk.gov.hmrc.customs.emailfrontend.services
 import org.mockito.ArgumentMatchers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.time.{Millis, Span}
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.Reads
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
-import uk.gov.hmrc.customs.emailfrontend.connectors.{APIError, Save4LaterConnector}
+import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
-
 import scala.concurrent.Future
 import scala.concurrent.duration.{FiniteDuration, _}
 
@@ -34,14 +33,12 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
   private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private val internalId = InternalId("internalId-123")
   private val timestamp = DateTimeUtil.dateTime
-  private val emailDetails =
-    EmailDetails(None, "test@test.com", Some(timestamp))
+  private val emailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
   private val defaultTimeout: FiniteDuration = 5.seconds
   private val emailKey = "email"
   private val referrerKey = "referrer"
   private val referrerName = ReferrerName("customs-finance", "/xyz")
-  private val service =
-    new Save4LaterService(mockSave4LaterConnector)
+  private val service = new Save4LaterService(mockSave4LaterConnector)
 
   override implicit def patienceConfig: PatienceConfig =
     super.patienceConfig.copy(timeout = Span(defaultTimeout.toMillis, Millis))

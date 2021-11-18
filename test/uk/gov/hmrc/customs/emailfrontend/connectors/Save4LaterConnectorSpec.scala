@@ -20,11 +20,12 @@ import play.api.http.Status._
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.{JsValue, Json}
-import play.api.test.Helpers.{await, defaultAwaitTimeout, running}
+import play.api.test.Helpers.running
 import play.api.{Application, inject}
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpReads, HttpResponse, SessionId}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, SessionId}
 import scala.concurrent.Future
 
 class Save4LaterConnectorSpec extends SpecBase {
@@ -118,7 +119,7 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       running(app) {
         val result = connector.delete("").futureValue
-        result shouldBe Left(APIError(400))
+        result shouldBe Left(BadRequest)
       }
     }
 
@@ -174,7 +175,7 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       running(app) {
         val result = connector.put("", "", testJson).futureValue
-        result shouldBe Left(APIError(400))
+        result shouldBe Left(BadRequest)
       }
     }
   }
