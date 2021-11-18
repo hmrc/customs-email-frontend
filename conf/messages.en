@@ -20,7 +20,8 @@ customs.emailfrontend.start.related-content-link3=The Duty Deferment Scheme
 customs.emailfrontend.start.related-content-link4=VAT refunds on imported goods
 customs.emailfrontend.start.related-content-link5=Tariff data
 
-customs.emailfrontend.change-your-email.title-and-heading=Enter your email address
+customs.emailfrontend.change-your-email.title=Enter your email address - Manage your email address for CDS - GOV.UK
+customs.emailfrontend.change-your-email.heading=Enter your email address
 customs.emailfrontend.change-your-email.label=You need to verify <strong class="bold">{0}</strong> or change it
 customs.emailfrontend.what-is-your-email.label=What is your email address?
 customs.emailfrontend.what-is-your-email.title-and-heading=What is your email address?

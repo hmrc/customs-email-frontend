@@ -29,13 +29,13 @@
 
 @(emailForm: Form[Email], email: String, appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
 
-@layout(Some(messages("customs.emailfrontend.change-your-email.title-and-heading"))) {
+@layout(Some(messages("customs.emailfrontend.change-your-email.title"))) {
 
     @errorSummary(emailForm)
 
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.submit(),'id -> "emailForm", 'novalidate -> "novalidate", 'autocomplete -> "email") {
         @CSRF.formField
-        @h1_xl(messages("customs.emailfrontend.change-your-email.title-and-heading"))
+        @h1_xl(messages("customs.emailfrontend.change-your-email.heading"))
         @input_text(emailForm("email"), messages("customs.emailfrontend.change-your-email.label", email))
         @button(messages("customs.emailfrontend.continue-button"))
     }
