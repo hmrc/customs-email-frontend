@@ -16,111 +16,71 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import org.mockito.ArgumentMatchers
+import org.joda.time.DateTime
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.time.{Millis, Span}
 import play.api.libs.json.Reads
+import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
-import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.Future
-import scala.concurrent.duration.{FiniteDuration, _}
 
 class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
-  private val mockSave4LaterConnector = mock[Save4LaterConnector]
-  private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
-  private val internalId = InternalId("internalId-123")
-  private val timestamp = DateTimeUtil.dateTime
-  private val emailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
-  private val defaultTimeout: FiniteDuration = 5.seconds
-  private val emailKey = "email"
-  private val referrerKey = "referrer"
-  private val referrerName = ReferrerName("customs-finance", "/xyz")
-  private val service = new Save4LaterService(mockSave4LaterConnector)
 
-  override implicit def patienceConfig: PatienceConfig =
-    super.patienceConfig.copy(timeout = Span(defaultTimeout.toMillis, Millis))
-
-  override protected def beforeEach(): Unit =
-    reset(mockSave4LaterConnector)
+  trait Setup {
+    implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+    protected val internalId: InternalId = InternalId("internalId-123")
+    protected val timestamp: DateTime = DateTimeUtil.dateTime
+    protected val emailDetails: EmailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
+    protected val referrerName: ReferrerName = ReferrerName("customs-finance", "/xyz")
+    protected val mockSave4LaterConnector = mock[Save4LaterConnector]
+    protected val service = new Save4LaterService(mockSave4LaterConnector)
+  }
 
   "Save4LaterService" should {
-    "save the emailDetails against the users InternalId" in {
-      when(
-        mockSave4LaterConnector.put[EmailDetails](
-          ArgumentMatchers.eq(internalId.id),
-          ArgumentMatchers.eq(emailKey),
-          ArgumentMatchers.eq(emailDetails)
-        )(any[HeaderCarrier])
+    "save the emailDetails against the users InternalId" in new Setup {
+
+      when(mockSave4LaterConnector.put[EmailDetails](any, any, any)(any[HeaderCarrier])
       ).thenReturn(Future.successful(Right()))
 
-      val result: Unit = service
-        .saveEmail(internalId, emailDetails)
-        .futureValue
+      val result: Unit = service.saveEmail(internalId, emailDetails).futureValue
       result shouldBe (()) //TODO - ????
     }
 
-    "fetch the emailDetails for the users InternalId" in {
-      when(
-        mockSave4LaterConnector.getEmailDetails(
-          ArgumentMatchers.eq(internalId.id),
-          ArgumentMatchers.eq(emailKey))(
-          any[HeaderCarrier],
-          any[Reads[EmailDetails]]
-        )
+    "fetch the emailDetails for the users InternalId" in new Setup {
+      when(mockSave4LaterConnector.getEmailDetails(any, any)(any[HeaderCarrier], any[Reads[EmailDetails]])
       ).thenReturn(Future.successful(Some(emailDetails)))
 
-      val result = service
-        .fetchEmail(internalId)
-        .futureValue
+      val result = service.fetchEmail(internalId).futureValue
+
       result shouldBe Some(emailDetails)
     }
 
-    "save the referrer against the users InternalId" in {
-      when(
-        mockSave4LaterConnector.put[ReferrerName](
-          ArgumentMatchers.eq(internalId.id),
-          ArgumentMatchers.eq(referrerKey),
-          ArgumentMatchers.eq(referrerName)
-        )(any[HeaderCarrier])
+    "save the referrer against the users InternalId" in new Setup {
+      when(mockSave4LaterConnector.put[ReferrerName](any, any, any)(any[HeaderCarrier])
       ).thenReturn(Future.successful(Right()))
 
-      val result: Unit = service
-        .saveReferrer(internalId, referrerName)
-        .futureValue
+      val result: Unit = service.saveReferrer(internalId, referrerName).futureValue
       result shouldBe (())
     }
 
-    "fetch the referrer for the users InternalId" in {
-      when(
-        mockSave4LaterConnector.getReferrerName(
-          ArgumentMatchers.eq(internalId.id),
-          ArgumentMatchers.eq(referrerKey))(
-          any[HeaderCarrier],
-          any[Reads[ReferrerName]]
-        )
+    "fetch the referrer for the users InternalId" in new Setup {
+      when(mockSave4LaterConnector.getReferrerName(any, any)(any[HeaderCarrier], any[Reads[ReferrerName]])
       ).thenReturn(Future.successful(Some(referrerName)))
 
-      val result = service
-        .fetchReferrer(internalId)
-        .futureValue
+      val result = service.fetchReferrer(internalId).futureValue
       result shouldBe Some(referrerName)
     }
 
-    "remove the id" in {
-      when(
-        mockSave4LaterConnector.delete(ArgumentMatchers.eq(internalId.id))(
-          any[HeaderCarrier]))
+    "remove the id" in new Setup {
+      when(mockSave4LaterConnector.delete(any)(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right()))
 
-      val result: Unit = service
-        .remove(internalId)
-        .futureValue
+      val result: Unit = service.remove(internalId).futureValue
       result shouldBe (())
     }
-
   }
-
 }
