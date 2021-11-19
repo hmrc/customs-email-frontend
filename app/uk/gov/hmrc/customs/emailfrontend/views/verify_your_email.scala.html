@@ -15,8 +15,6 @@
  *@
 
 @import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
-@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController
-@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController
 @import views.html.helper._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
@@ -29,7 +27,7 @@
 @(email: String)(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.verify-email.title"))) {
-    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.submit(), 'novalidate -> "novalidate") {
+    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.submit, 'novalidate -> "novalidate") {
         @CSRF.formField
         @h1_xl(messages("customs.emailfrontend.verify-email.title"))
         @p(Html(messages("customs.emailfrontend.verify-email.para1", email)))
@@ -39,7 +37,7 @@
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">@messages("customs.emailfrontend.verify-email.progressive-disclosure.heading")</span>
                 </summary>
-                <div class="govuk-details__text">@Html(messages("customs.emailfrontend.verify-email.progressive-disclosure.content", uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show().url))</div>
+                <div class="govuk-details__text">@Html(messages("customs.emailfrontend.verify-email.progressive-disclosure.content", uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show.url))</div>
             </details>
         </div>
     }

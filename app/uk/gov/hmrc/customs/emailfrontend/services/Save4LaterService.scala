@@ -73,7 +73,7 @@ object Save4LaterService extends Logging {
       save4LaterService.fetchEmail(internalId).flatMap {
         case Some(data) if data.amendmentInProgress => {
           logger.info("email amendment in-progress")
-          Future.successful(Redirect(AmendmentInProgressController.show()))
+          Future.successful(Redirect(AmendmentInProgressController.show))
         }
         case Some(EmailDetails(_, _, Some(_))) => {
           logger.info("email amendment completed")

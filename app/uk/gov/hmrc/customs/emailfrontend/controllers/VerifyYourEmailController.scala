@@ -38,7 +38,7 @@ class VerifyYourEmailController @Inject()(identify: IdentifierAction,
   def show: Action[AnyContent] = (identify).async { implicit request =>
       save4LaterService.routeBasedOnAmendment(request.user.internalId)(
         redirectWithEmail,
-        Future.successful(Redirect(routes.SignOutController.signOut()))
+        Future.successful(Redirect(routes.SignOutController.signOut))
       )
     }
 

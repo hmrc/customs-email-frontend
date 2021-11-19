@@ -43,7 +43,7 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
     identify.async { implicit request =>
       save4LaterService.routeBasedOnAmendment(request.user.internalId)(
         details => Future.successful(Ok(view(confirmEmailForm, details.newEmail))),
-        noEmail = Future.successful(Redirect(routes.SignOutController.signOut()))
+        noEmail = Future.successful(Redirect(routes.SignOutController.signOut))
       )
     }
 
@@ -56,19 +56,19 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
         )
       case None =>
         logger.warn("emailStatus cache none, user logged out")
-        Future.successful(Redirect(routes.SignOutController.signOut()))
+        Future.successful(Redirect(routes.SignOutController.signOut))
     }
   }
 
   private def callEmailVerificationService(internalId: InternalId, details: EmailDetails, eori: String)
                                           (implicit request: Request[AnyContent]): Future[Result] =
-    emailVerificationService.createEmailVerificationRequest(details, routes.EmailConfirmedController.show().url, eori).flatMap {
-      case Some(EmailVerificationRequestSent) => Future.successful(Redirect(routes.VerifyYourEmailController.show()))
+    emailVerificationService.createEmailVerificationRequest(details, routes.EmailConfirmedController.show.url, eori).flatMap {
+      case Some(EmailVerificationRequestSent) => Future.successful(Redirect(routes.VerifyYourEmailController.show))
       case Some(EmailAlreadyVerified) =>
         save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
-          Redirect(routes.EmailConfirmedController.show())
+          Redirect(routes.EmailConfirmedController.show)
         }
-      case _ => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService()))
+      case _ => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService))
     }
 
   private def handleYesNo(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)
@@ -78,10 +78,10 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
       case _ =>
         save4LaterService
           .remove(internalId)
-          .flatMap(_ => Future.successful(Redirect(routes.WhatIsYourEmailController.create())))
+          .flatMap(_ => Future.successful(Redirect(routes.WhatIsYourEmailController.create)))
     }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
-    Future.successful(BadRequest(errorHandler.problemWithService()))
+    Future.successful(BadRequest(errorHandler.problemWithService))
   }
 }

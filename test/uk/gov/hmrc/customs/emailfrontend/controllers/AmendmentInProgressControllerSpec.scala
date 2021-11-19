@@ -47,7 +47,7 @@ class AmendmentInProgressControllerSpec extends SpecBase {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.AmendmentInProgressController.show().url)
+        val request = FakeRequest(GET, routes.AmendmentInProgressController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -64,7 +64,7 @@ class AmendmentInProgressControllerSpec extends SpecBase {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.AmendmentInProgressController.show().url)
+        val request = FakeRequest(GET, routes.AmendmentInProgressController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe OK

@@ -61,8 +61,8 @@
         timeout = Some(appConfig.timeout),
         countdown = Some(appConfig.countdown),
         keepAliveUrl = Some(request.uri),
-        signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut().url),
-        timeoutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut().url)
+        signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
+        timeoutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url)
     ))
     }
 
@@ -77,7 +77,7 @@
     @hmrcLayout(
         pageTitle = pageTitle,
         serviceUrl = None,
-        signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut().url),
+        signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
         nonce = CSPNonce.get,
         backLinkUrl = backLink,
         additionalHeadBlock = Some(additionalHead),
