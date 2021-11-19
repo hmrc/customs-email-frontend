@@ -40,7 +40,7 @@ class AmendmentInProgressController @Inject()(identify: IdentifierAction,
           Ok(view(emailDetails.newEmail))
         case None =>
           logger.warn("emailStatus not found")
-          Redirect(routes.SignOutController.signOut())
+          Redirect(routes.SignOutController.signOut)
       }
     }
 }

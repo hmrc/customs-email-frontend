@@ -81,7 +81,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
           .thenReturn(Future.successful(HttpResponse(OK, "")))
 
         running(app) {
-          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show().url)
+          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
           status(result) shouldBe OK
         }
@@ -98,10 +98,10 @@ class EmailConfirmedControllerSpec extends SpecBase {
         when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
 
         running(app) {
-          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show().url)
+          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).get shouldBe routes.VerifyYourEmailController.show().url
+          redirectLocation(result).get shouldBe routes.VerifyYourEmailController.show.url
         }
 
       }
@@ -112,10 +112,10 @@ class EmailConfirmedControllerSpec extends SpecBase {
         when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any)).thenReturn(Future.successful(None))
 
         running(app) {
-          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show().url)
+          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).get shouldBe routes.VerifyYourEmailController.show().url
+          redirectLocation(result).get shouldBe routes.VerifyYourEmailController.show.url
         }
 
       }
@@ -128,10 +128,10 @@ class EmailConfirmedControllerSpec extends SpecBase {
           .thenReturn(Future.successful(None))
 
         running(app) {
-          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show().url)
+          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).get shouldBe routes.SignOutController.signOut().url
+          redirectLocation(result).get shouldBe routes.SignOutController.signOut.url
         }
       }
     }
@@ -142,10 +142,10 @@ class EmailConfirmedControllerSpec extends SpecBase {
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
 
         running(app) {
-          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show().url)
+          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show().url
+          redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show.url
         }
       }
     }
@@ -167,10 +167,10 @@ class EmailConfirmedControllerSpec extends SpecBase {
           .thenReturn(Future.failed(new InternalServerException("")))
 
         running(app) {
-          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show().url)
+          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService().url
+          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService.url
         }
       }
 
@@ -187,10 +187,10 @@ class EmailConfirmedControllerSpec extends SpecBase {
           .thenReturn(Future.successful(None))
 
         running(app) {
-          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show().url)
+          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService().url
+          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService.url
         }
       }
 
@@ -207,10 +207,10 @@ class EmailConfirmedControllerSpec extends SpecBase {
           .thenReturn(Future.successful(Some(false)))
 
         running(app) {
-          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show().url)
+          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService().url
+          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService.url
         }
 
       }
@@ -221,7 +221,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
       "when user is redirected to .problemWithService" in new Setup {
 
         running(app) {
-          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.problemWithService().url)
+          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.problemWithService.url)
             .withFormUrlEncodedBody("email" -> "")
           val result = route(app, requestWithForm).value
           status(result) shouldBe BAD_REQUEST

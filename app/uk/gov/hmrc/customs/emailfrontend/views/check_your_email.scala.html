@@ -38,7 +38,7 @@
 
     @errorSummary(confirmEmailForm)
 
-    @helper.form(CheckYourEmailController.submit(), 'id -> "confirmEmailForm", 'novalidate -> "novalidate") {
+    @helper.form(CheckYourEmailController.submit, 'id -> "confirmEmailForm", 'novalidate -> "novalidate") {
         @CSRF.formField
         @h1_xl(messages("customs.emailfrontend.confirm-your-email.title-and-heading"))
 

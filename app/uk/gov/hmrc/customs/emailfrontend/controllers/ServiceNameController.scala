@@ -42,8 +42,8 @@ class ServiceNameController @Inject()(identify: IdentifierAction,
         _ <- liftF(save4LaterService.saveReferrer(request.user.internalId, referrerName))
       }
       yield {
-        Redirect(routes.WhatIsYourEmailController.show())
-      }).getOrElse(Redirect(routes.WhatIsYourEmailController.show()))
+        Redirect(routes.WhatIsYourEmailController.show)
+      }).getOrElse(Redirect(routes.WhatIsYourEmailController.show))
     }
 }
 
