@@ -38,11 +38,7 @@
         }
     } else {
             @prevEmail.map{email =>
-                @p(Html(messages("customs.emailfrontend.email-confirmed.info2", email)))
+                <p class="govuk-body govuk-!-padding-bottom-7">@Html(messages("customs.emailfrontend.email-confirmed.info2", email))</p>
             }
-            @button(
-                messages("customs.emailfrontend.sign-out"),
-                href = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut().url)
-            )
     }
 }
