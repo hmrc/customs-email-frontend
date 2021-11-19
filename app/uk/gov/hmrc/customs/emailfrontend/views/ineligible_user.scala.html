@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import play.api.i18n.Lang
 @import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 @import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 
@@ -38,5 +37,5 @@
     @p(Html(messages("customs.emailfrontend.you-cant-use-service-NotAdmin.hint1")))
     @p(Html(messages("customs.emailfrontend.you-cant-use-service-NotAdmin.hint2")))
 }
-    @button(messages("customs.emailfrontend.sign-out"), Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut().url))
+    @button(messages("customs.emailfrontend.sign-out"), Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url))
 }

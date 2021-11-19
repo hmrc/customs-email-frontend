@@ -46,7 +46,7 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
     identify.async { implicit request =>
       save4LaterService.routeBasedOnAmendment(request.user.internalId)(
         redirectBasedOnEmailStatus,
-        Future.successful(Redirect(routes.SignOutController.signOut()))
+        Future.successful(Redirect(routes.SignOutController.signOut))
       )
     }
 
@@ -55,7 +55,7 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
     for {
       verified <- emailVerificationService.isEmailVerified(details.newEmail)
       redirect <- if (verified.contains(true)) updateEmail(details)
-      else Future.successful(Redirect(routes.VerifyYourEmailController.show()))
+      else Future.successful(Redirect(routes.VerifyYourEmailController.show))
     } yield redirect
 
   private def updateEmail(details: EmailDetails)(implicit request: AuthenticatedRequest[_]): Future[Result] = {
@@ -70,14 +70,14 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
             maybeReferrerName <- save4LaterService.fetchReferrer(request.user.internalId)
           } yield {
             Ok(view(details.newEmail, details.currentEmail, maybeReferrerName.map(_.name), maybeReferrerName.map(_.continueUrl)))
-          }).recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService()) }
+          }).recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService) }
 
         case _ =>
-          Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))
+          Future.successful(Redirect(routes.EmailConfirmedController.problemWithService))
       }
   }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
-    Future.successful(BadRequest(errorHandler.problemWithService()))
+    Future.successful(BadRequest(errorHandler.problemWithService))
   }
 }

@@ -22,14 +22,14 @@
 
 @this(govukErrorSummary : GovukErrorSummary)
 
-@(form: Form[_], fieldNameOverrides: Map[String, String] = Map.empty, focusOverrides: Map[String, String] = Map.empty)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], fieldNameOverrides: Map[String, String] = Map.empty, focusOverrides: Map[String, String] = Map.empty)(implicit messages: Messages)
 
 @if(form.hasErrors) {
     @govukErrorSummary(ErrorSummary(
         errorList =
             form.errors.filter(_.key.nonEmpty).map { error =>
                 val field = fieldNameOverrides.getOrElse(error.key, error.key)
-                val a = error.args.nonEmpty match {
+                error.args.nonEmpty match {
                     case _ => field + "-field"
                 }
                 ErrorLink(

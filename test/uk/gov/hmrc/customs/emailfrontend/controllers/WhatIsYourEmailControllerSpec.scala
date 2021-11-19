@@ -66,11 +66,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.create().url
+        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.create.url
       }
     }
 
@@ -80,11 +80,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.create().url
+        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.create.url
       }
 
     }
@@ -98,11 +98,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.EmailConfirmedController.show().url
+        redirectLocation(result).get shouldBe routes.EmailConfirmedController.show.url
       }
     }
 
@@ -115,11 +115,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.CheckYourEmailController.show().url
+        redirectLocation(result).get shouldBe routes.CheckYourEmailController.show.url
       }
     }
 
@@ -129,11 +129,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show().url
+        redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show.url
       }
     }
 
@@ -143,11 +143,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.create().url
+        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.create.url
       }
     }
 
@@ -160,7 +160,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe OK
@@ -177,11 +177,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.verify().url
+        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.verify.url
       }
     }
 
@@ -194,11 +194,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.verify().url
+        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.verify.url
       }
     }
 
@@ -211,7 +211,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe OK
@@ -227,11 +227,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
       }
     }
 
@@ -244,11 +244,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.AmendmentInProgressController.show().url
+        redirectLocation(result).value shouldBe routes.AmendmentInProgressController.show.url
       }
     }
 
@@ -261,11 +261,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.verify().url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.verify.url
       }
     }
 
@@ -278,11 +278,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
       }
     }
 
@@ -295,11 +295,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
       }
     }
 
@@ -309,7 +309,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.verify().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.verify.url)
 
         val result = route(app, request).value
         status(result) shouldBe OK
@@ -322,7 +322,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.verify().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.verify.url)
 
         val result = route(app, request).value
         status(result) shouldBe OK
@@ -335,11 +335,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.verify().url)
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.verify.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.AmendmentInProgressController.show().url
+        redirectLocation(result).value shouldBe routes.AmendmentInProgressController.show.url
       }
     }
     "have a status of Bad Request when no email is provided in the form" in new Setup {
@@ -348,7 +348,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val requestWithForm = fakeRequestWithCsrf(POST, routes.WhatIsYourEmailController.submit().url)
+        val requestWithForm = fakeRequestWithCsrf(POST, routes.WhatIsYourEmailController.submit.url)
           .withFormUrlEncodedBody(("email", ""))
         val result = route(app, requestWithForm).value
         status(result) shouldBe BAD_REQUEST
@@ -361,11 +361,11 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit().url)
+        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
       }
     }
 
@@ -375,7 +375,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = fakeRequestWithCsrf(POST, routes.WhatIsYourEmailController.submit().url)
+        val request = fakeRequestWithCsrf(POST, routes.WhatIsYourEmailController.submit.url)
           .withFormUrlEncodedBody("email" -> "invalidEmail")
 
         val result = route(app, request).value
@@ -392,12 +392,12 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit().url)
+        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
           .withFormUrlEncodedBody("email" -> "valid@email.com")
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.CheckYourEmailController.show().url
+        redirectLocation(result).value shouldBe routes.CheckYourEmailController.show.url
       }
     }
 
@@ -407,12 +407,12 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit().url)
+        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
           .withFormUrlEncodedBody("email" -> "")
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
       }
     }
 
@@ -422,12 +422,12 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit().url)
+        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
           .withFormUrlEncodedBody("email" -> "valid@email.com")
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
       }
     }
 
@@ -437,19 +437,19 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit().url)
+        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
           .withFormUrlEncodedBody("email" -> "invalidEmail")
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
       }
     }
 
     "have a status of BAD_REQUEST for verifySubmit method when no email is provided in the form" in new Setup {
       running(app) {
 
-        val request = fakeRequestWithCsrf(POST, routes.WhatIsYourEmailController.verifySubmit().url)
+        val request = fakeRequestWithCsrf(POST, routes.WhatIsYourEmailController.verifySubmit.url)
 
         val result = route(app, request).value
         status(result) shouldBe BAD_REQUEST
@@ -462,12 +462,12 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(POST, routes.WhatIsYourEmailController.verifySubmit().url)
+        val request = FakeRequest(POST, routes.WhatIsYourEmailController.verifySubmit.url)
           .withFormUrlEncodedBody("email" -> "valid@email.com")
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.CheckYourEmailController.show().url
+        redirectLocation(result).value shouldBe routes.CheckYourEmailController.show.url
       }
     }
 
@@ -475,7 +475,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
         val errorHandler = app.injector.instanceOf[ErrorHandler]
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.problemWithService().url).withFormUrlEncodedBody("email" -> "")
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.problemWithService.url).withFormUrlEncodedBody("email" -> "")
 
         val result = route(app, request).value
         status(result) shouldBe BAD_REQUEST
