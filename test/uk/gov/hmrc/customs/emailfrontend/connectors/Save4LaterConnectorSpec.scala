@@ -165,7 +165,7 @@ class Save4LaterConnectorSpec extends SpecBase {
       }
     }
 
-    "PUT returns exception when CREATED response received" in new Setup {
+    "PUT returns exception when BAD_REQUEST response received" in new Setup {
       val testJson = Json.toJson("test")
 
       when(mockHttpClient.PUT[JsValue, HttpResponse](any, any, any)(any, any, any, any)

@@ -78,7 +78,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
           .thenReturn(Future.successful(Some(ReferrerName("abc", "/xyz"))))
 
         when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "fakeEori")), meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
-          .thenReturn(Future.successful(HttpResponse(OK, "")))
+          .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show().url)
