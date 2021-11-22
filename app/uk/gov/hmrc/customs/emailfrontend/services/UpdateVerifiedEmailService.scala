@@ -50,7 +50,7 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
         Some(true)
       case Right(res) =>
         val statusText = res.updateVerifiedEmailResponse.responseCommon.statusText
-        logger.info(s"Updating verified email unsuccessful with business error/status code: ${statusText.getOrElse("Status text empty")}")
+        logger.debug(s"Updating verified email unsuccessful with business error/status code: ${statusText.getOrElse("Status text empty")}")
         Some(false)
       case Left(res) =>
         logger.warn(s"Updating verified email unsuccessful with response: $res")
