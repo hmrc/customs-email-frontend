@@ -22,10 +22,11 @@ import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers.running
 import play.api.{Application, inject}
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, UnhandledException}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, SessionId}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, SessionId}
+
 import scala.concurrent.Future
 
 class Save4LaterConnectorSpec extends SpecBase {
@@ -106,7 +107,7 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       running(app) {
         val result: Unit = connector.delete("").futureValue
-        result shouldBe()
+        result shouldBe ()
       }
     }
 
@@ -123,6 +124,20 @@ class Save4LaterConnectorSpec extends SpecBase {
       }
     }
 
+    "DELETE returns unhandled exception when BAD_REQUEST exception response received" in new Setup {
+
+      val badRequestException = new BadRequestException("testMessage")
+      when(mockHttpClient.DELETE[HttpResponse](any, any)(any, any, any)
+      ).thenReturn(Future.failed(badRequestException))
+
+      val connector = app.injector.instanceOf[Save4LaterConnector]
+
+      running(app) {
+        val result = connector.delete("").futureValue
+        result shouldBe Left(UnhandledException)
+      }
+    }
+
     "PUT returns unit when NO_CONTENT response received" in new Setup {
       val testJson = Json.toJson("test")
 
@@ -133,7 +148,7 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       running(app) {
         val result: Unit = connector.put("", "", testJson).futureValue
-        result shouldBe()
+        result shouldBe ()
       }
     }
 
@@ -147,7 +162,7 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       running(app) {
         val result: Unit = connector.put("", "", testJson).futureValue
-        result shouldBe()
+        result shouldBe ()
       }
     }
 
@@ -161,7 +176,7 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       running(app) {
         val result: Unit = connector.put("", "", testJson).futureValue
-        result shouldBe()
+        result shouldBe ()
       }
     }
 
@@ -176,6 +191,22 @@ class Save4LaterConnectorSpec extends SpecBase {
       running(app) {
         val result = connector.put("", "", testJson).futureValue
         result shouldBe Left(BadRequest)
+      }
+    }
+
+    "PUT returns unhandledException when BAD_REQUEST response received" in new Setup {
+
+      val badRequestException = new BadRequestException("testMessage")
+      val testJson = Json.toJson("test")
+
+      when(mockHttpClient.PUT[JsValue, HttpResponse](any, any, any)(any, any, any, any)
+      ).thenReturn(Future.failed(badRequestException))
+
+      val connector = app.injector.instanceOf[Save4LaterConnector]
+
+      running(app) {
+        val result = connector.put("", "", testJson).futureValue
+        result shouldBe Left(UnhandledException)
       }
     }
   }

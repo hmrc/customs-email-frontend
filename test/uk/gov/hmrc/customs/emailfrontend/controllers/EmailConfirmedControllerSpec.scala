@@ -72,7 +72,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
         ).thenReturn(Future.successful(Some(true)))
 
         when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
-          .thenReturn(Future.successful(Right()))
+          .thenReturn(Future.successful(Right(())))
 
         when(mockSave4LaterService.fetchReferrer(meq(InternalId("fakeInternalId")))(any))
           .thenReturn(Future.successful(Some(ReferrerName("abc", "/xyz"))))
@@ -212,7 +212,6 @@ class EmailConfirmedControllerSpec extends SpecBase {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService().url
         }
-
       }
     }
 
@@ -227,10 +226,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
           status(result) shouldBe BAD_REQUEST
           contentAsString(result) shouldBe errorHandler.problemWithService()(requestWithForm).toString()
         }
-
       }
-
     }
   }
-
 }

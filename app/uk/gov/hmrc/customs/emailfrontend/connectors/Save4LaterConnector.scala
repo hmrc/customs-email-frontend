@@ -24,7 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, HttpErrorResponse, UnhandledException}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, ReferrerName}
-import uk.gov.hmrc.http.{HttpClient, _}
+import uk.gov.hmrc.http._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

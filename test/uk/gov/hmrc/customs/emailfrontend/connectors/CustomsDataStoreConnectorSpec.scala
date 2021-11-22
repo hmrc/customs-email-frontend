@@ -65,7 +65,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
       result.right.get.status shouldBe NO_CONTENT
     }
 
-    "return NOT_FOUND response from customs data store" in {
+    "return BadRequest response when POST returns NOT_FOUND from customs data store " in {
       when(mockHttp.POST[UpdateEmail, HttpResponse](meq(url), meq(requestBody), meq(headers))(any, any, meq(hc), any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
@@ -102,6 +102,21 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
       val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
       result.left.get shouldBe ServiceUnavailable
     }
+
+    "return a non fatal exception response from customs data store" in {
+
+      val interruptedException = new InterruptedException("testMessage")
+
+      when(mockHttp.POST[UpdateEmail, HttpResponse](meq(url), meq(requestBody), meq(headers))
+        (any, any, meq(hc), any[ExecutionContext]))
+        .thenReturn(Future.failed(interruptedException))
+
+      doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
+
+      val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
+      result.left.get shouldBe UnhandledException
+    }
+
 
     "UpdateEmail model object serializes correctly" in {
       val updateEmail = UpdateEmail(testEori, testEmail, testDateTime)

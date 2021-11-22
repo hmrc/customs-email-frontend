@@ -27,9 +27,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector)
-                                       (implicit ec: ExecutionContext) extends Logging {
-
+class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector) extends Logging {
   def storeEmail(enrolmentId: EnrolmentIdentifier, email: String, timestamp: DateTime)
                 (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, HttpResponse]] =
     customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email, timestamp)

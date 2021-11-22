@@ -46,11 +46,11 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
       case Right(res)
           if res.updateVerifiedEmailResponse.responseCommon.returnParameters
             .exists(msp => msp.paramName == formBundleIdParamName) =>
-        logger.debug("Successfully updated verified email")
+        logger.info("Successfully updated verified email")
         Some(true)
       case Right(res) =>
         val statusText = res.updateVerifiedEmailResponse.responseCommon.statusText
-        logger.debug(s"Updating verified email unsuccessful with business error/status code: ${statusText.getOrElse("Status text empty")}")
+        logger.info(s"Updating verified email unsuccessful with business error/status code: ${statusText.getOrElse("Status text empty")}")
         Some(false)
       case Left(res) =>
         logger.warn(s"Updating verified email unsuccessful with response: $res")
