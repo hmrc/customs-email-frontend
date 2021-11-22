@@ -28,8 +28,8 @@
 )
 
 @()(implicit request: Request[_], messages: Messages)
-@layout(Some(messages("customs.emailfrontend.start.title-and-heading")), startPage = true, sideBarContent = Some(start_page_sidebar())) {
-    @h1_l(messages("customs.emailfrontend.start.title-and-heading"))
+@layout(Some(messages("customs.emailfrontend.start.title")), startPage = true, sideBarContent = Some(start_page_sidebar())) {
+    @h1_l(messages("customs.emailfrontend.start.heading"))
     @p(Html(messages("customs.emailfrontend.start.bullet-intro")))
     @ul_bullet(Seq(
         Html(messages("customs.emailfrontend.start.bullet1")),

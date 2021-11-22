@@ -4,7 +4,8 @@ customs.emailfrontend.continue-button=Continue
 customs.emailfrontend.back=Back
 customs.emailfrontend.sign-out=Sign out
 
-customs.emailfrontend.start.title-and-heading=Manage your email address for the Customs Declaration Service
+customs.emailfrontend.start.title=Manage your email address for the Customs Declaration Service - Manage your email address for CDS - GOV.UK
+customs.emailfrontend.start.heading=Manage your email address for the Customs Declaration Service
 customs.emailfrontend.start.bullet-intro=Use this service to change or verify the email address we use to send you:
 customs.emailfrontend.start.bullet1=updates on changes to the Customs Declaration Service
 customs.emailfrontend.start.bullet2=notifications of new import statements and payments
