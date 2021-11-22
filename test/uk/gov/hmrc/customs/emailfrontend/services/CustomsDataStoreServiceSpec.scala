@@ -24,8 +24,6 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
-
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {

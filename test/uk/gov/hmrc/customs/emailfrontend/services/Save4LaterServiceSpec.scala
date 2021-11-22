@@ -19,13 +19,11 @@ package uk.gov.hmrc.customs.emailfrontend.services
 import org.joda.time.DateTime
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Reads
-import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
-
 import scala.concurrent.Future
 
 class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
@@ -44,7 +42,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
     "save the emailDetails against the users InternalId" in new Setup {
 
       when(mockSave4LaterConnector.put[EmailDetails](any, any, any)(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Right()))
+      ).thenReturn(Future.successful(Right(())))
 
       val result: Unit = service.saveEmail(internalId, emailDetails).futureValue
       result shouldBe (()) //TODO - ????
@@ -61,7 +59,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "save the referrer against the users InternalId" in new Setup {
       when(mockSave4LaterConnector.put[ReferrerName](any, any, any)(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Right()))
+      ).thenReturn(Future.successful(Right(())))
 
       val result: Unit = service.saveReferrer(internalId, referrerName).futureValue
       result shouldBe (())
@@ -77,7 +75,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "remove the id" in new Setup {
       when(mockSave4LaterConnector.delete(any)(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right()))
+        .thenReturn(Future.successful(Right(())))
 
       val result: Unit = service.remove(internalId).futureValue
       result shouldBe (())

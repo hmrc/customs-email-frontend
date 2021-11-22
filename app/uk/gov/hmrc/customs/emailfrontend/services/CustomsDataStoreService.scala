@@ -24,7 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.HttpErrorResponse
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector) extends Logging {

@@ -107,7 +107,7 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       running(app) {
         val result: Unit = connector.delete("").futureValue
-        result shouldBe ()
+        result shouldBe (())
       }
     }
 
@@ -148,7 +148,7 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       running(app) {
         val result: Unit = connector.put("", "", testJson).futureValue
-        result shouldBe ()
+        result shouldBe (())
       }
     }
 
@@ -162,7 +162,7 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       running(app) {
         val result: Unit = connector.put("", "", testJson).futureValue
-        result shouldBe ()
+        result shouldBe (())
       }
     }
 
@@ -176,7 +176,7 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       running(app) {
         val result: Unit = connector.put("", "", testJson).futureValue
-        result shouldBe ()
+        result shouldBe (())
       }
     }
 

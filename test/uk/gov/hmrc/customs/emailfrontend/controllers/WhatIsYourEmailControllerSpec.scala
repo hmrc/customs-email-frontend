@@ -456,7 +456,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for verifyEmail method when the email is valid" in new Setup  {
       when(mockSave4LaterService.saveEmail(any, any)(any))
-        .thenReturn(Future.successful(Right()))
+        .thenReturn(Future.successful(Right(())))
 
       running(app) {
 
