@@ -46,7 +46,7 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
       case Right(res)
           if res.updateVerifiedEmailResponse.responseCommon.returnParameters
             .exists(msp => msp.paramName == formBundleIdParamName) =>
-        logger.debug("Successfully updated verified email")
+        logger.info("Successfully updated verified email")
         Some(true)
       case Right(res) =>
         val statusText = res.updateVerifiedEmailResponse.responseCommon.statusText

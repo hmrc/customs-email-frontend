@@ -16,30 +16,19 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
+import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
 import play.api.Logging
-import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.HttpErrorResponse
 import uk.gov.hmrc.customs.emailfrontend.model.Eori
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
-class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector)
-                                       (implicit ec: ExecutionContext) extends Logging {
-
-  def storeEmail(enrolmentId: EnrolmentIdentifier, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email, timestamp).map { response =>
-      response.status match {
-        case NO_CONTENT =>
-          logger.debug("CustomsDataStore: data store request is successful")
-          response
-        case _ =>
-          logger.warn(s"CustomsDataStore: data store request is failed with status ${response.status}")
-          response
-      }
-    }
+class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector) extends Logging {
+  def storeEmail(enrolmentId: EnrolmentIdentifier, email: String, timestamp: DateTime)
+                (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, HttpResponse]] =
+    customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email, timestamp)
 }

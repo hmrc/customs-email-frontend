@@ -23,30 +23,37 @@ import play.api.http.MimeTypes
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-
+import uk.gov.hmrc.http._
 import javax.inject.{Inject, Singleton}
+import play.api.http.Status._
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.control.NonFatal
 
 @Singleton
 class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)
                                          (implicit ec: ExecutionContext) extends Logging {
 
-  def storeEmailAddress(eori: Eori, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+  def storeEmailAddress(eori: Eori, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, HttpResponse]] = {
 
     val request = UpdateEmail(eori, email, timestamp)
-
     auditRequest("DataStoreEmailRequestSubmitted", Map("eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
 
-    httpClient
-      .POST[UpdateEmail, HttpResponse](appConfig.customsDataStoreUrl, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
+    httpClient.POST[UpdateEmail, HttpResponse](appConfig.customsDataStoreUrl, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
       .map { response =>
         auditResponse("DataStoreResponseReceived", response, appConfig.customsDataStoreUrl)
-        response
-      }.recoverWith {
-      case e: Throwable =>
-        logger.error(s"Call to data stored failed url=${appConfig.customsDataStoreUrl}, exception=$e")
-        Future.failed(e)
+        response.status match {
+          case NO_CONTENT =>
+            logger.debug("CustomsDataStore: data store request is successful")
+            Right(response)
+          case _ =>
+            logger.warn(s"CustomsDataStore: data store request is failed with status ${response.status}")
+            Left(BadRequest)
+        }
+      }.recover {
+      case _: BadRequestException | Upstream4xxResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
+      case _: InternalServerException | Upstream5xxResponse(_, INTERNAL_SERVER_ERROR, _, _) => Left(ServiceUnavailable)
+      case NonFatal(e) => logger.error(s"Call to data stored failed url=${appConfig.customsDataStoreUrl}, exception=$e"); Left(UnhandledException)
     }
   }
 

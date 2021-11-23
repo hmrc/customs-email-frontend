@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
+import javax.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.libs.json._
 import play.mvc.Http.Status._
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.http.{BadRequestException, HttpClient, _}
-import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, HttpErrorResponse, UnhandledException}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, ReferrerName}
+import uk.gov.hmrc.http._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.control.NonFatal
 
 @Singleton
 class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable) extends Logging {
@@ -60,40 +60,35 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
   }
 
   def put[T](id: String, key: String, payload: JsValue)
-            (implicit hc: HeaderCarrier): Future[Unit] = {
+            (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
     val url = s"${appConfig.save4LaterUrl}/$id/$key"
     logger.info(s"PUT: $url")
     auditCallRequest(url, payload)
     http.PUT[JsValue, HttpResponse](url, payload).map { response =>
       auditCallResponse(url, response.status)
       response.status match {
-        case NO_CONTENT | CREATED | OK => ()
-        case _ => throw new BadRequestException(s"Status:${response.status}")
+        case NO_CONTENT | CREATED | OK => Right(())
+        case _ => Left(BadRequest)
       }
-    }.recoverWith {
-      case NonFatal(e) =>
-        logger.error(s"Request failed for call to $url, exception: ${e.getMessage}")
-        Future.failed(e)
+    }.recover {
+      case e => logger.error(s"Request failed for call to $url, exception: ${e.getMessage}")
+        Left(UnhandledException)
     }
   }
 
-  def delete[T](id: String)(implicit hc: HeaderCarrier): Future[Unit] = {
+  def delete[T](id: String)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
     val url = s"${appConfig.save4LaterUrl}/$id"
     logger.info(s"DELETE: $url")
     auditCallRequest(url, JsNull)
     http.DELETE[HttpResponse](url).map { response =>
       auditCallResponse(url, response.status)
       response.status match {
-        case NO_CONTENT => ()
-        case _ => throw new BadRequestException(s"Status:${response.status}")
+        case NO_CONTENT => Right(())
+        case _ => Left(BadRequest)
       }
-    }.recoverWith {
-      case NonFatal(e) =>
-        logger.error(
-          s"Request failed for call to $url, exception: ${e.getMessage}",
-          e
-        )
-        Future.failed(e)
+    }.recover {
+      case e => logger.error(s"Request failed for call to $url, exception: ${e.getMessage}")
+        Left(UnhandledException)
     }
   }
 
@@ -118,5 +113,4 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
         eventType = "Save4later"
       )
     }
-
 }

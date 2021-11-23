@@ -21,45 +21,38 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status._
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
 import scala.concurrent.Future
 
 class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val mockConnector = mock[CustomsDataStoreConnector]
-
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  private val service = new CustomsDataStoreService(mockConnector)
-
-  private val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
-  private val email = "abc@def.com"
-  private val dateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
-  override protected def beforeEach(): Unit =
-    reset(mockConnector)
+  trait Setup {
+    protected val mockConnector = mock[CustomsDataStoreConnector]
+    implicit val hc: HeaderCarrier = HeaderCarrier()
+    protected val service = new CustomsDataStoreService(mockConnector)
+    protected val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
+    protected val email = "abc@def.com"
+    protected val dateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
+    protected val badRequestException = new BadRequestException("testMessage")
+  }
 
   "Customs Data Store Service" should {
-    "return a status OK when data store request is successful" in {
+    "return a status NO_CONTENT when data store request is successful" in new Setup {
       when(mockConnector.storeEmailAddress(any, any, any)(any))
-        .thenReturn(Future.successful(HttpResponse(OK, "")))
+        .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
 
-      service
-        .storeEmail(enrolmentIdentifier, email, dateTime)
-        .futureValue
-        .status shouldBe OK
+      val result = service.storeEmail(enrolmentIdentifier, email, dateTime).futureValue
+      result.right.get.status shouldBe NO_CONTENT
     }
   }
 
-  "return a status BAD_REQUEST when data store request is successful" in {
+  "return a status BAD_REQUEST when data store request is successful" in new Setup {
     when(mockConnector.storeEmailAddress(any, any, any)(any))
-      .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
+      .thenReturn(Future.successful(Left(BadRequest)))
 
-    service
-      .storeEmail(enrolmentIdentifier, email, dateTime)
-      .futureValue
-      .status shouldBe BAD_REQUEST
+    val result = service.storeEmail(enrolmentIdentifier, email, dateTime).futureValue
+    result.left.get shouldBe BadRequest
   }
 }

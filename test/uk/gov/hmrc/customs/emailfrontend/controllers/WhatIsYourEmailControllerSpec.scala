@@ -47,8 +47,6 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       ).build()
   }
 
-
-
   private val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), Some(emailVerificationTimeStamp), None, None)
   private val someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp = SubscriptionDisplayResponse(Some("test@test.com"), None, None, None)
@@ -62,7 +60,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now().minusDays(2))))))
 
       when(mockSave4LaterService.remove(any)(any))
-        .thenReturn(Future.successful(()))
+        .thenReturn(Future.successful(Right(())))
 
       running(app) {
 
@@ -388,7 +386,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       when(mockSave4LaterService.saveEmail(any, meq(EmailDetails(Some("test@test.com"), "valid@email.com", None)))(any))
-        .thenReturn(Future.successful(()))
+        .thenReturn(Future.successful(Right(())))
 
       running(app) {
 
@@ -458,7 +456,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for verifyEmail method when the email is valid" in new Setup  {
       when(mockSave4LaterService.saveEmail(any, any)(any))
-        .thenReturn(Future.successful(()))
+        .thenReturn(Future.successful(Right(())))
 
       running(app) {
 

@@ -72,13 +72,13 @@ class EmailConfirmedControllerSpec extends SpecBase {
         ).thenReturn(Future.successful(Some(true)))
 
         when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
-          .thenReturn(Future.successful(()))
+          .thenReturn(Future.successful(Right(())))
 
         when(mockSave4LaterService.fetchReferrer(meq(InternalId("fakeInternalId")))(any))
           .thenReturn(Future.successful(Some(ReferrerName("abc", "/xyz"))))
 
         when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "fakeEori")), meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
-          .thenReturn(Future.successful(HttpResponse(OK, "")))
+          .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
@@ -212,7 +212,6 @@ class EmailConfirmedControllerSpec extends SpecBase {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService.url
         }
-
       }
     }
 
@@ -227,10 +226,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
           status(result) shouldBe BAD_REQUEST
           contentAsString(result) shouldBe errorHandler.problemWithService()(requestWithForm).toString()
         }
-
       }
-
     }
   }
-
 }
