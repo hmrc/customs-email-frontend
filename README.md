@@ -3,6 +3,10 @@
 
 This is a frontend application currently serving the purpose of updating the stored customs contact email address.
 
+| Path                                                                   | Description                                                                                       |
+| ---------------------------------------------------------------------  | ------------------------------------------------------------------------------------------------- |
+| GET  /manage-email-cds/start                                           | Start of journey for managing CDS email                                                           |                
+
 ## Development
 
 You'll need [Service Manager](https://github.com/hmrc/service-manager) to develop locally.
@@ -21,6 +25,8 @@ Start the required development services (make sure your service-manager-config f
 Stop all running services
 
     sm --stop CUSTOMS_EMAIL_FRONTEND_DEP -f
+    
+Once these services are running, use the following command to start the service `sbt "run 9898"`
     
 #### Building
 To imitate the checks ran when building run (in the root directory)
