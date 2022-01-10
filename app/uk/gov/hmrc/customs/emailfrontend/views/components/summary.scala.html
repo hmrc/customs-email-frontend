@@ -16,23 +16,7 @@
 
 @this()
 
-@(key: Html, value: Html, actions: Option[Html] = None)
-
-<div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-        @key
-    </dt>
-    <dd class="govuk-summary-list__value">
-    @value
-    </dd>
-    @actions.map { action =>
-        <dd class="govuk-summary-list__actions">
-        @action
-        </dd>
-    }
-</div>
-
-
-
-
-
+@(msg: String)(implicit messages: Messages)
+<summary class="govuk-details__summary">
+ <span class="govuk-details__summary-text">@messages(msg)</span>
+</summary>

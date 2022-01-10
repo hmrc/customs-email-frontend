@@ -14,25 +14,9 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components
+
 @this()
 
-@(key: Html, value: Html, actions: Option[Html] = None)
-
-<div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-        @key
-    </dt>
-    <dd class="govuk-summary-list__value">
-    @value
-    </dd>
-    @actions.map { action =>
-        <dd class="govuk-summary-list__actions">
-        @action
-        </dd>
-    }
-</div>
-
-
-
-
-
+@(msg: String, forLabel: String, labelClass: Option[String] = None)
+<label class="govuk-label" for=@forLabel aria-label=@{labelClass.fold("")(labelClass => s"aria-label=$labelClass")} />

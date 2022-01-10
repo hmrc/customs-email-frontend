@@ -14,25 +14,15 @@
  * limitations under the License.
  *@
 
-@this()
+@import uk.gov.hmrc.customs.emailfrontend.views.html.components
 
-@(key: Html, value: Html, actions: Option[Html] = None)
+@this(summary: components.summary)
 
-<div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-        @key
-    </dt>
-    <dd class="govuk-summary-list__value">
-    @value
-    </dd>
-    @actions.map { action =>
-        <dd class="govuk-summary-list__actions">
-        @action
-        </dd>
-    }
+@(msg: String, url: String)(implicit messages: Messages)
+
+<div class="form-group">
+    <details class="govuk-details govuk-!-margin-bottom-8" data-module="govuk-details">
+        @summary("customs.emailfrontend.verify-email.progressive-disclosure.heading")
+        <div class="govuk-details__text">@Html(messages(msg, url))</div>
+    </details>
 </div>
-
-
-
-
-

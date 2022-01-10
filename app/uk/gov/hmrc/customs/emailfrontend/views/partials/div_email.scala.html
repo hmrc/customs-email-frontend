@@ -16,23 +16,12 @@
 
 @this()
 
-@(key: Html, value: Html, actions: Option[Html] = None)
+@(divClass: String = "govuk-form-group", id:  Option[String] = None, name: Option[String] = None, labelledBy: Option[String] = None)
 
-<div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-        @key
-    </dt>
-    <dd class="govuk-summary-list__value">
-    @value
-    </dd>
-    @actions.map { action =>
-        <dd class="govuk-summary-list__actions">
-        @action
-        </dd>
-    }
+<div class="govuk-form-group">
+  <input class = "govuk-input"
+         type = "text"
+         @{id.fold("")(id => s"id=$id")}
+         @{name.fold("")(name => s"name=$name")}
+         @{labelledBy.fold("")(labelledBy => s"aria-labelledby=$labelledBy")}>
 </div>
-
-
-
-
-
