@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@
             list_row(Html(messages("customs.emailfrontend.confirm-your-email.email-address")), Html(email))
         )
 
-        <p class="govuk-body govuk-!-padding-bottom-7">@Html(messages("customs.emailfrontend.confirm-your-email.hint"))</p>
+        @p(Html(messages("customs.emailfrontend.confirm-your-email.hint")))
 
         @inputRadio(
             confirmEmailForm,

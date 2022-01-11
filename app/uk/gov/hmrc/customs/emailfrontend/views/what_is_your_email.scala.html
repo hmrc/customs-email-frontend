@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 @import uk.gov.hmrc.customs.emailfrontend.model.Email
 @import uk.gov.hmrc.govukfrontend.views.html.components
+@import uk.gov.hmrc.customs.emailfrontend.views.html.partials.div_email
 
 @import views.html.helper._
 
@@ -24,7 +25,8 @@
         input_text: components.input_text,
         button: components.button,
         errorSummary: components.errorSummary,
-        h1_xl: components.h1_xl
+        h1_xl: components.h1_xl,
+        div_email: partials.div_email
 )
 
 @(emailForm: Form[Email])(implicit request: Request[_], messages: Messages)
@@ -34,10 +36,7 @@
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.verifySubmit,'id -> "emailForm", 'novalidate -> "novalidate") {
         @CSRF.formField
         @h1_xl(messages("customs.emailfrontend.what-is-your-email.label", Some("email-label")))
-        <label class="govuk-label" for="email" aria-label="email"/>
-        <div class="govuk-form-group">
-            <input class="govuk-input" id="email" name="email" type="text" aria-labelledby="email">
-        </div>
+        @div_email(id = Some("email"), name= Some("email"), labelledBy = Some("email"))
         @button(messages("customs.emailfrontend.continue-button"))
     }
 }

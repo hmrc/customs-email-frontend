@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,15 @@
 
 @import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 @import views.html.helper._
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-
+@import uk.gov.hmrc.customs.emailfrontend.views.html.components.summary
+@import uk.gov.hmrc.customs.emailfrontend.views.html.partials.div_form
 
 @this(
         layout: Layout,
         p: components.p,
-        h1_xl: components.h1_xl
+        h1_xl: components.h1_xl,
+        summary: components.summary,
+        div_form: partials.div_form
 )
 @(email: String)(implicit request: Request[_], messages: Messages)
 
@@ -31,15 +33,7 @@
         @CSRF.formField
         @h1_xl(messages("customs.emailfrontend.verify-email.title"))
         @p(Html(messages("customs.emailfrontend.verify-email.para1", email)))
-
-        <div class="form-group">
-            <details class="govuk-details govuk-!-margin-bottom-8" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">@messages("customs.emailfrontend.verify-email.progressive-disclosure.heading")</span>
-                </summary>
-                <div class="govuk-details__text">@Html(messages("customs.emailfrontend.verify-email.progressive-disclosure.content", uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show.url))</div>
-            </details>
-        </div>
+        @div_form(msg = "customs.emailfrontend.verify-email.progressive-disclosure.content", url = uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show.url)
     }
 }
 
