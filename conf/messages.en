@@ -1,4 +1,5 @@
 service.name=Manage your email address for CDS
+
 customs.emailfrontend.service-name=Manage your email address for CDS
 customs.emailfrontend.continue-button=Continue
 customs.emailfrontend.back=Back
@@ -24,41 +25,39 @@ customs.emailfrontend.start.related-content-link5=Tariff data
 customs.emailfrontend.change-your-email.title=Enter your email address - Manage your email address for CDS - GOV.UK
 customs.emailfrontend.change-your-email.heading=Enter your email address
 customs.emailfrontend.change-your-email.label=You need to verify <strong class="bold">{0}</strong> or change it.
+
 customs.emailfrontend.what-is-your-email.label=What is your email address?
 customs.emailfrontend.what-is-your-email.title-and-heading=What is your email address?
+
 customs.emailfrontend.confirm-your-email.title-and-heading=Check your email address
 customs.emailfrontend.confirm-your-email.email-address=Email address
 customs.emailfrontend.confirm-your-email.hint=We''ll send you a link to confirm your email address.
 customs.emailfrontend.confirm-your-email.yes-no-label=Is this the email address you want to use?
 customs.emailfrontend.confirm-your-email.yes=Yes, this is the email address I want to use
 customs.emailfrontend.confirm-your-email.no=No, I need to change this email
+
 customs.emailfrontend.email-confirmed.title-and-heading=Email address confirmed
 customs.emailfrontend.email-confirmed.info1=Your email address <strong class="bold">{0}</strong> will be active in 2 hours.
 customs.emailfrontend.email-confirmed.info2=Until then we will send CDS emails to {0}.
 customs.emailfrontend.email-confirmed.redirect.info.customs-finance=You can now continue to <a href="{0}">Get your import VAT and duty adjustment statements</a>
-customs.emailfrontend.email-confirmed.redirect.info.customs-exports=You can now continue to create, view and manage declarations on the <a href="{0}">CDS exports declaration online service</a>
-customs.emailfrontend.email-confirmed.redirect.info.cds-file-upload=You can now continue to <a href="{0}">add a customs document to a CDS declaration</a>
 customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=You can now continue to <a href="{0}">enter your Movement Reference Number</a>
+
 customs.emailfrontend.verify-email.title=Confirm your email address
 customs.emailfrontend.verify-email.para1=Click on the link in the email we''ve sent to <strong class="bold">{0}</strong> to confirm your email address.
 customs.emailfrontend.verify-email.progressive-disclosure.heading=I did not get an email
 customs.emailfrontend.verify-email.progressive-disclosure.content=Check your spam or junk mail folders. If it's not there we can <a href="{0}" class="govuk-link">send it again</a>. If we send your email again, any previous links will stop working.
 
-#error messages
+# Error messages
 customs.emailfrontend.error-summary.problem=There is a problem.
 customs.emailfrontend.errors.valid-email.empty=Enter your email address
 customs.emailfrontend.errors.valid-email.too-long=The email address must be 50 characters or less
 customs.emailfrontend.errors.valid-email.wrong-format=Enter a valid email address
-
 customs.emailfrontend.errors.valid-confirm-email=Tell us if this is the correct email address
 
 customs.emailfrontend.problem-with-service.title-and-heading=Sorry, there is a problem with the service
 customs.emailfrontend.problem-with-service.info=Your email has not been updated. Try again later.
 
-#timeout dialog
-customs.emailfrontend.timeout.message=For your security, we will delete your answers and you will be signed out in
-customs.emailfrontend.timeout.keep-alive-button=Get another 15 minutes
-customs.emailfrontend.timeout.sign-out-button=Sign out now
+# Timeout dialog
 customs.emailfrontend.timeout.title = You’re about to be signed out
 
 customs.emailfrontend.you-cant-use-service-NoEnrolment.hint1=The Government Gateway you signed in with does not have access to CDS.
@@ -68,59 +67,12 @@ customs.emailfrontend.you-cant-use-service-NotAdmin.hint1=You signed in to Gover
 customs.emailfrontend.you-cant-use-service-NotAdmin.hint2=Contact the person who set up your Government Gateway.
 customs.emailfrontend.you-cant-use-service.heading=You cannot use this service
 
-#verification in progress
+# Verification in progress
 customs.emailfrontend.verification-in-progress.title-and-heading=You cannot change your email address
 customs.emailfrontend.verification-in-progress.info=You recently changed your email address to {0}. If you need to change this again, you will need to try again in 2 hours.
 
-#phase banner
-customs.emailfrontend.phase-banner-beta=BETA
+# Phase banner
 customs.emailfrontend.phase-banner1=This is a new service – your
 customs.emailfrontend.phase-banner2=feedback
 customs.emailfrontend.phase-banner3=will help us to improve it.
 
-#accessibility statement
-footer.accessibility=Accessibility Statement
-accessibility-statement.heading-and-title=Accessibility statement for Manage your email for the Customs Declaration Service
-accessibility-statement.paragraph1=This accessibility statement explains how accessible this service is, what to do if you have difficulty using it, and how to report accessibility problems with the service.
-accessibility-statement.paragraph2=This service is part of the wider GOV.UK website. There is a separate <a href="https://www.gov.uk/help/accessibility">accessibility statement</a> for the main GOV.UK website.
-accessibility-statement.paragraph3=This page only contains information about the Manage your email for the Customs Declaration Service, available at <a href="https://www.tax.service.gov.uk/manage-email-cds"> https://www.tax.service.gov.uk/manage-email-cds</a>.
-accessibility-statement.using-service=Using this service
-accessibility-statement.what-do=This service is for changing or verifying the email address we use to send you updates on changes to the Customs Declaration Service (CDS) and notifications of new import statements and payments.
-accessibility-statement.using-service.paragraph=This service is run by HM Revenue and Customs (HMRC). We want as many people as possible to be able to use this service. This means you should be able to:
-accessibility-statement.using-service.bullet1=change colours, contrast levels and fonts
-accessibility-statement.using-service.bullet2=zoom in up to 300% without the text spilling off the screen
-accessibility-statement.using-service.bullet3=get from the start of the service to the end using just a keyboard
-accessibility-statement.using-service.bullet4=get from the start of the service to the end using speech recognition software
-accessibility-statement.using-service.bullet5=listen to the service using a screen reader (including the most recent versions of JAWS, NVDA and VoiceOver)
-accessibility-statement.using-service.paragraph2=We have also made the text in the service as simple as possible to understand.
-accessibility-statement.using-service.paragraph3=<a class="govuk-link" href="https://mcmw.abilitynet.org.uk/">AbilityNet</a> has advice on making your device easier to use if you have a disability.
-accessibility-statement.how-accessible=How accessible this service is
-accessibility-statement.how-accessible.paragraph1=This service is partially compliant with the <a class="govuk-link" href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines version 2.1 AA standard</a>.
-accessibility-statement.how-accessible.paragraph2=Some people may find parts of this service difficult to use:
-accessibility-statement.how-accessible.bullet1=users’ focus is not trapped within the timeout dialog when using a mobile device meaning bleed through occurs using VoiceOver
-accessibility-statement.how-accessible.bullet2=the colours used to show keyboard focus do not meet the minimum colour contrast requirements
-accessibility-statement.difficulty-using-service=What to do if you have difficulty using this service
-accessibility-statement.difficulty-using-service.bullet-intro=If you have difficulty using this service, contact us by:
-accessibility-statement.difficulty-using-service.bullet1=<a href="https://www.tax.service.gov.uk/shortforms/form/EORIContact">online form</a>
-accessibility-statement.difficulty-using-service.bullet2=call 0300 322 7067
-accessibility-statement.reporting-problems=Reporting accessibility problems with this service
-accessibility-statement.reporting-problems.paragraph=We are always looking to improve the accessibility of this service. If you find any problems that are not listed on this page or think we are not meeting accessibility requirements, you can <a href="https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=CDS">report the accessibility problem</a>.
-accessibility-statement.not-happy=What to do if you are not happy with how we respond to your complaint
-accessibility-statement.not-happy.paragraph=The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the ‘accessibility regulations’). If you are not happy with how we respond to your complaint, <a href="https://www.equalityadvisoryservice.com/">contact the Equality Advisory and Support Service</a> (EASS), or the <a href="https://www.equalityni.org/Home">Equality Commission for Northern Ireland</a> (ECNI) if you live in Northern Ireland.
-accessibility-statement.contact-us=Contacting us by phone or getting a visit from us in person
-accessibility-statement.contact-us.paragraph1=We provide a text relay service if you are deaf, hearing impaired or have a speech impediment.
-accessibility-statement.contact-us.paragraph2=We can provide a British Sign Language (BSL) interpreter, or you can arrange a visit from an HMRC advisor to help you complete the service.
-accessibility-statement.contact-us.paragraph3=Find out how to <a href="https://www.gov.uk/dealing-hmrc-additional-needs">contact us</a>.
-accessibility-statement.technical-information=Technical information about this service’s accessibility
-accessibility-statement.technical-information.paragraph1=HMRC is committed to making this service accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.
-accessibility-statement.non-accessible=Non-accessible content
-accessibility-statement.non-accessible.paragraph1=The content listed below is non-accessible for the following reasons.
-accessibility-statement.non-accessible.heading4=Non-compliance with the accessibility regulations
-accessibility-statement.non-accessible.paragraph2=Focus is not trapped within the timeout dialog, which means users are able to navigate past the options and access the page elements behind the dialog. This can be disorientating for some users who may be unable to see what is happening on screen. This fails WCAG 2.1 success criterion 2.4.3 (Focus Order).
-accessibility-statement.non-accessible.paragraph3=The keyboard focus indicator for elements, including links, does not meet the colour contrast ratio requirements. Users may find it difficult to navigate the page using a keyboard as they may assume that keyboard focus is not present. This fails WCAG 2.1 success criterion 1.4.11 (non-text contrast ratio).
-accessibility-statement.non-accessible.paragraph4=Fixes for the above issues will be tested week commencing 18 January 2021.
-accessibility-statement.technical-information.paragraph2=This service is partially compliant with the <a href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines version 2.1 AA standard</a>.
-accessibility-statement.how-tested=How we tested this service
-accessibility-statement.how-tested.paragraph1=The service was last tested on 14 October 2020 and was checked for compliance with WCAG 2.1 AA.
-accessibility-statement.how-tested.paragraph2=The service was built using parts that were tested by the <a href="http://www.digitalaccessibilitycentre.org/">Digital Accessibility Centre</a>. The full service was tested by HMRC and included disabled users.
-accessibility-statement.how-tested.paragraph3=This page was prepared on 23 September 2019. It was last updated on 3 December 2020.
