@@ -21,7 +21,7 @@
 @this(layout: Layout,
         start_page_sidebar: start_page_sidebar,
         ul_bullet: components.ul_bullet,
-        h1_l: components.h1_l,
+        h1_xl: components.h1_xl,
         p: components.p,
         button: components.button,
         h2_m: components.h2_m
@@ -29,7 +29,7 @@
 
 @()(implicit request: Request[_], messages: Messages)
 @layout(Some(messages("customs.emailfrontend.start.title")), startPage = true, sideBarContent = Some(start_page_sidebar())) {
-    @h1_l(messages("customs.emailfrontend.start.heading"))
+    @h1_xl(messages("customs.emailfrontend.start.heading"))
     @p(Html(messages("customs.emailfrontend.start.bullet-intro")))
     @ul_bullet(Seq(
         Html(messages("customs.emailfrontend.start.bullet1")),
