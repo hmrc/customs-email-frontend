@@ -28,12 +28,9 @@
 )
 @(email: String)(implicit request: Request[_], messages: Messages)
 
-@layout(Some(messages("customs.emailfrontend.verify-email.title"))) {
-    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.submit, 'novalidate -> "novalidate") {
-        @CSRF.formField
+    @layout(Some(messages("customs.emailfrontend.verify-email.title"))) {
         @h1_xl(messages("customs.emailfrontend.verify-email.title"))
         @p(Html(messages("customs.emailfrontend.verify-email.para1", email)))
         @div_form(msg = "customs.emailfrontend.verify-email.progressive-disclosure.content", url = uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show.url)
     }
-}
 
