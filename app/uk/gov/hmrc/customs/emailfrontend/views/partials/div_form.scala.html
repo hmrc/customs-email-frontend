@@ -20,9 +20,7 @@
 
 @(msg: String, url: String)(implicit messages: Messages)
 
-<div class="form-group">
-    <details class="govuk-details govuk-!-margin-bottom-8" data-module="govuk-details">
-        @summary("customs.emailfrontend.verify-email.progressive-disclosure.heading")
-        <div class="govuk-details__text">@Html(messages(msg, url))</div>
-    </details>
-</div>
+<details class="govuk-details govuk-!-margin-bottom-8" data-module="govuk-details">
+    @summary("customs.emailfrontend.verify-email.progressive-disclosure.heading")
+    <div class="govuk-details__text">@Html(messages(msg, url))</div>
+</details>
