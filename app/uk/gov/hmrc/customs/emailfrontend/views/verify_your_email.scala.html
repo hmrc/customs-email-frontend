@@ -16,14 +16,12 @@
 
 @import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 @import views.html.helper._
-@import uk.gov.hmrc.customs.emailfrontend.views.html.components.summary
 @import uk.gov.hmrc.customs.emailfrontend.views.html.partials.div_form
 
 @this(
         layout: Layout,
         p: components.p,
         h1_xl: components.h1_xl,
-        summary: components.summary,
         div_form: partials.div_form
 )
 @(email: String)(implicit request: Request[_], messages: Messages)
