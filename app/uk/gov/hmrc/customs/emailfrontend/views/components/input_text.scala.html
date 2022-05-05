@@ -40,7 +40,7 @@
     name = field.name,
     value = field.value,
     label = Label(
-        content = Text(messages(label, headingMessageArgs:_*)),
+        content = HtmlContent(Html(messages(label, headingMessageArgs:_*))),
         isPageHeading = isPageHeading,
         classes = if(isPageHeading) "govuk-label--xl " + labelClasses.getOrElse("") else labelClasses.getOrElse("")
     ),
