@@ -36,7 +36,7 @@
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.verifySubmit,'id -> "emailForm", 'novalidate -> "novalidate") {
         @CSRF.formField
         @h1_xl(messages("customs.emailfrontend.what-is-your-email.label", Some("email-label")))
-        @div_email(id = Some("email"), name= Some("email"), labelledBy = Some("email"))
+        @input_text(emailForm("email"), messages("customs.emailfrontend.what-is-your-email.label"), autocomplete = Some("email"), isPageHeading = true, labelClasses = Some("govuk-!-margin-bottom-8"))
         @button(messages("customs.emailfrontend.continue-button"))
     }
 }
