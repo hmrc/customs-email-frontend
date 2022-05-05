@@ -75,7 +75,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   private def subscriptionDisplay()(implicit request: AuthenticatedRequest[AnyContent]) =
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), Some(_), _, _) =>
-        Future.successful(Ok(whatIsYourEmailView(emailForm)))
+        Future.successful(Ok(view(emailForm, email, appConfig)))
       case SubscriptionDisplayResponse(Some(_), _, _, _) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
       case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
