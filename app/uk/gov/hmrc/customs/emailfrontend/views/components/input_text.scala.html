@@ -27,7 +27,12 @@
   inputMode: Option[String] = None,
   pattern: Option[String] = None,
   spellcheck: Option[Boolean] = None,
-  hint: Option[Hint] = None
+  hint: Option[Hint] = None,
+  isPageHeading: Boolean = false,
+  headingMessageArgs: Seq[String] = Seq(),
+  labelClasses: Option[String] = None,
+
+
 )(implicit messages: Messages)
 
 @govukInput(Input(
@@ -35,7 +40,9 @@
     name = field.name,
     value = field.value,
     label = Label(
-        content = HtmlContent(Html(label))
+        content = HtmlContent(Html(messages(label, headingMessageArgs:_*))),
+        isPageHeading = isPageHeading,
+        classes = if(isPageHeading) "govuk-label--xl " + labelClasses.getOrElse("") else labelClasses.getOrElse("")
     ),
     errorMessage = field.error.map(e => ErrorMessage(
         content = Text(messages(e.message))
