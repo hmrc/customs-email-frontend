@@ -46,7 +46,9 @@ customs.emailfrontend.email-confirmed.redirect.info.report-or-check-de-minimis-a
 customs.emailfrontend.verify-email.title=Confirm your email address
 customs.emailfrontend.verify-email.para1=Click on the link in the email we''ve sent to <strong class="bold">{0}</strong> to confirm your email address.
 customs.emailfrontend.verify-email.progressive-disclosure.heading=I did not get an email
-customs.emailfrontend.verify-email.progressive-disclosure.content=Check your spam or junk mail folders. If it's not there we can <a href="{0}" class="govuk-link">send it again</a>. If we send your email again, any previous links will stop working.
+customs.emailfrontend.verify-email.progressive-disclosure.content=Check your spam or junk mail folders. If it's not there we can
+customs.emailfrontend.verify-email.progressive-disclosure.contentLink=send it again
+customs.emailfrontend.verify-email.progressive-disclosure.content2=If we send your email again, any previous links will stop working.
 
 # Error messages
 customs.emailfrontend.error-summary.problem=There is a problem.

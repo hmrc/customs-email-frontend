@@ -29,6 +29,9 @@
     @layout(Some(messages("customs.emailfrontend.verify-email.title"))) {
         @h1_xl(messages("customs.emailfrontend.verify-email.title"))
         @p(Html(messages("customs.emailfrontend.verify-email.para1", email)))
-        @div_form(msg = "customs.emailfrontend.verify-email.progressive-disclosure.content", url = uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show.url)
+        @div_form(linkMsg = "customs.emailfrontend.verify-email.progressive-disclosure.contentLink",
+            linkLocation = uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show.url,
+            preLinkMsg = "customs.emailfrontend.verify-email.progressive-disclosure.content",
+            postLinkMsg = "customs.emailfrontend.verify-email.progressive-disclosure.content2")
     }
 

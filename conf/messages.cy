@@ -44,7 +44,9 @@ customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=Gall
 customs.emailfrontend.verify-email.title=Cadarnhau’ch cyfeiriad e-bost
 customs.emailfrontend.verify-email.para1=Cliciwch ar y cysylltiad yn yr e-bost rydym wedi’i anfon at <strong class="bold">{0}</strong> i gadarnhau’ch cyfeiriad e-bost
 customs.emailfrontend.verify-email.progressive-disclosure.heading=Ches i ddim e-bost
-customs.emailfrontend.verify-email.progressive-disclosure.content=Gwiriwch eich ffolderi e-byst sbam neu sothach. Os nad yw’r e-bost yno, gallwn <a href="{0}">ei hanfon eto</a>. Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio
+customs.emailfrontend.verify-email.progressive-disclosure.content=Gwiriwch eich ffolderi e-byst sbam neu sothach. Os nad yw’r e-bost yno, gallwn
+customs.emailfrontend.verify-email.progressive-disclosure.contentLink=ei hanfon eto
+customs.emailfrontend.verify-email.progressive-disclosure.content2=Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio
 
 customs.emailfrontend.error-summary.problem=Mae problem wedi codi.
 customs.emailfrontend.errors.valid-email.empty=Nodwch eich cyfeiriad e-bost
