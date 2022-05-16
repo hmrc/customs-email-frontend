@@ -49,6 +49,7 @@ customs.emailfrontend.verify-email.progressive-disclosure.heading=I did not get 
 customs.emailfrontend.verify-email.progressive-disclosure.content=Check your spam or junk mail folders. If it's not there we can
 customs.emailfrontend.verify-email.progressive-disclosure.contentLink=send it again
 customs.emailfrontend.verify-email.progressive-disclosure.content2=If we send your email again, any previous links will stop working.
+
 # Error messages
 customs.emailfrontend.error-summary.problem=There is a problem.
 customs.emailfrontend.errors.valid-email.empty=Enter your email address
