@@ -16,11 +16,18 @@
 
 @import uk.gov.hmrc.customs.emailfrontend.views.html.components
 
-@this(summary: components.summary)
+@this(summary: components.summary,
+      link: components.link)
 
-@(msg: String, url: String)(implicit messages: Messages)
+@(linkMsg: String, linkLocation: String, preLinkMsg: String, postLinkMsg: String)(implicit messages: Messages)
 
 <details class="govuk-details govuk-!-margin-bottom-8" data-module="govuk-details">
     @summary("customs.emailfrontend.verify-email.progressive-disclosure.heading")
-    <div class="govuk-details__text">@Html(messages(msg, url))</div>
+    <div class="govuk-details__text">
+    @link(linkMessage = linkMsg,
+        location = linkLocation,
+        preLinkMessage = Some(preLinkMsg),
+        postLinkMessage= Some(postLinkMsg),
+        linkSentence = true)
+    </div>
 </details>
