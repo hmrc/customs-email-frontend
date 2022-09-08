@@ -64,9 +64,10 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   def create: Action[AnyContent] = identify.async { implicit request =>
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
       details =>
-        details.currentEmail match {
-          case Some(currentEmail) => Future.successful(Ok(view(emailForm, currentEmail, appConfig)))
-          case None => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
+        (details.currentEmail, details.newEmail) match {
+          case (Some(currentEmail), _) => Future.successful(Ok(view(emailForm, currentEmail, appConfig)))
+          case (None, _) => Future.successful(Ok(whatIsYourEmailView(emailForm)))
+          case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
         },
       subscriptionDisplay
     )
