@@ -228,8 +228,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
 
         val result = route(app, request).value
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+        status(result) shouldBe OK
       }
     }
 
