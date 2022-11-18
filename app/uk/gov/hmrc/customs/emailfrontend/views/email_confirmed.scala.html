@@ -28,7 +28,7 @@
 
 @layout(Some(messages("customs.emailfrontend.email-confirmed.title-and-heading"))) {
 
-    @panel(newEmail = newEmail)
+    @panel(newEmail = Some(newEmail))
     @p(Html(messages("customs.emailfrontend.email-confirmed.info1")))
 
     @if(referrerUrl.nonEmpty){
