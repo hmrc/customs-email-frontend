@@ -21,14 +21,15 @@
         layout: Layout,
         h1_xl: components.h1_xl,
         p: components.p,
-        button: components.button
+        button: components.button,
+        panel: components.emailPanel
 )
 @(newEmail: String, prevEmail: Option[String], referrerName: Option[String], referrerUrl: Option[String])(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.email-confirmed.title-and-heading"))) {
 
-    @h1_xl(messages("customs.emailfrontend.email-confirmed.title-and-heading"))
-    @p(Html(messages("customs.emailfrontend.email-confirmed.info1", newEmail)))
+    @panel(newEmail = Some(newEmail))
+    @p(Html(messages("customs.emailfrontend.email-confirmed.info1")))
 
     @if(referrerUrl.nonEmpty){
         @referrerName.map{ name =>
