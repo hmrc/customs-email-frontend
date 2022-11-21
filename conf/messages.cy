@@ -39,6 +39,7 @@ customs.emailfrontend.confirm-your-email.no=Na, mae angen i mi newid y cyfeiriad
 customs.emailfrontend.email-confirmed.title-and-heading=Cyfeiriad e-bost wedi’i gadarnhau
 customs.emailfrontend.email-confirmed.info1=Bydd eich cyfeiriad e-bost yn weithredol cyn pen 2 awr.
 customs.emailfrontend.email-confirmed.info2=Tan hynny, byddwn yn anfon e-byst CDS i {0}.
+customs.emailfrontend.email-confirmed.info3=Tan hynny, byddwn yn anfon e-byst at {0}.
 customs.emailfrontend.email-confirmed.redirect.info.customs-finance=Nawr, gallwch fynd yn eich blaen i’r dudalen <a href="{0}">bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau</a>
 customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=Gallwch nawr barhau i <a href="{0}">fynd i mewn i'ch Movement Reference Number</a>
 
