@@ -30,6 +30,9 @@
 
     @panel(newEmail = Some(newEmail))
     @p(Html(messages("customs.emailfrontend.email-confirmed.info1")))
+    @prevEmail.map{e =>
+        @p(Html(messages("customs.emailfrontend.email-confirmed.info3", e)))
+    }
 
     @if(referrerUrl.nonEmpty){
         @referrerName.map{ name =>
