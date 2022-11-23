@@ -33,10 +33,11 @@
     @prevEmail.map{e =>
         @p(Html(messages("customs.emailfrontend.email-confirmed.info3", e)))
     }
+    
     @referrerName.map{ name =>
-            @referrerUrl.map{ url =>
-                @p(Html(messages(s"customs.emailfrontend.email-confirmed.redirect.info.$name", url)))
-            }
+        @referrerUrl.map{ url =>
+            @p(Html(messages(s"customs.emailfrontend.email-confirmed.redirect.info.$name", url)))
         }
-
+    }
 }
+
