@@ -33,16 +33,11 @@
     @prevEmail.map{e =>
         @p(Html(messages("customs.emailfrontend.email-confirmed.info3", e)))
     }
-
-    @if(referrerUrl.nonEmpty){
-        @referrerName.map{ name =>
-            @referrerUrl.map{ url =>
-                @p(Html(messages(s"customs.emailfrontend.email-confirmed.redirect.info.$name", url)))
-            }
+    
+    @referrerName.map{ name =>
+        @referrerUrl.map{ url =>
+            @p(Html(messages(s"customs.emailfrontend.email-confirmed.redirect.info.$name", url)))
         }
-    } else {
-            @prevEmail.map{email =>
-                <p class="govuk-body govuk-!-padding-bottom-7">@Html(messages("customs.emailfrontend.email-confirmed.info2", email))</p>
-            }
     }
 }
+
