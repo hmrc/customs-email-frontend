@@ -39,6 +39,9 @@ To start the app using SBT simply use the command
 
 from the terminal, visit [this link](http://localhost:9898/manage-email-cds/start) to see the app running.
 
+In a separate terminal you will need to run this command
+   sm --start CUSTOMS_EMAIL_FRONTEND_ALL -r
+
 You'll need to use a Government Gateway account with CDS enrolment to access most pages as they are authenticated.
 So login via the [auth-login-stub](http://localhost:9949/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A9898%2Fmanage-email-cds%2Fstart) first to proceed with a journey.
 
