@@ -36,6 +36,12 @@ customs.emailfrontend.confirm-your-email.yes-no-label=Is this the email address 
 customs.emailfrontend.confirm-your-email.yes=Yes, this is the email address I want to use
 customs.emailfrontend.confirm-your-email.no=No, I need to change this email
 
+customs.emailfrontend.change-your-email-address-for-cds.heading=Changing your email address for the Customs Declaration Service
+customs.emailfrontend.change-your-email-address-for-cds.heading=Changing your email address for the Customs Declaration Service
+customs.emailfrontend.change-your-email-address-for-cds.p1=The Customs Declaration Service uses one email address for various customs-related services.
+customs.emailfrontend.change-your-email-address-for-cds.p2=If you change this email, ensure other people in your company will get the messages they need.
+
+
 customs.emailfrontend.email-confirmed.title-and-heading=Email address confirmed
 customs.emailfrontend.email-confirmed.info1=Your email address will be active within 2 hours.
 customs.emailfrontend.email-confirmed.info2=Until then we will send CDS emails to {0}.
