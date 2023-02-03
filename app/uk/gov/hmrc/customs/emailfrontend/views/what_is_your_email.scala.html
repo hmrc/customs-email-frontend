@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 @import uk.gov.hmrc.customs.emailfrontend.model.Email
+@import uk.gov.hmrc.customs.emailfrontend.model.VerifyChange
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import uk.gov.hmrc.customs.emailfrontend.views.html.partials.div_email
 
@@ -33,9 +34,10 @@
 
 @layout(Some(messages("customs.emailfrontend.what-is-your-email.title-and-heading"))) {
     @errorSummary(emailForm)
-    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.verifySubmit,'id -> "emailForm", 'novalidate -> "novalidate") {
+    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.create,'id -> "emailForm", 'novalidate -> "novalidate") {
         @CSRF.formField
         @input_text(emailForm("email"), messages("customs.emailfrontend.what-is-your-email.label"), autocomplete = Some("email"), isPageHeading = true, labelClasses = Some("govuk-!-margin-bottom-8"))
         @button(messages("customs.emailfrontend.continue-button"))
+        @button("customs.emailfrontend.continue-button", href = Some("verify-change-email"))
     }
 }

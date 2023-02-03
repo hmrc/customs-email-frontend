@@ -1,0 +1,69 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
+@import uk.gov.hmrc.customs.emailfrontend.model.VerifyChange
+@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.VerifyChangeEmailController
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@import views.html.helper._
+
+@this(
+        layout: Layout,
+        inputRadio: components.inputRadio,
+        h1_xl: components.h1_xl,
+        p: components.p,
+        button: components.button,
+        summary_list: components.summary_list,
+        list_row: components.list_row,
+        errorSummary: components.errorSummary
+
+)
+@(confirmVerifyChange: Form[VerifyChange], email: String)(implicit request: Request[_], messages: Messages)
+
+@layout(Some(messages("customs.emailfrontend.verify-change-email.title-and-heading"))) {
+
+@errorSummary(confirmVerifyChange)
+
+@helper.form(VerifyChangeEmailController.submit, 'id -> "confirmVerifyChange", 'novalidate -> "novalidate") {
+@h1_xl(messages("customs.emailfrontend.verify-change-email.title-and-heading"))
+@p(Html(messages("customs.emailfrontend.verify-change-email.label", email)))
+
+
+@inputRadio(
+confirmVerifyChange,
+"",
+"isVerify",
+Seq(
+RadioItem(
+value = Some("true"),
+content = Text(messages("customs.emailfrontend.verify-change-email.verify")),
+checked = confirmVerifyChange("value").value.contains("true")
+),
+RadioItem(
+value = Some("false"),
+content = Text(messages("customs.emailfrontend.verify-change-email.change")),
+checked = confirmVerifyChange("value").value.contains("false")
+)
+),
+legendAsHeading = false,
+classes = "govuk-fieldset__legend--m"
+)
+
+<!--@button(messages("customs.emailfrontend.continue-button"))-->
+@button("customs.emailfrontend.continue-button", href = Some("change-email-address"))
+}
+}

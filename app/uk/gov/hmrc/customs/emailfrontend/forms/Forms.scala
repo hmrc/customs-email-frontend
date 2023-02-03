@@ -19,7 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.forms
 import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.hmrc.customs.emailfrontend.forms.Validation._
-import uk.gov.hmrc.customs.emailfrontend.model.{Email, YesNo}
+import uk.gov.hmrc.customs.emailfrontend.model.{Email, VerifyChange, YesNo}
 
 object Forms {
 
@@ -30,6 +30,13 @@ object Forms {
       "isYes" -> optional(boolean)
         .verifying(validYesNo("customs.emailfrontend.errors.valid-confirm-email"))
     )(YesNo.apply)(YesNo.unapply)
+  )
+
+  val confirmVerifyChangeForm: Form[VerifyChange] = Form(
+    mapping(
+      "isVerify" -> optional(boolean)
+        .verifying(validVerifyChange("customs.emailfrontend.errors.verify-change"))
+    )(VerifyChange.apply)(VerifyChange.unapply)
   )
 
 }

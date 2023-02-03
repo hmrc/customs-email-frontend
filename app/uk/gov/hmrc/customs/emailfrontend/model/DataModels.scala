@@ -16,6 +16,10 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
+import play.api.libs.json.{Format, Json}
+
 case class Email(value: String)
 
 case class YesNo(isYes: Option[Boolean])
+
+case class VerifyChange(isVerify: Option[Boolean])

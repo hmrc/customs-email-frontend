@@ -38,4 +38,9 @@ object Validation {
       case _    => Valid
     })
 
+  def validVerifyChange(errorMessage: String): Constraint[Option[Boolean]] =
+    Constraint({
+      case None => Invalid(ValidationError(errorMessage))
+      case _    => Valid
+    })
 }

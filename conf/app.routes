@@ -6,6 +6,9 @@ GET         /customs/assets/*file                                     controller
 GET         /start                                                    uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController.start
 GET         /signout                                                  uk.gov.hmrc.customs.emailfrontend.controllers.SignOutController.signOut
 
+GET         /verify-change-email                                      uk.gov.hmrc.customs.emailfrontend.controllers.VerifyChangeEmailController.show
+POST        /verify-change-email/create                               uk.gov.hmrc.customs.emailfrontend.controllers.VerifyChangeEmailController.submit
+
 GET         /change-email-address                                     uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.show
 GET         /change-email-address/create                              uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.create
 POST        /change-email-address                                     uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.submit
