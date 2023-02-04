@@ -22,16 +22,18 @@ import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
-import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
+import uk.gov.hmrc.customs.emailfrontend.forms.Forms.{confirmEmailForm, emailForm}
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
-import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
+import uk.gov.hmrc.customs.emailfrontend.views.html.{confirm_email_change, check_your_email}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourEmailController @Inject()(identify: IdentifierAction,
                                          view: check_your_email,
+                                         confirmEmailChangeView: confirm_email_change,
                                          emailVerificationService: EmailVerificationService,
                                          mcc: MessagesControllerComponents,
                                          save4LaterService: Save4LaterService,
@@ -72,6 +74,20 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
     }
 
   private def handleYesNo(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)
+                         (implicit request: Request[AnyContent]): Future[Result] =
+    confirmEmail.isYes match {
+      case Some(true) => Future.successful(Redirect(routes.CheckYourEmailController.confirmEmailAddressChangeView))
+      case _ =>
+        save4LaterService
+          .remove(internalId)
+          .flatMap(_ => Future.successful(Redirect(routes.WhatIsYourEmailController.create)))
+    }
+
+  def confirmEmailAddressChangeView: Action[AnyContent] = Action { implicit request =>
+    Ok(confirmEmailChangeView(emailForm))
+  }
+
+  def confirmChangeEmailAddress(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)
                          (implicit request: Request[AnyContent]): Future[Result] =
     confirmEmail.isYes match {
       case Some(true) => callEmailVerificationService(internalId, details, eori)

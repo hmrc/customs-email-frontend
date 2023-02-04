@@ -20,18 +20,18 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
-import uk.gov.hmrc.customs.emailfrontend.views.html.change_cds_email
+//import uk.gov.hmrc.customs.emailfrontend.views.html.change_cds_email
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CDSEmailChangeController @Inject()(view: change_cds_email,
+class CDSEmailChangeController @Inject()(/*view: change_cds_email,*/
                                       mcc: MessagesControllerComponents)
                                      (implicit override val messagesApi: MessagesApi, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport {
 
-  def show: Action[AnyContent] = Action { implicit request =>
-    Ok(view(emailForm))
-  }
+//  def show: Action[AnyContent] = Action { implicit request =>
+//    Ok(view(emailForm))
+//  }
 }

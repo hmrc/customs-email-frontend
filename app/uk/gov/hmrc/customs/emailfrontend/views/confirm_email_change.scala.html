@@ -37,5 +37,5 @@
           @CSRF.formField
           @p(Html(messages("customs.emailfrontend.change-your-email-address-for-cds.p1")))
           @p(Html(messages("customs.emailfrontend.change-your-email-address-for-cds.p2")))
-          @button(messages("customs.emailfrontend.continue-button"))
+          @button("customs.emailfrontend.continue-button", href = Some("change-email-confirmed"))
 }

@@ -36,4 +36,5 @@ GET         /language/:lang                                           uk.gov.hmr
 
 GET         /accessibility-statement                                  uk.gov.hmrc.customs.emailfrontend.controllers.ApplicationController.accessibilityStatement()
 
-GET         /cds-email-address                                        uk.gov.hmrc.customs.emailfrontend.controllers.CDSEmailChangeController.show
+GET         /confirm-email-address-change                             uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController.confirmEmailAddressChangeView
+GET         /change-email-confirmed                                   uk.gov.hmrc.customs.emailfrontend.controllers.CheckYourEmailController.confirmChangeEmailAddress
