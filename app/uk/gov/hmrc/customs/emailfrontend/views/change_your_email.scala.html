@@ -27,7 +27,7 @@
         errorSummary: components.errorSummary
 )
 
-@(emailForm: Form[Email], email: String, appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
+@(emailForm: Form[Email])(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.change-your-email.title"))) {
 
@@ -36,7 +36,7 @@
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.submit,'id -> "emailForm", 'novalidate -> "novalidate") {
         @CSRF.formField
         @h1_xl(messages("customs.emailfrontend.change-your-email.heading"))
-        @input_text(emailForm("email"), messages("customs.emailfrontend.change-your-email.label", email), autocomplete = Some("email"))
+        @input_text(emailForm("email"), messages("customs.emailfrontend.email-address.label"))
         @button(messages("customs.emailfrontend.continue-button"))
     }
 }

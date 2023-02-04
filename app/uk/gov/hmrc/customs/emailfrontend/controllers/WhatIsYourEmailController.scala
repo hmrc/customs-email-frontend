@@ -75,29 +75,41 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
 
   def create: Action[AnyContent] = identify.async { implicit request =>
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
-//      _ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
-//      Future.successful(Ok(whatIsYourEmailView(emailForm)))
-      _ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
-      Future.successful(Ok(whatIsYourEmailView(emailForm)))
+      details =>
+        (details.currentEmail, details.newEmail) match {
+          case (Some(_), _) => Future.successful(Ok(view(emailForm)))
+          case (None, _) => Future.successful(Ok(whatIsYourEmailView(emailForm)))
+          case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
+        },
+      subscriptionDisplay()
     )
   }
 
-//  private def subscriptionDisplay()(implicit request: AuthenticatedRequest[AnyContent]) =
-//    subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
-//      case SubscriptionDisplayResponse(Some(email), Some(_), _, _) =>
-//        Future.successful(Ok(view(emailForm, email, appConfig)))
-//      case SubscriptionDisplayResponse(Some(_), _, _, _) =>
-//        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
-//      case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
-//        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
-//      case SubscriptionDisplayResponse(None, _, Some(_), Some("FAIL")) =>
-//        Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
-//      case SubscriptionDisplayResponse(None, _, None, None) =>
-//        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
-//      case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
-//    }.recover {
-//      handleNonFatalException()
-//    }
+//  def create: Action[AnyContent] = identify.async { implicit request =>
+//    save4LaterService.routeBasedOnAmendment(request.user.internalId)(
+////      _ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
+////      Future.successful(Ok(whatIsYourEmailView(emailForm)))
+//      _ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
+//      Future.successful(Ok(whatIsYourEmailView(emailForm)))
+//    )
+//  }
+
+  private def subscriptionDisplay()(implicit request: AuthenticatedRequest[AnyContent]) =
+    subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
+      case SubscriptionDisplayResponse(Some(email), Some(_), _, _) =>
+        Future.successful(Ok(view(emailForm)))
+      case SubscriptionDisplayResponse(Some(_), _, _, _) =>
+        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
+      case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
+        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
+      case SubscriptionDisplayResponse(None, _, Some(_), Some("FAIL")) =>
+        Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
+      case SubscriptionDisplayResponse(None, _, None, None) =>
+        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
+      case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
+    }.recover {
+      handleNonFatalException()
+    }
 
   def verify: Action[AnyContent] = identify.async { implicit request =>
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
@@ -111,7 +123,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).map {
           case SubscriptionDisplayResponse(Some(email), _, _, _) =>
-            BadRequest(view(formWithErrors, email, appConfig))
+            BadRequest(view(formWithErrors))
           case _ => Redirect(routes.WhatIsYourEmailController.problemWithService)
         }.recover {
           handleNonFatalException()
