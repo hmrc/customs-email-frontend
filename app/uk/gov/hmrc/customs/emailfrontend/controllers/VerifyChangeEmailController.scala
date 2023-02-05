@@ -95,7 +95,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
     }
   }
 
-  def submit1: Action[AnyContent] = identify.async { implicit request =>
+  def verifyChangeEmail: Action[AnyContent] = identify.async { implicit request =>
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), _, _, _) =>
         confirmVerifyChangeForm.bindFromRequest.fold(

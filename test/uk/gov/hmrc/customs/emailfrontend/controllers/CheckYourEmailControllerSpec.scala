@@ -119,7 +119,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
           .withFormUrlEncodedBody(("isYes", "false"))
         val result = route(app, requestWithForm).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.create.url
+        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.whatIsEmailAddress.url
 
       }
     }
@@ -171,7 +171,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.EmailConfirmedController.show.url
+        redirectLocation(result).get shouldBe routes.ChangingYourEmailController.show.url
 
       }
 
