@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
       details =>
         (details.currentEmail, details.newEmail) match {
-          case (Some(currentEmail), _) => Future.successful(Ok(view(emailForm, currentEmail, appConfig)))
+          case (Some(currentEmail), _) => Future.successful(Ok(view(emailForm, appConfig)))
           case (None, _) => Future.successful(Ok(whatIsYourEmailView(emailForm)))
           case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
         },
@@ -73,10 +73,14 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
     )
   }
 
+  def whatIsEmailAddress: Action[AnyContent] = identify.async { implicit request =>
+    Future.successful(Ok(view(emailForm, appConfig)))
+  }
+
   private def subscriptionDisplay()(implicit request: AuthenticatedRequest[AnyContent]) =
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), Some(_), _, _) =>
-        Future.successful(Ok(view(emailForm, email, appConfig)))
+        Future.successful(Ok(view(emailForm, appConfig)))
       case SubscriptionDisplayResponse(Some(_), _, _, _) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
       case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
@@ -102,7 +106,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).map {
           case SubscriptionDisplayResponse(Some(email), _, _, _) =>
-            BadRequest(view(formWithErrors, email, appConfig))
+            BadRequest(view(formWithErrors, appConfig))
           case _ => Redirect(routes.WhatIsYourEmailController.problemWithService)
         }.recover {
           handleNonFatalException()

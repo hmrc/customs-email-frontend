@@ -29,6 +29,11 @@ customs.emailfrontend.change-your-email.label=You need to verify <strong class="
 customs.emailfrontend.what-is-your-email.label=What is your email address?
 customs.emailfrontend.what-is-your-email.title-and-heading=What is your email address?
 
+customs.emailfrontend.verify-change-email.title-and-heading=Verify or change your email address
+customs.emailfrontend.verify-change-email.label=Your registered email address is <strong class="bold">{0}</strong>.
+customs.emailfrontend.verify-change-email.verify=Verify this email address
+customs.emailfrontend.verify-change-email.change=Change this email address
+
 customs.emailfrontend.confirm-your-email.title-and-heading=Check your email address
 customs.emailfrontend.confirm-your-email.email-address=Email address
 customs.emailfrontend.confirm-your-email.hint=We''ll send you a link to confirm your email address.
@@ -51,12 +56,17 @@ customs.emailfrontend.verify-email.progressive-disclosure.content=Check your spa
 customs.emailfrontend.verify-email.progressive-disclosure.contentLink=send it again
 customs.emailfrontend.verify-email.progressive-disclosure.content2=If we send your email again, any previous links will stop working.
 
+customs.emailfrontend.changing-your-email.title-and-heading=Changing your email address for the Customs Declaration Service
+customs.emailfrontend.changing-your-email.text1=The Customs Declaration Service uses one email address for various customs-related services.
+customs.emailfrontend.changing-your-email.text2=If you change this email, ensure other people in your company will get the messages they need.
+
 # Error messages
 customs.emailfrontend.error-summary.problem=There is a problem.
 customs.emailfrontend.errors.valid-email.empty=Enter your email address
 customs.emailfrontend.errors.valid-email.too-long=The email address must be 50 characters or less
 customs.emailfrontend.errors.valid-email.wrong-format=Enter a valid email address
 customs.emailfrontend.errors.valid-confirm-email=Tell us if this is the correct email address
+customs.emailfrontend.errors.verify-change=Select verify or change
 
 customs.emailfrontend.problem-with-service.title-and-heading=Sorry, there is a problem with the service
 customs.emailfrontend.problem-with-service.info=Your email has not been updated. Try again later.
