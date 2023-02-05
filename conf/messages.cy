@@ -29,6 +29,11 @@ customs.emailfrontend.change-your-email.label=Mae angen i chi ddilysu <strong cl
 customs.emailfrontend.what-is-your-email.label=Beth yw’ch cyfeiriad e-bost?
 customs.emailfrontend.what-is-your-email.title-and-heading=Beth yw’ch cyfeiriad e-bost?
 
+customs.emailfrontend.verify-change-email.title-and-heading=Cadarnhau neu newid eich cyfeiriad e-bost
+customs.emailfrontend.verify-change-email.label=Eich e-bost cofrestredig yw <strong class="bold">{0}</strong>.
+customs.emailfrontend.verify-change-email.verify=Cadarnhau’r cyfeiriad e-bost hwn
+customs.emailfrontend.verify-change-email.change=Newid y cyfeiriad e-bost hwn
+
 customs.emailfrontend.confirm-your-email.title-and-heading=Gwirio’ch cyfeiriad e-bost
 customs.emailfrontend.confirm-your-email.email-address=Cyfeiriad e-bost
 customs.emailfrontend.confirm-your-email.hint=Byddwn yn anfon cysylltiad atoch i gadarnhau’ch cyfeiriad e-bost.
@@ -49,6 +54,10 @@ customs.emailfrontend.verify-email.progressive-disclosure.heading=Ches i ddim e-
 customs.emailfrontend.verify-email.progressive-disclosure.content=Gwiriwch eich ffolderi e-byst sbam neu sothach. Os nad yw’r e-bost yno, gallwn
 customs.emailfrontend.verify-email.progressive-disclosure.contentLink=ei hanfon eto
 customs.emailfrontend.verify-email.progressive-disclosure.content2=Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio
+
+customs.emailfrontend.changing-your-email.title-and-heading=Newid eich cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau
+customs.emailfrontend.changing-your-email.text1=Mae’r Gwasanaeth Datganiadau Tollau yn defnyddio un cyfeiriad e-bost ar gyfer nifer o wasanaethau sy’n gysylltiedig â thollau.
+customs.emailfrontend.changing-your-email.text2=Os ydych yn newid y cyfeiriad e-bost hwn, sicrhewch fod modd i bobl eraill yn eich cwmni gael y negeseuon sydd eu hangen arnynt.
 
 customs.emailfrontend.error-summary.problem=Mae problem wedi codi.
 customs.emailfrontend.errors.valid-email.empty=Nodwch eich cyfeiriad e-bost

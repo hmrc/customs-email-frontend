@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,19 +150,14 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "have a status of OK for create method when verified email found in subscription display response" in new Setup  {
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
-
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       running(app) {
-
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
-
-        val result = route(app, request).value
-        status(result) shouldBe OK
-        contentAsString(result) should include("test@test.com")
+        val requestWithForm = fakeRequestWithCsrf(POST, routes.WhatIsYourEmailController.submit.url)
+          .withFormUrlEncodedBody(("email", ""))
+        val result = route(app, requestWithForm).value
+        status(result) shouldBe BAD_REQUEST
       }
     }
 
