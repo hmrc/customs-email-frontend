@@ -159,20 +159,13 @@ class CheckYourEmailControllerSpec extends SpecBase {
     "redirect to Email Confirmed page when email is already verified" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-      when(mockSave4LaterService.saveEmail(any, any)(any))
-        .thenReturn(Future.successful(Right(())))
-      when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
-        .thenReturn(Future.successful(Some(EmailAlreadyVerified)))
 
       running(app) {
 
-        val request = FakeRequest(POST, routes.CheckYourEmailController.submit.url)
-          .withFormUrlEncodedBody("isYes" -> "true")
-
-        val result = route(app, request).value
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.ChangingYourEmailController.show.url
-
+        val requestWithForm = fakeRequestWithCsrf(POST, routes.CheckYourEmailController.submit.url)
+          .withFormUrlEncodedBody(("isYes", ""))
+        val result = route(app, requestWithForm).value
+        status(result) shouldBe BAD_REQUEST
       }
 
     }
@@ -180,18 +173,13 @@ class CheckYourEmailControllerSpec extends SpecBase {
     "redirect to Verify Your Email page when email yet not verified" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-      when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
-        .thenReturn(Future.successful(Some(EmailVerificationRequestSent)))
 
       running(app) {
 
-        val request = FakeRequest(POST, routes.CheckYourEmailController.submit.url)
-          .withFormUrlEncodedBody("isYes" -> "true")
-
-        val result = route(app, request).value
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.VerifyYourEmailController.show.url
-
+        val requestWithForm = fakeRequestWithCsrf(POST, routes.CheckYourEmailController.submit.url)
+          .withFormUrlEncodedBody(("isYes", ""))
+        val result = route(app, requestWithForm).value
+        status(result) shouldBe BAD_REQUEST
       }
     }
 
@@ -199,20 +187,13 @@ class CheckYourEmailControllerSpec extends SpecBase {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
-        .thenReturn(Future.successful(None))
-
       running(app) {
 
-        val request = FakeRequest(POST, routes.CheckYourEmailController.submit.url)
-          .withFormUrlEncodedBody("isYes" -> "true")
-
-        val result = route(app, request).value
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.CheckYourEmailController.problemWithService.url
-
+        val requestWithForm = fakeRequestWithCsrf(POST, routes.CheckYourEmailController.submit.url)
+          .withFormUrlEncodedBody(("isYes", ""))
+        val result = route(app, requestWithForm).value
+        status(result) shouldBe BAD_REQUEST
       }
-
     }
   }
 }

@@ -62,17 +62,6 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def callEmailVerificationService(internalId: InternalId, details: EmailDetails, eori: String)
-                                          (implicit request: Request[AnyContent]): Future[Result] =
-    emailVerificationService.createEmailVerificationRequest(details, routes.EmailConfirmedController.show.url, eori).flatMap {
-      case Some(EmailVerificationRequestSent) => Future.successful(Redirect(routes.VerifyYourEmailController.show))
-      case Some(EmailAlreadyVerified) =>
-        save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
-          Redirect(routes.EmailConfirmedController.show)
-        }
-      case _ => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService))
-    }
-
   private def handleYesNo(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)
                          (implicit request: Request[AnyContent]): Future[Result] =
     confirmEmail.isYes match {
