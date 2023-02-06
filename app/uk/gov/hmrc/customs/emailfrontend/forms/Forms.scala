@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package uk.gov.hmrc.customs.emailfrontend.forms
 
 import play.api.data.Form
 import play.api.data.Forms._
-import uk.gov.hmrc.customs.emailfrontend.forms.Validation._
-import uk.gov.hmrc.customs.emailfrontend.model.{Email, YesNo}
+import uk.gov.hmrc.customs.emailfrontend.forms.Validation.{validVerifyChange, _}
+import uk.gov.hmrc.customs.emailfrontend.model.{Email, VerifyChange, YesNo}
 
 object Forms {
 
@@ -32,4 +32,10 @@ object Forms {
     )(YesNo.apply)(YesNo.unapply)
   )
 
+  val confirmVerifyChangeForm: Form[VerifyChange] = Form(
+    mapping(
+      "isVerify" -> optional(boolean)
+        .verifying(validVerifyChange("customs.emailfrontend.errors.verify-change"))
+    )(VerifyChange.apply)(VerifyChange.unapply)
+  )
 }

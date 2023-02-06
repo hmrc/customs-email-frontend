@@ -16,16 +16,27 @@
 
 @import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 @import uk.gov.hmrc.govukfrontend.views.html.components
+@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.ChangingYourEmailController
+
+@import views.html.helper._
 
 @this(layout: Layout,
         h1_xl: components.h1_xl,
         p: components.p,
         button: components.button
 )
-@(email: String)(implicit request: Request[_], messages: Messages)
 
-@layout(Some(messages("customs.emailfrontend.verification-in-progress.title-and-heading"))) {
-    @h1_xl(messages("customs.emailfrontend.verification-in-progress.title-and-heading"))
-    @p(Html(messages("customs.emailfrontend.verification-in-progress.info", email)))
-    @button("customs.emailfrontend.sign-out", href = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url))
+@()(implicit request: Request[_], messages: Messages)
+@layout(Some(messages("customs.emailfrontend.changing-your-email.title-and-heading"))) {
+
+@helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.ChangingYourEmailController.submit, 'id -> "changingYourEmail", 'novalidate -> "novalidate") {
+    @CSRF.formField
+    @h1_xl(messages("customs.emailfrontend.changing-your-email.title-and-heading"))
+    @p(Html(messages("customs.emailfrontend.changing-your-email.text1")))
+    @p(Html(messages("customs.emailfrontend.changing-your-email.text2")))
+
+    @button("customs.emailfrontend.continue-button")
+
 }
+}
+

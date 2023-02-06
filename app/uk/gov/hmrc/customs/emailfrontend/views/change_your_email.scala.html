@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,24 +19,22 @@
 @import uk.gov.hmrc.customs.emailfrontend.model.Email
 @import views.html.helper._
 
-@this(
-        layout: Layout,
+@this(layout: Layout,
         h1_xl: components.h1_xl,
         input_text: components.input_text,
         button: components.button,
         errorSummary: components.errorSummary
 )
 
-@(emailForm: Form[Email], email: String, appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
-
+@(emailForm: Form[Email], appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
 @layout(Some(messages("customs.emailfrontend.change-your-email.title"))) {
 
-    @errorSummary(emailForm)
+@errorSummary(emailForm)
 
-    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.submit,'id -> "emailForm", 'novalidate -> "novalidate") {
-        @CSRF.formField
-        @h1_xl(messages("customs.emailfrontend.change-your-email.heading"))
-        @input_text(emailForm("email"), messages("customs.emailfrontend.change-your-email.label", email), autocomplete = Some("email"))
-        @button(messages("customs.emailfrontend.continue-button"))
-    }
+@helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.submit,'id -> "emailForm", 'novalidate -> "novalidate") {
+    @CSRF.formField
+    @h1_xl(messages("customs.emailfrontend.change-your-email.heading"))
+    @input_text(emailForm("email"), "Email address", autocomplete = Some("email"))
+    @button(messages("customs.emailfrontend.continue-button"))
+}
 }

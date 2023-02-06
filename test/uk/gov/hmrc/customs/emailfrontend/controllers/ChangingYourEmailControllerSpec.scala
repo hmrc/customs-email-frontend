@@ -16,19 +16,17 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import org.joda.time.DateTime
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 
 import scala.concurrent.Future
 
-class CheckYourEmailControllerSpec extends SpecBase {
+class ChangingYourEmailControllerSpec extends SpecBase {
 
   trait Setup {
 
@@ -42,9 +40,10 @@ class CheckYourEmailControllerSpec extends SpecBase {
       .build()
 
     protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
+
   }
 
-  "ConfirmEmailController" should {
+  "ChangingYourEmailController" should {
 
     "have a status of OK when email found in cache" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
@@ -55,10 +54,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.CheckYourEmailController.show.url)
         val result = route(app, request).value
         status(result) shouldBe OK
-        //TODO - check view is rendered
-
       }
-
     }
 
     "have a status of SEE_OTHER when email not found in cache on show" in new Setup {
@@ -67,8 +63,9 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.CheckYourEmailController.show.url)
-        val result = route(app, request).value
+        val requestWithForm = FakeRequest(POST, routes.ChangingYourEmailController.submit.url)
+          .withFormUrlEncodedBody(("isYes", ""))
+        val result = route(app, requestWithForm).value
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.SignOutController.signOut.url
 
@@ -82,7 +79,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
       running(app) {
 
-        val requestWithForm = FakeRequest(POST, routes.CheckYourEmailController.submit.url)
+        val requestWithForm = FakeRequest(POST, routes.ChangingYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", ""))
         val result = route(app, requestWithForm).value
         status(result) shouldBe SEE_OTHER
@@ -94,45 +91,43 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
     "have a status of BAD_REQUEST when no selection is provided" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(None))
 
       running(app) {
 
-        val requestWithForm = fakeRequestWithCsrf(POST, routes.CheckYourEmailController.submit.url)
+        val requestWithForm = FakeRequest(POST, routes.ChangingYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", ""))
         val result = route(app, requestWithForm).value
-        status(result) shouldBe BAD_REQUEST
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe routes.SignOutController.signOut.url
 
       }
 
     }
 
     "have a status of SEE_OTHER when no is selected" in new Setup {
-      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-      when(mockSave4LaterService.remove(any)(any)).thenReturn(Future.successful(Right(())))
+      when(mockSave4LaterService.fetchEmail(any)(any))
+        .thenReturn(Future.successful(None))
 
       running(app) {
 
-        val requestWithForm = FakeRequest(POST, routes.CheckYourEmailController.submit.url)
+        val requestWithForm = fakeRequestWithCsrf(POST, routes.ChangingYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", "false"))
         val result = route(app, requestWithForm).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.whatIsEmailAddress.url
-
       }
     }
 
     "have a status of SEE_OTHER when user clicks back on the successful request or user already complete bookmarked request within 2 hours" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
+        .thenReturn(Future.successful(None))
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.CheckYourEmailController.show.url)
-        val result = route(app, request).value
+        val requestWithForm = fakeRequestWithCsrf(POST, routes.ChangingYourEmailController.submit.url)
+          .withFormUrlEncodedBody(("isYes", "false"))
+        val result = route(app, requestWithForm).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show.url
-
       }
     }
 
@@ -152,45 +147,45 @@ class CheckYourEmailControllerSpec extends SpecBase {
     }
   }
 
-  "ConfirmEmailController on submit with yes selected" should {
+  "VerifyChangeEmailController on submit with yes selected" should {
 
     "redirect to Email Confirmed page when email is already verified" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(None))
 
       running(app) {
 
-        val requestWithForm = fakeRequestWithCsrf(POST, routes.CheckYourEmailController.submit.url)
+        val requestWithForm = fakeRequestWithCsrf(POST, routes.ChangingYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", ""))
         val result = route(app, requestWithForm).value
-        status(result) shouldBe BAD_REQUEST
+        status(result) shouldBe SEE_OTHER
       }
 
     }
 
     "redirect to Verify Your Email page when email yet not verified" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(None))
 
       running(app) {
 
-        val requestWithForm = fakeRequestWithCsrf(POST, routes.CheckYourEmailController.submit.url)
+        val requestWithForm = fakeRequestWithCsrf(POST, routes.ChangingYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", ""))
         val result = route(app, requestWithForm).value
-        status(result) shouldBe BAD_REQUEST
+        status(result) shouldBe SEE_OTHER
       }
     }
 
     "show 'there is a problem with service' page when createEmailVerificationRequest failed" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(None))
 
       running(app) {
 
-        val requestWithForm = fakeRequestWithCsrf(POST, routes.CheckYourEmailController.submit.url)
+        val requestWithForm = fakeRequestWithCsrf(POST, routes.ChangingYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", ""))
         val result = route(app, requestWithForm).value
-        status(result) shouldBe BAD_REQUEST
+        status(result) shouldBe SEE_OTHER
       }
     }
   }

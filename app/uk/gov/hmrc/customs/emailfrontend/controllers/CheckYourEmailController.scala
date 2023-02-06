@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +20,19 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
-import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
+import uk.gov.hmrc.customs.emailfrontend.views.html.{changing_your_email, check_your_email}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourEmailController @Inject()(identify: IdentifierAction,
                                          view: check_your_email,
+                                         view1: changing_your_email,
                                          emailVerificationService: EmailVerificationService,
                                          mcc: MessagesControllerComponents,
                                          save4LaterService: Save4LaterService,
@@ -60,25 +61,14 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def callEmailVerificationService(internalId: InternalId, details: EmailDetails, eori: String)
-                                          (implicit request: Request[AnyContent]): Future[Result] =
-    emailVerificationService.createEmailVerificationRequest(details, routes.EmailConfirmedController.show.url, eori).flatMap {
-      case Some(EmailVerificationRequestSent) => Future.successful(Redirect(routes.VerifyYourEmailController.show))
-      case Some(EmailAlreadyVerified) =>
-        save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
-          Redirect(routes.EmailConfirmedController.show)
-        }
-      case _ => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService))
-    }
-
   private def handleYesNo(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)
                          (implicit request: Request[AnyContent]): Future[Result] =
     confirmEmail.isYes match {
-      case Some(true) => callEmailVerificationService(internalId, details, eori)
+      case Some(true) => Future.successful(Ok(view1()))
       case _ =>
         save4LaterService
           .remove(internalId)
-          .flatMap(_ => Future.successful(Redirect(routes.WhatIsYourEmailController.create)))
+          .flatMap(_ => Future.successful(Redirect(routes.WhatIsYourEmailController.whatIsEmailAddress)))
     }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
