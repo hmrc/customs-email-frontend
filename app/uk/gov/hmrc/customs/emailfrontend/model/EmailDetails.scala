@@ -32,3 +32,10 @@ object EmailDetails {
   implicit def toJsonFormat(emailDetails: EmailDetails): JsValue = Json.toJson(emailDetails)
 
 }
+
+case class JourneyType(isVerify: Boolean)
+
+object JourneyType {
+  implicit val jsonFormat = Json.format[JourneyType]
+  implicit def toJsonFormat(journeyType: JourneyType): JsValue = Json.toJson(journeyType)
+}

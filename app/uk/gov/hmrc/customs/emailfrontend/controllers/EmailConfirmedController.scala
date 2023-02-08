@@ -56,7 +56,7 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
                                         (implicit request: AuthenticatedRequest[_]): Future[Result] =
     for {
       verified <- emailVerificationService.isEmailVerified(details.newEmail)
-      redirect <- if (verified.contains(true)) {updateEmail(details); Future.successful(Ok(emailVerifiedView(details.newEmail, details.currentEmail)))}
+      redirect <- if (verified.contains(true)) updateEmail(details)
       else Future.successful(Redirect(routes.VerifyYourEmailController.show))
     } yield redirect
 
@@ -70,8 +70,13 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
             _ <- save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(timestamp)))
             _ <- customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.user.eori), details.newEmail, timestamp)
             maybeReferrerName <- save4LaterService.fetchReferrer(request.user.internalId)
+            journeyType <- save4LaterService.fetchJourneyType(request.user.internalId)
           } yield {
-            Ok(emailChangedView(details.newEmail, details.currentEmail, maybeReferrerName.map(_.name), maybeReferrerName.map(_.continueUrl)))
+            if(journeyType.map(_.isVerify).get){
+              Ok(emailVerifiedView(details.newEmail, details.currentEmail))
+            } else {
+              Ok(emailChangedView(details.newEmail, details.currentEmail, maybeReferrerName.map(_.name), maybeReferrerName.map(_.continueUrl)))
+            }
           }).recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService) }
 
         case _ =>
