@@ -23,7 +23,7 @@ customs.emailfrontend.start.related-content-link4=VAT refunds on imported goods
 customs.emailfrontend.start.related-content-link5=Tariff data
 
 customs.emailfrontend.change-your-email.title=Enter your email address - Manage your email address for CDS - GOV.UK
-customs.emailfrontend.change-your-email.heading=Enter your email address
+customs.emailfrontend.change-your-email.heading=Enter a new email address
 customs.emailfrontend.change-your-email.label=You need to verify <strong class="bold">{0}</strong> or change it.
 
 customs.emailfrontend.what-is-your-email.label=What is your email address?
@@ -41,10 +41,10 @@ customs.emailfrontend.confirm-your-email.yes-no-label=Is this the email address 
 customs.emailfrontend.confirm-your-email.yes=Yes, this is the email address I want to use
 customs.emailfrontend.confirm-your-email.no=No, I need to change this email
 
-customs.emailfrontend.email-confirmed.title-and-heading=Email address confirmed
-customs.emailfrontend.email-confirmed.info1=Your email address will be active within 2 hours.
-customs.emailfrontend.email-confirmed.info2=Until then we will send CDS emails to {0}.
-customs.emailfrontend.email-confirmed.info3=Until then we will send emails to {0}.
+customs.emailfrontend.email-changed.title-and-heading=Email address changed
+customs.emailfrontend.email-verified.title-and-heading=Email address verified
+customs.emailfrontend.email-verified.info1=Your email address has been verified, you can now use Customs Declaration Service online services.
+customs.emailfrontend.email-confirmed.info1=Your email address for the Customs Declaration Service has been updated.
 customs.emailfrontend.email-confirmed.redirect.info.customs-finance=You can now continue to <a href="{0}">view your customs financial accounts</a>.
 customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=You can now continue to <a href="{0}">enter your Movement Reference Number</a>
 customs.emailfrontend.email-confirmed.redirect.info.report-or-check-de-minimis-aid-northern-ireland=You can now continue to <a href="{0}">Report De Minimis aid claim.</a>

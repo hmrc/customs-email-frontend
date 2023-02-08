@@ -23,7 +23,7 @@ customs.emailfrontend.start.related-content-link4=Ad-daliadau TAW ar nwyddau wed
 customs.emailfrontend.start.related-content-link5=Data tariffau
 
 customs.emailfrontend.change-your-email.title=Nodwch eich cyfeiriad e-bost - Rheoli’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datgan Tollau (CDS) - GOV.UK
-customs.emailfrontend.change-your-email.heading=Nodwch eich cyfeiriad e-bost
+customs.emailfrontend.change-your-email.heading=Nodwch gyfeiriad e-bost newydd
 customs.emailfrontend.change-your-email.label=Mae angen i chi ddilysu <strong class="bold">{0}</strong> neu ei newid.
 
 customs.emailfrontend.what-is-your-email.label=Beth yw’ch cyfeiriad e-bost?
@@ -41,10 +41,10 @@ customs.emailfrontend.confirm-your-email.yes-no-label=Ai dyma’r cyfeiriad e-bo
 customs.emailfrontend.confirm-your-email.yes=Iawn, dyma’r cyfeiriad e-bost rwyf am ei ddefnyddio
 customs.emailfrontend.confirm-your-email.no=Na, mae angen i mi newid y cyfeiriad e-bost hwn
 
-customs.emailfrontend.email-confirmed.title-and-heading=Cyfeiriad e-bost wedi’i gadarnhau
-customs.emailfrontend.email-confirmed.info1=Bydd eich cyfeiriad e-bost yn weithredol cyn pen 2 awr.
-customs.emailfrontend.email-confirmed.info2=Tan hynny, byddwn yn anfon e-byst CDS i {0}.
-customs.emailfrontend.email-confirmed.info3=Tan hynny, byddwn yn anfon e-byst at {0}.
+customs.emailfrontend.email-changed.title-and-heading=Cyfeiriad e-bost wedi’i newid
+customs.emailfrontend.email-verified.title-and-heading=Cyfeiriad e-bost wedi’i gadarnhau
+customs.emailfrontend.email-verified.info1=Mae’ch cyfeiriad e-bost wedi’i gadarnhau, ac felly gallwch ddefnyddio’r gwasanaeth Datganiadau Tollau.
+customs.emailfrontend.email-confirmed.info1=Mae’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau wedi’i ddiweddaru.
 customs.emailfrontend.email-confirmed.redirect.info.customs-finance=Nawr, gallwch fynd yn eich blaen i’r dudalen <a href="{0}">bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau</a>
 customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=Gallwch nawr barhau i <a href="{0}">fynd i mewn i'ch Movement Reference Number</a>
 

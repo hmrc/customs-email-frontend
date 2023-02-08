@@ -23,14 +23,16 @@ import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EmailDetails}
 import uk.gov.hmrc.customs.emailfrontend.services._
-import uk.gov.hmrc.customs.emailfrontend.views.html.email_confirmed
+import uk.gov.hmrc.customs.emailfrontend.views.html.{email_changed, email_verified}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import java.lang.ProcessBuilder.Redirect
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmailConfirmedController @Inject()(identify: IdentifierAction,
-                                         view: email_confirmed,
+                                         emailChangedView: email_changed,
+                                         emailVerifiedView: email_verified,
                                          customsDataStoreService: CustomsDataStoreService,
                                          save4LaterService: Save4LaterService,
                                          emailVerificationService: EmailVerificationService,
@@ -68,8 +70,13 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
             _ <- save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(timestamp)))
             _ <- customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.user.eori), details.newEmail, timestamp)
             maybeReferrerName <- save4LaterService.fetchReferrer(request.user.internalId)
+            journeyType <- save4LaterService.fetchJourneyType(request.user.internalId)
           } yield {
-            Ok(view(details.newEmail, details.currentEmail, maybeReferrerName.map(_.name), maybeReferrerName.map(_.continueUrl)))
+            if(journeyType.map(_.isVerify).get){
+              Ok(emailVerifiedView(details.newEmail, details.currentEmail))
+            } else {
+              Ok(emailChangedView(details.newEmail, details.currentEmail, maybeReferrerName.map(_.name), maybeReferrerName.map(_.continueUrl)))
+            }
           }).recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService) }
 
         case _ =>

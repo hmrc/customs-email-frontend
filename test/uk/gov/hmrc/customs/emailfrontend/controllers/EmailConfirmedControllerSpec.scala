@@ -23,10 +23,11 @@ import play.api.test.Helpers.{status, _}
 import play.api.{Application, inject}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, JourneyType, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.services._
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
+
 import scala.concurrent.Future
 
 class EmailConfirmedControllerSpec extends SpecBase {
@@ -76,6 +77,9 @@ class EmailConfirmedControllerSpec extends SpecBase {
 
         when(mockSave4LaterService.fetchReferrer(meq(InternalId("fakeInternalId")))(any))
           .thenReturn(Future.successful(Some(ReferrerName("abc", "/xyz"))))
+
+        when(mockSave4LaterService.fetchJourneyType(meq(InternalId("fakeInternalId")))(any))
+          .thenReturn(Future.successful(Some(JourneyType(true))))
 
         when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "fakeEori")), meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))

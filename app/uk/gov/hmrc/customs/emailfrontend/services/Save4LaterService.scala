@@ -23,14 +23,16 @@ import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.HttpErrorResponse
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes.AmendmentInProgressController
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, JourneyType, ReferrerName}
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector) extends Logging {
   private val referrerKey = "referrer"
   private val emailKey = "email"
+  private val journeyKey = "journey"
 
   def saveEmail(internalId: InternalId, emailDetails: EmailDetails)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] =
     save4LaterConnector.put[EmailDetails](internalId.id, emailKey, emailDetails)
@@ -38,6 +40,16 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector) exte
   def fetchEmail(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[EmailDetails]] = {
     logger.info("retrieving email address and timestamp from save 4 later")
     save4LaterConnector.getEmailDetails(internalId.id, emailKey)
+  }
+
+  def saveJourneyType(internalId: InternalId, isVerify: JourneyType)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
+    logger.info("saving journey type from mongo")
+    save4LaterConnector.put(internalId.id, journeyKey, isVerify)
+  }
+
+  def fetchJourneyType(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[JourneyType]] = {
+    logger.info("retrieving journey type from mongo")
+    save4LaterConnector.getJourneyType(internalId.id, journeyKey)
   }
 
   def saveReferrer(internalId: InternalId, referrerName: ReferrerName)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {

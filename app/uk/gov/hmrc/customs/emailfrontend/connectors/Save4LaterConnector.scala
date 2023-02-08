@@ -23,8 +23,9 @@ import play.mvc.Http.Status._
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, HttpErrorResponse, UnhandledException}
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, ReferrerName}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, JourneyType, ReferrerName}
 import uk.gov.hmrc.http._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -55,6 +56,19 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
       Some(response)
     }.recover {
       case e => logger.error(s"Unable to get Referrer :${e.getMessage}")
+        None
+    }
+  }
+
+  def getJourneyType(id: String, key: String)
+                     (implicit hc: HeaderCarrier, reads: Reads[JourneyType]): Future[Option[JourneyType]] = {
+
+    val url = s"${appConfig.save4LaterUrl}/$id/$key"
+    http.GET[JourneyType](url).map { response =>
+      auditCallResponse[JourneyType](url, response)
+      Some(response)
+    }.recover {
+      case e => logger.error(s"Unable to get journey type :${e.getMessage}")
         None
     }
   }

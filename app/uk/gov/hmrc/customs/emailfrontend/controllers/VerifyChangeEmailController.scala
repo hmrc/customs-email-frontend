@@ -19,14 +19,14 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import uk.gov.hmrc.customs.emailfrontend.config.{ErrorHandler}
+import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
-import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EmailDetails, InternalId, SubscriptionDisplayResponse}
+import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, EmailDetails, InternalId, JourneyType, SubscriptionDisplayResponse}
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{verify_change_email}
+import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
@@ -103,10 +103,14 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
           formData =>
           formData.isVerify match {
             case Some(false) =>
+                  save4LaterService.saveJourneyType(request.user.internalId, JourneyType(formData.isVerify.get))
                   save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), "", None)).map { _ =>
                     Redirect(routes.WhatIsYourEmailController.whatIsEmailAddress)
                   }
-            case Some(true) => callEmailVerificationService(request.user.internalId, EmailDetails(Some(email), email, None), request.user.eori)
+            case Some(true) => {
+              save4LaterService.saveJourneyType(request.user.internalId, JourneyType(formData.isVerify.get))
+              callEmailVerificationService(request.user.internalId, EmailDetails(Some(email), email, None), request.user.eori)
+            }
           }
         )
     }
