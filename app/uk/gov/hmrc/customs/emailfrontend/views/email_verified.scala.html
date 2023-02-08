@@ -22,22 +22,13 @@
         h1_xl: components.h1_xl,
         p: components.p,
         button: components.button,
-        panel: components.emailPanel
+        panel: components.emailVerifiedPanel
 )
-@(newEmail: String, prevEmail: Option[String], referrerName: Option[String], referrerUrl: Option[String])(implicit request: Request[_], messages: Messages)
+@(newEmail: String, prevEmail: Option[String])(implicit request: Request[_], messages: Messages)
 
-@layout(Some(messages("customs.emailfrontend.email-confirmed.title-and-heading"))) {
+@layout(Some(messages("customs.emailfrontend.email-verified.title-and-heading"))) {
 
     @panel(newEmail = Some(newEmail))
-    @p(Html(messages("customs.emailfrontend.email-confirmed.info1")))
-    @prevEmail.map{e =>
-        @p(Html(messages("customs.emailfrontend.email-confirmed.info3", e)))
-    }
-    
-    @referrerName.map{ name =>
-        @referrerUrl.map{ url =>
-            @p(Html(messages(s"customs.emailfrontend.email-confirmed.redirect.info.$name", url)))
-        }
-    }
+    @p(Html(messages("customs.emailfrontend.email-verified.info1")))
 }
 
