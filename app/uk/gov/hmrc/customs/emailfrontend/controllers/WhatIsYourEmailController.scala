@@ -74,6 +74,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   }
 
   def whatIsEmailAddress: Action[AnyContent] = identify.async { implicit request =>
+    save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
     Future.successful(Ok(view(emailForm, appConfig)))
   }
 

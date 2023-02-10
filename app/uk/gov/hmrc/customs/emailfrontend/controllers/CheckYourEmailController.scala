@@ -64,7 +64,7 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
   private def handleYesNo(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)
                          (implicit request: Request[AnyContent]): Future[Result] =
     confirmEmail.isYes match {
-      case Some(true) => Future.successful(Ok(view1()))
+      case Some(true) => Future.successful(Redirect(routes.ChangingYourEmailController.show))
       case _ =>
         save4LaterService
           .remove(internalId)
