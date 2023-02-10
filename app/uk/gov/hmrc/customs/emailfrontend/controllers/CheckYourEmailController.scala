@@ -23,8 +23,8 @@ import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{changing_your_email, check_your_email}
+import uk.gov.hmrc.customs.emailfrontend.services.{Save4LaterService}
+import uk.gov.hmrc.customs.emailfrontend.views.html.{check_your_email}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
@@ -32,8 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourEmailController @Inject()(identify: IdentifierAction,
                                          view: check_your_email,
-                                         view1: changing_your_email,
-                                         emailVerificationService: EmailVerificationService,
                                          mcc: MessagesControllerComponents,
                                          save4LaterService: Save4LaterService,
                                          errorHandler: ErrorHandler)
@@ -53,7 +51,7 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
       case Some(emailDetails) =>
         confirmEmailForm.bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail))),
-          formData => handleYesNo(request.user.internalId, formData, emailDetails, request.user.eori)
+          formData => handleYesNo(request.user.internalId, formData)
         )
       case None =>
         logger.warn("emailStatus cache none, user logged out")
@@ -61,10 +59,10 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def handleYesNo(internalId: InternalId, confirmEmail: YesNo, details: EmailDetails, eori: String)
+  private def handleYesNo(internalId: InternalId, confirmEmail: YesNo)
                          (implicit request: Request[AnyContent]): Future[Result] =
     confirmEmail.isYes match {
-      case Some(true) => Future.successful(Ok(view1()))
+      case Some(true) => Future.successful(Redirect(routes.ChangingYourEmailController.show))
       case _ =>
         save4LaterService
           .remove(internalId)
