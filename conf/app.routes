@@ -28,8 +28,6 @@ GET         /check-email-address/problem-with-this-service            uk.gov.hmr
 
 GET         /confirm-email-address                                    uk.gov.hmrc.customs.emailfrontend.controllers.VerifyYourEmailController.show
 
-GET         /service/:name                                            uk.gov.hmrc.customs.emailfrontend.controllers.ServiceNameController.show(name: String)
-
 GET         /email-address-confirmed                                  uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController.show
 GET         /email-address-confirmed/problem-with-this-service        uk.gov.hmrc.customs.emailfrontend.controllers.EmailConfirmedController.problemWithService
 

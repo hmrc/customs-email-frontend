@@ -49,9 +49,9 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       ).build()
   }
 
-  private val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
-  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@test.com"), Some(emailVerificationTimeStamp), None, None)
-  private val someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp = SubscriptionDisplayResponse(Some("test@test.com"), None, None, None)
+  private val emailVerificationTimeStamp = "2023-2-17T9:30:47.114"
+  private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@email.com"), Some(emailVerificationTimeStamp), None, None)
+  private val someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp = SubscriptionDisplayResponse(Some("test@email.com"), None, None, None)
   private val someSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(None, None, Some("statusText"), Some("FAIL"))
   private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None, None, None)
 
@@ -59,7 +59,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for show method when email found in cache and email status is AmendmentCompleted" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now().minusDays(2))))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now().minusDays(2))))))
 
       when(mockSave4LaterService.remove(any)(any))
         .thenReturn(Future.successful(Right(())))
@@ -91,9 +91,9 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for show method when email found in cache with no timestamp and email is verified" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", None))))
 
-      when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
+      when(mockEmailVerificationService.isEmailVerified(meq("test@email.com"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(true)))
 
       running(app) {
@@ -108,9 +108,9 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for show method when email found in cache with no timestamp and email is not verified" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", None))))
 
-      when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
+      when(mockEmailVerificationService.isEmailVerified(meq("test@email.com"))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(false)))
 
       running(app) {
@@ -125,7 +125,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for show method when email found in cache with timestamp for AmendmentInProgress" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
 
       running(app) {
 
@@ -197,7 +197,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of OK for create method when email found in cache with no timestamp" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(Some("old@email"), "test@email", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(Some("old@email"), "test@email.com", None))))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -213,7 +213,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for create method when current email not found in cache with no timestamp" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", None))))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -229,7 +229,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for create method when the bookmark url is used and user already completed success amend email journey" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -319,7 +319,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of SEE_OTHER for verify method when the bookmark url is used and user already complete success amend email journey " in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
 
       running(app) {
 
