@@ -335,7 +335,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val requestWithForm = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.show.url)
+        val requestWithForm = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
           .withFormUrlEncodedBody(("email", ""))
         val result = route(app, requestWithForm).value
         status(result) shouldBe BAD_REQUEST
@@ -348,7 +348,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.show.url)
+        val request = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
 
         val result = route(app, request).value
         status(result) shouldBe BAD_REQUEST
@@ -361,7 +361,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.show.url)
+        val request = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
           .withFormUrlEncodedBody("email" -> "invalidEmail")
 
         val result = route(app, request).value
@@ -375,7 +375,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.show.url)
+        val request = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
           .withFormUrlEncodedBody("email" -> "valid@email.com")
 
         val result = route(app, request).value

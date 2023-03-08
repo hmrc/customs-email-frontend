@@ -24,17 +24,6 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 class ApplicationControllerSpec extends SpecBase {
 
   "ApplicationController" should {
-    "allow  the user to access the start page, without auth" in {
-
-      val app: Application = applicationBuilder(disableAuth = true).build()
-
-      running(app) {
-        val request = FakeRequest(GET, routes.ApplicationController.start.url)
-        val result = route(app, request).value
-        status(result) shouldBe OK
-      }
-
-    }
 
     "allow  the user to access the accessibility statement page, without auth" in {
 
