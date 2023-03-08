@@ -21,16 +21,23 @@ import uk.gov.hmrc.emailaddress.EmailAddress
 
 object Validation {
 
+  final private val validEmailPattern = """^\s*([a-zA-Z0-9.!#$%&’'*+/=?^_`{|}~-]+)@([a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)\s*$""".r
+
   def validEmail: Constraint[String] =
     Constraint({
       case e if e.trim.isEmpty =>
         Invalid(ValidationError("customs.emailfrontend.errors.valid-email.empty"))
       case e if e.length > 50 =>
         Invalid(ValidationError("customs.emailfrontend.errors.valid-email.too-long"))
-      case e if !EmailAddress.isValid(e) =>
+      case e if !isValid(e) =>
         Invalid(ValidationError("customs.emailfrontend.errors.valid-email.wrong-format"))
       case _ => Valid
     })
+
+  def isValid(email: String) = email match {
+    case validEmailPattern(_,_) => true
+    case invalidEmail => false
+  }
 
   def validYesNo(errorMessage: String): Constraint[Option[Boolean]] =
     Constraint({
