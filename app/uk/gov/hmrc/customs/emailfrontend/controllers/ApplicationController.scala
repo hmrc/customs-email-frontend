@@ -19,20 +19,15 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.views.html.start_page
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ApplicationController @Inject()(view: start_page,
-                                      mcc: MessagesControllerComponents)
+class ApplicationController @Inject()(mcc: MessagesControllerComponents)
                                      (implicit override val messagesApi: MessagesApi, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport {
 
-  def start: Action[AnyContent] = Action { implicit request =>
-    Ok(view())
-  }
 
   def accessibilityStatement: Action[AnyContent] = Action { implicit request =>
     Redirect(appConfig.accessibilityLinkUrl)
