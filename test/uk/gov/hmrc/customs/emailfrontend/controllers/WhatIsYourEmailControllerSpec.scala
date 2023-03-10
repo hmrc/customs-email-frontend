@@ -321,6 +321,19 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
+    "have a status of OK for verify method when email found is having space in start and end" in new Setup  {
+      when(mockSave4LaterService.fetchEmail(any)(any))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "     test@email    ", None))))
+
+      running(app) {
+
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.verify.url)
+
+        val result = route(app, request).value
+        status(result) shouldBe OK
+      }
+    }
+
     "have a status of SEE_OTHER for verify method when the bookmark url is used and user already complete success amend email journey " in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
