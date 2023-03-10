@@ -127,4 +127,8 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
       case _ => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService))
     }
 
+  def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
+    Future.successful(BadRequest(errorHandler.problemWithService))
+  }
+
   }
