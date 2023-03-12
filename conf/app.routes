@@ -18,6 +18,7 @@ GET         /change-email-address/problem-with-this-service           uk.gov.hmr
 
 GET         /changing-your-email                                      uk.gov.hmrc.customs.emailfrontend.controllers.ChangingYourEmailController.show
 POST        /changing-your-email                                      uk.gov.hmrc.customs.emailfrontend.controllers.ChangingYourEmailController.submit
+GET         /changing-your-email                                      uk.gov.hmrc.customs.emailfrontend.controllers.ChangingYourEmailController.problemWithService
 
 GET         /email-address/verify-email-address                       uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.verify
 POST        /email-address/verify-email-address                       uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.verifySubmit
