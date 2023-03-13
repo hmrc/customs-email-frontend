@@ -64,6 +64,7 @@ customs.emailfrontend.errors.valid-email.empty=Nodwch eich cyfeiriad e-bost
 customs.emailfrontend.errors.valid-email.too-long=Mae’n rhaid i’r cyfeiriad e-bost fod yn 50 o gymeriadau neu lai
 customs.emailfrontend.errors.valid-email.wrong-format=Nodwch gyfeiriad e-bost dilys
 customs.emailfrontend.errors.valid-confirm-email=Rhowch wybod os mai dyma’r cyfeiriad e-bost cywir
+customs.emailfrontend.errors.verify-change=Dewiswch a hoffech gadarnhau neu newid eich cyfeiriad e-bost
 
 customs.emailfrontend.problem-with-service.title-and-heading=Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
 customs.emailfrontend.problem-with-service.info=Nid yw’ch cyfeiriad e-bost wedi’i ddiweddaru. Rhowch gynnig arall arni yn nes ymlaen.
