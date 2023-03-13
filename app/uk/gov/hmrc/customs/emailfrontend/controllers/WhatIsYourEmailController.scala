@@ -117,7 +117,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
         subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
           case SubscriptionDisplayResponse(currentEmail@Some(_), _, _, _) => {
             save4LaterService
-              .saveEmail(request.user.internalId, EmailDetails(currentEmail, formData.value, None))
+              .saveEmail(request.user.internalId, EmailDetails(currentEmail, formData.value.trim, None))
               .map { _ =>
                 Redirect(routes.CheckYourEmailController.show)
               }
