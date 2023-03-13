@@ -10,6 +10,7 @@ GET         /verify-change-email                                      uk.gov.hmr
 GET         /verify-change-email/create                               uk.gov.hmrc.customs.emailfrontend.controllers.VerifyChangeEmailController.create
 GET         /change-email-address/what-is-email-address               uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.whatIsEmailAddress
 POST        /verify-change-email                                      uk.gov.hmrc.customs.emailfrontend.controllers.VerifyChangeEmailController.verifyChangeEmail
+GET         /verify-change-email/problem-with-this-service            uk.gov.hmrc.customs.emailfrontend.controllers.VerifyChangeEmailController.verifyChangeEmail
 
 GET         /change-email-address                                     uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.show
 GET         /change-email-address/create                              uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.create
@@ -18,7 +19,6 @@ GET         /change-email-address/problem-with-this-service           uk.gov.hmr
 
 GET         /changing-your-email                                      uk.gov.hmrc.customs.emailfrontend.controllers.ChangingYourEmailController.show
 POST        /changing-your-email                                      uk.gov.hmrc.customs.emailfrontend.controllers.ChangingYourEmailController.submit
-GET         /changing-your-email                                      uk.gov.hmrc.customs.emailfrontend.controllers.ChangingYourEmailController.problemWithService
 
 GET         /email-address/verify-email-address                       uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.verify
 POST        /email-address/verify-email-address                       uk.gov.hmrc.customs.emailfrontend.controllers.WhatIsYourEmailController.verifySubmit
