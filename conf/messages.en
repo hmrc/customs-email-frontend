@@ -66,7 +66,7 @@ customs.emailfrontend.errors.valid-email.empty=Enter your email address
 customs.emailfrontend.errors.valid-email.too-long=The email address must be 50 characters or less
 customs.emailfrontend.errors.valid-email.wrong-format=Enter a valid email address
 customs.emailfrontend.errors.valid-confirm-email=Tell us if this is the correct email address
-customs.emailfrontend.errors.verify-change=Select verify or change
+customs.emailfrontend.errors.verify-change=Select if you want to verify or change your email address
 
 customs.emailfrontend.problem-with-service.title-and-heading=Sorry, there is a problem with the service
 customs.emailfrontend.problem-with-service.info=Your email has not been updated. Try again later.
