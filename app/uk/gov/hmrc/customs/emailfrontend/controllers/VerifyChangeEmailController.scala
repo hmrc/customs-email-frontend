@@ -80,10 +80,10 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
       case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
       case SubscriptionDisplayResponse(None, _, Some(_), Some("FAIL")) =>
-        Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
+        Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
       case SubscriptionDisplayResponse(None, _, None, None) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
-      case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
+      case _ => Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
     }.recover {
       handleNonFatalException()
     }
@@ -91,7 +91,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
   private def handleNonFatalException(): PartialFunction[Throwable, Result] = {
     case NonFatal(e) => {
       logger.error(s"Subscription display failed with ${e.getMessage}")
-      Redirect(routes.WhatIsYourEmailController.problemWithService)
+      Redirect(routes.VerifyChangeEmailController.problemWithService)
     }
   }
 
@@ -113,7 +113,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
             }
           }
         )
-      case SubscriptionDisplayResponse(None, _, _, _) =>
+      case _ =>
         Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
     }
   }
