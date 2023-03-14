@@ -111,14 +111,10 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
               save4LaterService.saveJourneyType(request.user.internalId, JourneyType(formData.isVerify.get))
               callEmailVerificationService(request.user.internalId, EmailDetails(Some(email), email, None), request.user.eori)
             }
-            case None => {
-              save4LaterService.saveJourneyType(request.user.internalId, JourneyType(formData.isVerify.get))
-              save4LaterService.saveEmail(request.user.internalId, EmailDetails(None, "", None)).map { _ =>
-                Redirect(routes.WhatIsYourEmailController.problemWithService)
-              }
-            }
           }
         )
+      case SubscriptionDisplayResponse(None, _, _, _) =>
+        Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
     }
   }
 
@@ -133,4 +129,8 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
       case _ => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService))
     }
 
+  def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
+    Future.successful(BadRequest(errorHandler.problemWithService))
   }
+
+}
