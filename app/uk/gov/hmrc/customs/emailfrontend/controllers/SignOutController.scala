@@ -17,16 +17,30 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.connectors.SessionCacheConnector
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class SignOutController @Inject()(appConfig: AppConfig, mcc: MessagesControllerComponents)(
-  implicit override val messagesApi: MessagesApi
+                                  implicit override val messagesApi: MessagesApi,
+                                  sessionCacheConnector: SessionCacheConnector,
 ) extends FrontendController(mcc) with I18nSupport {
-  def signOut: Action[AnyContent] = Action {
-    Redirect(appConfig.feedbackUrl).withNewSession
+
+  def signOut: Action[AnyContent] = Action { implicit request =>
+    clearSession(appConfig.feedbackService)
+  }
+
+  def signOutNoSurvey: Action[AnyContent] = Action { implicit request =>
+    clearSession(appConfig.loginContinueUrl)
+  }
+
+  private def clearSession(continue: String)(implicit hc: HeaderCarrier): Result = {
+    hc.sessionId.map(sessionId => sessionCacheConnector.removeSession(sessionId.value))
+    Redirect(appConfig.signOutUrl, Map("continue" -> Seq(continue)))
   }
 }
