@@ -47,8 +47,8 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val signOutUrl: String = config.get[String]("external-urls.signOut")
 
-  lazy val customsSessionCacheUrl: String = servicesConfig.baseUrl("manage-email-cds-session-cache") +
-    config.get[String]("microservice.services.manage-email-cds-session-cache.context")
+  lazy val customsSessionCacheUrl: String = servicesConfig.baseUrl("customs-manage-session-cache") +
+    config.get[String]("microservice.services.customs-manage-session-cache.context")
 
   lazy val feedbackService: String = config.get[String]("microservice.services.feedback.url") +
     config.get[String]("microservice.services.feedback.source")

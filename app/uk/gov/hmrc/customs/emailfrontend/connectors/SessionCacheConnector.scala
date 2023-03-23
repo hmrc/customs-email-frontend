@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import play.api.http.Status.OK
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.model.AccountLink
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.Inject
@@ -27,9 +26,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class SessionCacheConnector @Inject()(httpClient: HttpClient,
                                       appConfig: AppConfig)(implicit executionContext: ExecutionContext) {
 
-  def retrieveSession(id: String, linkId: String)(implicit hc: HeaderCarrier): Future[Option[AccountLink]] =
-    httpClient.GET[AccountLink](
-      appConfig.customsSessionCacheUrl + s"/account-link/$id/$linkId"
+  def retrieveSession(id: String, linkId: String)(implicit hc: HeaderCarrier): Future[Option[HttpResponse]] =
+    httpClient.GET(
+      appConfig.customsSessionCacheUrl + s"/email-link/$id/$linkId"
     ).map(Some(_)).recover { case _ => None }
 
   def removeSession(id: String)(implicit hc: HeaderCarrier): Future[Boolean] =

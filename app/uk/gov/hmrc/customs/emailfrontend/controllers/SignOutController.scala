@@ -39,7 +39,7 @@ class SignOutController @Inject()(appConfig: AppConfig, mcc: MessagesControllerC
     clearSession(appConfig.loginContinueUrl)
   }
 
-  private def clearSession(continue: String)(implicit hc: HeaderCarrier): Result = {
+   def clearSession(continue: String)(implicit hc: HeaderCarrier): Result = {
     hc.sessionId.map(sessionId => sessionCacheConnector.removeSession(sessionId.value))
     Redirect(appConfig.signOutUrl, Map("continue" -> Seq(continue)))
   }

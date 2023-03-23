@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.model
+package uk.gov.hmrc.customs.emailfrontend.services
 
-import play.api.libs.json.{Json, OFormat}
+import akka.actor.setup.Setup
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
-case class AccountLink(accountNumber: String, linkId: String)
+import java.time.ZoneId
 
-object AccountLink {
-  implicit val format: OFormat[AccountLink] = Json.format[AccountLink]
+class DateTimeServiceSpec extends SpecBase {
+
+  val dateTimeService: DateTimeService = new DateTimeService
+
+  "DateTimeService" should {
+    "zonedDateTimeUtc" in new Setup {
+        dateTimeService.zonedDateTimeUtc.getZone shouldBe ZoneId.of("UTC")
+      }
+    }
 }
