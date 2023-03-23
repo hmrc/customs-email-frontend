@@ -21,11 +21,9 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Reads
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.HttpErrorResponse
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, JourneyType, ReferrerName}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
-
 import scala.concurrent.Future
 
 class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
@@ -36,7 +34,6 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
     protected val timestamp: DateTime = DateTimeUtil.dateTime
     protected val emailDetails: EmailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
     protected val referrerName: ReferrerName = ReferrerName("customs-finance", "/xyz")
-    protected val isVerify: JourneyType = JourneyType(false)
     protected val mockSave4LaterConnector = mock[Save4LaterConnector]
     protected val service = new Save4LaterService(mockSave4LaterConnector)
   }
@@ -58,22 +55,6 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
       val result = service.fetchEmail(internalId).futureValue
 
       result shouldBe Some(emailDetails)
-    }
-
-    "save the journey type against the users InternalId" in new Setup {
-      when(mockSave4LaterConnector.put[JourneyType](any, any, any)(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Right(())))
-
-      val result: Unit = service.saveJourneyType(internalId, isVerify).futureValue
-      result shouldBe (())
-    }
-
-    "fetch the journey type for the users InternalId" in new Setup {
-      when(mockSave4LaterConnector.getJourneyType(any, any)(any[HeaderCarrier], any[Reads[JourneyType]])
-      ).thenReturn(Future.successful(Some(isVerify)))
-
-      val result = service.fetchJourneyType(internalId).futureValue
-      result shouldBe Some(isVerify)
     }
 
     "save the referrer against the users InternalId" in new Setup {

@@ -46,7 +46,7 @@ class VerifyYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe "/manage-email-cds/signOut"
+        redirectLocation(result).value shouldBe "/manage-email-cds/signout"
       }
     }
 
