@@ -96,4 +96,6 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
   lazy val timeout: Int = config.get[Int]("timeout.timeout")
   lazy val countdown: Int = config.get[Int]("timeout.countdown")
 
+  lazy val loginContinueUrl: String = config.get[String]("external-url.loginContinue")
+
 }

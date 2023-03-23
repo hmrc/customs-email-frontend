@@ -29,4 +29,8 @@ class SignOutController @Inject()(appConfig: AppConfig, mcc: MessagesControllerC
   def signOut: Action[AnyContent] = Action {
     Redirect(appConfig.feedbackUrl).withNewSession
   }
+
+  def logoutNoSurvey: Action[AnyContent] = Action  {
+    Redirect(appConfig.loginContinueUrl).withNewSession
+  }
 }
