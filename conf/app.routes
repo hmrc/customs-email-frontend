@@ -4,8 +4,7 @@
 GET         /customs/assets/*file                                     controllers.Assets.versioned(path="/public", file: Asset)
 
 GET         /start                                                    uk.gov.hmrc.customs.emailfrontend.controllers.VerifyChangeEmailController.show
-GET         /signOut                                                  uk.gov.hmrc.customs.emailfrontend.controllers.SignOutController.signOut
-GET         /signout-no-survey                                        uk.gov.hmrc.customs.emailfrontend.controllers.SignOutController.signOutNoSurvey
+GET         /signout                                                  uk.gov.hmrc.customs.emailfrontend.controllers.SignOutController.signOut
 
 GET         /verify-change-email                                      uk.gov.hmrc.customs.emailfrontend.controllers.VerifyChangeEmailController.show
 GET         /verify-change-email/create                               uk.gov.hmrc.customs.emailfrontend.controllers.VerifyChangeEmailController.create

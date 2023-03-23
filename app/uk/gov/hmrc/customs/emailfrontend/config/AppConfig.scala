@@ -43,17 +43,6 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
     config.get[String]("external-url.company-auth-frontend.continue-url")
   val feedbackUrl: String = config.get[String]("external-url.feedback-survey")
 
-  lazy val loginContinueUrl: String = config.get[String]("external-urls.loginContinue")
-
-  lazy val signOutUrl: String = config.get[String]("external-urls.signOut")
-
-  lazy val customsSessionCacheUrl: String = servicesConfig.baseUrl("customs-manage-session-cache") +
-    config.get[String]("microservice.services.customs-manage-session-cache.context")
-
-  lazy val feedbackService: String = config.get[String]("microservice.services.feedback.url") +
-    config.get[String]("microservice.services.feedback.source")
-
-
   val appName: String = config.get[String]("appName")
 
   val emailVerificationBaseUrl: String =

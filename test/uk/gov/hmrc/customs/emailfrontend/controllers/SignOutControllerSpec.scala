@@ -24,7 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecB
 
 class SignOutControllerSpec extends SpecBase {
 
- /* "SignOut Controller" should {
+  "SignOut Controller" should {
 
     "redirect to feedback survey" in {
 
@@ -55,5 +55,5 @@ class SignOutControllerSpec extends SpecBase {
       }
 
     }
-  }*/
+  }
 }
