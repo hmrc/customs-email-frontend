@@ -62,7 +62,7 @@
         countdown = Some(appConfig.countdown),
         keepAliveUrl = Some(request.uri),
         signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
-        timeoutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url)
+        timeoutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.logoutNoSurvey.url)
     ))
     }
 
