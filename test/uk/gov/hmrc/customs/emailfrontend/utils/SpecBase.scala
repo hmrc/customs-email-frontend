@@ -46,6 +46,12 @@ trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with Opti
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
   }
 
+ /*def application(updateEmail: Seq[UpdateEmail] = Seq.empty): GuiceApplicationBuilder = new GuiceApplicationBuilder().overrides(
+    inject.bind[IdentifierAction].to[FakeIdentifierAction],
+    api.inject.bind[Metrics].toInstance(new FakeMetrics)
+  ).configure("auditing.enabled" -> "false")*/
+
+
   @implicitNotFound("Pass a type for the identifier action")
   def applicationBuilder[IA <: IdentifierAction](disableAuth: Boolean = false)(implicit c: ClassTag[IA]) : GuiceApplicationBuilder = {
 
