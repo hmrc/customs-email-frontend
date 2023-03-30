@@ -64,7 +64,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
       details =>
         (details.currentEmail, details.newEmail) match {
           case (Some(currentEmail), _) =>
-            Future.successful(Ok(view(confirmVerifyChangeForm, currentEmail)))
+            Future.successful(Ok(view(confirmVerifyChangeForm, Some(currentEmail))))
           case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
         },
       subscriptionDisplay
@@ -74,7 +74,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
   private def subscriptionDisplay()(implicit request: AuthenticatedRequest[AnyContent]) =
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), _, _, _) =>
-        Future.successful(Ok(view(confirmVerifyChangeForm, email)))
+        Future.successful(Ok(view(confirmVerifyChangeForm, Some(email))))
       case SubscriptionDisplayResponse(Some(_), _, _, _) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
       case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
@@ -82,6 +82,8 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
       case SubscriptionDisplayResponse(None, _, Some(_), Some("FAIL")) =>
         Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
       case SubscriptionDisplayResponse(None, _, None, None) =>
+        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
+      case SubscriptionDisplayResponse(None, None, _, _) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
       case _ => Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
     }.recover {
@@ -99,7 +101,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), _, _, _) =>
         confirmVerifyChangeForm.bindFromRequest.fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, email))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, Some(email)))),
           formData =>
           formData.isVerify match {
             case Some(false) =>
