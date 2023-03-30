@@ -96,6 +96,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
     }
 
   def verify: Action[AnyContent] = identify.async { implicit request =>
+    save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
       _ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
       Future.successful(Ok(whatIsYourEmailView(emailForm)))
@@ -106,7 +107,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
     emailForm.bindFromRequest.fold(
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).map {
-          case SubscriptionDisplayResponse(Some(email), _, _, _) =>
+          case SubscriptionDisplayResponse(_, _, _, _) =>
             BadRequest(view(formWithErrors, appConfig))
           case _ => Redirect(routes.WhatIsYourEmailController.problemWithService)
         }.recover {
@@ -114,16 +115,21 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
         }
       },
       formData => {
-        subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
-          case SubscriptionDisplayResponse(currentEmail@Some(_), _, _, _) => {
+        save4LaterService.fetchEmail(request.user.internalId).flatMap {
+          case Some(emailDetails) if emailDetails.currentEmail.isEmpty =>
             save4LaterService
-              .saveEmail(request.user.internalId, EmailDetails(currentEmail, formData.value.trim, None))
+              .saveEmail(request.user.internalId, EmailDetails(None, formData.value.trim, None))
               .map { _ =>
                 Redirect(routes.CheckYourEmailController.show)
               }
-          }
+          case Some(emailDetails) if emailDetails.currentEmail.isDefined =>
+            save4LaterService
+              .saveEmail(request.user.internalId, EmailDetails(emailDetails.currentEmail, formData.value.trim, None))
+              .map { _ =>
+                Redirect(routes.CheckYourEmailController.show)
+              }
           case _ =>
-            Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
+                      Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
         }
       }.recover {
         handleNonFatalException()

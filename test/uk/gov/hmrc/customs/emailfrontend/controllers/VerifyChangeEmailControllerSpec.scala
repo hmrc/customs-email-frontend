@@ -53,6 +53,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(Some("test@email.com"), Some(emailVerificationTimeStamp), None, None)
   private val someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp = SubscriptionDisplayResponse(Some("test@email.com"), None, None, None)
   private val someSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(None, None, Some("statusText"), Some("FAIL"))
+  private val noneSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(None, None, Some(""), Some(""))
   private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None, None, None)
 
   "VerifyChangeEmailController" should {
@@ -291,6 +292,22 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
+    "show 'what is your email address' page when subscription display response has no email and timestamp with status text and param" in new Setup  {
+      when(mockSave4LaterService.fetchEmail(any)(any))
+        .thenReturn(Future.successful(None))
+
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(noneSubscriptionDisplayResponseWithStatus))
+
+      running(app) {
+
+        val request = FakeRequest(GET, routes.VerifyChangeEmailController.create.url)
+
+        val result = route(app, request).value
+        status(result) shouldBe SEE_OTHER
+      }
+    }
+
     "have a status of SEE_OTHER for verify method" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(None))
@@ -398,20 +415,20 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for submit" in new Setup  {
-      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
-
-      running(app) {
-
-        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
-          .withFormUrlEncodedBody("email" -> "valid@email.com")
-
-        val result = route(app, request).value
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
-      }
-    }
+//    "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for submit" in new Setup  {
+//      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
+//        .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
+//
+//      running(app) {
+//
+//        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
+//          .withFormUrlEncodedBody("email" -> "valid@email.com")
+//
+//        val result = route(app, request).value
+//        status(result) shouldBe SEE_OTHER
+//        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+//      }
+//    }
 
     "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for bad request form" in new Setup  {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))

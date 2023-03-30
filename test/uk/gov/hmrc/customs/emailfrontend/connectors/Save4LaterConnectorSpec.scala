@@ -23,7 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers.running
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, UnhandledException}
-import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, ReferrerName}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, JourneyType, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, SessionId}
 
@@ -57,6 +57,21 @@ class Save4LaterConnectorSpec extends SpecBase {
       }
     }
 
+    "GET journey type returns a response with body when OK response received" in new Setup {
+
+      private val journeyType = JourneyType(true)
+
+      when(mockHttpClient.GET[JourneyType](any, any, any)(any, any, any))
+        .thenReturn(Future.successful(journeyType))
+
+      running(app) {
+        val connector = app.injector.instanceOf[Save4LaterConnector]
+
+        val result = connector.getJourneyType("id", "key").futureValue
+        result shouldBe Some(journeyType)
+      }
+    }
+
     "GET referer returns a response with body when OK response received" in new Setup {
 
       private val referrerName = ReferrerName("Name", "continueUrl")
@@ -81,6 +96,19 @@ class Save4LaterConnectorSpec extends SpecBase {
         val connector = app.injector.instanceOf[Save4LaterConnector]
 
         val result = connector.getReferrerName("id", "key").futureValue
+        result shouldBe None
+      }
+    }
+
+    "GET Journey type returns 'none' when NOT_FOUND response received" in new Setup {
+
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
+
+      running(app) {
+        val connector = app.injector.instanceOf[Save4LaterConnector]
+
+        val result = connector.getJourneyType("id", "key").futureValue
         result shouldBe None
       }
     }

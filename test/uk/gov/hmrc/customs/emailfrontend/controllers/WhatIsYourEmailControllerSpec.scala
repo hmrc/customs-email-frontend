@@ -72,6 +72,19 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
+    "have a status of OK for rendering email address form" in new Setup {
+      when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
+        .thenReturn(Future.successful(Right(())))
+
+      running(app) {
+
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.whatIsEmailAddress.url)
+
+        val result = route(app, request).value
+        status(result) shouldBe OK
+      }
+    }
+
     "have a status of SEE_OTHER for show method when email is not found in cache and email status is AmendmentNotDetermined" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(None))
@@ -298,6 +311,8 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "have a status of OK for verify method" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(None))
+      when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
+        .thenReturn(Future.successful(Right(())))
 
       running(app) {
 
@@ -311,6 +326,8 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "have a status of OK for verify method when email found in cache with no timestamp" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
+      when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
+        .thenReturn(Future.successful(Right(())))
 
       running(app) {
 
@@ -324,6 +341,8 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "have a status of OK for verify method when email found is having space in start and end" in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "     test@email    ", None))))
+      when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
+        .thenReturn(Future.successful(Right(())))
 
       running(app) {
 
@@ -337,6 +356,8 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "have a status of SEE_OTHER for verify method when the bookmark url is used and user already complete success amend email journey " in new Setup  {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
+      when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
+        .thenReturn(Future.successful(Right(())))
 
       running(app) {
 
@@ -389,9 +410,8 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "have a status of SEE_OTHER when the email is valid" in new Setup  {
-      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(someSubscriptionDisplayResponse))
-
+      when(mockSave4LaterService.fetchEmail(any)(any))
+        .thenReturn(Future.successful(Some(EmailDetails(Some("test@test.com"), "", None))))
       when(mockSave4LaterService.saveEmail(any, meq(EmailDetails(Some("test@test.com"), "valid@email.com", None)))(any))
         .thenReturn(Future.successful(Right(())))
 
@@ -421,9 +441,12 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for submit" in new Setup  {
-      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
+    "have a status SEE_OTHER when there is no current email fetched" in new Setup  {
+
+      when(mockSave4LaterService.fetchEmail(any)(any))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
+      when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
+        .thenReturn(Future.successful(Right(())))
 
       running(app) {
 
@@ -432,7 +455,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+        redirectLocation(result).value shouldBe routes.CheckYourEmailController.show.url
       }
     }
 

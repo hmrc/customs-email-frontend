@@ -122,6 +122,20 @@ class CheckYourEmailControllerSpec extends SpecBase {
       }
     }
 
+    "have a status of SEE_OTHER when yes is selected" in new Setup {
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+
+      running(app) {
+
+        val requestWithForm = FakeRequest(POST, routes.CheckYourEmailController.submit.url)
+          .withFormUrlEncodedBody(("isYes", "true"))
+        val result = route(app, requestWithForm).value
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe routes.ChangingYourEmailController.show.url
+
+      }
+    }
+
     "have a status of SEE_OTHER when user clicks back on the successful request or user already complete bookmarked request within 2 hours" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))

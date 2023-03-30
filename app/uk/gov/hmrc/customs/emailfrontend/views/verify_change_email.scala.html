@@ -32,7 +32,7 @@
         errorSummary: components.errorSummary
 
 )
-@(confirmVerifyChange: Form[VerifyChange], email: String)(implicit request: Request[_], messages: Messages)
+@(confirmVerifyChange: Form[VerifyChange], email: Option[String])(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.verify-change-email.title-and-heading"))) {
     @errorSummary(confirmVerifyChange)
@@ -40,7 +40,9 @@
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.VerifyChangeEmailController.verifyChangeEmail, 'id -> "confirmVerifyChange", 'novalidate -> "novalidate") {
         @CSRF.formField
         @h1_xl(messages("customs.emailfrontend.verify-change-email.title-and-heading"))
-        @p(Html(messages("customs.emailfrontend.verify-change-email.label", email)))
+        @if(email.isDefined) {
+            @p(Html(messages("customs.emailfrontend.verify-change-email.label", email.get)))
+        }
 
 
         @inputRadio(
