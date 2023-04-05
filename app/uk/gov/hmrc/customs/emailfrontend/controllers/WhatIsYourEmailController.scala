@@ -74,8 +74,20 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   }
 
   def whatIsEmailAddress: Action[AnyContent] = identify.async { implicit request =>
-    save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
-    Future.successful(Ok(view(emailForm, appConfig)))
+    subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
+      case SubscriptionDisplayResponse(Some(email), Some(_), _, _) =>
+        save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), "", None))
+        save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
+        Future.successful(Ok(view(emailForm, appConfig)))
+      case SubscriptionDisplayResponse(Some(email), None, _, _) =>
+        save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), "", None))
+        save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
+        Future.successful(Ok(view(emailForm, appConfig)))
+      case SubscriptionDisplayResponse(None, None, _, _) =>
+        save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
+        Future.successful(Ok(view(emailForm, appConfig)))
+      case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
+    }
   }
 
   private def subscriptionDisplay()(implicit request: AuthenticatedRequest[AnyContent]) =

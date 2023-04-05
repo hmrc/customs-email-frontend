@@ -72,9 +72,45 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
-    "have a status of OK for rendering email address form" in new Setup {
+    "have a status of OK for rendering email address form when email address and timestamp returned" in new Setup {
       when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
         .thenReturn(Future.successful(Right(())))
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(someSubscriptionDisplayResponse))
+      when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
+        .thenReturn(Future.successful(Right(())))
+
+      running(app) {
+
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.whatIsEmailAddress.url)
+
+        val result = route(app, request).value
+        status(result) shouldBe OK
+      }
+    }
+
+    "have a status of OK for rendering email address form when email is returned and no timestamp" in new Setup {
+      when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
+        .thenReturn(Future.successful(Right(())))
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp))
+      when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
+        .thenReturn(Future.successful(Right(())))
+
+      running(app) {
+
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.whatIsEmailAddress.url)
+
+        val result = route(app, request).value
+        status(result) shouldBe OK
+      }
+    }
+
+    "have a status of OK for rendering email address form when no email and no timestamp are returned" in new Setup {
+      when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
+        .thenReturn(Future.successful(Right(())))
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
 
       running(app) {
 
