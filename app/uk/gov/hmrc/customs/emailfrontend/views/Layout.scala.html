@@ -27,8 +27,6 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.TwoThirdsOneThirdMainContent
 
 
-@import views.html.helper.CSPNonce
-
 @this(appConfig: AppConfig,
     hmrcLayout: HmrcLayout,
     govukBackLink: GovukBackLink,
@@ -78,7 +76,6 @@
         pageTitle = pageTitle,
         serviceUrl = None,
         signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
-        nonce = CSPNonce.get,
         backLinkUrl = backLink,
         additionalHeadBlock = Some(additionalHead),
         phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),

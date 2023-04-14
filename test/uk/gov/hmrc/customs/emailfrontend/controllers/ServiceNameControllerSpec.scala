@@ -39,7 +39,7 @@ class ServiceNameControllerSpec extends SpecBase {
     "redirect to chance-email-address page and store the referred service name in the cache when parameter found in the url" in new Setup {
 
       when(mockSave4LaterService.saveReferrer(meq(InternalId("fakeInternalId")), meq(ReferrerName("customs-finance", "/customs/payment-records")))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(Unit)))
+        .thenReturn(Future.successful(Right()))
 
       running(app) {
         val requestWithForm = fakeRequestWithCsrf(GET, routes.ServiceNameController.show("customs-finance").url)
