@@ -15,8 +15,7 @@
  *@
 
 @import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
-@import uk.gov.hmrc.govukfrontend.views.html.components
-@import uk.gov.hmrc.customs.emailfrontend.controllers.routes.ChangingYourEmailController
+@import uk.gov.hmrc.customs.emailfrontend.views.html.components
 
 @import views.html.helper._
 
@@ -29,7 +28,7 @@
 @()(implicit request: Request[_], messages: Messages)
 @layout(Some(messages("customs.emailfrontend.changing-your-email.title-and-heading"))) {
 
-@helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.ChangingYourEmailController.submit, 'id -> "changingYourEmail", 'novalidate -> "novalidate") {
+@helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.ChangingYourEmailController.submit, Symbol("id") -> "changingYourEmail", Symbol("novalidate") -> "novalidate") {
     @CSRF.formField
     @h1_xl(messages("customs.emailfrontend.changing-your-email.title-and-heading"))
     @p(Html(messages("customs.emailfrontend.changing-your-email.text1")))

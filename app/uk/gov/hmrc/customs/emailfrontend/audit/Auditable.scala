@@ -24,6 +24,8 @@ import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{Audit, DataEvent, ExtendedDataEvent}
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class Auditable @Inject()(auditConnector: AuditConnector, appConfig: AppConfig) {
 
   private val audit = Audit(appConfig.appName, auditConnector)
