@@ -36,7 +36,7 @@ class ServiceNameControllerSpec extends SpecBase {
   }
 
   "ServiceNameController" should {
-    "redirect to chance-email-address page and store the referred service name in the cache when parameter found in the url" in new Setup {
+    "redirect to change-email-address page and store the referred service name in the cache when parameter found in the url" in new Setup {
 
       when(mockSave4LaterService.saveReferrer(meq(InternalId("fakeInternalId")), meq(ReferrerName("customs-finance", "/customs/payment-records")))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right()))
@@ -46,19 +46,19 @@ class ServiceNameControllerSpec extends SpecBase {
         val result = route(app, requestWithForm).value
         status(result) shouldBe SEE_OTHER
 
-        redirectLocation(result).value shouldBe routes.VerifyChangeEmailController.show.url
+        redirectLocation(result).value shouldBe routes.VerifyChangeEmailController.create.url
       }
 
 
     }
 
-    "redirect to problem-with-service page when service name is not found in the url" in new Setup {
+    "redirect to create page when service name is not found in the url" in new Setup {
       running(app) {
         val requestWithForm = fakeRequestWithCsrf(GET, routes.ServiceNameController.show("not-a-service").url)
         val result = route(app, requestWithForm).value
         status(result) shouldBe SEE_OTHER
 
-        redirectLocation(result).value shouldBe routes.VerifyChangeEmailController.show.url
+        redirectLocation(result).value shouldBe routes.VerifyChangeEmailController.create.url
       }
     }
   }
