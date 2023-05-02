@@ -42,7 +42,7 @@ class ServiceNameController @Inject()(identify: IdentifierAction,
         _ <- liftF(save4LaterService.saveReferrer(request.user.internalId, referrerName))
       }
       yield {
-        Redirect(routes.VerifyChangeEmailController.show)
-      }).getOrElse(Redirect(routes.VerifyChangeEmailController.show))
+        Redirect(routes.VerifyChangeEmailController.create)
+      }).getOrElse(Redirect(routes.VerifyChangeEmailController.create))
     }
 }
