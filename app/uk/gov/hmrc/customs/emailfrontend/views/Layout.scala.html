@@ -45,8 +45,6 @@
         sideBarContent: Option[Html] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-<link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css"/>
-
 @phaseBannerContent = {
         @messages("customs.emailfrontend.phase-banner1")
             <a class='govuk-link' href='/contact/beta-feedback-unauthenticated?service=CDS-FIN'>@messages("customs.emailfrontend.phase-banner2")</a>
@@ -54,14 +52,15 @@
     }
 
     @additionalHead = {
-        @hmrcTimeoutDialog(TimeoutDialog(
-        title = Some(messages("customs.emailfrontend.timeout.title")),
-        timeout = Some(appConfig.timeout),
-        countdown = Some(appConfig.countdown),
-        keepAliveUrl = Some(request.uri),
-        signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
-        timeoutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.logoutNoSurvey.url)
-    ))
+        <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css"/>
+            @hmrcTimeoutDialog(TimeoutDialog(
+            title = Some(messages("customs.emailfrontend.timeout.title")),
+            timeout = Some(appConfig.timeout),
+            countdown = Some(appConfig.countdown),
+            keepAliveUrl = Some(request.uri),
+            signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
+            timeoutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.logoutNoSurvey.url)
+        ))
     }
 
     @mainContent = {
