@@ -1,3 +1,5 @@
+site.error=Error
+
 service.name=Manage your email address for CDS
 
 customs.emailfrontend.service-name=Manage your email address for CDS

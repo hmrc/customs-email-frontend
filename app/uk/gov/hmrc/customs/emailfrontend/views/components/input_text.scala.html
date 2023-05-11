@@ -45,7 +45,8 @@
         classes = if(isPageHeading) "govuk-label--xl " + labelClasses.getOrElse("") else labelClasses.getOrElse("")
     ),
     errorMessage = field.error.map(e => ErrorMessage(
-        content = Text(messages(e.message))
+        content = Text(messages(e.message)),
+        visuallyHiddenText= Some(messages("site.error"))
     )),
     formGroupClasses = formGroupClasses.getOrElse(""),
     autocomplete = autocomplete,
