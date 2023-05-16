@@ -26,7 +26,10 @@
 )
 @(newEmail: String, prevEmail: Option[String])(implicit request: Request[_], messages: Messages)
 
-@layout(Some(messages("customs.emailfrontend.email-verified.title-and-heading"))) {
+@layout(
+    Some(messages("customs.emailfrontend.email-verified.title-and-heading")), 
+    welshToggle = false
+){
 
     @panel(newEmail = Some(newEmail))
     @p(Html(messages("customs.emailfrontend.email-verified.info1")))
