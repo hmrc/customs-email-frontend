@@ -38,7 +38,8 @@
             emailForm("email"), 
             "Email address", 
             autocomplete = Some("email"),
-            inputType = "email"
+            inputType = "email",
+            spellcheck = Some(false)
         )
         @button(messages("customs.emailfrontend.continue-button"))
     }
