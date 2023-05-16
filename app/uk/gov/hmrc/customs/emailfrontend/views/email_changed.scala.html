@@ -26,7 +26,10 @@
 )
 @(newEmail: String, prevEmail: Option[String], referrerName: Option[String], referrerUrl: Option[String])(implicit request: Request[_], messages: Messages)
 
-@layout(Some(messages("customs.emailfrontend.email-changed.title-and-heading"))) {
+@layout(
+    Some(messages("customs.emailfrontend.email-changed.title-and-heading")),
+    welshToggle = false
+) {
 
     @panel(newEmail = Some(newEmail))
     @p(Html(messages("customs.emailfrontend.email-confirmed.info1")))
