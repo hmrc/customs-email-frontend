@@ -27,7 +27,7 @@
 )
 
 @(emailForm: Form[Email], appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
-@layout(Some(messages("customs.emailfrontend.change-your-email.title"))) {
+@layout(Some(messages("customs.emailfrontend.change-your-email.heading"))) {
 
     @errorSummary(emailForm)
 
