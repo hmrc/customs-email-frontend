@@ -52,4 +52,10 @@ package object emailfrontend {
         Retrieve(r, c)
     }
   }
+
+  object Utils {
+    val emptyString = ""
+
+    def stripWhiteSpaces(str: String): String = str.trim.replaceAll("\\s", emptyString)
+  }
 }
