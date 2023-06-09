@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.forms
 
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
-import uk.gov.hmrc.emailaddress.EmailAddress
+import uk.gov.hmrc.customs.emailfrontend.Utils.stripWhiteSpaces
 
 object Validation {
 
@@ -25,11 +25,11 @@ object Validation {
 
   def validEmail: Constraint[String] =
     Constraint({
-      case e if e.trim.isEmpty =>
+      case e if stripWhiteSpaces(e).isEmpty =>
         Invalid(ValidationError("customs.emailfrontend.errors.valid-email.empty"))
       case e if e.length > 50 =>
         Invalid(ValidationError("customs.emailfrontend.errors.valid-email.too-long"))
-      case e if !isValid(e) =>
+      case e if !isValid(stripWhiteSpaces(e)) =>
         Invalid(ValidationError("customs.emailfrontend.errors.valid-email.wrong-format"))
       case _ => Valid
     })

@@ -18,12 +18,14 @@ package uk.gov.hmrc.customs.emailfrontend.forms
 
 import play.api.data.Form
 import play.api.data.Forms._
-import uk.gov.hmrc.customs.emailfrontend.forms.Validation.{validVerifyChange, _}
+import uk.gov.hmrc.customs.emailfrontend.Utils.stripWhiteSpaces
+import uk.gov.hmrc.customs.emailfrontend.forms.Validation._
 import uk.gov.hmrc.customs.emailfrontend.model.{Email, VerifyChange, YesNo}
 
 object Forms {
 
-  val emailForm: Form[Email] = Form(mapping("email" -> text.verifying(validEmail))(Email.apply)(Email.unapply))
+  val emailForm: Form[Email] = Form(mapping("email" -> text.verifying(validEmail).transform(
+    stripWhiteSpaces, identity[String]))(Email.apply)(Email.unapply))
 
   val confirmEmailForm: Form[YesNo] = Form(
     mapping(
