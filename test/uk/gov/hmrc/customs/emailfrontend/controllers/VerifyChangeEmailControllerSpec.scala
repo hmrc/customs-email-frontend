@@ -17,16 +17,23 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.joda.time.DateTime
+import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfterEach
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, _}
 import play.api.{Application, inject}
+import uk.gov.hmrc.customs.emailfrontend.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.{EmailVerificationConnector, SubscriptionDisplayConnector}
+import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 
 import scala.concurrent.Future
@@ -47,6 +54,16 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         inject.bind[EmailVerificationConnector].toInstance(mockEmailVerificationConnector),
         inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService)
       ).build()
+
+    protected val view: verify_change_email = app.injector.instanceOf[verify_change_email]
+
+    protected def fakeRequest(method: String = emptyString,
+                              path: String = emptyString): FakeRequest[AnyContentAsEmpty.type] =
+      FakeRequest(method, path).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+        .withHeaders("X-Session-Id" -> "someSessionId")
+
+    protected def messages(app: Application): Messages =
+      app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
   }
 
   private val emailVerificationTimeStamp = "2023-2-17T9:30:47.114"
@@ -67,7 +84,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.show.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -81,7 +98,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.show.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -99,7 +116,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.show.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -116,7 +133,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.show.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -130,7 +147,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.show.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -144,7 +161,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.show.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -173,7 +190,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.create.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe OK
@@ -189,7 +206,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.create.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -205,7 +222,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.create.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe OK
@@ -221,7 +238,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.create.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -237,7 +254,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.create.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -253,7 +270,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.create.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe OK
@@ -269,7 +286,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.create.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -285,7 +302,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.create.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -301,7 +318,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.create.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -314,7 +331,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.verifyChangeEmail.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.verifyChangeEmail.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -340,7 +357,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.VerifyChangeEmailController.verifyChangeEmail.url)
+        val request = fakeRequest(GET, routes.VerifyChangeEmailController.verifyChangeEmail.url)
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
@@ -356,6 +373,28 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
           .withFormUrlEncodedBody(("email", ""))
         val result = route(app, requestWithForm).value
         status(result) shouldBe BAD_REQUEST
+      }
+    }
+
+    "have Error: prefixed in the title when confirmVerifyChangeForm has any error and form is submitted" in new Setup {
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(someSubscriptionDisplayResponse))
+
+      running(app) {
+
+        val requestWithForm: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
+          .withFormUrlEncodedBody(("isVerify", "None"))
+
+        val result = route(app, requestWithForm).value
+
+        status(result) shouldBe BAD_REQUEST
+        contentAsString(result) shouldBe
+          view(confirmVerifyChangeForm.bind(Map("isVerify"->"None")), Some("test@email.com"))(requestWithForm, messages(app)).toString()
+
+        val doc = Jsoup.parse(contentAsString(result))
+        doc.title should not be empty
+        doc.title shouldBe
+          s"${messages(app)("site.errorPrefix")} ${messages(app)("customs.emailfrontend.verify-change-email.title-and-heading")}"
       }
     }
 
@@ -406,7 +445,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
+        val request = fakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
           .withFormUrlEncodedBody("email" -> "")
 
         val result = route(app, request).value
@@ -421,7 +460,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 //
 //      running(app) {
 //
-//        val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
+//        val request = fakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
 //          .withFormUrlEncodedBody("email" -> "valid@email.com")
 //
 //        val result = route(app, request).value
@@ -430,7 +469,8 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 //      }
 //    }
 
-    "show 'there is a problem with the service' page when subscription display response has paramValue 'FAIL' with no email for bad request form" in new Setup  {
+    "show 'there is a problem with the service' page when subscription display " +
+      "response has paramValue 'FAIL' with no email for bad request form" in new Setup  {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
 
@@ -449,7 +489,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
         val errorHandler = app.injector.instanceOf[ErrorHandler]
-        val request = FakeRequest(GET, routes.WhatIsYourEmailController.problemWithService.url).withFormUrlEncodedBody("email" -> "")
+        val request = fakeRequest(GET, routes.WhatIsYourEmailController.problemWithService.url).withFormUrlEncodedBody("email" -> "")
 
         val result = route(app, request).value
         status(result) shouldBe BAD_REQUEST

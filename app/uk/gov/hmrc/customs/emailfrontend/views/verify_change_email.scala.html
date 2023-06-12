@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.customs.emailfrontend.model.VerifyChange
 @import uk.gov.hmrc.customs.emailfrontend.controllers.routes.VerifyChangeEmailController
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.customs.emailfrontend.views.ViewUtils.title
 
 @import views.html.helper._
 
@@ -34,7 +35,7 @@
 )
 @(confirmVerifyChange: Form[VerifyChange], email: Option[String])(implicit request: Request[_], messages: Messages)
 
-@layout(Some(messages("customs.emailfrontend.verify-change-email.title-and-heading"))) {
+@layout(Some(title(confirmVerifyChange, "customs.emailfrontend.verify-change-email.title-and-heading"))) {
     @errorSummary(confirmVerifyChange)
 
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.VerifyChangeEmailController.verifyChangeEmail, 'id -> "confirmVerifyChange", 'novalidate -> "novalidate") {
