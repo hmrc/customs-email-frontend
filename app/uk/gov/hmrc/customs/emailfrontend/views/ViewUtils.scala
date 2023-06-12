@@ -22,16 +22,6 @@ import uk.gov.hmrc.customs.emailfrontend.Utils.emptyString
 
 object ViewUtils {
 
-  /**
-   * Adds Error Prefix (Error :) in the input titleStr if Form has an error
-   * otherwise title string is returned without error prefix
-   *
-   * @param form Form[_]
-   * @param titleStr String
-   * @param titleMessageArgs Seq[String]
-   * @param messages Messages
-   * @return String
-   */
   def title(form: Form[_], titleStr: String, titleMessageArgs: Seq[String] = Seq())
            (implicit messages: Messages): String =
     titleWithoutForm(s"${errorPrefix(form)} ${messages(titleStr, titleMessageArgs: _*)}").trim
