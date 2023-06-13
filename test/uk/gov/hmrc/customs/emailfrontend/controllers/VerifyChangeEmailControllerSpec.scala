@@ -382,14 +382,16 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
 
-        val requestWithForm: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
-          .withFormUrlEncodedBody(("isVerify", "None"))
+        val requestWithForm: FakeRequest[AnyContentAsFormUrlEncoded] =
+          fakeRequest(POST,
+            routes.VerifyChangeEmailController.verifyChangeEmail.url).withFormUrlEncodedBody(("isVerify", "None"))
 
         val result = route(app, requestWithForm).value
 
         status(result) shouldBe BAD_REQUEST
         contentAsString(result) shouldBe
-          view(confirmVerifyChangeForm.bind(Map("isVerify"->"None")), Some("test@email.com"))(requestWithForm, messages(app)).toString()
+          view(confirmVerifyChangeForm.bind(Map("isVerify" -> "None")), Some("test@email.com"))(
+            requestWithForm, messages(app)).toString()
 
         val doc = Jsoup.parse(contentAsString(result))
         doc.title should not be empty
