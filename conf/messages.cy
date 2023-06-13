@@ -1,4 +1,5 @@
 site.error=Gwall
+site.errorPrefix=Gwall:
 
 service.name=Rheoli’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datgan Tollau (CDS)
 

@@ -1,4 +1,5 @@
 site.error=Error
+site.errorPrefix=Error:
 
 service.name=Manage your email address for CDS
 
