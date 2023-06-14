@@ -30,7 +30,8 @@
         button: components.button,
         summary_list: components.summary_list,
         list_row: components.list_row,
-        errorSummary: components.errorSummary
+        errorSummary: components.errorSummary,
+        fieldset: components.fieldset
 
 )
 @(confirmVerifyChange: Form[VerifyChange], email: Option[String])(implicit request: Request[_], messages: Messages)
@@ -40,31 +41,36 @@
 
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.VerifyChangeEmailController.verifyChangeEmail, 'id -> "confirmVerifyChange", 'novalidate -> "novalidate") {
         @CSRF.formField
-        @h1_xl(messages("customs.emailfrontend.verify-change-email.title-and-heading"))
-        @if(email.isDefined) {
-            @p(Html(messages("customs.emailfrontend.verify-change-email.label", email.get)))
-        }
 
+        @fieldset(
+        legend = messages("customs.emailfrontend.verify-change-email.title-and-heading"),
+        describedBy = if (form.hasErrors || form.hasGlobalErrors) Some("value-error") else Some("")
+        )
 
-        @inputRadio(
-            confirmVerifyChange,
-            "",
-            "isVerify",
-            Seq(
-                RadioItem(
-                    value = Some("true"),
-                    content = Text(messages("customs.emailfrontend.verify-change-email.verify")),
-                    checked = confirmVerifyChange("value").value.contains("true")
-                ),
-                RadioItem(
-                    value = Some("false"),
-                    content = Text(messages("customs.emailfrontend.verify-change-email.change")),
-                    checked = confirmVerifyChange("value").value.contains("false")
+        {
+            @if(email.isDefined) {
+                @p(Html(messages("customs.emailfrontend.verify-change-email.label", email.get)))
+            }
+            @inputRadio(
+                confirmVerifyChange,
+                "",
+                "isVerify",
+                Seq(
+                    RadioItem(
+                        value = Some("true"),
+                        content = Text(messages("customs.emailfrontend.verify-change-email.verify")),
+                        checked = confirmVerifyChange("value").value.contains("true")
+                    ),
+                    RadioItem(
+                        value = Some("false"),
+                        content = Text(messages("customs.emailfrontend.verify-change-email.change")),
+                        checked = confirmVerifyChange("value").value.contains("false")
+                    )
+                    ),
+                    legendAsHeading = false,
+                        classes = "govuk-fieldset__legend govuk-fieldset__legend--m"
                 )
-                ),
-                legendAsHeading = false,
-                    classes = "govuk-fieldset__legend govuk-fieldset__legend--m"
-            )
+        }
 
         @button(messages("customs.emailfrontend.continue-button"))
 
