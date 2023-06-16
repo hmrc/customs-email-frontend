@@ -44,7 +44,7 @@
 
         @fieldset(
         legend = messages("customs.emailfrontend.verify-change-email.title-and-heading"),
-        describedBy = if (form.hasErrors || form.hasGlobalErrors) Some("value-error") else Some("")
+        describedBy = if (confirmVerifyChange.hasErrors || confirmVerifyChange.hasGlobalErrors) Some("value-error") else Some("")
         )
 
         {
