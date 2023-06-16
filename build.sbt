@@ -33,7 +33,8 @@ lazy val microservice = Project(appName, file("."))
     routesImport ++= Seq("uk.gov.hmrc.customs.emailfrontend.model.Ineligible"),
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
-      "controllers.routes._"
+      "controllers.routes._",
+      "uk.gov.hmrc.govukfrontend.views.html.components._"
     ),
 //    routesImport ++= (uk.gov.hmrc.customs.emailfrontend.model.Ineligible.Value)
     // ***************
