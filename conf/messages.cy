@@ -39,6 +39,7 @@ customs.emailfrontend.verify-change-email.verify=Cadarnhau’r cyfeiriad e-bost 
 customs.emailfrontend.verify-change-email.change=Newid y cyfeiriad e-bost hwn
 
 customs.emailfrontend.confirm-your-email.title-and-heading=Gwirio’ch cyfeiriad e-bost
+customs.emailfrontend.confirm-your-email.header=Ai {0} yw’r cyfeiriad e-bost rydych am ei ddefnyddio?
 customs.emailfrontend.confirm-your-email.email-address=Cyfeiriad e-bost
 customs.emailfrontend.confirm-your-email.hint=Byddwn yn anfon cysylltiad atoch i gadarnhau’ch cyfeiriad e-bost.
 customs.emailfrontend.confirm-your-email.yes-no-label=Ai dyma’r cyfeiriad e-bost rydych am ei ddefnyddio?
