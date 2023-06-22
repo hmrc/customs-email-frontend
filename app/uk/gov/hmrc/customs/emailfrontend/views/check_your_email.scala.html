@@ -40,17 +40,13 @@
 
     @helper.form(CheckYourEmailController.submit, Symbol("id") -> "confirmEmailForm", Symbol("novalidate") -> "novalidate") {
         @CSRF.formField
-        @h1_xl(messages("customs.emailfrontend.confirm-your-email.title-and-heading"))
-
-        @summary_list(
-            list_row(Html(messages("customs.emailfrontend.confirm-your-email.email-address")), Html(email))
-        )
+        @h1_xl(messages("customs.emailfrontend.confirm-your-email.header", email))
 
         @p(Html(messages("customs.emailfrontend.confirm-your-email.hint")))
 
         @inputRadio(
             confirmEmailForm,
-            messages("customs.emailfrontend.confirm-your-email.yes-no-label"),
+            messages(""),
             "isYes",
             Seq(
                 RadioItem(
