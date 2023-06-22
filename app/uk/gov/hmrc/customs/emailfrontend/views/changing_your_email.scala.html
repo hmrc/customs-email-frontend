@@ -28,12 +28,13 @@
 @()(implicit request: Request[_], messages: Messages)
 @layout(Some(messages("customs.emailfrontend.changing-your-email.title-and-heading"))) {
 
-@helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.ChangingYourEmailController.submit, Symbol("id") -> "changingYourEmail", Symbol("novalidate") -> "novalidate") {
-    @CSRF.formField
-    @h1_xl(messages("customs.emailfrontend.changing-your-email.title-and-heading"))
-    @p(Html(messages("customs.emailfrontend.changing-your-email.text1")))
-    @p(Html(messages("customs.emailfrontend.changing-your-email.text2")))
-    @button("customs.emailfrontend.continue-button")
+    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.ChangingYourEmailController.submit,
+        Symbol("id") -> "changingYourEmail", Symbol("novalidate") -> "novalidate")
+    {
+            @CSRF.formField
+            @h1_xl(messages("customs.emailfrontend.changing-your-email.title-and-heading"))
+            @p(Html(messages("customs.emailfrontend.changing-your-email.text1")))
+            @p(Html(messages("customs.emailfrontend.changing-your-email.text2")))
+            @button("customs.emailfrontend.continue-button")
+    }
 }
-}
-
