@@ -28,6 +28,7 @@ customs.emailfrontend.start.related-content-link5=Data tariffau
 
 customs.emailfrontend.change-your-email.title=Nodwch eich cyfeiriad e-bost - Rheoli’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datgan Tollau (CDS) - GOV.UK
 customs.emailfrontend.change-your-email.heading=Nodwch gyfeiriad e-bost newydd
+customs.emailfrontend.change-your-email.email=Cyfeiriad e-bost
 customs.emailfrontend.change-your-email.label=Mae angen i chi ddilysu <strong class="bold">{0}</strong> neu ei newid.
 
 customs.emailfrontend.what-is-your-email.label=Beth yw’ch cyfeiriad e-bost?

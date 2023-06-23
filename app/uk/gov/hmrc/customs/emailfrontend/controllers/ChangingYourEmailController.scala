@@ -26,6 +26,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.changing_your_email
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +42,7 @@ class ChangingYourEmailController @Inject()(identify: IdentifierAction,
   extends FrontendController(mcc) with I18nSupport {
 
   def show: Action[AnyContent] = Action { implicit request =>
-    Ok(view())
+    Ok(view(emailForm))
   }
 
   def submit: Action[AnyContent] = identify.async { implicit request =>
