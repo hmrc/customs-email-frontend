@@ -36,11 +36,8 @@ lazy val microservice = Project(appName, file("."))
       "controllers.routes._",
       "uk.gov.hmrc.govukfrontend.views.html.components._"
     ),
-//    routesImport ++= (uk.gov.hmrc.customs.emailfrontend.model.Ineligible.Value)
-    // ***************
   )
   .settings(PlayKeys.playDefaultPort := 9898)
-  .settings(publishingSettings: _*)
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)
