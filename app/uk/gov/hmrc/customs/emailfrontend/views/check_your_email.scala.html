@@ -21,15 +21,14 @@
 
 @import views.html.helper._
 
-@this(
-        layout: Layout,
-        inputRadio: components.inputRadio,
-        h1_xl: components.h1_xl,
-        p: components.p,
-        button: components.button,
-        summary_list: components.summary_list,
-        list_row: components.list_row,
-        errorSummary: components.errorSummary
+@this(layout: Layout,
+      inputRadio: components.inputRadio,
+      h1_xl: components.h1_xl,
+      p: components.p,
+      button: components.button,
+      summary_list: components.summary_list,
+      list_row: components.list_row,
+      errorSummary: components.errorSummary
 
 )
 @(confirmEmailForm: Form[YesNo], email: String)(implicit request: Request[_], messages: Messages)

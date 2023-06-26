@@ -27,6 +27,7 @@ customs.emailfrontend.start.related-content-link5=Tariff data
 
 customs.emailfrontend.change-your-email.title=Enter your email address - Manage your email address for CDS - GOV.UK
 customs.emailfrontend.change-your-email.heading=Enter a new email address
+customs.emailfrontend.change-your-email.email=Email Address
 customs.emailfrontend.change-your-email.label=You need to verify <strong class="bold">{0}</strong> or change it.
 
 customs.emailfrontend.what-is-your-email.label=What is your email address?
