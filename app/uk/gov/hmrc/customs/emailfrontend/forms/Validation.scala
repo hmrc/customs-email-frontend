@@ -30,7 +30,7 @@ object Validation {
 
   def isValidEmail: Constraint[String] =
     Constraint({
-      case null => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.empty"))
+      case e if Option(e).isEmpty => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.empty"))
       case e if stripWhiteSpaces(e).isEmpty => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.empty"))
       case e if e.length > 50 => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.too-long"))
       case e if !isValid(stripWhiteSpaces(e)) => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.wrong-format"))
