@@ -102,7 +102,6 @@ trait SetUp {
   val emailWithSpacesWithIn_2 = "abc@ test.com"
   val emailWithSpacesWithIn_3 = "abc@te  st.com"
   val emailWithSpacesWithIn_4 = "ab c@test.com"
-  val emailWithSpacesNoDotCom = "abc@test"
 
   val invalidEmail_1 = "first@last"
   val invalidEmail_2 = "firstlast"
