@@ -1,6 +1,5 @@
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.{integrationTestSettings, targetJvm}
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "customs-email-frontend"
 
@@ -38,7 +37,6 @@ lazy val microservice = Project(appName, file("."))
     ),
   )
   .settings(PlayKeys.playDefaultPort := 9898)
-  .settings(publishingSettings: _*)
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)

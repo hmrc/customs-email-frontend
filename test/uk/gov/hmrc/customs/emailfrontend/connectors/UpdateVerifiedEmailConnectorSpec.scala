@@ -29,6 +29,7 @@ import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, MethodNotAllowedException, _}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class UpdateVerifiedEmailConnectorSpec extends SpecBase with BeforeAndAfter {

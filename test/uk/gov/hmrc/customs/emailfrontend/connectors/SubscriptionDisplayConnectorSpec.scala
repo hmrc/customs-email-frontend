@@ -24,6 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubscriptionDisplayConnectorSpec extends SpecBase with BeforeAndAfterEach {
