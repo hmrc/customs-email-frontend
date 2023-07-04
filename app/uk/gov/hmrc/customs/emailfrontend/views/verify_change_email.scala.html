@@ -43,8 +43,8 @@
         @CSRF.formField
 
         @fieldset(
-        legend = messages("customs.emailfrontend.verify-change-email.title-and-heading"),
-        describedBy = if (confirmVerifyChange.hasErrors || confirmVerifyChange.hasGlobalErrors) Some("value-error") else Some("")
+            legend = messages("customs.emailfrontend.verify-change-email.title-and-heading"),
+            describedBy = if (confirmVerifyChange.hasErrors || confirmVerifyChange.hasGlobalErrors) Some("value-error") else Some("")
         ) {
 
             @if(email.isDefined) {
