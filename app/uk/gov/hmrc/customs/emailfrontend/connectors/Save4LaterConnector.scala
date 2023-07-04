@@ -26,11 +26,10 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, 
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, JourneyType, ReferrerName}
 import uk.gov.hmrc.http._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable) extends Logging {
+class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
 
   val LoggerComponentId = "Save4LaterConnector"
 
