@@ -53,5 +53,13 @@ class ErrorHandlerSpec extends SpecBase {
       val doc = Jsoup.parse(contentAsString(result))
       doc.title shouldBe "Sorry, there is a problem with the service"
     }
+
+    "have correct text error to show 'email has not been updated' page" in {
+      val result = errorHandler.problemWithService()(request)
+      val doc = Jsoup.parse(contentAsString(result))
+      doc.body 
+        .getElementsByClass("govuk-body").first() 
+        .text shouldBe "Your email has not been updated. Try again later."
+    }
   }
 }

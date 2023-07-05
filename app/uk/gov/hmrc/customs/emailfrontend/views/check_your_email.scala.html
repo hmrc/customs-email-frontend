@@ -28,7 +28,8 @@
       button: components.button,
       summary_list: components.summary_list,
       list_row: components.list_row,
-      errorSummary: components.errorSummary
+      errorSummary: components.errorSummary,
+      fieldset: components.fieldset
 
 )
 @(confirmEmailForm: Form[YesNo], email: String)(implicit request: Request[_], messages: Messages)
@@ -39,29 +40,34 @@
 
     @helper.form(CheckYourEmailController.submit, Symbol("id") -> "confirmEmailForm", Symbol("novalidate") -> "novalidate") {
         @CSRF.formField
-        @h1_xl(messages("customs.emailfrontend.confirm-your-email.header", email))
 
-        @p(Html(messages("customs.emailfrontend.confirm-your-email.hint")))
+        @fieldset(
+            legend = messages("customs.emailfrontend.confirm-your-email.header", email),
+            describedBy = if (confirmEmailForm.hasErrors || confirmEmailForm.hasGlobalErrors) Some("value-error") else Some("")
+        ) {
 
-        @inputRadio(
-            confirmEmailForm,
-            messages(""),
-            "isYes",
-            Seq(
-                RadioItem(
-                    value = Some("true"),
-                    content = Text(messages("customs.emailfrontend.confirm-your-email.yes")),
-                    checked = confirmEmailForm("value").value.contains("true")
+            @p(Html(messages("customs.emailfrontend.confirm-your-email.hint")))
+
+            @inputRadio(
+                confirmEmailForm,
+                messages(""),
+                "isYes",
+                Seq(
+                    RadioItem(
+                        value = Some("true"),
+                        content = Text(messages("customs.emailfrontend.confirm-your-email.yes")),
+                        checked = confirmEmailForm("value").value.contains("true")
+                    ),
+                    RadioItem(
+                        value = Some("false"),
+                        content = Text(messages("customs.emailfrontend.confirm-your-email.no")),
+                        checked = confirmEmailForm("value").value.contains("false")
+                    )
                 ),
-                RadioItem(
-                    value = Some("false"),
-                    content = Text(messages("customs.emailfrontend.confirm-your-email.no")),
-                    checked = confirmEmailForm("value").value.contains("false")
-                )
-            ),
-            legendAsHeading = false,
-            classes = "govuk-fieldset__legend--m"
-        )
+                legendAsHeading = false,
+                classes = "govuk-fieldset__legend--m"
+            )
+        }
 
         @button(messages("customs.emailfrontend.continue-button"))
     }

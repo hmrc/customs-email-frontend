@@ -28,13 +28,7 @@
 @govukRadios(Radios(
     classes = s"${if(inline){"govuk-radios--inline"}}",
     name = name,
-    fieldset = Some(Fieldset(
-        legend = Some(Legend(
-            content = Text(messages(legend)),
-            isPageHeading = legendAsHeading,
-            classes = classes
-        ))
-    )),
+    fieldset = None,
     hint = hint,
     items = items,
     errorMessage = form(name).error.map(err => ErrorMessage(
