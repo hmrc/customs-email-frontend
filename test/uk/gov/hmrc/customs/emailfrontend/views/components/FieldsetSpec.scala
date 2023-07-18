@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.views
+package uk.gov.hmrc.customs.emailfrontend.views.components
 
 import play.api.Application
 import org.jsoup.Jsoup
