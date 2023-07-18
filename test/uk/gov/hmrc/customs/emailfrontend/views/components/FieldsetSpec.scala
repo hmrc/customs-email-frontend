@@ -20,6 +20,7 @@ import play.api.Application
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.Helpers._
+import play.api.test.Helpers
 import play.twirl.api.{HtmlFormat, Html}
 import play.api.i18n.Messages
 import uk.gov.hmrc.customs.emailfrontend.utils.{
