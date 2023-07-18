@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
+package uk.gov.hmrc.customs.emailfrontend.views
+
 import play.api.Application
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
 import play.api.test.Helpers._
 import play.twirl.api.{HtmlFormat, Html}
-import play.api.i18n.{MessagesApi, MessagesImpl, Lang, DefaultMessagesApi}
+import play.api.i18n.Messages
 import uk.gov.hmrc.customs.emailfrontend.utils.{
   SpecBase,
   FakeIdentifierAgentAction
 }
-import uk.gov.hmrc.customs.emailfrontend.views.html.components.fieldset
-
 import uk.gov.hmrc.customs.emailfrontend.views.html.components.fieldset
 
 class FieldsetSpec extends SpecBase {
@@ -72,8 +71,7 @@ class FieldsetSpec extends SpecBase {
   }
 
   trait Setup {
-    val messagesApi = new DefaultMessagesApi()
-    val messages = MessagesImpl(Lang.defaultLang, messagesApi)
+    implicit val messages: Messages = Helpers.stubMessages()
     val app: Application =
       applicationBuilder[FakeIdentifierAgentAction]().build()
   }
