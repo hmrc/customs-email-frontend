@@ -78,7 +78,6 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
     s"$customsHodsProxyBaseUrl/$updateVerifiedEmailContext"
 
   lazy val checkVerifiedEmailUrl: String = s"$emailVerificationWithContext/verified-email-check"
-
   lazy val createEmailVerificationRequestUrl: String = s"$emailVerificationWithContext/verification-requests"
 
   val save4LaterContext: String =
