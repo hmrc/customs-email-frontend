@@ -25,24 +25,32 @@ class EmailVerificationRequestHttpParserSpec extends SpecBase {
 
   "CreateEmailVerificationRequestHttpReads" should {
 
-    val httpParser = EmailVerificationRequestHttpParser.CreateEmailVerificationRequestHttpReads
-
-    "successfully parse a CREATED response" in {
+    "successfully parse a CREATED response" in new Setup {
       val httpResponse = HttpResponse(Status.CREATED, "")
       val result = httpParser.read("POST", "/some/url", httpResponse)
+
       result shouldBe Right(EmailVerificationRequestHttpParser.EmailVerificationRequestSent)
     }
 
-    "successfully parse a CONFLICT response" in {
+    "successfully parse a CONFLICT response" in new Setup {
       val httpResponse = HttpResponse(Status.CONFLICT, "")
       val result = httpParser.read("POST", "/some/url", httpResponse)
+
       result shouldBe Right(EmailVerificationRequestHttpParser.EmailAlreadyVerified)
     }
 
-    "handle other status codes" in {
+    "successfully parse a BAD_REQUEST response" in new Setup {
       val httpResponse = HttpResponse(Status.BAD_REQUEST, "Invalid request")
       val result = httpParser.read("POST", "/some/url", httpResponse)
-      result shouldBe Left(EmailVerificationRequestHttpParser.EmailVerificationRequestFailure(Status.BAD_REQUEST, "Invalid request"))
+
+      result shouldBe Left(
+        EmailVerificationRequestHttpParser.EmailVerificationRequestFailure(
+        Status.BAD_REQUEST, "Invalid request"
+      ))
     }
+  }
+
+  trait Setup {
+    val httpParser = EmailVerificationRequestHttpParser.CreateEmailVerificationRequestHttpReads
   }
 }

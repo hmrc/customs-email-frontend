@@ -21,14 +21,13 @@ import java.time.{Clock, Instant, ZoneId, ZonedDateTime}
 import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
-
 class DateTimeServiceSpec extends SpecBase {
 
-  "DateTimeService" should {
-
-    "return current time in UTC using Joda Time" in {
+  "nowUtc" should {
+    "return current time in UTC" in {
       val fixedInstant = Instant.parse("2023-10-31T12:00:00Z")
       val fixedClock = Clock.fixed(fixedInstant, ZoneId.of("UTC"))
+
       val dateTimeService = new DateTimeService {
         override val UtcZoneId: ZoneId = ZoneId.of("UTC")
         override def nowUtc(): DateTime = new DateTime(fixedClock.instant().toEpochMilli, DateTimeZone.UTC)
@@ -40,16 +39,20 @@ class DateTimeServiceSpec extends SpecBase {
       currentTime.getDayOfMonth shouldBe 31
       currentTime.getHourOfDay shouldBe 12
     }
+  }
 
+  "zonedDateTimeUtc" should {
     "return current time in UTC using java.time.ZonedDateTime" in {
       val fixedInstant = Instant.parse("2023-10-31T12:00:00Z")
       val fixedClock = Clock.fixed(fixedInstant, ZoneId.of("UTC"))
+
       val dateTimeService = new DateTimeService {
         override val UtcZoneId: ZoneId = ZoneId.of("UTC")
         override def zonedDateTimeUtc: ZonedDateTime = ZonedDateTime.now(fixedClock)
       }
 
       val currentTime = dateTimeService.zonedDateTimeUtc
+
       currentTime.getYear shouldBe 2023
       currentTime.getMonthValue shouldBe 10
       currentTime.getDayOfMonth shouldBe 31

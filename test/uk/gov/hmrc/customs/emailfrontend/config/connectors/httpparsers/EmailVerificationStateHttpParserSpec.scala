@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers
 
-
 import play.api.http.Status
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
@@ -30,18 +29,21 @@ class EmailVerificationStateHttpParserSpec extends SpecBase {
     "successfully parse an OK response" in {
       val httpResponse = HttpResponse(Status.OK, "")
       val result = httpParser.read("GET", "/some/url", httpResponse)
+
       result shouldBe Right(EmailVerificationStateHttpParser.EmailVerified)
     }
 
     "successfully parse a NOT_FOUND response" in {
       val httpResponse = HttpResponse(Status.NOT_FOUND, "")
       val result = httpParser.read("GET", "/some/url", httpResponse)
+
       result shouldBe Right(EmailVerificationStateHttpParser.EmailNotVerified)
     }
 
-    "handle other status codes" in {
+    "successfully parse a BAD_REQUEST response" in {
       val httpResponse = HttpResponse(Status.BAD_REQUEST, "Invalid request")
       val result = httpParser.read("GET", "/some/url", httpResponse)
+
       result shouldBe Left(EmailVerificationStateHttpParser.EmailVerificationStateErrorResponse(Status.BAD_REQUEST, "Invalid request"))
     }
   }
