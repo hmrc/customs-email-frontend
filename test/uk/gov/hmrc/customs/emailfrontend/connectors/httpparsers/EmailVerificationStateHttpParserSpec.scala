@@ -44,7 +44,11 @@ class EmailVerificationStateHttpParserSpec extends SpecBase {
       val httpResponse = HttpResponse(Status.BAD_REQUEST, "Invalid request")
       val result = httpParser.read("GET", "/some/url", httpResponse)
 
-      result shouldBe Left(EmailVerificationStateHttpParser.EmailVerificationStateErrorResponse(Status.BAD_REQUEST, "Invalid request"))
+      result shouldBe Left(
+        EmailVerificationStateHttpParser.EmailVerificationStateErrorResponse(
+          Status.BAD_REQUEST, "Invalid request"
+        )
+      )
     }
   }
 }
