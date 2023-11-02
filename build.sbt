@@ -18,7 +18,7 @@ lazy val microservice = Project(appName, file("."))
       ".*FeatureSwitchController;" +
       ".*views.*;" +
       ".*ControllerConfiguration;.*LanguageSwitchController",
-    ScoverageKeys.coverageMinimumStmtTotal := 80,
+    ScoverageKeys.coverageMinimumStmtTotal := 85,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
     // ***************
