@@ -35,7 +35,7 @@ class IneligibleSpec
     "bind to `NotAdmin` from path" in {
 
       val result =
-        pathBindable.bind("key", "not-admin").right.value
+        pathBindable.bind("key", "not-admin").toOption.value
 
       result mustEqual Ineligible.NotAdmin
     }
@@ -43,14 +43,14 @@ class IneligibleSpec
     "bind to `no-enrolment` from path" in {
 
       val result =
-        pathBindable.bind("key", "no-enrolment").right.value
+        pathBindable.bind("key", "no-enrolment").toOption.value
 
       result mustEqual Ineligible.NoEnrolment
     }
     "bind to `is-agent` from path" in {
 
       val result =
-        pathBindable.bind("key", "is-agent").right.value
+        pathBindable.bind("key", "is-agent").toOption.value
 
       result mustEqual Ineligible.IsAgent
     }
@@ -92,7 +92,7 @@ class IneligibleSpec
         queryBindable
           .bind("key", Map("key" -> Seq("is-agent")))
           .value
-          .right
+          .toOption
           .value
 
       result mustEqual Ineligible.IsAgent
@@ -104,7 +104,7 @@ class IneligibleSpec
         queryBindable
           .bind("key", Map("key" -> Seq("not-admin")))
           .value
-          .right
+          .toOption
           .value
 
       result mustEqual Ineligible.NotAdmin
@@ -116,7 +116,7 @@ class IneligibleSpec
         queryBindable
           .bind("key", Map("key" -> Seq("no-enrolment")))
           .value
-          .right
+          .toOption
           .value
 
       result mustEqual Ineligible.NoEnrolment

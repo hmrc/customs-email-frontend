@@ -26,7 +26,6 @@ import uk.gov.hmrc.customs.emailfrontend.services._
 import uk.gov.hmrc.customs.emailfrontend.views.html.{email_changed, email_verified}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import java.lang.ProcessBuilder.Redirect
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -85,6 +84,6 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
   }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
-    Future.successful(BadRequest(errorHandler.problemWithService))
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

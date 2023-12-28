@@ -49,7 +49,7 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
   def submit: Action[AnyContent] = identify.async { implicit request =>
     save4LaterService.fetchEmail(request.user.internalId).flatMap {
       case Some(emailDetails) =>
-        confirmEmailForm.bindFromRequest.fold(
+        confirmEmailForm.bindFromRequest().fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail))),
           formData => handleYesNo(request.user.internalId, formData)
         )
@@ -70,6 +70,6 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
     }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
-    Future.successful(BadRequest(errorHandler.problemWithService))
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

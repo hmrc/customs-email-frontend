@@ -56,7 +56,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
     emailVerificationService.isEmailVerified(details.newEmail).map {
       case Some(true) => Redirect(routes.EmailConfirmedController.show)
       case Some(false) => Redirect(routes.CheckYourEmailController.show)
-      case None => InternalServerError(errorHandler.problemWithService)
+      case None => InternalServerError(errorHandler.problemWithService())
     }
 
   def create: Action[AnyContent] = identify.async { implicit request =>
@@ -67,7 +67,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
             Future.successful(Ok(view(confirmVerifyChangeForm, Some(currentEmail))))
           case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
         },
-      subscriptionDisplay
+      subscriptionDisplay()
     )
   }
 
@@ -100,7 +100,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
   def verifyChangeEmail: Action[AnyContent] = identify.async { implicit request =>
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), _, _, _) =>
-        confirmVerifyChangeForm.bindFromRequest.fold(
+        confirmVerifyChangeForm.bindFromRequest().fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, Some(email)))),
           formData =>
           formData.isVerify match {
@@ -132,7 +132,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
     }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
-    Future.successful(BadRequest(errorHandler.problemWithService))
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 
 }

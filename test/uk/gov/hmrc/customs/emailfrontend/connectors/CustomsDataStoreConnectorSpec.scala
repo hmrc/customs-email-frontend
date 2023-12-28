@@ -62,7 +62,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
       val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
-      result.right.get.status shouldBe NO_CONTENT
+      result.toOption.get.status shouldBe NO_CONTENT
     }
 
     "return BadRequest response when POST returns NOT_FOUND from customs data store " in {
@@ -72,7 +72,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
       val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
-      result.left.get shouldBe BadRequest
+      result.swap.getOrElse(BadRequest) shouldBe BadRequest
     }
 
     "return the BAD_REQUEST exception response from customs data store" in {
@@ -86,7 +86,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
       val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
-      result.left.get shouldBe BadRequest
+      result.swap.getOrElse(BadRequest) shouldBe BadRequest
     }
 
     "return the service_unavailable exception response from customs data store" in {
@@ -100,7 +100,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
       val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
-      result.left.get shouldBe ServiceUnavailable
+      result.swap.getOrElse(ServiceUnavailable) shouldBe ServiceUnavailable
     }
 
     "return a non fatal exception response from customs data store" in {
@@ -114,7 +114,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
       val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
-      result.left.get shouldBe UnhandledException
+      result.swap.getOrElse(UnhandledException) shouldBe UnhandledException
     }
 
 

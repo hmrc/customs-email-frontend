@@ -38,8 +38,10 @@ class ChangingYourEmailController @Inject()(identify: IdentifierAction,
                                             emailVerificationService: EmailVerificationService,
                                             save4LaterService: Save4LaterService,
                                             errorHandler: ErrorHandler)
-                                           (implicit override val messagesApi: MessagesApi, appConfig: AppConfig, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+                                           (implicit override val messagesApi: MessagesApi,
+                                            appConfig: AppConfig,
+                                            ec: ExecutionContext) extends FrontendController(mcc)
+  with I18nSupport {
 
   def show: Action[AnyContent] = Action { implicit request =>
     Ok(view(emailForm))
@@ -55,19 +57,31 @@ class ChangingYourEmailController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def callEmailVerificationService(internalId: InternalId, details: EmailDetails, eori: String)
-                                          (implicit request: Request[AnyContent]): Future[Result] =
-    emailVerificationService.createEmailVerificationRequest(details, routes.EmailConfirmedController.show.url, eori).flatMap {
-      case Some(EmailVerificationRequestSent) => Future.successful(Redirect(routes.VerifyYourEmailController.show))
+  private def callEmailVerificationService(internalId: InternalId,
+                                           details: EmailDetails,
+                                           eori: String)
+                                          (implicit request: Request[AnyContent]): Future[Result] = {
+
+    emailVerificationService.createEmailVerificationRequest(
+      details,
+      routes.EmailConfirmedController.show.url,
+      eori).flatMap {
+
+      case Some(EmailVerificationRequestSent) =>
+        Future.successful(Redirect(routes.VerifyYourEmailController.show))
+
       case Some(EmailAlreadyVerified) =>
         save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
           Redirect(routes.EmailConfirmedController.show)
         }
-      case _ => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService))
+
+      case _ =>
+        Future.successful(Redirect(routes.CheckYourEmailController.problemWithService))
     }
+  }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
-    Future.successful(BadRequest(errorHandler.problemWithService))
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 
 }
