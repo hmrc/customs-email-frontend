@@ -20,32 +20,30 @@ import play.api.Application
 import play.api.mvc.Session
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 
 class SignOutControllerSpec extends SpecBase {
 
-  "SignOut Controller" should {
+  "SignOut" should {
 
-    "redirect to feedback survey" in {
-
-      val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
+    "redirect to feedback survey" in new Setup {
 
       running(app) {
         val request = FakeRequest(GET, routes.SignOutController.signOut.url)
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value should endWith("/feedback/manage-email-cds")
       }
-
     }
 
-    "clear the session once the user signs out" in {
-
-      val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
+    "clear the session once the user signs out" in new Setup {
 
       running(app) {
         val signOutRequest = FakeRequest(GET, routes.SignOutController.signOut.url)
         val signOutResult = route(app, signOutRequest).value
+
         status(signOutResult) shouldBe SEE_OTHER
 
         val startPageRequest = FakeRequest(GET, routes.SignOutController.signOut.url)
@@ -53,7 +51,25 @@ class SignOutControllerSpec extends SpecBase {
 
         session(startPageResult) shouldBe Session.emptyCookie
       }
-
     }
+  }
+
+  "logoutNoSurvey" should {
+    "redirect to loginContinue page" in new Setup {
+
+      running(app) {
+        val logOutNoSurveyRequest = FakeRequest(GET, routes.SignOutController.logoutNoSurvey.url)
+        val result = route(app, logOutNoSurveyRequest).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe config.loginContinueUrl
+      }
+    }
+  }
+
+  trait Setup {
+    val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
+
+    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
   }
 }

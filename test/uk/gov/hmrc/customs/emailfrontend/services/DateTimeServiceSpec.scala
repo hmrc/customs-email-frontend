@@ -23,41 +23,55 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 class DateTimeServiceSpec extends SpecBase {
 
   "nowUtc" should {
-    "return current time in UTC" in new Setup  {
-      
-      val dateTimeService = new DateTimeService {
+    "return current time in UTC" in new Setup {
+
+      val dateTimeService: DateTimeService = new DateTimeService {
         override val UtcZoneId: ZoneId = ZoneId.of("UTC")
+
         override def nowUtc(): DateTime = new DateTime(fixedClock.instant().toEpochMilli, DateTimeZone.UTC)
       }
 
-      val currentTime = dateTimeService.nowUtc()
+      val currentTime: DateTime = dateTimeService.nowUtc()
 
       currentTime.getYear shouldBe 2023
       currentTime.getMonthOfYear shouldBe 10
       currentTime.getDayOfMonth shouldBe 31
       currentTime.getHourOfDay shouldBe 12
     }
+
+    "return instance of DateTime" in new Setup {
+      val dateTimeServiceOb = new DateTimeService()
+
+      dateTimeServiceOb.nowUtc().isInstanceOf[DateTime] shouldBe true
+    }
   }
 
   "zonedDateTimeUtc" should {
     "return current time in UTC using java.time.ZonedDateTime" in new Setup {
 
-      val dateTimeService = new DateTimeService {
+      val dateTimeService: DateTimeService = new DateTimeService {
         override val UtcZoneId: ZoneId = ZoneId.of("UTC")
+
         override def zonedDateTimeUtc: ZonedDateTime = ZonedDateTime.now(fixedClock)
       }
 
-      val currentTime = dateTimeService.zonedDateTimeUtc
+      val currentTime: ZonedDateTime = dateTimeService.zonedDateTimeUtc
 
       currentTime.getYear shouldBe 2023
       currentTime.getMonthValue shouldBe 10
       currentTime.getDayOfMonth shouldBe 31
       currentTime.getHour shouldBe 12
     }
+
+    "return correct ZoneId" in new Setup {
+      val dateTimeServiceOb = new DateTimeService()
+      
+      dateTimeServiceOb.zonedDateTimeUtc.getZone shouldBe ZoneId.of("UTC")
+    }
   }
 
   trait Setup {
-    val fixedInstant = Instant.parse("2023-10-31T12:00:00Z")
-    val fixedClock = Clock.fixed(fixedInstant, ZoneId.of("UTC"))
+    val fixedInstant: Instant = Instant.parse("2023-10-31T12:00:00Z")
+    val fixedClock: Clock = Clock.fixed(fixedInstant, ZoneId.of("UTC"))
   }
 }

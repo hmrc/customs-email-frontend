@@ -32,28 +32,6 @@ import scala.concurrent.Future
 
 class EmailConfirmedControllerSpec extends SpecBase {
 
-  trait Setup {
-
-    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
-    protected val mockCustomsDataStoreService: CustomsDataStoreService = mock[CustomsDataStoreService]
-    protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
-    protected val mockUpdateVerifiedEmailService: UpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
-    protected val mockDateTimeService: DateTimeService = mock[DateTimeService]
-    protected val testDateTime: DateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
-
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
-      .overrides(
-        inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
-        inject.bind[CustomsDataStoreService].toInstance(mockCustomsDataStoreService),
-        inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService),
-        inject.bind[UpdateVerifiedEmailService].toInstance(mockUpdateVerifiedEmailService),
-        inject.bind[DateTimeService].toInstance(mockDateTimeService)
-      ).build()
-
-    protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
-
-  }
-
   "EmailConfirmedController" should {
     "return OK " when {
       "email found in cache, email is verified and update verified email is successful" in new Setup() {
@@ -81,7 +59,9 @@ class EmailConfirmedControllerSpec extends SpecBase {
         when(mockSave4LaterService.fetchJourneyType(meq(InternalId("fakeInternalId")))(any))
           .thenReturn(Future.successful(Some(JourneyType(true))))
 
-        when(mockCustomsDataStoreService.storeEmail(meq(EnrolmentIdentifier("EORINumber", "fakeEori")), meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
+        when(mockCustomsDataStoreService.storeEmail(
+          meq(EnrolmentIdentifier("EORINumber", "fakeEori")),
+          meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
 
         running(app) {
@@ -89,9 +69,46 @@ class EmailConfirmedControllerSpec extends SpecBase {
           val result = route(app, requestWithForm).value
           status(result) shouldBe OK
         }
-
       }
 
+      "email found in cache, email is verified, update verified email is successful and " +
+        "journey type is not verified" in new Setup() {
+        when(mockSave4LaterService.fetchEmail(any)(any))
+          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+
+        when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(true)))
+
+        when(mockDateTimeService.nowUtc()).thenReturn(testDateTime)
+
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(
+          meq(None),
+          meq("abc@def.com"),
+          meq("fakeEori"),
+          meq(testDateTime))(any)
+        ).thenReturn(Future.successful(Some(true)))
+
+        when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
+          .thenReturn(Future.successful(Right(())))
+
+        when(mockSave4LaterService.fetchReferrer(meq(InternalId("fakeInternalId")))(any))
+          .thenReturn(Future.successful(Some(ReferrerName("abc", "/xyz"))))
+
+        when(mockSave4LaterService.fetchJourneyType(meq(InternalId("fakeInternalId")))(any))
+          .thenReturn(Future.successful(Some(JourneyType(false))))
+
+        when(mockCustomsDataStoreService.storeEmail(
+          meq(EnrolmentIdentifier("EORINumber", "fakeEori")),
+          meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
+
+        running(app) {
+          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
+
+          val result = route(app, requestWithForm).value
+          status(result) shouldBe OK
+        }
+      }
     }
 
     "return REDIRECT to confirm email page" when {
@@ -99,7 +116,8 @@ class EmailConfirmedControllerSpec extends SpecBase {
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
-        when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
+        when(mockEmailVerificationService.isEmailVerified(
+          meq("abc@def.com"))(any[HeaderCarrier])).thenReturn(Future.successful(Some(false)))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
@@ -107,13 +125,13 @@ class EmailConfirmedControllerSpec extends SpecBase {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result).get shouldBe routes.VerifyYourEmailController.show.url
         }
-
       }
 
       "when email found in cache but isEmailVerified failed" in new Setup {
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
-        when(mockEmailVerificationService.isEmailVerified(meq("abc@def.com"))(any)).thenReturn(Future.successful(None))
+        when(mockEmailVerificationService.isEmailVerified(
+          meq("abc@def.com"))(any)).thenReturn(Future.successful(None))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
@@ -121,9 +139,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result).get shouldBe routes.VerifyYourEmailController.show.url
         }
-
       }
-
     }
 
     "return REDIRECT to sign-out page" when {
@@ -155,7 +171,8 @@ class EmailConfirmedControllerSpec extends SpecBase {
     }
 
     "return REDIRECT to problem page" when {
-      "email found in cache, email is verified and update verified email is successful but saving timestamp fails" in new Setup {
+      "email found in cache, email is verified and update verified email is successful " +
+        "but saving timestamp fails" in new Setup {
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
@@ -164,7 +181,8 @@ class EmailConfirmedControllerSpec extends SpecBase {
 
         when(mockDateTimeService.nowUtc()).thenReturn(testDateTime)
 
-        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None), meq("abc@def.com"), meq("fakeEori"), meq(testDateTime))(any))
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(
+          meq(None), meq("abc@def.com"), meq("fakeEori"), meq(testDateTime))(any))
           .thenReturn(Future.successful(Some(true)))
 
         when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
@@ -187,7 +205,8 @@ class EmailConfirmedControllerSpec extends SpecBase {
 
         when(mockDateTimeService.nowUtc()).thenReturn(testDateTime)
 
-        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None), meq("abc@def.com"), meq("fakeEori"), meq(testDateTime))(any))
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(
+          meq(None), meq("abc@def.com"), meq("fakeEori"), meq(testDateTime))(any))
           .thenReturn(Future.successful(None))
 
         running(app) {
@@ -207,7 +226,8 @@ class EmailConfirmedControllerSpec extends SpecBase {
 
         when(mockDateTimeService.nowUtc()).thenReturn(testDateTime)
 
-        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(meq(None), meq("abc@def.com"), meq("fakeEori"), meq(testDateTime))(any))
+        when(mockUpdateVerifiedEmailService.updateVerifiedEmail(
+          meq(None), meq("abc@def.com"), meq("fakeEori"), meq(testDateTime))(any))
           .thenReturn(Future.successful(Some(false)))
 
         running(app) {
@@ -220,9 +240,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
     }
 
     "show problem with service page" when {
-
       "when user is redirected to .problemWithService" in new Setup {
-
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.problemWithService.url)
             .withFormUrlEncodedBody("email" -> "")
@@ -232,5 +250,26 @@ class EmailConfirmedControllerSpec extends SpecBase {
         }
       }
     }
+  }
+
+  trait Setup {
+    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
+    protected val mockCustomsDataStoreService: CustomsDataStoreService = mock[CustomsDataStoreService]
+    protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
+    protected val mockUpdateVerifiedEmailService: UpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
+    protected val mockDateTimeService: DateTimeService = mock[DateTimeService]
+    protected val testDateTime: DateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
+
+    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+      .overrides(
+        inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
+        inject.bind[CustomsDataStoreService].toInstance(mockCustomsDataStoreService),
+        inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService),
+        inject.bind[UpdateVerifiedEmailService].toInstance(mockUpdateVerifiedEmailService),
+        inject.bind[DateTimeService].toInstance(mockDateTimeService)
+      ).build()
+
+    protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
+
   }
 }
