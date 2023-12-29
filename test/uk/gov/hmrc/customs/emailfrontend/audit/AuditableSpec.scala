@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.audit
 
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
-import play.api.inject
+import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, RequestId}
 import uk.gov.hmrc.play.audit.AuditExtensions.AuditHeaderCarrier
@@ -25,12 +25,12 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.model.{Audit, DataEvent}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuditableSpec extends SpecBase {
   "sendDataEvent" should {
+    //TODO: Need to be looked at (failing due to NullPointer Exception)
     "send a data event" ignore new Setup {
-      val dataEvent = DataEvent("test_source", "test", "test")
 
       doNothing.when(mockAudit).sendDataEvent(any)(any)
       when(mockConnector.sendEvent(dataEvent)(hc, ec)).thenReturn(Future.successful(Success))
@@ -39,7 +39,7 @@ class AuditableSpec extends SpecBase {
         "test_transaction",
         "test_path",
         Map("test_other" -> "other"),
-        "test_audit")(hc) mustBe ()
+        "test_audit")(hc) mustBe()
     }
   }
 
@@ -48,18 +48,19 @@ class AuditableSpec extends SpecBase {
       requestId = Some(RequestId("test_value")),
       sessionId = Some(uk.gov.hmrc.http.SessionId("test_id")))
 
-    implicit val ec =  scala.concurrent.ExecutionContext.Implicits.global
-    implicit val  auditHeaderCarrier = new AuditHeaderCarrier(hc)
+    implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+    implicit val auditHeaderCarrier: AuditHeaderCarrier = new AuditHeaderCarrier(hc)
 
-    val mockConnector = mock[AuditConnector]
-    val mockAudit = mock[Audit]
+    val dataEvent: DataEvent = DataEvent("test_source", "test", "test")
 
-    val app = applicationBuilder[FakeIdentifierAgentAction]().overrides(
+    val mockConnector: AuditConnector = mock[AuditConnector]
+    val mockAudit: Audit = mock[Audit]
+
+    val app: Application = applicationBuilder[FakeIdentifierAgentAction]().overrides(
       inject.bind[AuditConnector].toInstance(mockConnector),
       inject.bind[Audit].toInstance(mockAudit)
     ).build()
 
-    val auditableOb = app.injector.instanceOf[Auditable]
-
+    val auditableOb: Auditable = app.injector.instanceOf[Auditable]
   }
 }
