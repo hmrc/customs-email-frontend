@@ -270,6 +270,5 @@ class EmailConfirmedControllerSpec extends SpecBase {
       ).build()
 
     protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
-
   }
 }

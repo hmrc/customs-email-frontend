@@ -21,7 +21,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestSent}
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified,
+  EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
@@ -193,6 +194,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
 
     protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
     protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
+
     protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
       .overrides(
         inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
@@ -200,9 +202,8 @@ class ChangingYourEmailControllerSpec extends SpecBase {
       )
       .build()
 
-    implicit val appConfig = app.injector.instanceOf[AppConfig]
+    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
     protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
-
   }
 }

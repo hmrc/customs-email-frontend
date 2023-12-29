@@ -39,7 +39,7 @@ class AuditableSpec extends SpecBase {
         "test_transaction",
         "test_path",
         Map("test_other" -> "other"),
-        "test_audit")(hc) mustBe()
+        "test_audit")(hc) mustBe ()
     }
   }
 
