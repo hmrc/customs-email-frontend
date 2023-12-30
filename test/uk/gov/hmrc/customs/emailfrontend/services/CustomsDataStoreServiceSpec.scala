@@ -44,7 +44,7 @@ class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
         .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
 
       val result = service.storeEmail(enrolmentIdentifier, email, dateTime).futureValue
-      result.right.get.status shouldBe NO_CONTENT
+      result.toOption.get.status shouldBe NO_CONTENT
     }
   }
 
@@ -53,6 +53,6 @@ class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
       .thenReturn(Future.successful(Left(BadRequest)))
 
     val result = service.storeEmail(enrolmentIdentifier, email, dateTime).futureValue
-    result.left.get shouldBe BadRequest
+    result.swap.getOrElse(BadRequest) shouldBe BadRequest
   }
 }

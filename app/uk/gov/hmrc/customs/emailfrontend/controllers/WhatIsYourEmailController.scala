@@ -58,7 +58,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
     emailVerificationService.isEmailVerified(details.newEmail).map {
       case Some(true) => Redirect(routes.EmailConfirmedController.show)
       case Some(false) => Redirect(routes.CheckYourEmailController.show)
-      case None => InternalServerError(errorHandler.problemWithService)
+      case None => InternalServerError(errorHandler.problemWithService())
     }
 
   def create: Action[AnyContent] = identify.async { implicit request =>
@@ -69,7 +69,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
           case (None, _) => Future.successful(Ok(whatIsYourEmailView(emailForm)))
           case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
         },
-      subscriptionDisplay
+      subscriptionDisplay()
     )
   }
 
@@ -116,7 +116,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   }
 
   def submit: Action[AnyContent] = identify.async { implicit request =>
-    emailForm.bindFromRequest.fold(
+    emailForm.bindFromRequest().fold(
       formWithErrors => {
         subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).map {
           case SubscriptionDisplayResponse(_, _, _, _) =>
@@ -150,7 +150,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   }
 
   def verifySubmit: Action[AnyContent] = identify.async { implicit request =>
-    emailForm.bindFromRequest.fold(
+    emailForm.bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(formWithErrors))),
       formData => {
         save4LaterService
@@ -170,6 +170,6 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
-    Future.successful(BadRequest(errorHandler.problemWithService))
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

@@ -33,7 +33,11 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import scala.annotation.implicitNotFound
 import scala.reflect.ClassTag
 
-trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with OptionValues with ScalaFutures {
+trait SpecBase extends AnyWordSpecLike
+  with Matchers
+  with MockitoSugar
+  with OptionValues
+  with ScalaFutures {
 
   def fakeRequest(method: String, path: String): FakeRequest[AnyContentAsEmpty.type] = {
     FakeRequest(method, path)

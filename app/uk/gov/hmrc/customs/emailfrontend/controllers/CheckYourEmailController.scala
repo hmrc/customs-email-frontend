@@ -23,8 +23,8 @@ import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
 import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.customs.emailfrontend.services.{Save4LaterService}
-import uk.gov.hmrc.customs.emailfrontend.views.html.{check_your_email}
+import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
+import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
@@ -49,7 +49,7 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
   def submit: Action[AnyContent] = identify.async { implicit request =>
     save4LaterService.fetchEmail(request.user.internalId).flatMap {
       case Some(emailDetails) =>
-        confirmEmailForm.bindFromRequest.fold(
+        confirmEmailForm.bindFromRequest().fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail))),
           formData => handleYesNo(request.user.internalId, formData)
         )
@@ -70,6 +70,6 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
     }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
-    Future.successful(BadRequest(errorHandler.problemWithService))
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 }

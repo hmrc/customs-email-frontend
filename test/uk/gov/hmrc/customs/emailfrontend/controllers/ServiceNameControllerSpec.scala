@@ -28,38 +28,41 @@ import scala.concurrent.Future
 
 class ServiceNameControllerSpec extends SpecBase {
 
-  trait Setup {
-    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
-      .overrides(inject.bind[Save4LaterService].toInstance(mockSave4LaterService))
-      .build()
-  }
-
   "ServiceNameController" should {
-    "redirect to change-email-address page and store the referred service name in the cache when parameter found in the url" in new Setup {
+    "redirect to change-email-address page and store the referred service name in " +
+      "the cache when parameter found in the url" in new Setup {
 
-      when(mockSave4LaterService.saveReferrer(meq(InternalId("fakeInternalId")), meq(ReferrerName("customs-finance", "/customs/payment-records")))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right()))
+      when(mockSave4LaterService.saveReferrer(
+        meq(InternalId("fakeInternalId")),
+        meq(ReferrerName("customs-finance", "/customs/payment-records")))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right((): Unit)))
 
       running(app) {
         val requestWithForm = fakeRequestWithCsrf(GET, routes.ServiceNameController.show("customs-finance").url)
         val result = route(app, requestWithForm).value
+
         status(result) shouldBe SEE_OTHER
 
         redirectLocation(result).value shouldBe routes.VerifyChangeEmailController.create.url
       }
-
-
     }
 
     "redirect to create page when service name is not found in the url" in new Setup {
       running(app) {
         val requestWithForm = fakeRequestWithCsrf(GET, routes.ServiceNameController.show("not-a-service").url)
         val result = route(app, requestWithForm).value
+
         status(result) shouldBe SEE_OTHER
 
         redirectLocation(result).value shouldBe routes.VerifyChangeEmailController.create.url
       }
     }
+  }
+
+  trait Setup {
+    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
+    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+      .overrides(inject.bind[Save4LaterService].toInstance(mockSave4LaterService))
+      .build()
   }
 }
