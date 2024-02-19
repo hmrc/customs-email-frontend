@@ -30,11 +30,28 @@ lazy val microservice = Project(appName, file("."))
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
 
-    scalacOptions += "-P:silencer:pathFilters=routes",
+    scalacOptions ++= Seq(
+      "-Wunused:imports",
+      "-Wunused:patvars",
+      "-Wunused:implicits",
+      "-Wunused:explicits",
+      "-Wunused:privates",
+      "-P:silencer:pathFilters=target/.*",
+      "-P:silencer:pathFilters=routes"),
+
+    Test / scalacOptions ++= Seq(
+      "-Wunused:imports",
+      "-Wunused:params",
+      "-Wunused:patvars",
+      "-Wunused:implicits",
+      "-Wunused:explicits",
+      "-Wunused:privates"),
+
     libraryDependencies ++= Seq(
       compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
       "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
     ),
+
     routesImport ++= Seq("uk.gov.hmrc.customs.emailfrontend.model.Ineligible"),
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
@@ -44,6 +61,5 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(PlayKeys.playDefaultPort := 9898)
   .configs(IntegrationTest)
-  .settings(integrationTestSettings() *)
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(scalastyleSettings)

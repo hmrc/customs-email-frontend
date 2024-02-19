@@ -19,7 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
+import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
@@ -39,7 +39,6 @@ class ChangingYourEmailController @Inject()(identify: IdentifierAction,
                                             save4LaterService: Save4LaterService,
                                             errorHandler: ErrorHandler)
                                            (implicit override val messagesApi: MessagesApi,
-                                            appConfig: AppConfig,
                                             ec: ExecutionContext) extends FrontendController(mcc)
   with I18nSupport {
 
