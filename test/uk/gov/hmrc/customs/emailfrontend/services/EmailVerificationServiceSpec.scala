@@ -115,8 +115,8 @@ class EmailVerificationServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         mockCreateEmailVerificationRequest(emailDetails,
           continueUrl,
-          eoriNumber)
-        (Future.successful(Right(EmailVerificationRequestSent)))
+          eoriNumber)(
+        (Future.successful(Right(EmailVerificationRequestSent))))
 
         val res: Option[EmailVerificationRequestSuccess] = {
           service

@@ -27,8 +27,8 @@
   hint: Option[Hint] = None,
   isPageHeading: Boolean = false,
   headingMessageArgs: Seq[String] = Seq(),
-  labelClasses: Option[String] = None)
-(implicit messages: Messages)
+  labelClasses: Option[String] = None,
+)(implicit messages: Messages)
 
 @govukInput(Input(
     id = field.id,
