@@ -41,7 +41,6 @@ class DateTimeServiceSpec extends SpecBase {
 
     "return instance of DateTime" in new Setup {
       val dateTimeServiceOb = new DateTimeService()
-
       dateTimeServiceOb.nowUtc().isInstanceOf[DateTime] shouldBe true
     }
   }
@@ -65,7 +64,6 @@ class DateTimeServiceSpec extends SpecBase {
 
     "return correct ZoneId" in new Setup {
       val dateTimeServiceOb = new DateTimeService()
-
       dateTimeServiceOb.zonedDateTimeUtc.getZone shouldBe ZoneId.of("UTC")
     }
   }

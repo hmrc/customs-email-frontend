@@ -39,7 +39,6 @@ class IneligibleUserControllerSpec extends SpecBase {
         val eventualResult = controller.show(Ineligible.NoEnrolment).apply(request)
         status(eventualResult) shouldBe UNAUTHORIZED
         contentAsString(eventualResult) shouldBe view(Ineligible.NoEnrolment)(request, messages).toString
-
       }
     }
   }

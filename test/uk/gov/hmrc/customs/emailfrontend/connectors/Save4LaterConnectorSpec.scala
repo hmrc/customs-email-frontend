@@ -167,6 +167,7 @@ class Save4LaterConnectorSpec extends SpecBase {
     }
 
     "PUT returns unit when NO_CONTENT response received" in new Setup {
+
       val testJson = Json.toJson("test")
 
       when(mockHttpClient.PUT[JsValue, HttpResponse](any, any, any)(any, any, any, any)
@@ -181,6 +182,7 @@ class Save4LaterConnectorSpec extends SpecBase {
     }
 
     "PUT returns unit when OK response received" in new Setup {
+
       val testJson = Json.toJson("test")
 
       when(mockHttpClient.PUT[JsValue, HttpResponse](any, any, any)(any, any, any, any)
@@ -195,6 +197,7 @@ class Save4LaterConnectorSpec extends SpecBase {
     }
 
     "PUT returns unit when CREATED response received" in new Setup {
+
       val testJson = Json.toJson("test")
 
       when(mockHttpClient.PUT[JsValue, HttpResponse](any, any, any)(any, any, any, any)
@@ -209,6 +212,7 @@ class Save4LaterConnectorSpec extends SpecBase {
     }
 
     "PUT returns exception when BAD_REQUEST response received" in new Setup {
+
       val testJson = Json.toJson("test")
 
       when(mockHttpClient.PUT[JsValue, HttpResponse](any, any, any)(any, any, any, any)

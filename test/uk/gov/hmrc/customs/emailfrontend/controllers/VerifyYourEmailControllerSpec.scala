@@ -37,45 +37,44 @@ class VerifyYourEmailControllerSpec extends SpecBase {
 
   "VerifyYourEmailController" should {
     "redirect to sign out page when no email found in cache" in new Setup {
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
 
       running(app) {
-
         val request = FakeRequest(GET, routes.VerifyYourEmailController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe "/manage-email-cds/signout"
       }
     }
 
     "return status OK when email found in cache" in new Setup {
+
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
       running(app) {
-
         val request = FakeRequest(GET, routes.VerifyYourEmailController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe OK
         contentAsString(result) must include("abc@def.com")
       }
     }
 
-    "have a status of SEE_OTHER when user clicks browser back on the successful request or uses already complete bookmarked request within 2 hours" in new Setup {
+    "have a status of SEE_OTHER when user clicks browser back on the successful request " +
+      "or uses already complete bookmarked request within 2 hours" in new Setup {
+
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
 
       running(app) {
-
         val request = FakeRequest(GET, routes.VerifyYourEmailController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show.url
-
       }
     }
   }

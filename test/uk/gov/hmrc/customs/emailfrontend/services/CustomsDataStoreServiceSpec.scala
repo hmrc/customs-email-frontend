@@ -40,6 +40,7 @@ class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   "Customs Data Store Service" should {
     "return a status NO_CONTENT when data store request is successful" in new Setup {
+
       when(mockConnector.storeEmailAddress(any, any, any)(any))
         .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
 
@@ -49,6 +50,7 @@ class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
   }
 
   "return a status BAD_REQUEST when data store request is successful" in new Setup {
+
     when(mockConnector.storeEmailAddress(any, any, any)(any))
       .thenReturn(Future.successful(Left(BadRequest)))
 

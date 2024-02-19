@@ -33,10 +33,9 @@ class AmendmentInProgressControllerSpec extends SpecBase {
     protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
     protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
       .overrides(
-        inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
+        inject.bind[Save4LaterService].toInstance(mockSave4LaterService)
       )
       .build()
-
   }
 
   "AmendmentInProgressController" should {
@@ -46,15 +45,12 @@ class AmendmentInProgressControllerSpec extends SpecBase {
         .thenReturn(Future.successful(None))
 
       running(app) {
-
         val request = FakeRequest(GET, routes.AmendmentInProgressController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe "/manage-email-cds/signout"
-
       }
-
     }
 
     "have a status of OK when email found in cache and verification in progress" in new Setup {
@@ -63,15 +59,11 @@ class AmendmentInProgressControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
 
       running(app) {
-
         val request = FakeRequest(GET, routes.AmendmentInProgressController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe OK
-        //TODO - check has view
-
       }
-
     }
   }
 }

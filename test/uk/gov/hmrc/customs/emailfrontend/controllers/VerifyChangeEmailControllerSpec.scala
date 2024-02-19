@@ -29,7 +29,8 @@ import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{
-  EmailAlreadyVerified, EmailVerificationRequestSent, EmailVerificationRequestFailure}
+  EmailAlreadyVerified, EmailVerificationRequestSent, EmailVerificationRequestFailure
+}
 import uk.gov.hmrc.customs.emailfrontend.connectors.{EmailVerificationConnector, SubscriptionDisplayConnector}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
 import uk.gov.hmrc.customs.emailfrontend.model._
@@ -50,17 +51,15 @@ class VerifyChangeEmailControllerSpec extends SpecBase
 
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(
-          Some(EmailDetails(None, "test@email.com", Some(DateTime.now().minusDays(2)))))
-        )
+          Some(EmailDetails(None, "test@email.com", Some(DateTime.now().minusDays(2))))))
 
-      when(mockSave4LaterService.remove(any)(any))
-        .thenReturn(Future.successful(Right(())))
+      when(mockSave4LaterService.remove(any)(any)).thenReturn(Future.successful(Right(())))
 
       running(app) {
 
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.VerifyChangeEmailController.create.url
       }
@@ -69,14 +68,13 @@ class VerifyChangeEmailControllerSpec extends SpecBase
     "have a status of SEE_OTHER for show method when email is not found in cache and " +
       "email status is AmendmentNotDetermined" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
 
       running(app) {
 
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.VerifyChangeEmailController.create.url
       }
@@ -95,8 +93,8 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       running(app) {
 
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.EmailConfirmedController.show.url
       }
@@ -114,8 +112,8 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       running(app) {
 
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.CheckYourEmailController.show.url
       }
@@ -130,22 +128,22 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       running(app) {
 
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show.url
       }
     }
 
     "have a status of SEE_OTHER for show method email is not found in cache " in new Setup {
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
 
       running(app) {
 
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.VerifyChangeEmailController.create.url
       }
@@ -159,23 +157,24 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       running(app) {
         val requestWithForm = fakeRequestWithCsrf(POST, routes.WhatIsYourEmailController.submit.url)
           .withFormUrlEncodedBody(("email", ""))
+
         val result = route(app, requestWithForm).value
+
         status(result) shouldBe BAD_REQUEST
       }
     }
 
     "have a status of OK for create method when unverified email found in subscription display response" in new Setup {
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp))
 
       running(app) {
-
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe OK
       }
     }
@@ -183,17 +182,15 @@ class VerifyChangeEmailControllerSpec extends SpecBase
     "have a status of SEE_OTHER for create method when no email found in subscription display " +
       "response but returned OK" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(noneSubscriptionDisplayResponse))
 
       running(app) {
-
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
       }
     }
@@ -207,10 +204,9 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       running(app) {
-
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe OK
       }
     }
@@ -225,10 +221,9 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       running(app) {
-
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
       }
     }
@@ -243,10 +238,9 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       running(app) {
-
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
       }
     }
@@ -254,34 +248,30 @@ class VerifyChangeEmailControllerSpec extends SpecBase
     "have a status of SEE_OTHER for create method when unverified email found in subscription " +
       "display response" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp))
 
       running(app) {
-
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe OK
       }
     }
 
     "show 'there is a problem with the service' page when subscription display is failed" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.failed(new HttpException("Failed", BAD_REQUEST)))
 
       running(app) {
-
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
       }
     }
@@ -289,17 +279,15 @@ class VerifyChangeEmailControllerSpec extends SpecBase
     "show 'there is a problem with the service' page when subscription display response has " +
       "paramValue 'FAIL' with no email" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
 
       running(app) {
-
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
       }
     }
@@ -307,31 +295,27 @@ class VerifyChangeEmailControllerSpec extends SpecBase
     "show 'what is your email address' page when subscription display response has no email and " +
       "timestamp with status text and param" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(noneSubscriptionDisplayResponseWithStatus))
 
       running(app) {
-
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
       }
     }
 
     "have a status of SEE_OTHER for verify method" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
 
       running(app) {
-
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.verifyChangeEmail.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
       }
     }
@@ -342,10 +326,9 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(None))
 
       running(app) {
-
         val request = fakeRequestWithCsrf(GET, routes.VerifyChangeEmailController.show.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
       }
     }
@@ -357,10 +340,9 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
 
       running(app) {
-
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.verifyChangeEmail.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
       }
     }
@@ -371,10 +353,11 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       running(app) {
-
         val requestWithForm = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
           .withFormUrlEncodedBody(("email", ""))
+
         val result = route(app, requestWithForm).value
+
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -393,6 +376,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         val result = route(app, requestWithForm).value
 
         status(result) shouldBe BAD_REQUEST
+
         contentAsString(result) shouldBe
           view(confirmVerifyChangeForm.bind(Map("isVerify" -> "None")), Some("test@email.com"))(
             requestWithForm, messages(app)).toString()
@@ -414,10 +398,9 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       running(app) {
-
         val request = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
-
         val result = route(app, request).value
+
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -433,6 +416,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
           .withFormUrlEncodedBody("email" -> "invalidEmail")
 
         val result = route(app, request).value
+
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -448,6 +432,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
           .withFormUrlEncodedBody("email" -> "valid@email.com")
 
         val result = route(app, request).value
+
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -463,6 +448,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
           .withFormUrlEncodedBody("email" -> "")
 
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
       }
@@ -537,12 +523,16 @@ class VerifyChangeEmailControllerSpec extends SpecBase
     }
 
     "redirect to check your email, problem with the service page when user is happy with the email" in new Setup {
+
+      val errorCode = 403
+
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       when(mockSave4LaterService.saveJourneyType(any, any)(any)).thenReturn(Future.successful(Right((): Unit)))
+
       when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
-        .thenReturn(Future.successful(Some(EmailVerificationRequestFailure(403, "test_body"))))
+        .thenReturn(Future.successful(Some(EmailVerificationRequestFailure(errorCode, "test_body"))))
 
       running(app) {
         val requestWithForm: FakeRequest[AnyContentAsFormUrlEncoded] =

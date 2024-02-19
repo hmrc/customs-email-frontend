@@ -41,7 +41,7 @@ class FormsSpec extends SpecBase {
       result4.value shouldBe Option(Email("abc@test.com"))
       result5.value shouldBe Option(Email("abc@test.com"))
     }
-    
+
     "not bind when value is incorrect" in {
 
       val mapValues_1: Map[String, String] = Map("email" -> "abctest")

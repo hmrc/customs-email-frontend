@@ -42,7 +42,6 @@ class ServiceNameControllerSpec extends SpecBase {
         val result = route(app, requestWithForm).value
 
         status(result) shouldBe SEE_OTHER
-
         redirectLocation(result).value shouldBe routes.VerifyChangeEmailController.create.url
       }
     }
@@ -53,7 +52,6 @@ class ServiceNameControllerSpec extends SpecBase {
         val result = route(app, requestWithForm).value
 
         status(result) shouldBe SEE_OTHER
-
         redirectLocation(result).value shouldBe routes.VerifyChangeEmailController.create.url
       }
     }

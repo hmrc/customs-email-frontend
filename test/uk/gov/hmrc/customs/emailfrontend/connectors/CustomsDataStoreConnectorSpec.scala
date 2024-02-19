@@ -39,7 +39,6 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
   private val mockDateTimeService = mock[DateTimeService]
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private val connector = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
-
   private val url = "/customs-data-store/update-email"
   private val testEori: Eori = Eori("GB1234556789")
   private val testEmail = "email@test.com"
@@ -56,6 +55,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
   "CustomsDataStoreConnector" should {
     "successfully send a query request to customs data store and return the NO_CONTENT response" in {
+
       when(mockHttp.POST[UpdateEmail, HttpResponse](any, any, any)(any, any, meq(hc), any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
 
@@ -66,7 +66,9 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "return BadRequest response when POST returns NOT_FOUND from customs data store " in {
-      when(mockHttp.POST[UpdateEmail, HttpResponse](meq(url), meq(requestBody), meq(headers))(any, any, meq(hc), any[ExecutionContext]))
+
+      when(mockHttp.POST[UpdateEmail, HttpResponse](
+        meq(url), meq(requestBody), meq(headers))(any, any, meq(hc), any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])

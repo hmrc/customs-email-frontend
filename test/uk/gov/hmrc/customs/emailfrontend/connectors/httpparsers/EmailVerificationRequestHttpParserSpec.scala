@@ -24,7 +24,6 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 class EmailVerificationRequestHttpParserSpec extends SpecBase {
 
   "CreateEmailVerificationRequestHttpReads" should {
-
     "successfully parse a CREATED response" in new Setup {
       val httpResponse = HttpResponse(Status.CREATED, "")
       val result = httpParser.read("POST", "/some/url", httpResponse)
@@ -45,8 +44,7 @@ class EmailVerificationRequestHttpParserSpec extends SpecBase {
 
       result shouldBe Left(
         EmailVerificationRequestHttpParser.EmailVerificationRequestFailure(
-        Status.BAD_REQUEST, "Invalid request"
-      ))
+          Status.BAD_REQUEST, "Invalid request"))
     }
   }
 

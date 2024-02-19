@@ -27,38 +27,39 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
 class ErrorHandlerSpec extends SpecBase {
 
   private val app = applicationBuilder[FakeIdentifierAgentAction]().build()
-
   private val view = app.injector.instanceOf[error_template]
   private val customView = app.injector.instanceOf[problem_with_this_service]
   private val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-
   private val errorHandler = new ErrorHandler(messagesApi, view, customView)
   private val request = FakeRequest()
 
   "ErrorHandlerSpec" should {
+
     "define standardErrorTemplate" in {
-      val result = errorHandler.standardErrorTemplate("title",
-                                                      "heading",
-                                                      "message")(request)
+
+      val result = errorHandler.standardErrorTemplate("title", "heading", "message")(request)
       val doc = Jsoup.parse(contentAsString(result))
+
       doc.title shouldBe "title"
       doc.body.getElementsByTag("h1").text shouldBe "heading"
-      doc.body
-        .getElementById("main-content")
+      doc.body.getElementById("main-content")
         .text shouldBe "heading message Is this page not working properly? (opens in new tab)"
     }
 
     "have custom error view to show 'problem with the service' page" in {
+
       val result = errorHandler.problemWithService()(request)
       val doc = Jsoup.parse(contentAsString(result))
+
       doc.title shouldBe "Sorry, there is a problem with the service"
     }
 
     "have correct text error to show 'email has not been updated' page" in {
+
       val result = errorHandler.problemWithService()(request)
       val doc = Jsoup.parse(contentAsString(result))
-      doc.body 
-        .getElementsByClass("govuk-body").first() 
+
+      doc.body.getElementsByClass("govuk-body").first()
         .text shouldBe "Your email has not been updated. Try again later."
     }
   }

@@ -51,7 +51,8 @@ trait SpecBase extends AnyWordSpecLike
   }
 
   @implicitNotFound("Pass a type for the identifier action")
-  def applicationBuilder[IA <: IdentifierAction](disableAuth: Boolean = false)(implicit c: ClassTag[IA]) : GuiceApplicationBuilder = {
+  def applicationBuilder[IA <: IdentifierAction](disableAuth: Boolean = false)
+                                                (implicit c: ClassTag[IA]): GuiceApplicationBuilder = {
 
     val overrides: List[GuiceableModule] = List(bind[Metrics].toInstance(new FakeMetrics))
     val optionalOverrides: List[GuiceableModule] = if (disableAuth) {
