@@ -27,7 +27,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, Journe
 import uk.gov.hmrc.customs.emailfrontend.services._
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
-
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import scala.concurrent.Future
 
 class EmailConfirmedControllerSpec extends SpecBase {
@@ -64,7 +64,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
         when(mockCustomsDataStoreService.storeEmail(
           meq(EnrolmentIdentifier("EORINumber", "fakeEori")),
           meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
-          .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
+          .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, emptyString))))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
@@ -103,7 +103,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
         when(mockCustomsDataStoreService.storeEmail(
           meq(EnrolmentIdentifier("EORINumber", "fakeEori")),
           meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
-          .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
+          .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, emptyString))))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
@@ -193,7 +193,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
           .thenReturn(Future.successful(Some(true)))
 
         when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
-          .thenReturn(Future.failed(new InternalServerException("")))
+          .thenReturn(Future.failed(new InternalServerException(emptyString)))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
@@ -253,7 +253,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.problemWithService.url)
-            .withFormUrlEncodedBody("email" -> "")
+            .withFormUrlEncodedBody("email" -> emptyString)
 
           val result = route(app, requestWithForm).value
 

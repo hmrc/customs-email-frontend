@@ -19,6 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.forms
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.validation.{Invalid, Valid, ValidationError}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, singleSpace}
 
 class ValidationSpec extends SpecBase {
 
@@ -108,6 +109,6 @@ trait SetUp {
   val invalidEmail_3 = "first.com"
   val invalidEmail_4 = ".com"
   val invalidEmail_5 = "thisemailaddressisgreaterthan50charactershenceinvalid.com"
-  val invalidEmail_6 = ""
-  val invalidEmail_7 = " "
+  val invalidEmail_6 = emptyString
+  val invalidEmail_7 = singleSpace
 }

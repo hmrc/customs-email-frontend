@@ -26,7 +26,6 @@ import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, _}
 import play.api.{Application, inject}
-import uk.gov.hmrc.customs.emailfrontend.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{
   EmailAlreadyVerified, EmailVerificationRequestSent, EmailVerificationRequestFailure
@@ -38,6 +37,7 @@ import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Sav
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 import scala.concurrent.Future
 
@@ -156,7 +156,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
 
       running(app) {
         val requestWithForm = fakeRequestWithCsrf(POST, routes.WhatIsYourEmailController.submit.url)
-          .withFormUrlEncodedBody(("email", ""))
+          .withFormUrlEncodedBody(("email", emptyString))
 
         val result = route(app, requestWithForm).value
 
@@ -354,7 +354,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
 
       running(app) {
         val requestWithForm = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
-          .withFormUrlEncodedBody(("email", ""))
+          .withFormUrlEncodedBody(("email", emptyString))
 
         val result = route(app, requestWithForm).value
 
@@ -445,7 +445,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       running(app) {
 
         val request = fakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
-          .withFormUrlEncodedBody("email" -> "")
+          .withFormUrlEncodedBody("email" -> emptyString)
 
         val result = route(app, request).value
 
@@ -586,7 +586,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       running(app) {
         val errorHandler = app.injector.instanceOf[ErrorHandler]
         val request = fakeRequest(GET, routes.WhatIsYourEmailController.problemWithService.url)
-          .withFormUrlEncodedBody("email" -> "")
+          .withFormUrlEncodedBody("email" -> emptyString)
 
         val result = route(app, request).value
         status(result) shouldBe BAD_REQUEST
@@ -611,7 +611,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       SubscriptionDisplayResponse(None, None, Some("statusText"), Some("FAIL"))
 
     val noneSubscriptionDisplayResponseWithStatus =
-      SubscriptionDisplayResponse(None, None, Some(""), Some(""))
+      SubscriptionDisplayResponse(None, None, Some(emptyString), Some(emptyString))
 
     val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None, None, None)
 

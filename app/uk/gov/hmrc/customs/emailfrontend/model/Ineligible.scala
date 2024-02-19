@@ -18,6 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.model
 
 import play.api.libs.json.{Reads, Writes}
 import play.api.mvc.{PathBindable, QueryStringBindable}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 object Ineligible extends Enumeration {
   val NoEnrolment, IsAgent, NotAdmin = Value
@@ -49,7 +50,7 @@ object Ineligible extends Enumeration {
 
     new QueryStringBindable[Ineligible.Value] {
       override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Ineligible.Value]] =
-        params.get(key).map(seq => pathBindable.bind(key, seq.headOption.getOrElse("")))
+        params.get(key).map(seq => pathBindable.bind(key, seq.headOption.getOrElse(emptyString)))
 
       override def unbind(key: String, value: Ineligible.Value): String =
         pathBindable.unbind(key, value)

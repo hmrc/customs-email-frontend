@@ -29,6 +29,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 import scala.annotation.implicitNotFound
 import scala.reflect.ClassTag
@@ -79,7 +80,7 @@ object TestImplicits {
   implicit class RemoveCsrf(s: String) {
     def removeCsrf(): String = {
       val regEx = "<[/]?input type[^>]*>"
-      s.replaceAll(regEx, "")
+      s.replaceAll(regEx, emptyString)
     }
   }
 }

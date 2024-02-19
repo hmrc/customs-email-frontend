@@ -26,16 +26,16 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificatio
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class EmailVerificationServiceSpec extends SpecBase with BeforeAndAfterEach {
-  private val mockConnector = mock[EmailVerificationConnector]
 
+  private val mockConnector = mock[EmailVerificationConnector]
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
-
   val service = new EmailVerificationService(mockConnector)
 
   private val email = "test@test.com"
@@ -95,7 +95,7 @@ class EmailVerificationServiceSpec extends SpecBase with BeforeAndAfterEach {
         "return None" in {
 
           mockGetEmailVerificationState(email)(Future.successful(
-            Left(EmailVerificationStateErrorResponse(BAD_REQUEST, "")))
+            Left(EmailVerificationStateErrorResponse(BAD_REQUEST, emptyString)))
           )
 
           val res: Option[Boolean] = {
@@ -156,7 +156,7 @@ class EmailVerificationServiceSpec extends SpecBase with BeforeAndAfterEach {
         mockCreateEmailVerificationRequest(emailDetails,
           continueUrl,
           eoriNumber)(
-          Future.successful(Left(EmailVerificationRequestFailure(BAD_REQUEST, ""))))
+          Future.successful(Left(EmailVerificationRequestFailure(BAD_REQUEST, emptyString))))
 
         val res: Option[EmailVerificationRequestSuccess] = {
           service

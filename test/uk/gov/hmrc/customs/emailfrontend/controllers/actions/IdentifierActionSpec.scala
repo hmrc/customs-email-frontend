@@ -30,6 +30,7 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -231,7 +232,7 @@ class IdentifierActionSpec extends SpecBase {
 }
 
 class FakeFailingAuthConnector @Inject()(exceptionToReturn: Throwable) extends AuthConnector {
-  val serviceUrl: String = ""
+  val serviceUrl: String = emptyString
 
   override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =

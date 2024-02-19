@@ -20,6 +20,7 @@ import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json._
 import uk.gov.hmrc.auth.core.retrieve.{~ => Retrieve}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, hyphen}
 
 import java.time.Clock
 import java.util.UUID
@@ -27,7 +28,7 @@ import java.util.UUID
 package object emailfrontend {
 
   object RandomUUIDGenerator {
-    def generateUUIDAsString: String = UUID.randomUUID().toString.replace("-", "")
+    def generateUUIDAsString: String = UUID.randomUUID().toString.replace(hyphen, emptyString)
   }
 
   object DateTimeUtil {
@@ -54,8 +55,6 @@ package object emailfrontend {
   }
 
   object Utils {
-    val emptyString = ""
-
     def stripWhiteSpaces(str: String): String = str.trim.replaceAll("\\s", emptyString)
   }
 }

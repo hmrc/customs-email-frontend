@@ -25,6 +25,7 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
 import scala.concurrent.Future
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -42,7 +43,7 @@ class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
     "return a status NO_CONTENT when data store request is successful" in new Setup {
 
       when(mockConnector.storeEmailAddress(any, any, any)(any))
-        .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
+        .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, emptyString))))
 
       val result = service.storeEmail(enrolmentIdentifier, email, dateTime).futureValue
       result.toOption.get.status shouldBe NO_CONTENT

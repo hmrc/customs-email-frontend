@@ -30,6 +30,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, InternalServerException}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -57,7 +58,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
     "successfully send a query request to customs data store and return the NO_CONTENT response" in {
 
       when(mockHttp.POST[UpdateEmail, HttpResponse](any, any, any)(any, any, meq(hc), any[ExecutionContext]))
-        .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
+        .thenReturn(Future.successful(HttpResponse(NO_CONTENT, emptyString)))
 
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
@@ -69,7 +70,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
       when(mockHttp.POST[UpdateEmail, HttpResponse](
         meq(url), meq(requestBody), meq(headers))(any, any, meq(hc), any[ExecutionContext]))
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, emptyString)))
 
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 

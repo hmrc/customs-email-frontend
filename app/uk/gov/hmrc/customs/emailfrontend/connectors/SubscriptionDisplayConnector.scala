@@ -23,6 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HttpClient, _}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, hyphen}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,5 +66,5 @@ class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig, http: HttpCli
   private def buildQueryParams: List[(String, String)] =
     List("regime" -> "CDS", "acknowledgementReference" -> generateUUIDAsString)
 
-  private def generateUUIDAsString: String = UUID.randomUUID().toString.replace("-", "")
+  private def generateUUIDAsString: String = UUID.randomUUID().toString.replace(hyphen, emptyString)
 }

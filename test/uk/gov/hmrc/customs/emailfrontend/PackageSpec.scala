@@ -18,6 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend
 
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, singleSpace}
 
 class PackageSpec extends SpecBase {
   "Utils.replaceSpaceWithEmptyString" should {
@@ -34,8 +35,6 @@ class PackageSpec extends SpecBase {
 }
 
 trait SetUp {
-  val singleSpace = " "
-  val emptyString = ""
   val stringWithOnlySpaces = singleSpace * 6
   val stringWithLeadingSpaces = "  abc13456"
   val stringWithTrailingSpaces = "abc13456   "

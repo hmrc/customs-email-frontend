@@ -28,6 +28,7 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificatio
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 import scala.concurrent.Future
 
@@ -52,7 +53,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
       running(app) {
 
         val requestWithForm = FakeRequest(POST, routes.ChangingYourEmailController.submit.url)
-          .withFormUrlEncodedBody(("isYes", ""))
+          .withFormUrlEncodedBody(("isYes", emptyString))
 
         val result = route(app, requestWithForm).value
 
@@ -69,7 +70,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
       running(app) {
 
         val requestWithForm = FakeRequest(POST, routes.ChangingYourEmailController.submit.url)
-          .withFormUrlEncodedBody(("isYes", ""))
+          .withFormUrlEncodedBody(("isYes", emptyString))
 
         val result = route(app, requestWithForm).value
 
@@ -86,7 +87,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
       running(app) {
 
         val requestWithForm = FakeRequest(POST, routes.ChangingYourEmailController.submit.url)
-          .withFormUrlEncodedBody(("isYes", ""))
+          .withFormUrlEncodedBody(("isYes", emptyString))
 
         val result = route(app, requestWithForm).value
 
@@ -152,7 +153,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
       running(app) {
 
         val requestWithForm = fakeRequestWithCsrf(POST, routes.ChangingYourEmailController.submit.url)
-          .withFormUrlEncodedBody(("isYes", ""))
+          .withFormUrlEncodedBody(("isYes", emptyString))
 
         val result = route(app, requestWithForm).value
 
@@ -172,7 +173,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
       running(app) {
 
         val requestWithForm = fakeRequestWithCsrf(POST, routes.ChangingYourEmailController.submit.url)
-          .withFormUrlEncodedBody(("isYes", ""))
+          .withFormUrlEncodedBody(("isYes", emptyString))
 
         val result = route(app, requestWithForm).value
 
@@ -192,7 +193,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
       running(app) {
 
         val requestWithForm = fakeRequestWithCsrf(POST, routes.ChangingYourEmailController.submit.url)
-          .withFormUrlEncodedBody(("isYes", ""))
+          .withFormUrlEncodedBody(("isYes", emptyString))
 
         val result = route(app, requestWithForm).value
 

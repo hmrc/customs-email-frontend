@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 @Singleton
 class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
@@ -80,12 +81,12 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
 
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), Some(_), _, _) =>
-        save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), "", None))
+        save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), emptyString, None))
         save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
         Future.successful(Ok(view(emailForm, appConfig)))
 
       case SubscriptionDisplayResponse(Some(email), None, _, _) =>
-        save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), "", None))
+        save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), emptyString, None))
         save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
         Future.successful(Ok(view(emailForm, appConfig)))
 

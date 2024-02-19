@@ -28,6 +28,7 @@ import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 import scala.concurrent.Future
 
@@ -218,7 +219,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
         val requestWithForm = fakeRequestWithCsrf(POST, routes.WhatIsYourEmailController.submit.url)
-          .withFormUrlEncodedBody(("email", ""))
+          .withFormUrlEncodedBody(("email", emptyString))
 
         val result = route(app, requestWithForm).value
 
@@ -432,7 +433,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       running(app) {
         val requestWithForm = fakeRequestWithCsrf(POST, routes.WhatIsYourEmailController.submit.url)
-          .withFormUrlEncodedBody(("email", ""))
+          .withFormUrlEncodedBody(("email", emptyString))
 
         val result = route(app, requestWithForm).value
 
@@ -473,7 +474,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "have a status of SEE_OTHER when the email is valid" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(Some("test@test.com"), "", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(Some("test@test.com"), emptyString, None))))
 
       when(mockSave4LaterService.saveEmail(any, meq(EmailDetails(Some("test@test.com"), "valid@email.com", None)))(any))
         .thenReturn(Future.successful(Right(())))
@@ -498,7 +499,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       running(app) {
 
         val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
-          .withFormUrlEncodedBody("email" -> "")
+          .withFormUrlEncodedBody("email" -> emptyString)
 
         val result = route(app, request).value
 
@@ -576,7 +577,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         val errorHandler = app.injector.instanceOf[ErrorHandler]
 
         val request = FakeRequest(GET,
-          routes.WhatIsYourEmailController.problemWithService.url).withFormUrlEncodedBody("email" -> "")
+          routes.WhatIsYourEmailController.problemWithService.url).withFormUrlEncodedBody("email" -> emptyString)
 
         val result = route(app, request).value
 

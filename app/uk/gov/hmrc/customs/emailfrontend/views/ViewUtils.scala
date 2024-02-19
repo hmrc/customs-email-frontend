@@ -18,7 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.views
 
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.customs.emailfrontend.Utils.emptyString
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 object ViewUtils {
 
@@ -28,21 +28,13 @@ object ViewUtils {
     titleWithoutForm(s"${errorPrefix(form)} ${messages(titleStr, titleMessageArgs: _*)}").trim
 
   def titleWithoutForm(title: String,
-                       titleMessageArgs: Seq[String] = Seq())(implicit messages: Messages): String =
+                       titleMessageArgs: Seq[String] = Seq())
+                      (implicit messages: Messages): String =
     s"${messages(title, titleMessageArgs: _*)}"
 
-  /**
-   * Returns the value of input prefix message key if Form has any error
-   * Default message key is site.errorPrefix when no key is provided
-   * Returns emptyString if Form has no error
-   *
-   * @param form         Form[_]
-   * @param prefixString String
-   * @param messages     Messages
-   * @return String
-   */
   def errorPrefix(form: Form[_],
-                  prefixString: String = "site.errorPrefix")(implicit messages: Messages): String = {
+                  prefixString: String = "site.errorPrefix")
+                 (implicit messages: Messages): String = {
     if (form.hasErrors || form.hasGlobalErrors) messages(prefixString) else emptyString
   }
 }
