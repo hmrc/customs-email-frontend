@@ -55,8 +55,11 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
                                         (implicit request: AuthenticatedRequest[_]): Future[Result] =
     for {
       verified <- emailVerificationService.isEmailVerified(details.newEmail)
-      redirect <- if (verified.contains(true)) updateEmail(details)
-      else Future.successful(Redirect(routes.VerifyYourEmailController.show))
+      redirect <- if (verified.contains(true)) {
+        updateEmail(details)
+      } else {
+        Future.successful(Redirect(routes.VerifyYourEmailController.show))
+      }
     } yield redirect
 
   private def updateEmail(details: EmailDetails)(implicit request: AuthenticatedRequest[_]): Future[Result] = {
@@ -67,14 +70,18 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
         case Some(true) =>
           (for {
             _ <- save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(timestamp)))
-            _ <- customsDataStoreService.storeEmail(EnrolmentIdentifier("EORINumber", request.user.eori), details.newEmail, timestamp)
+
+            _ <- customsDataStoreService.storeEmail(
+              EnrolmentIdentifier("EORINumber", request.user.eori), details.newEmail, timestamp)
+
             maybeReferrerName <- save4LaterService.fetchReferrer(request.user.internalId)
             journeyType <- save4LaterService.fetchJourneyType(request.user.internalId)
           } yield {
-            if(journeyType.map(_.isVerify).get){
+            if (journeyType.map(_.isVerify).get) {
               Ok(emailVerifiedView(details.newEmail, details.currentEmail))
             } else {
-              Ok(emailChangedView(details.newEmail, details.currentEmail, maybeReferrerName.map(_.name), maybeReferrerName.map(_.continueUrl)))
+              Ok(emailChangedView(details.newEmail, details.currentEmail,
+                maybeReferrerName.map(_.name), maybeReferrerName.map(_.continueUrl)))
             }
           }).recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService) }
 

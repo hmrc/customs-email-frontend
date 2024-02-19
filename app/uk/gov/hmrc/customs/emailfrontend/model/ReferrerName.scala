@@ -22,5 +22,6 @@ case class ReferrerName(name: String, continueUrl: String)
 
 object ReferrerName {
   implicit val formats = Json.format[ReferrerName]
+
   implicit def toJsonFormat(referrerName: ReferrerName): JsValue = Json.toJson(referrerName)
 }

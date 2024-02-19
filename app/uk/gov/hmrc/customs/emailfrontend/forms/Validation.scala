@@ -23,9 +23,9 @@ object Validation {
 
   private val emailRegex = """^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$""".r
 
-  def isValid(e: String): Boolean = e match{
-    case e if emailRegex.findFirstMatchIn(e).isDefined  => true
-    case _                                              => false
+  def isValid(e: String): Boolean = e match {
+    case e if emailRegex.findFirstMatchIn(e).isDefined => true
+    case _ => false
   }
 
   def isValidEmail: Constraint[String] =
@@ -33,19 +33,21 @@ object Validation {
       case e if Option(e).isEmpty => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.empty"))
       case e if stripWhiteSpaces(e).isEmpty => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.empty"))
       case e if e.length > 50 => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.too-long"))
-      case e if !isValid(stripWhiteSpaces(e)) => Invalid(ValidationError("customs.emailfrontend.errors.valid-email.wrong-format"))
+      case e if !isValid(stripWhiteSpaces(e)) =>
+        Invalid(ValidationError("customs.emailfrontend.errors.valid-email.wrong-format"))
+
       case _ => Valid
     })
 
   def validYesNo(errorMessage: String): Constraint[Option[Boolean]] =
     Constraint({
       case None => Invalid(ValidationError(errorMessage))
-      case _    => Valid
+      case _ => Valid
     })
 
   def validVerifyChange(errorMessage: String): Constraint[Option[Boolean]] =
     Constraint({
       case None => Invalid(ValidationError(errorMessage))
-      case _    => Valid
+      case _ => Valid
     })
 }

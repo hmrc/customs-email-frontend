@@ -31,9 +31,11 @@ object EmailVerificationStateHttpParser extends Logging {
         case OK =>
           logger.debug("Email Verified")
           Right(EmailVerified)
+
         case NOT_FOUND =>
           logger.warn("Email not verified")
           Right(EmailNotVerified)
+
         case status =>
           logger.warn(s"Unexpected Response, Status $status returned, with response: ${response.body}")
           Left(EmailVerificationStateErrorResponse(status, response.body))

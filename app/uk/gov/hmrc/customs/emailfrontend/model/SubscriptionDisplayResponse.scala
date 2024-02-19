@@ -29,7 +29,8 @@ object SubscriptionDisplayResponse {
     (json: JsValue) => for {
       email <- (json \ "subscriptionDisplayResponse" \ "responseDetail" \ "contactInformation" \ "emailAddress")
         .validateOpt[String]
-      emailVerificationTimestamp <- (json \ "subscriptionDisplayResponse" \ "responseDetail" \ "contactInformation" \ "emailVerificationTimestamp")
+      emailVerificationTimestamp <- (
+        json \ "subscriptionDisplayResponse" \ "responseDetail" \ "contactInformation" \ "emailVerificationTimestamp")
         .validateOpt[String]
       statusText <- (json \ "subscriptionDisplayResponse" \ "responseCommon" \ "statusText")
         .validateOpt[String]

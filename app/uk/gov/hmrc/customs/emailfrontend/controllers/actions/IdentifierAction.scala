@@ -33,7 +33,8 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[AuthenticatedIdentifierAction])
-trait IdentifierAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
+trait IdentifierAction extends ActionBuilder[AuthenticatedRequest, AnyContent]
+  with ActionFunction[Request, AuthenticatedRequest]
 
 class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthConnector,
                                               appConfig: AppConfig,
@@ -41,6 +42,7 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
                                               errorHandler: ErrorHandler,
                                               val parser: BodyParsers.Default)
                                              (override implicit val executionContext: ExecutionContext)
+
   extends IdentifierAction with AuthorisedFunctions with AuthRedirects {
 
   override val config: Configuration = appConfig.config
@@ -50,28 +52,36 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(Retrievals.allEnrolments and Retrievals.internalId and Retrievals.affinityGroup and Retrievals.credentialRole) {
+    authorised().retrieve(
+      Retrievals.allEnrolments and Retrievals.internalId and Retrievals.affinityGroup and Retrievals.credentialRole) {
+
       case allEnrolments ~ Some(internalId) ~ affinityGroup ~ credentialRole =>
         (affinityGroup, credentialRole) match {
+
           case (Some(Agent), _) =>
             Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.IsAgent)))
+
           case (Some(_), Some(User)) =>
             allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
+
               case Some(eori) =>
                 val loggedInUser = LoggedInUser(InternalId(internalId), affinityGroup, credentialRole, eori.value)
                 block(AuthenticatedRequest(request, loggedInUser))
+
               case _ => Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
             }
+
           case (Some(Organisation), _) =>
             Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NotAdmin)))
+
           case _ =>
             Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
+
         }
     }
   }.recover {
     case _: NoActiveSession => toGGLogin(continueUrl = ggSignInRedirectUrl)
     case _: InsufficientEnrolments => Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment))
     case _: Throwable => InternalServerError(errorHandler.problemWithService()(request))
-
   }
 }

@@ -29,7 +29,8 @@ import uk.gov.hmrc.http._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
+class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)
+                                   (implicit ec: ExecutionContext) extends Logging {
 
   val LoggerComponentId = "Save4LaterConnector"
 
@@ -60,7 +61,7 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
   }
 
   def getJourneyType(id: String, key: String)
-                     (implicit hc: HeaderCarrier, reads: Reads[JourneyType]): Future[Option[JourneyType]] = {
+                    (implicit hc: HeaderCarrier, reads: Reads[JourneyType]): Future[Option[JourneyType]] = {
 
     val url = s"${appConfig.save4LaterUrl}/$id/$key"
     http.GET[JourneyType](url).map { response =>
@@ -74,9 +75,11 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
 
   def put[T](id: String, key: String, payload: JsValue)
             (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
+
     val url = s"${appConfig.save4LaterUrl}/$id/$key"
     logger.info(s"PUT: $url")
     auditCallRequest(url, payload)
+
     http.PUT[JsValue, HttpResponse](url, payload).map { response =>
       auditCallResponse(url, response.status)
       response.status match {
@@ -90,9 +93,11 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
   }
 
   def delete[T](id: String)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
+
     val url = s"${appConfig.save4LaterUrl}/$id"
     logger.info(s"DELETE: $url")
     auditCallRequest(url, JsNull)
+
     http.DELETE[HttpResponse](url).map { response =>
       auditCallResponse(url, response.status)
       response.status match {

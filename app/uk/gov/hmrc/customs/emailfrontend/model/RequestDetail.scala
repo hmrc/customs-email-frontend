@@ -22,6 +22,8 @@ import play.api.libs.json.Json
 case class RequestDetail(IDType: String, IDNumber: String, emailAddress: String, emailVerificationTimestamp: DateTime)
 
 object RequestDetail {
+
   import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
+
   implicit val formats = Json.format[RequestDetail]
 }

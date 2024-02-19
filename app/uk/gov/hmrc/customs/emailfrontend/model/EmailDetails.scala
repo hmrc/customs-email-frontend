@@ -22,13 +22,16 @@ import play.api.libs.json.{JsValue, Json}
 case class EmailDetails(currentEmail: Option[String], newEmail: String, timestamp: Option[DateTime]) {
   lazy val amendmentInProgress = timestamp match {
     case Some(date) => !date.isBefore(DateTime.now.minusHours(2))
-    case None       => false
+    case None => false
   }
 }
 
 object EmailDetails {
+
   import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
+
   implicit val jsonFormat = Json.format[EmailDetails]
+
   implicit def toJsonFormat(emailDetails: EmailDetails): JsValue = Json.toJson(emailDetails)
 
 }
@@ -37,5 +40,6 @@ case class JourneyType(isVerify: Boolean)
 
 object JourneyType {
   implicit val jsonFormat = Json.format[JourneyType]
+
   implicit def toJsonFormat(journeyType: JourneyType): JsValue = Json.toJson(journeyType)
 }

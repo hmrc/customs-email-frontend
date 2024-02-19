@@ -30,9 +30,9 @@ class EmailVerificationService @Inject()(emailVerificationConnector: EmailVerifi
 
   def isEmailVerified(email: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] =
     emailVerificationConnector.getEmailVerificationState(email).map {
-      case Right(EmailVerified)    => Some(true)
+      case Right(EmailVerified) => Some(true)
       case Right(EmailNotVerified) => Some(false)
-      case Left(_)                 => None
+      case Left(_) => None
     }
 
   def createEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)(

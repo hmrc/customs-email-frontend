@@ -32,6 +32,7 @@ class AmendmentInProgressController @Inject()(identify: IdentifierAction,
                                               save4LaterService: Save4LaterService,
                                               mcc: MessagesControllerComponents)
                                              (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+
   extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show: Action[AnyContent] = identify.async { implicit request =>

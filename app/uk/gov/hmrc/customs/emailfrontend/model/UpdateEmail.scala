@@ -43,7 +43,6 @@ object UpdateEmail {
     )
   }
 
-
   implicit val formatEori = Format(eoriReads, eoriWrites)
   implicit val dateTimeJF = Format(jodaDateReads, jodaDateWrites)
   implicit val format = Json.format[UpdateEmail]

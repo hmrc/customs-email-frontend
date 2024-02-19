@@ -31,9 +31,11 @@ object EmailVerificationRequestHttpParser extends Logging {
         case CREATED =>
           logger.debug("Email request sent successfully")
           Right(EmailVerificationRequestSent)
+
         case CONFLICT =>
           logger.debug("Email already verified")
           Right(EmailAlreadyVerified)
+
         case status =>
           logger.warn(s"Failed to create email verification. Received status: $status Response body: ${response.body}")
           Left(EmailVerificationRequestFailure(status, response.body))

@@ -27,7 +27,8 @@ import uk.gov.hmrc.http.{HttpClient, _}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig, http: HttpClient, auditable: Auditable)(implicit ec: ExecutionContext) {
+class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig, http: HttpClient, auditable: Auditable)
+                                            (implicit ec: ExecutionContext) {
 
   def subscriptionDisplay(eori: String)(implicit hc: HeaderCarrier): Future[SubscriptionDisplayResponse] = {
     val request = ("EORI" -> eori) :: buildQueryParams
@@ -48,6 +49,7 @@ class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig, http: HttpCli
                             response: SubscriptionDisplayResponse,
                             url: String)
                            (implicit hc: HeaderCarrier): Unit =
+
     auditable.sendDataEvent(
       transactionName = transactionName,
       path = url,
@@ -58,8 +60,7 @@ class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig, http: HttpCli
         "statusText" -> response.statusText.getOrElse("No status text"),
         "paramValue" -> response.paramValue.getOrElse("paramValue")
       ),
-      auditType = auditType
-    )
+      auditType = auditType)
 
   private def buildQueryParams: List[(String, String)] =
     List("regime" -> "CDS", "acknowledgementReference" -> generateUUIDAsString)
