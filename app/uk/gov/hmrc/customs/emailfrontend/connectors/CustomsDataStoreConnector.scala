@@ -55,9 +55,9 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
             Left(BadRequest)
         }
       }.recover {
-        case _: BadRequestException | Upstream4xxResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
+        case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
 
-        case _: InternalServerException | Upstream5xxResponse(
+        case _: InternalServerException | UpstreamErrorResponse(
           _, INTERNAL_SERVER_ERROR, _, _) => Left(ServiceUnavailable)
 
         case NonFatal(e) =>

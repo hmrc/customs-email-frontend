@@ -69,7 +69,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
       details =>
         (details.currentEmail, details.newEmail) match {
-          case (Some(currentEmail), _) => Future.successful(Ok(view(emailForm, appConfig)))
+          case (Some(_), _) => Future.successful(Ok(view(emailForm, appConfig)))
           case (None, _) => Future.successful(Ok(whatIsYourEmailView(emailForm)))
           case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
         },
@@ -101,7 +101,7 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   private def subscriptionDisplay()(implicit request: AuthenticatedRequest[AnyContent]) =
 
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
-      case SubscriptionDisplayResponse(Some(email), Some(_), _, _) =>
+      case SubscriptionDisplayResponse(Some(_), Some(_), _, _) =>
         Future.successful(Ok(view(emailForm, appConfig)))
 
       case SubscriptionDisplayResponse(Some(_), _, _, _) =>

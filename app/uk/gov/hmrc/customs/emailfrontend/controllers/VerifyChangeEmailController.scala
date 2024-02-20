@@ -80,9 +80,6 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
       case SubscriptionDisplayResponse(Some(email), _, _, _) =>
         Future.successful(Ok(view(confirmVerifyChangeForm, Some(email))))
 
-      case SubscriptionDisplayResponse(Some(_), _, _, _) =>
-        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
-
       case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
 
@@ -132,6 +129,9 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
                 callEmailVerificationService(request.user.internalId,
                   EmailDetails(Some(email), email, None), request.user.eori)
               }
+
+              case _ =>
+                Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
             }
         )
       case _ =>

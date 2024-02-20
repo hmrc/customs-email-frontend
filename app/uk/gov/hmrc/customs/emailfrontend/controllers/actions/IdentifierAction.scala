@@ -78,6 +78,8 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
             Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
 
         }
+      case _ =>
+        Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
     }
   }.recover {
     case _: NoActiveSession => toGGLogin(continueUrl = ggSignInRedirectUrl)

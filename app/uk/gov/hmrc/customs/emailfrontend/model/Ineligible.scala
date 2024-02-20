@@ -42,6 +42,7 @@ object Ineligible extends Enumeration {
           case NoEnrolment => "no-enrolment"
           case IsAgent => "is-agent"
           case NotAdmin => "not-admin"
+          case _ => "invalid"
         }
     }
 

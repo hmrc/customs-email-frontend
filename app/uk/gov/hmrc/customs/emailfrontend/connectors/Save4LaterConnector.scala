@@ -24,7 +24,8 @@ import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, HttpErrorResponse, UnhandledException}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, JourneyType, ReferrerName}
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.{HttpClient, HttpResponse, HeaderCarrier}
+//import uk.gov.hmrc.http.HttpReads.Implicits
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,6 +39,7 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
                      (implicit hc: HeaderCarrier, reads: Reads[EmailDetails]): Future[Option[EmailDetails]] = {
 
     val url = s"${appConfig.save4LaterUrl}/$id/$key"
+
     http.GET[EmailDetails](url).map { response =>
       auditCallResponse[EmailDetails](url, response)
       Some(response)

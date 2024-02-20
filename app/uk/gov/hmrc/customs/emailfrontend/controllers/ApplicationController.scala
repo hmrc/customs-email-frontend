@@ -29,7 +29,7 @@ class ApplicationController @Inject()(mcc: MessagesControllerComponents)
 
   extends FrontendController(mcc) with I18nSupport {
 
-  def accessibilityStatement: Action[AnyContent] = Action { implicit request =>
+  def accessibilityStatement: Action[AnyContent] = Action {
     Redirect(appConfig.accessibilityLinkUrl)
   }
 }
