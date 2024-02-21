@@ -29,6 +29,7 @@ import play.api.http.Status._
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 @Singleton
 class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)
