@@ -23,18 +23,16 @@ import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 object ViewUtils {
 
   def title(form: Form[_],
-            titleStr: String, titleMessageArgs: Seq[String] = Seq())
-           (implicit messages: Messages): String =
+            titleStr: String,
+            titleMessageArgs: Seq[String] = Seq())(implicit messages: Messages): String =
     titleWithoutForm(s"${errorPrefix(form)} ${messages(titleStr, titleMessageArgs: _*)}").trim
 
   def titleWithoutForm(title: String,
-                       titleMessageArgs: Seq[String] = Seq())
-                      (implicit messages: Messages): String =
+                       titleMessageArgs: Seq[String] = Seq())(implicit messages: Messages): String =
     s"${messages(title, titleMessageArgs: _*)}"
 
   def errorPrefix(form: Form[_],
-                  prefixString: String = "site.errorPrefix")
-                 (implicit messages: Messages): String = {
+                  prefixString: String = "site.errorPrefix")(implicit messages: Messages): String = {
     if (form.hasErrors || form.hasGlobalErrors) messages(prefixString) else emptyString
   }
 }

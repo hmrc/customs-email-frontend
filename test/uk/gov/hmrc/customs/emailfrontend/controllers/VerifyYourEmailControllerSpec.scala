@@ -28,13 +28,6 @@ import scala.concurrent.Future
 
 class VerifyYourEmailControllerSpec extends SpecBase {
 
-  trait Setup {
-    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
-      .overrides(inject.bind[Save4LaterService].toInstance(mockSave4LaterService))
-      .build()
-  }
-
   "VerifyYourEmailController" should {
     "redirect to sign out page when no email found in cache" in new Setup {
 
@@ -78,4 +71,12 @@ class VerifyYourEmailControllerSpec extends SpecBase {
       }
     }
   }
+
+  trait Setup {
+    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
+    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+      .overrides(inject.bind[Save4LaterService].toInstance(mockSave4LaterService))
+      .build()
+  }
+
 }

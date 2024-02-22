@@ -31,6 +31,7 @@ class ApplicationControllerSpec extends SpecBase {
       running(app) {
         val request = FakeRequest(GET, routes.ApplicationController.accessibilityStatement().url)
         val result = route(app, request).value
+
         status(result) shouldBe SEE_OTHER
       }
     }

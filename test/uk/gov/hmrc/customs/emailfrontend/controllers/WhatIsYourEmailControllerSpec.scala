@@ -34,20 +34,6 @@ import scala.concurrent.Future
 
 class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  trait Setup {
-
-    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
-    protected val mockSubscriptionDisplayConnector: SubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
-    protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
-    protected val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
-
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
-      .overrides(inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
-        inject.bind[SubscriptionDisplayConnector].toInstance(mockSubscriptionDisplayConnector),
-        inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService)
-      ).build()
-  }
-
   private val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
 
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(
@@ -586,4 +572,19 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
   }
+
+  trait Setup {
+
+    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
+    protected val mockSubscriptionDisplayConnector: SubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
+    protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
+    protected val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
+
+    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+      .overrides(inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
+        inject.bind[SubscriptionDisplayConnector].toInstance(mockSubscriptionDisplayConnector),
+        inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService)
+      ).build()
+  }
+
 }

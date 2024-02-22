@@ -19,6 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.connectors
 import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfter
 import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
@@ -88,9 +89,6 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
 
     "the email service provides an unexpected state" should {
       "return an EmailVerificationStateErrorResponse" in {
-
-        val errorCode = 500
-
         when(mockHttpClient.POST[JsObject, EmailVerificationStateResponse](any,
           any,
           any)(
@@ -99,12 +97,12 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
           any[HeaderCarrier],
           any)
         ).thenReturn(Future.successful(Left(
-          EmailVerificationStateErrorResponse(errorCode, "Internal Server Error"))))
+          EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, "Internal Server Error"))))
 
         val result = connector.getEmailVerificationState("email-address").futureValue
 
         result shouldBe Left(
-          EmailVerificationStateErrorResponse(errorCode, "Internal Server Error"))
+          EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, "Internal Server Error"))
       }
     }
   }

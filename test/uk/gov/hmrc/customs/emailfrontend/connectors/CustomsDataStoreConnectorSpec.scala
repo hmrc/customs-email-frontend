@@ -124,6 +124,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
     "UpdateEmail model object serializes correctly" in {
       val updateEmail = UpdateEmail(testEori, testEmail, testDateTime)
       val result = Json.toJson(updateEmail).toString()
+
       result shouldBe """{"eori":"GB1234556789","address":"email@test.com","timestamp":"2021-01-01T11:11:11Z"}"""
     }
   }

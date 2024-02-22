@@ -368,7 +368,6 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       running(app) {
-
         val requestWithForm: FakeRequest[AnyContentAsFormUrlEncoded] =
           fakeRequest(POST,
             routes.VerifyChangeEmailController.verifyChangeEmail.url).withFormUrlEncodedBody(("isVerify", "None"))
@@ -411,7 +410,6 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       running(app) {
-
         val request = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
           .withFormUrlEncodedBody("email" -> "invalidEmail")
 
@@ -427,7 +425,6 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       running(app) {
-
         val request = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
           .withFormUrlEncodedBody("email" -> "valid@email.com")
 
@@ -443,7 +440,6 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.failed(new HttpException("Failed", BAD_REQUEST)))
 
       running(app) {
-
         val request = fakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
           .withFormUrlEncodedBody("email" -> emptyString)
 
@@ -463,7 +459,6 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       when(mockSave4LaterService.saveEmail(any, any)(any)).thenReturn(Future.successful(Right((): Unit)))
 
       running(app) {
-
         val requestWithForm: FakeRequest[AnyContentAsFormUrlEncoded] =
           fakeRequest(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
             .withFormUrlEncodedBody(("isVerify", "false"))
@@ -487,7 +482,6 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       when(mockSave4LaterService.saveEmail(any, any)(any)).thenReturn(Future.successful(Right((): Unit)))
 
       running(app) {
-
         val requestWithForm: FakeRequest[AnyContentAsFormUrlEncoded] =
           fakeRequest(POST,
             routes.VerifyChangeEmailController.verifyChangeEmail.url).withFormUrlEncodedBody(("isVerify", "true"))
@@ -499,7 +493,6 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         redirectLocation(result) shouldBe Some(routes.EmailConfirmedController.show.url)
       }
     }
-
 
     "redirect to verify your email page when user is happy with the email" in new Setup {
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
@@ -571,7 +564,6 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
 
       running(app) {
-
         val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
           .withFormUrlEncodedBody("email" -> "invalidEmail")
 

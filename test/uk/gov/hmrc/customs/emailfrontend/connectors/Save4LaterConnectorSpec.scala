@@ -36,11 +36,6 @@ class Save4LaterConnectorSpec extends SpecBase {
   val sessionId = SessionId("session_1234")
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
 
-  trait Setup {
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
-      .overrides(inject.bind[HttpClient].toInstance(mockHttpClient)).build()
-  }
-
   "Save4LaterConnector" should {
 
     "GET email returns a response with body when OK response received" in new Setup {
@@ -135,7 +130,7 @@ class Save4LaterConnectorSpec extends SpecBase {
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
-        val result: Unit = connector.delete("").futureValue
+        val result: Unit = connector.delete(emptyString).futureValue
         result shouldBe (())
       }
     }
@@ -148,7 +143,7 @@ class Save4LaterConnectorSpec extends SpecBase {
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
-        val result = connector.delete("").futureValue
+        val result = connector.delete(emptyString).futureValue
         result shouldBe Left(BadRequest)
       }
     }
@@ -162,7 +157,7 @@ class Save4LaterConnectorSpec extends SpecBase {
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
-        val result = connector.delete("").futureValue
+        val result = connector.delete(emptyString).futureValue
         result shouldBe Left(UnhandledException)
       }
     }
@@ -242,5 +237,10 @@ class Save4LaterConnectorSpec extends SpecBase {
         result shouldBe Left(UnhandledException)
       }
     }
+  }
+
+  trait Setup {
+    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+      .overrides(inject.bind[HttpClient].toInstance(mockHttpClient)).build()
   }
 }

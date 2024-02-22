@@ -29,16 +29,6 @@ import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
 
-  trait Setup {
-    protected val mockConnector = mock[CustomsDataStoreConnector]
-    implicit val hc: HeaderCarrier = HeaderCarrier()
-    protected val service = new CustomsDataStoreService(mockConnector)
-    protected val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
-    protected val email = "abc@def.com"
-    protected val dateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
-    protected val badRequestException = new BadRequestException("testMessage")
-  }
-
   "Customs Data Store Service" should {
     "return a status NO_CONTENT when data store request is successful" in new Setup {
 
@@ -57,5 +47,15 @@ class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     val result = service.storeEmail(enrolmentIdentifier, email, dateTime).futureValue
     result.swap.getOrElse(BadRequest) shouldBe BadRequest
+  }
+
+  trait Setup {
+    protected val mockConnector = mock[CustomsDataStoreConnector]
+    implicit val hc: HeaderCarrier = HeaderCarrier()
+    protected val service = new CustomsDataStoreService(mockConnector)
+    protected val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
+    protected val email = "abc@def.com"
+    protected val dateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
+    protected val badRequestException = new BadRequestException("testMessage")
   }
 }

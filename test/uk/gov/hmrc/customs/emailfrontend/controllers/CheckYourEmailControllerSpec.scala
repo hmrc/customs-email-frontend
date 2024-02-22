@@ -30,20 +30,6 @@ import scala.concurrent.Future
 
 class CheckYourEmailControllerSpec extends SpecBase {
 
-  trait Setup {
-
-    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
-    protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
-
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
-      .overrides(
-        inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
-        inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService)
-      ).build()
-
-    protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
-  }
-
   "ConfirmEmailController" should {
 
     "have a status of OK when email found in cache" in new Setup {
@@ -90,7 +76,6 @@ class CheckYourEmailControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
       running(app) {
-
         val requestWithForm = fakeRequestWithCsrf(POST, routes.CheckYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", emptyString))
 
@@ -107,7 +92,6 @@ class CheckYourEmailControllerSpec extends SpecBase {
       when(mockSave4LaterService.remove(any)(any)).thenReturn(Future.successful(Right(())))
 
       running(app) {
-
         val requestWithForm = FakeRequest(POST, routes.CheckYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", "false"))
 
@@ -123,7 +107,6 @@ class CheckYourEmailControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
       running(app) {
-
         val requestWithForm = FakeRequest(POST, routes.CheckYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", "true"))
 
@@ -171,7 +154,6 @@ class CheckYourEmailControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
       running(app) {
-
         val requestWithForm = fakeRequestWithCsrf(POST, routes.CheckYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", emptyString))
 
@@ -187,7 +169,6 @@ class CheckYourEmailControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
       running(app) {
-
         val requestWithForm = fakeRequestWithCsrf(POST, routes.CheckYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", emptyString))
 
@@ -203,7 +184,6 @@ class CheckYourEmailControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
       running(app) {
-
         val requestWithForm = fakeRequestWithCsrf(POST, routes.CheckYourEmailController.submit.url)
           .withFormUrlEncodedBody(("isYes", emptyString))
 
@@ -212,5 +192,19 @@ class CheckYourEmailControllerSpec extends SpecBase {
         status(result) shouldBe BAD_REQUEST
       }
     }
+  }
+
+  trait Setup {
+
+    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
+    protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
+
+    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+      .overrides(
+        inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
+        inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService)
+      ).build()
+
+    protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
   }
 }
