@@ -31,6 +31,7 @@ class UpdateVerifiedEmailRequestSpec extends PlaySpec {
     emailAddress = "test@email.com",
     emailVerificationTimestamp = DateTimeUtil.dateTime
   )
+
   private val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
   private val verifiedEmailRequest = VerifiedEmailRequest(updateVerifiedEmailRequest = updateVerifiedEmailRequest)
 

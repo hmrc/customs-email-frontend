@@ -29,40 +29,55 @@ import play.api.http.Status._
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 @Singleton
-class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)
-                                         (implicit ec: ExecutionContext) extends Logging {
+class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
+                                          httpClient: HttpClient,
+                                          audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
 
-  def storeEmailAddress(eori: Eori, email: String, timestamp: DateTime)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, HttpResponse]] = {
+  def storeEmailAddress(eori: Eori, email: String,
+                        timestamp: DateTime)
+                       (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, HttpResponse]] = {
 
     val request = UpdateEmail(eori, email, timestamp)
-    auditRequest("DataStoreEmailRequestSubmitted", Map("eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
 
-    httpClient.POST[UpdateEmail, HttpResponse](appConfig.customsDataStoreUrl, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
+    auditRequest("DataStoreEmailRequestSubmitted", Map(
+      "eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
+
+    httpClient.POST[UpdateEmail, HttpResponse](
+        appConfig.customsDataStoreUrl, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
       .map { response =>
         auditResponse("DataStoreResponseReceived", response, appConfig.customsDataStoreUrl)
         response.status match {
           case NO_CONTENT =>
             logger.debug("CustomsDataStore: data store request is successful")
             Right(response)
+
           case _ =>
             logger.warn(s"CustomsDataStore: data store request is failed with status ${response.status}")
             Left(BadRequest)
         }
       }.recover {
-      case _: BadRequestException | Upstream4xxResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
-      case _: InternalServerException | Upstream5xxResponse(_, INTERNAL_SERVER_ERROR, _, _) => Left(ServiceUnavailable)
-      case NonFatal(e) => logger.error(s"Call to data stored failed url=${appConfig.customsDataStoreUrl}, exception=$e"); Left(UnhandledException)
-    }
+        case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
+
+        case _: InternalServerException | UpstreamErrorResponse(
+          _, INTERNAL_SERVER_ERROR, _, _) => Left(ServiceUnavailable)
+
+        case NonFatal(e) =>
+          logger.error(s"Call to data stored failed url=" +
+            s"${appConfig.customsDataStoreUrl}, exception=$e"); Left(UnhandledException)
+      }
   }
 
-  private def auditRequest(transactionName: String, detail: Map[String, String])(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(transactionName = transactionName, path = appConfig.customsDataStoreUrl, detail = detail, auditType = "DataStoreRequest")
+  private def auditRequest(transactionName: String,
+                           detail: Map[String, String])(implicit hc: HeaderCarrier): Unit =
+    audit.sendDataEvent(transactionName = transactionName,
+      path = appConfig.customsDataStoreUrl, detail = detail, auditType = "DataStoreRequest")
 
-  private def auditResponse(transactionName: String, response: HttpResponse, url: String)(
-    implicit hc: HeaderCarrier
-  ): Unit =
+  private def auditResponse(transactionName: String,
+                            response: HttpResponse,
+                            url: String)(implicit hc: HeaderCarrier): Unit =
     audit.sendDataEvent(
       transactionName = transactionName,
       path = url,

@@ -23,42 +23,45 @@ import play.api.libs.json.Json
 class SubscriptionDisplayResponseSpec extends PlaySpec {
 
   private val subscriptionDisplayResponse =
-    Json.parse("""{
-                 |  "subscriptionDisplayResponse": {
-                 |    "responseDetail": {
-                 |      "contactInformation": {
-                 |        "emailAddress": "test@email.com",
-                 |        "emailVerificationTimestamp": "2019-09-06T12:30:59Z"
-                 |      }
-                 |    }
-                 |  }
-                 |}""".stripMargin).as[SubscriptionDisplayResponse]
+    Json.parse(
+      """{
+        |  "subscriptionDisplayResponse": {
+        |    "responseDetail": {
+        |      "contactInformation": {
+        |        "emailAddress": "test@email.com",
+        |        "emailVerificationTimestamp": "2019-09-06T12:30:59Z"
+        |      }
+        |    }
+        |  }
+        |}""".stripMargin).as[SubscriptionDisplayResponse]
 
   private val noFormBundleSubscriptionDisplayResponse =
-    Json.parse("""{
-                 |  "subscriptionDisplayResponse": {
-                 |    "responseCommon": {
-                 |      "status": "OK",
-                 |      "statusText": "005 - No form bundle found",
-                 |      "processingDate": "2016-08-17T19:33:47Z",
-                 |      "returnParameters": [{
-                 |          "paramName": "POSITION",
-                 |          "paramValue": "FAIL"
-                 |          }]
-                 |     }
-                 |    }
-                 |}""".stripMargin).as[SubscriptionDisplayResponse]
+    Json.parse(
+      """{
+        |  "subscriptionDisplayResponse": {
+        |    "responseCommon": {
+        |      "status": "OK",
+        |      "statusText": "005 - No form bundle found",
+        |      "processingDate": "2016-08-17T19:33:47Z",
+        |      "returnParameters": [{
+        |          "paramName": "POSITION",
+        |          "paramValue": "FAIL"
+        |          }]
+        |     }
+        |    }
+        |}""".stripMargin).as[SubscriptionDisplayResponse]
 
   private val noEmailSubscriptionDisplayResponse =
-    Json.parse("""{
-                 |  "subscriptionDisplayResponse": {
-                 |    "responseDetail": {
-                 |      "contactInformation": {
-                 |        "emailVerificationTimestamp": "2019-09-06T12:30:59Z"
-                 |      }
-                 |    }
-                 |  }
-                 |}""".stripMargin).as[SubscriptionDisplayResponse]
+    Json.parse(
+      """{
+        |  "subscriptionDisplayResponse": {
+        |    "responseDetail": {
+        |      "contactInformation": {
+        |        "emailVerificationTimestamp": "2019-09-06T12:30:59Z"
+        |      }
+        |    }
+        |  }
+        |}""".stripMargin).as[SubscriptionDisplayResponse]
 
   "SubscriptionDisplayResponse Object" should {
 

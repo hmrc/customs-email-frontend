@@ -21,67 +21,48 @@ import play.api.{ConfigLoader, Configuration}
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 @Singleton
 class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesConfig) {
-  
-  private val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
-
-  private val serviceIdentifier = config.get[String]("microservice.services.contact-frontend.serviceIdentifier")
-  lazy val autoCompleteEnabled: Boolean = config.get[Boolean]("autocomplete-enabled")
-
-  val analyticsToken: String = config.get[String](s"google-analytics.token")
-  val analyticsHost: String = config.get[String](s"google-analytics.host")
-
-  val reportAProblemPartialUrl: String = s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifier"
-  val reportAProblemNonJSUrl: String = s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifier"
 
   lazy val accessibilityLinkUrl: String = config.get[String]("external-url.accessibility-statement")
-
-  val ggSignInRedirectUrl: String =
-    config.get[String]("external-url.company-auth-frontend.continue-url")
+  val ggSignInRedirectUrl: String = config.get[String]("external-url.company-auth-frontend.continue-url")
   val feedbackUrl: String = config.get[String]("external-url.feedback-survey")
 
   val appName: String = config.get[String]("appName")
 
-  val emailVerificationBaseUrl: String =
-    servicesConfig.baseUrl("email-verification")
-  val emailVerificationContext: String =
-    config.get[String]("microservice.services.email-verification.context")
-  val emailVerificationWithContext =
-    s"${emailVerificationBaseUrl}/${emailVerificationContext}"
-  val emailVerificationTemplateId: String =
-    config.get[String]("microservice.services.email-verification.templateId")
+  private val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
+  private val emailVerificationContext: String = config.get[String]("microservice.services.email-verification.context")
+  private val emailVerificationWithContext = s"${emailVerificationBaseUrl}/${emailVerificationContext}"
+  val emailVerificationTemplateId: String = config.get[String]("microservice.services.email-verification.templateId")
+
   val emailVerificationLinkExpiryDuration: String =
     config.get[String]("microservice.services.email-verification.linkExpiryDuration")
 
-  val customsDataStoreBaseUrl: String =
-    servicesConfig.baseUrl("customs-data-store")
-  val customsDataStoreContext: String =
-    config.get[String]("microservice.services.customs-data-store.context")
+  private val customsDataStoreBaseUrl: String = servicesConfig.baseUrl("customs-data-store")
+  private val customsDataStoreContext: String = config.get[String]("microservice.services.customs-data-store.context")
   val customsDataStoreUrl = s"$customsDataStoreBaseUrl$customsDataStoreContext"
-  val customsDataStoreToken: String =
-    config.get[String]("microservice.services.customs-data-store.token")
 
-  val customsHodsProxyBaseUrl: String =
-    servicesConfig.baseUrl("customs-email-proxy")
+  private val customsHodsProxyBaseUrl: String = servicesConfig.baseUrl("customs-email-proxy")
 
-  val subscriptionDisplayContext: String =
+  private val subscriptionDisplayContext: String =
     config.get[String]("microservice.services.customs-email-proxy.subscription-display.context")
+
   val subscriptionDisplayUrl: String =
     s"$customsHodsProxyBaseUrl/$subscriptionDisplayContext"
 
-  val updateVerifiedEmailContext: String =
+  private val updateVerifiedEmailContext: String =
     config.get[String]("microservice.services.customs-email-proxy.update-verified-email.context")
-  val updateVerifiedEmailUrl: String =
-    s"$customsHodsProxyBaseUrl/$updateVerifiedEmailContext"
+
+  val updateVerifiedEmailUrl: String = s"$customsHodsProxyBaseUrl/$updateVerifiedEmailContext"
 
   lazy val checkVerifiedEmailUrl: String = s"$emailVerificationWithContext/verified-email-check"
   lazy val createEmailVerificationRequestUrl: String = s"$emailVerificationWithContext/verification-requests"
 
-  val save4LaterContext: String =
+  private val save4LaterContext: String =
     config.get[String]("microservice.services.customs-email-proxy.mongo-cache.context")
+
   lazy val save4LaterUrl: String = s"$customsHodsProxyBaseUrl/$save4LaterContext"
 
   implicit val configLoader: ConfigLoader[Seq[ReferrerName]] =
@@ -89,12 +70,11 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
       _.asScala.toList
         .map(config => ReferrerName(config.getString("name"), config.getString("continueUrl")))
     )
+
   lazy val referrerName: Seq[ReferrerName] =
     config.get[Seq[ReferrerName]]("referrer-services")
 
   lazy val timeout: Int = config.get[Int]("timeout.timeout")
   lazy val countdown: Int = config.get[Int]("timeout.countdown")
-
   lazy val loginContinueUrl: String = config.get[String]("external-url.loginContinue")
-
 }

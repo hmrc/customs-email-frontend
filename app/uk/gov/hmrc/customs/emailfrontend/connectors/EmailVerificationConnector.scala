@@ -40,40 +40,38 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
       emailAddress = emailAddress,
       url = appConfig.checkVerifiedEmailUrl
     )
-    http.POST[JsObject, EmailVerificationStateResponse](appConfig.checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
+
+    http.POST[JsObject, EmailVerificationStateResponse](
+      appConfig.checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
   }
 
-  def createEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)(
-    implicit hc: HeaderCarrier
-  ): Future[EmailVerificationRequestResponse] = {
-    val jsonBody =
-      Json.obj(
-        EmailKey -> details.newEmail,
-        TemplateIdKey -> appConfig.emailVerificationTemplateId,
-        TemplateParametersKey -> Json.obj(),
-        LinkExpiryDurationKey -> appConfig.emailVerificationLinkExpiryDuration,
-        ContinueUrlKey -> continueUrl
-      )
+  def createEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)
+                                    (implicit hc: HeaderCarrier): Future[EmailVerificationRequestResponse] = {
+    val jsonBody = Json.obj(
+      EmailKey -> details.newEmail,
+      TemplateIdKey -> appConfig.emailVerificationTemplateId,
+      TemplateParametersKey -> Json.obj(),
+      LinkExpiryDurationKey -> appConfig.emailVerificationLinkExpiryDuration,
+      ContinueUrlKey -> continueUrl)
 
     auditVerificationRequest(details, appConfig.createEmailVerificationRequestUrl, eoriNumber)
 
-    http
-      .POST[JsObject, EmailVerificationRequestResponse](appConfig.createEmailVerificationRequestUrl, jsonBody)
+    http.POST[JsObject, EmailVerificationRequestResponse](appConfig.createEmailVerificationRequestUrl, jsonBody)
   }
 
-  private def auditRequest(transactionName: String, auditType: String, emailAddress: String, url: String)(
-    implicit hc: HeaderCarrier
-  ): Unit =
+  private def auditRequest(transactionName: String,
+                           auditType: String,
+                           emailAddress: String,
+                           url: String)(implicit hc: HeaderCarrier): Unit =
     auditable.sendDataEvent(
       transactionName = transactionName,
       path = url,
       detail = Map("emailAddress" -> emailAddress),
-      auditType = auditType
-    )
+      auditType = auditType)
 
-  private def auditVerificationRequest(details: EmailDetails, url: String, eoriNumber: String)(
-    implicit hc: HeaderCarrier
-  ): Unit =
+  private def auditVerificationRequest(details: EmailDetails,
+                                       url: String,
+                                       eoriNumber: String)(implicit hc: HeaderCarrier): Unit =
     details.currentEmail match {
       case Some(emailAddress) =>
         auditable.sendDataEvent(
@@ -82,6 +80,7 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
           detail =
             Map("currentEmailAddress" -> emailAddress, "newEmailAddress" -> details.newEmail, "eori" -> eoriNumber),
           auditType = "changeEmailAddressAttempted")
+
       case None =>
         auditable.sendDataEvent(
           transactionName = "UpdateVerifiedEmailRequestSubmitted",

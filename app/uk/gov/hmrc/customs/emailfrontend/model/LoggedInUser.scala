@@ -26,7 +26,7 @@ case class LoggedInUser(internalId: InternalId,
 case class Eori(id: String)
 
 object Eori {
-  def apply(identifier: EnrolmentIdentifier) = new Eori(identifier.value)
+  def apply(identifier: EnrolmentIdentifier): Eori = new Eori(identifier.value)
 }
 
 case class InternalId(id: String)

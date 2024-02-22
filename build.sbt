@@ -1,18 +1,35 @@
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings.{integrationTestSettings, targetJvm}
+import uk.gov.hmrc.DefaultBuildSettings.{itSettings, targetJvm}
 
 val appName = "customs-email-frontend"
 
 val silencerVersion = "1.17.13"
+val scala2_13_8 = "2.13.8"
+val bootstrap = "7.22.0"
+
+val scalaStyleConfigFile = "scalastyle-config.xml"
+val testScalaStyleConfigFile = "test-scalastyle-config.xml"
+val testDirectory = "test"
+
+ThisBuild / majorVersion := 0
+ThisBuild / scalaVersion := scala2_13_8
+
+lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value /  scalaStyleConfigFile,
+  (Test / scalastyleConfig) := baseDirectory.value/ testDirectory /  testScalaStyleConfigFile)
+
+lazy val it = project
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test")
+  .settings(itSettings())
+  .settings(libraryDependencies ++= Seq("uk.gov.hmrc" %% "bootstrap-test-play-28" % bootstrap % Test))
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
-    majorVersion                     := 0,
-    scalaVersion                     := "2.13.8",
-    targetJvm                        := "jvm-11",
-    libraryDependencies              ++= AppDependencies.compile ++ AppDependencies.test,
+    targetJvm := "jvm-11",
+    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
+
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;" +
       ".*javascript.*;.*Routes.*;.*GuiceInjector;" +
       ".*FeatureSwitchController;" +
@@ -21,14 +38,29 @@ lazy val microservice = Project(appName, file("."))
     ScoverageKeys.coverageMinimumStmtTotal := 85,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
-    // ***************
-    // Use the silencer plugin to suppress warnings
-    // You may turn it on for `views` too to suppress warnings from unused imports in compiled twirl templates, but this will hide other warnings.
-    scalacOptions += "-P:silencer:pathFilters=routes",
+
+    scalacOptions ++= Seq(
+      "-Wunused:imports",
+      "-Wunused:patvars",
+      "-Wunused:implicits",
+      "-Wunused:explicits",
+      "-Wunused:privates",
+      "-P:silencer:pathFilters=target/.*",
+      "-P:silencer:pathFilters=routes"),
+
+    Test / scalacOptions ++= Seq(
+      "-Wunused:imports",
+      "-Wunused:params",
+      "-Wunused:patvars",
+      "-Wunused:implicits",
+      "-Wunused:explicits",
+      "-Wunused:privates"),
+
     libraryDependencies ++= Seq(
       compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
       "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
     ),
+
     routesImport ++= Seq("uk.gov.hmrc.customs.emailfrontend.model.Ineligible"),
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
@@ -38,5 +70,5 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(PlayKeys.playDefaultPort := 9898)
   .configs(IntegrationTest)
-  .settings(integrationTestSettings() *)
   .settings(resolvers += Resolver.jcenterRepo)
+  .settings(scalastyleSettings)

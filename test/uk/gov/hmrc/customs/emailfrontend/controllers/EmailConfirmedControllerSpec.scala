@@ -27,14 +27,16 @@ import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, Journe
 import uk.gov.hmrc.customs.emailfrontend.services._
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
-
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import scala.concurrent.Future
 
 class EmailConfirmedControllerSpec extends SpecBase {
 
   "EmailConfirmedController" should {
+
     "return OK " when {
       "email found in cache, email is verified and update verified email is successful" in new Setup() {
+
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
@@ -62,7 +64,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
         when(mockCustomsDataStoreService.storeEmail(
           meq(EnrolmentIdentifier("EORINumber", "fakeEori")),
           meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
-          .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
+          .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, emptyString))))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
@@ -73,6 +75,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
 
       "email found in cache, email is verified, update verified email is successful and " +
         "journey type is not verified" in new Setup() {
+
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
@@ -100,7 +103,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
         when(mockCustomsDataStoreService.storeEmail(
           meq(EnrolmentIdentifier("EORINumber", "fakeEori")),
           meq("abc@def.com"), meq(testDateTime))(any[HeaderCarrier]))
-          .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, ""))))
+          .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, emptyString))))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
@@ -113,6 +116,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
 
     "return REDIRECT to confirm email page" when {
       "email found in cache but email is not verified" in new Setup {
+
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
@@ -130,6 +134,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
       "when email found in cache but isEmailVerified failed" in new Setup {
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+
         when(mockEmailVerificationService.isEmailVerified(
           meq("abc@def.com"))(any)).thenReturn(Future.successful(None))
 
@@ -144,8 +149,8 @@ class EmailConfirmedControllerSpec extends SpecBase {
 
     "return REDIRECT to sign-out page" when {
       "email not found in cache" in new Setup {
-        when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(None))
+
+        when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
@@ -158,6 +163,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
 
     "return REDIRECT to cannot change email page" when {
       "user retries the same request(user click back on successful request or refreshes the browser)" in new Setup {
+
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
 
@@ -173,6 +179,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
     "return REDIRECT to problem page" when {
       "email found in cache, email is verified and update verified email is successful " +
         "but saving timestamp fails" in new Setup {
+
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
@@ -186,7 +193,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
           .thenReturn(Future.successful(Some(true)))
 
         when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
-          .thenReturn(Future.failed(new InternalServerException("")))
+          .thenReturn(Future.failed(new InternalServerException(emptyString)))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
@@ -197,6 +204,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
       }
 
       "save email is failed with Error 400 or 500" in new Setup {
+
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
@@ -218,6 +226,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
       }
 
       "save email returns 200 with no form bundle id param" in new Setup {
+
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
 
@@ -241,10 +250,13 @@ class EmailConfirmedControllerSpec extends SpecBase {
 
     "show problem with service page" when {
       "when user is redirected to .problemWithService" in new Setup {
+
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.problemWithService.url)
-            .withFormUrlEncodedBody("email" -> "")
+            .withFormUrlEncodedBody("email" -> emptyString)
+
           val result = route(app, requestWithForm).value
+
           status(result) shouldBe BAD_REQUEST
           contentAsString(result) shouldBe errorHandler.problemWithService()(requestWithForm).toString()
         }

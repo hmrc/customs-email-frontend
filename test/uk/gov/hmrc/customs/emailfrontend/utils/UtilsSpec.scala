@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.model
+package utils
 
-import play.api.libs.json.{JsValue, Json}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils._
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
-case class ReferrerName(name: String, continueUrl: String)
+class UtilsSpec extends SpecBase {
 
-object ReferrerName {
-  implicit val formats = Json.format[ReferrerName]
+  "emptyString" should {
+    "return correct value" in {
+      emptyString shouldBe ""
+    }
+  }
 
-  implicit def toJsonFormat(referrerName: ReferrerName): JsValue = Json.toJson(referrerName)
+  "hyphen" should {
+    "return correct value" in {
+      hyphen shouldBe "-"
+    }
+  }
+
+  "singeSpace" should {
+    "return correct value" in {
+      singleSpace shouldBe " "
+    }
+  }
 }

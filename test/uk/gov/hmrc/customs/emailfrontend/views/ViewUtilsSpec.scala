@@ -19,10 +19,10 @@ package uk.gov.hmrc.customs.emailfrontend.views
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.customs.emailfrontend.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
 import uk.gov.hmrc.customs.emailfrontend.model.VerifyChange
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 class ViewUtilsSpec extends SpecBase {
   "title" must {

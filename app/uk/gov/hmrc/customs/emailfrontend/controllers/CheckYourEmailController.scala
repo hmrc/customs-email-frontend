@@ -48,11 +48,12 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
 
   def submit: Action[AnyContent] = identify.async { implicit request =>
     save4LaterService.fetchEmail(request.user.internalId).flatMap {
+
       case Some(emailDetails) =>
         confirmEmailForm.bindFromRequest().fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail))),
-          formData => handleYesNo(request.user.internalId, formData)
-        )
+          formData => handleYesNo(request.user.internalId, formData))
+
       case None =>
         logger.warn("emailStatus cache none, user logged out")
         Future.successful(Redirect(routes.SignOutController.signOut))
@@ -61,6 +62,7 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
 
   private def handleYesNo(internalId: InternalId, confirmEmail: YesNo)
                          (implicit request: Request[AnyContent]): Future[Result] =
+
     confirmEmail.isYes match {
       case Some(true) => Future.successful(Redirect(routes.ChangingYourEmailController.show))
       case _ =>

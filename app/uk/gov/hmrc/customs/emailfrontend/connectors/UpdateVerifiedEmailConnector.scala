@@ -28,22 +28,28 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
-class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpClient, audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
+class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig,
+                                             http: HttpClient,
+                                             audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
 
   def updateVerifiedEmail(request: VerifiedEmailRequest, currentEmail: Option[String])
                          (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
+
     val newEmail = request.updateVerifiedEmailRequest.requestDetail.emailAddress
     val eori = request.updateVerifiedEmailRequest.requestDetail.IDNumber
 
     auditRequest(currentEmail, newEmail, eori, "changeEmailAddressVerified")
+
     http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](appConfig.updateVerifiedEmailUrl, request).map { resp =>
       auditRequest(currentEmail, newEmail, eori, "changeEmailAddressConfirmed")
       Right(resp)
+
     } recover {
-      case _: BadRequestException | Upstream4xxResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
-      case _: ForbiddenException | Upstream4xxResponse(_, FORBIDDEN, _, _) => Left(Forbidden)
-      case _: InternalServerException | Upstream5xxResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
+      case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
+      case _: ForbiddenException | UpstreamErrorResponse(_, FORBIDDEN, _, _) => Left(Forbidden)
+      case _: InternalServerException | UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
         Left(ServiceUnavailable)
+
       case NonFatal(e) =>
         logger.error(s"update-verified-email. url: $appConfig.updateVerifiedEmailUrl, error: ${e.getMessage}")
         Left(UnhandledException)

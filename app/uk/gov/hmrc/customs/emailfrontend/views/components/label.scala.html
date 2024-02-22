@@ -19,4 +19,5 @@
 @this()
 
 @(msg: String, forLabel: String, labelClass: Option[String] = None)
+
 <label class="govuk-label" for=@forLabel aria-label=@{labelClass.fold("")(labelClass => s"aria-label=$labelClass")} />

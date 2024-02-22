@@ -32,7 +32,6 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private val mockConnector = mock[UpdateVerifiedEmailConnector]
-
   val service = new UpdateVerifiedEmailService(mockConnector)
 
   private val eoriNumber = "GBXXXXXXXXXXXX"
@@ -48,6 +47,7 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
         List(MessagingServiceParam(formBundleIdParamName, "testValue")))
     )
   )
+
   private val businessErrorUpdateVerifiedEmailResponse = VerifiedEmailResponse(
     UpdateVerifiedEmailResponse(
       ResponseCommon(
@@ -58,13 +58,12 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
       )
     )
   )
+
   private val serviceUnavailableResponse = ServiceUnavailable
 
-  override protected def beforeEach(): Unit =
-    reset(mockConnector)
+  override protected def beforeEach(): Unit = reset(mockConnector)
 
-  def mockGetEmailVerificationState(
-      response: Either[HttpErrorResponse, VerifiedEmailResponse]): Unit =
+  def mockGetEmailVerificationState(response: Either[HttpErrorResponse, VerifiedEmailResponse]): Unit =
     when(
       mockConnector.updateVerifiedEmail(
         any[VerifiedEmailRequest],
@@ -73,6 +72,7 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   "Calling UpdateVerifiedEmailService updateVerifiedEmail" should {
     "return Some(true) when VerifiedEmailResponse returned with bundleId" in {
+
       mockGetEmailVerificationState(Right(bundleIdUpdateVerifiedEmailResponse))
 
       service
@@ -81,8 +81,8 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "return None when VerifiedEmailResponse returned without bundleId" in {
-      mockGetEmailVerificationState(
-        Right(businessErrorUpdateVerifiedEmailResponse))
+
+      mockGetEmailVerificationState(Right(businessErrorUpdateVerifiedEmailResponse))
 
       service
         .updateVerifiedEmail(None, email, eoriNumber, dateTime)
@@ -90,6 +90,7 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "return None when HttpErrorResponse returned" in {
+
       mockGetEmailVerificationState(Left(serviceUnavailableResponse))
 
       service

@@ -29,6 +29,71 @@ import scala.concurrent.Future
 
 class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
 
+  "Save4LaterService" should {
+    "save the emailDetails against the users InternalId" in new Setup {
+
+      when(mockSave4LaterConnector.put[EmailDetails](any, any, any)(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(())))
+
+      val result: Unit = service.saveEmail(internalId, emailDetails).futureValue
+      result shouldBe (())
+    }
+
+    "fetch the emailDetails for the users InternalId" in new Setup {
+
+      when(mockSave4LaterConnector.getEmailDetails(any, any)(any[HeaderCarrier], any[Reads[EmailDetails]]))
+        .thenReturn(Future.successful(Some(emailDetails)))
+
+      val result = service.fetchEmail(internalId).futureValue
+      result shouldBe Some(emailDetails)
+    }
+
+    "save the referrer against the users InternalId" in new Setup {
+
+      when(mockSave4LaterConnector.put[ReferrerName](any, any, any)(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(())))
+
+      val result: Unit = service.saveReferrer(internalId, referrerName).futureValue
+      result shouldBe (())
+    }
+
+    "fetch the referrer for the users InternalId" in new Setup {
+
+      when(mockSave4LaterConnector.getReferrerName(any, any)(any[HeaderCarrier], any[Reads[ReferrerName]]))
+        .thenReturn(Future.successful(Some(referrerName)))
+
+      val result = service.fetchReferrer(internalId).futureValue
+      result shouldBe Some(referrerName)
+    }
+
+    "save the journey type against the users InternalId" in new Setup {
+
+      when(mockSave4LaterConnector.put[JourneyType](any, any, any)(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(())))
+
+      val result: Unit = service.saveJourneyType(internalId, journeyType).futureValue
+      result shouldBe (())
+    }
+
+    "fetch the journey type for the users InternalId" in new Setup {
+      when(mockSave4LaterConnector.getJourneyType(any, any)(any[HeaderCarrier], any[Reads[JourneyType]]))
+        .thenReturn(Future.successful(Some(journeyType)))
+
+      val result = service.fetchJourneyType(internalId).futureValue
+
+      result shouldBe Some(journeyType)
+    }
+
+    "remove the id" in new Setup {
+
+      when(mockSave4LaterConnector.delete(any)(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(())))
+
+      val result: Unit = service.remove(internalId).futureValue
+      result shouldBe (())
+    }
+  }
+
   trait Setup {
     implicit val hc: HeaderCarrier = mock[HeaderCarrier]
     protected val internalId: InternalId = InternalId("internalId-123")
@@ -38,67 +103,5 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
     protected val referrerName: ReferrerName = ReferrerName("customs-finance", "/xyz")
     protected val mockSave4LaterConnector = mock[Save4LaterConnector]
     protected val service = new Save4LaterService(mockSave4LaterConnector)
-  }
-
-  "Save4LaterService" should {
-    "save the emailDetails against the users InternalId" in new Setup {
-
-      when(mockSave4LaterConnector.put[EmailDetails](any, any, any)(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Right(())))
-
-      val result: Unit = service.saveEmail(internalId, emailDetails).futureValue
-      result shouldBe (()) //TODO - ????
-    }
-
-    "fetch the emailDetails for the users InternalId" in new Setup {
-      when(mockSave4LaterConnector.getEmailDetails(any, any)(any[HeaderCarrier], any[Reads[EmailDetails]])
-      ).thenReturn(Future.successful(Some(emailDetails)))
-
-      val result = service.fetchEmail(internalId).futureValue
-
-      result shouldBe Some(emailDetails)
-    }
-
-    "save the referrer against the users InternalId" in new Setup {
-      when(mockSave4LaterConnector.put[ReferrerName](any, any, any)(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Right(())))
-
-      val result: Unit = service.saveReferrer(internalId, referrerName).futureValue
-      result shouldBe (())
-    }
-
-    "fetch the referrer for the users InternalId" in new Setup {
-      when(mockSave4LaterConnector.getReferrerName(any, any)(any[HeaderCarrier], any[Reads[ReferrerName]])
-      ).thenReturn(Future.successful(Some(referrerName)))
-
-      val result = service.fetchReferrer(internalId).futureValue
-      result shouldBe Some(referrerName)
-    }
-
-    "save the journey type against the users InternalId" in new Setup {
-
-      when(mockSave4LaterConnector.put[JourneyType](any, any, any)(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Right(())))
-
-      val result: Unit = service.saveJourneyType(internalId, journeyType).futureValue
-      result shouldBe (())
-    }
-
-    "fetch the journey type for the users InternalId" in new Setup {
-      when(mockSave4LaterConnector.getJourneyType(any, any)(any[HeaderCarrier], any[Reads[JourneyType]])
-      ).thenReturn(Future.successful(Some(journeyType)))
-
-      val result = service.fetchJourneyType(internalId).futureValue
-
-      result shouldBe Some(journeyType)
-    }
-
-    "remove the id" in new Setup {
-      when(mockSave4LaterConnector.delete(any)(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(())))
-
-      val result: Unit = service.remove(internalId).futureValue
-      result shouldBe (())
-    }
   }
 }

@@ -26,13 +26,13 @@
         button: components.button,
         errorSummary: components.errorSummary,
         h1_xl: components.h1_xl
-
 )
 
 @(emailForm: Form[Email])(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.what-is-your-email.title-and-heading"))) {
     @errorSummary(emailForm)
+
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.verifySubmit,'id -> "emailForm", 'novalidate -> "novalidate") {
         @CSRF.formField
         @input_text(emailForm("email"), messages("customs.emailfrontend.what-is-your-email.label"), autocomplete = Some("email"), isPageHeading = true, labelClasses = Some("govuk-!-margin-bottom-8"))

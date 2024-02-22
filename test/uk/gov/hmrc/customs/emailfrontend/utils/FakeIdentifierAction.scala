@@ -31,7 +31,8 @@ trait FakeIdentifierAction extends IdentifierAction {
   protected val parsers: PlayBodyParsers
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-    block(AuthenticatedRequest(request, LoggedInUser(InternalId("fakeInternalId"), Some(affinityGroup), Some(User), "fakeEori")))
+    block(AuthenticatedRequest(request, LoggedInUser(InternalId(
+      "fakeInternalId"), Some(affinityGroup), Some(User), "fakeEori")))
 
   override def parser: BodyParser[AnyContent] = parsers.default
 

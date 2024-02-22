@@ -29,6 +29,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 import scala.annotation.implicitNotFound
 import scala.reflect.ClassTag
@@ -51,7 +52,8 @@ trait SpecBase extends AnyWordSpecLike
   }
 
   @implicitNotFound("Pass a type for the identifier action")
-  def applicationBuilder[IA <: IdentifierAction](disableAuth: Boolean = false)(implicit c: ClassTag[IA]) : GuiceApplicationBuilder = {
+  def applicationBuilder[IA <: IdentifierAction](disableAuth: Boolean = false)
+                                                (implicit c: ClassTag[IA]): GuiceApplicationBuilder = {
 
     val overrides: List[GuiceableModule] = List(bind[Metrics].toInstance(new FakeMetrics))
     val optionalOverrides: List[GuiceableModule] = if (disableAuth) {
@@ -78,7 +80,7 @@ object TestImplicits {
   implicit class RemoveCsrf(s: String) {
     def removeCsrf(): String = {
       val regEx = "<[/]?input type[^>]*>"
-      s.replaceAll(regEx, "")
+      s.replaceAll(regEx, emptyString)
     }
   }
 }

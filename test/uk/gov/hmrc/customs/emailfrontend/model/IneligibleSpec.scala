@@ -22,7 +22,7 @@ import org.scalatest.{EitherValues, OptionValues}
 import play.api.mvc.{PathBindable, QueryStringBindable}
 
 class IneligibleSpec
-    extends AnyWordSpec
+  extends AnyWordSpec
     with Matchers
     with EitherValues
     with OptionValues {
@@ -33,56 +33,37 @@ class IneligibleSpec
     val queryBindable = implicitly[QueryStringBindable[Ineligible.Value]]
 
     "bind to `NotAdmin` from path" in {
-
-      val result =
-        pathBindable.bind("key", "not-admin").toOption.value
-
+      val result = pathBindable.bind("key", "not-admin").toOption.value
       result mustEqual Ineligible.NotAdmin
     }
 
     "bind to `no-enrolment` from path" in {
-
-      val result =
-        pathBindable.bind("key", "no-enrolment").toOption.value
-
+      val result = pathBindable.bind("key", "no-enrolment").toOption.value
       result mustEqual Ineligible.NoEnrolment
     }
+
     "bind to `is-agent` from path" in {
-
-      val result =
-        pathBindable.bind("key", "is-agent").toOption.value
-
+      val result = pathBindable.bind("key", "is-agent").toOption.value
       result mustEqual Ineligible.IsAgent
     }
 
     "fail to bind anything else from path" in {
-
-      val result =
-        pathBindable.bind("key", "foobar").left.value
-
+      val result = pathBindable.bind("key", "foobar").left.value
       result mustEqual "invalid"
     }
 
     "unbind from `NotAdmin` to path" in {
-
-      val result =
-        pathBindable.unbind("key", Ineligible.NotAdmin)
-
+      val result = pathBindable.unbind("key", Ineligible.NotAdmin)
       result mustEqual "not-admin"
     }
 
     "unbind from `NoEnrolment` to path" in {
-
-      val result =
-        pathBindable.unbind("key", Ineligible.NoEnrolment)
-
+      val result = pathBindable.unbind("key", Ineligible.NoEnrolment)
       result mustEqual "no-enrolment"
     }
+
     "unbind from `IsAgent` to path" in {
-
-      val result =
-        pathBindable.unbind("key", Ineligible.IsAgent)
-
+      val result = pathBindable.unbind("key", Ineligible.IsAgent)
       result mustEqual "is-agent"
     }
 
@@ -123,34 +104,22 @@ class IneligibleSpec
     }
 
     "fail to bind anything else from query" in {
-
-      val result =
-        queryBindable.bind("key", Map("key" -> Seq("foobar"))).value.left.value
-
+      val result = queryBindable.bind("key", Map("key" -> Seq("foobar"))).value.left.value
       result mustEqual "invalid"
     }
 
     "unbind from `IsAgent` to query" in {
-
-      val result =
-        queryBindable.unbind("key", Ineligible.IsAgent)
-
+      val result = queryBindable.unbind("key", Ineligible.IsAgent)
       result mustEqual "is-agent"
     }
 
     "unbind from `NoEnrolment` to query" in {
-
-      val result =
-        queryBindable.unbind("key", Ineligible.NoEnrolment)
-
+      val result = queryBindable.unbind("key", Ineligible.NoEnrolment)
       result mustEqual "no-enrolment"
     }
 
     "unbind from `NotAdmin` to query" in {
-
-      val result =
-        queryBindable.unbind("key", Ineligible.NotAdmin)
-
+      val result = queryBindable.unbind("key", Ineligible.NotAdmin)
       result mustEqual "not-admin"
     }
   }

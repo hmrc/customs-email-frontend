@@ -30,6 +30,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, InternalServerException}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -39,7 +40,6 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
   private val mockDateTimeService = mock[DateTimeService]
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private val connector = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
-
   private val url = "/customs-data-store/update-email"
   private val testEori: Eori = Eori("GB1234556789")
   private val testEmail = "email@test.com"
@@ -56,8 +56,9 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
   "CustomsDataStoreConnector" should {
     "successfully send a query request to customs data store and return the NO_CONTENT response" in {
+
       when(mockHttp.POST[UpdateEmail, HttpResponse](any, any, any)(any, any, meq(hc), any[ExecutionContext]))
-        .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
+        .thenReturn(Future.successful(HttpResponse(NO_CONTENT, emptyString)))
 
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
@@ -66,8 +67,10 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
     }
 
     "return BadRequest response when POST returns NOT_FOUND from customs data store " in {
-      when(mockHttp.POST[UpdateEmail, HttpResponse](meq(url), meq(requestBody), meq(headers))(any, any, meq(hc), any[ExecutionContext]))
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
+
+      when(mockHttp.POST[UpdateEmail, HttpResponse](
+        meq(url), meq(requestBody), meq(headers))(any, any, meq(hc), any[ExecutionContext]))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, emptyString)))
 
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
@@ -117,10 +120,10 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
       result.swap.getOrElse(UnhandledException) shouldBe UnhandledException
     }
 
-
     "UpdateEmail model object serializes correctly" in {
       val updateEmail = UpdateEmail(testEori, testEmail, testDateTime)
       val result = Json.toJson(updateEmail).toString()
+
       result shouldBe """{"eori":"GB1234556789","address":"email@test.com","timestamp":"2021-01-01T11:11:11Z"}"""
     }
   }

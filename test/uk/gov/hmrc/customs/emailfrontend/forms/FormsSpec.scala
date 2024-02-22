@@ -19,6 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.forms
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model.Email
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 class FormsSpec extends SpecBase {
   "emailForm" must {
@@ -41,12 +42,12 @@ class FormsSpec extends SpecBase {
       result4.value shouldBe Option(Email("abc@test.com"))
       result5.value shouldBe Option(Email("abc@test.com"))
     }
-    
+
     "not bind when value is incorrect" in {
 
       val mapValues_1: Map[String, String] = Map("email" -> "abctest")
       val mapValues_2: Map[String, String] = Map("email" -> "st.com")
-      val mapValues_3: Map[String, String] = Map("email" -> "")
+      val mapValues_3: Map[String, String] = Map("email" -> emptyString)
       val mapValues_4: Map[String, String] = Map(
         "email" -> "this value is more than fifty characters long hence invalid for email")
 

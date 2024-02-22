@@ -23,40 +23,34 @@ import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecB
 
 class EmailLanguageControllerSpec extends SpecBase {
 
-
   "Email Language Controller" should {
 
-    "return the page in English language" in {
-      val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
-      val controller = app.injector.instanceOf[EmailLanguageController]
-
+    "return the page in English language" in new Setup {
       running(app) {
         val language = "english"
         val langCall = controller.langToCall(language)
-        langCall(language) shouldBe routes.EmailLanguageController.switchToLanguage(language)
+        langCall shouldBe routes.EmailLanguageController.switchToLanguage(language)
       }
-
     }
 
-    "return the page in Welsh language" in {
-      val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
-      val controller = app.injector.instanceOf[EmailLanguageController]
-
+    "return the page in Welsh language" in new Setup {
       running(app) {
         val language = "welsh"
         val langCall = controller.langToCall(language)
-        langCall(language) shouldBe routes.EmailLanguageController.switchToLanguage(language)
+        langCall shouldBe routes.EmailLanguageController.switchToLanguage(language)
       }
     }
 
-    "have mapped english and welsh for language map" in {
-      val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
-      val controller = app.injector.instanceOf[EmailLanguageController]
-
+    "have mapped english and welsh for language map" in new Setup {
       running(app) {
         controller.languageMap.get("english") shouldBe Some(Lang("en"))
         controller.languageMap.get("cymraeg") shouldBe Some(Lang("cy"))
       }
     }
+  }
+
+  trait Setup {
+    val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
+    val controller = app.injector.instanceOf[EmailLanguageController]
   }
 }

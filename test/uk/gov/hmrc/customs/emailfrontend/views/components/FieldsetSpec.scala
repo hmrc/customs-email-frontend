@@ -33,6 +33,7 @@ class FieldsetSpec extends SpecBase {
 
   "FieldSet Component" should {
     "render fieldset with legend as heading" in new Setup {
+
       running(app) {
         val fieldsetView = app.injector.instanceOf[fieldset]
         val content = Html("<div>Fieldset content</div>")
@@ -42,16 +43,16 @@ class FieldsetSpec extends SpecBase {
           asHeading = true,
           describedBy = None
         )(content)(messages)
+
         val html: Document = Jsoup.parse(contentAsString(output))
 
-        html
-          .getElementsByClass("govuk-fieldset__legend")
+        html.getElementsByClass("govuk-fieldset__legend")
           .attr("class") should include("govuk-fieldset__legend--xl")
       }
-
     }
 
     "render fieldset with legend not as heading" in new Setup {
+
       running(app) {
         val fieldsetView = app.injector.instanceOf[fieldset]
         val content = Html("<div>Fieldset content</div>")
@@ -61,10 +62,10 @@ class FieldsetSpec extends SpecBase {
           asHeading = false,
           describedBy = None
         )(content)(messages)
+
         val html: Document = Jsoup.parse(contentAsString(output))
 
-        html
-          .getElementsByClass("govuk-fieldset__legend")
+        html.getElementsByClass("govuk-fieldset__legend")
           .attr("class") should not include ("govuk-fieldset__legend--xl")
       }
 
@@ -73,7 +74,6 @@ class FieldsetSpec extends SpecBase {
 
   trait Setup {
     implicit val messages: Messages = Helpers.stubMessages()
-    val app: Application =
-      applicationBuilder[FakeIdentifierAgentAction]().build()
+    val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
   }
 }

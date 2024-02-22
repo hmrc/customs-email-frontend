@@ -28,8 +28,8 @@ import uk.gov.hmrc.play.audit.model.{Audit, DataEvent}
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuditableSpec extends SpecBase {
+
   "sendDataEvent" should {
-    //TODO: Need to be looked at (failing due to NullPointer Exception)
     "send a data event" ignore new Setup {
 
       doNothing.when(mockAudit).sendDataEvent(any)(any)
@@ -39,7 +39,7 @@ class AuditableSpec extends SpecBase {
         "test_transaction",
         "test_path",
         Map("test_other" -> "other"),
-        "test_audit")(hc) mustBe ()
+        "test_audit")(hc) mustBe()
     }
   }
 
@@ -52,7 +52,6 @@ class AuditableSpec extends SpecBase {
     implicit val auditHeaderCarrier: AuditHeaderCarrier = new AuditHeaderCarrier(hc)
 
     val dataEvent: DataEvent = DataEvent("test_source", "test", "test")
-
     val mockConnector: AuditConnector = mock[AuditConnector]
     val mockAudit: Audit = mock[Audit]
 

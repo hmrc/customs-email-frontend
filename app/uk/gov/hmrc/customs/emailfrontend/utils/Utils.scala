@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend
+package uk.gov.hmrc.customs.emailfrontend.utils
 
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
-
-package object connectors {
-  implicit val httpReads: HttpReads[HttpResponse] =
-    new HttpReads[HttpResponse] {
-      override def read(method: String, url: String, response: HttpResponse) =
-        response
-    }
+object Utils {
+  val emptyString = ""
+  val hyphen = "-"
+  val singleSpace = " "
 }

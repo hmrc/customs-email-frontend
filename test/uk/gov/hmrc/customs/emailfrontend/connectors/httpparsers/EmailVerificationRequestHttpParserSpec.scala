@@ -16,24 +16,23 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers
 
-
 import play.api.http.Status
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 class EmailVerificationRequestHttpParserSpec extends SpecBase {
 
   "CreateEmailVerificationRequestHttpReads" should {
-
     "successfully parse a CREATED response" in new Setup {
-      val httpResponse = HttpResponse(Status.CREATED, "")
+      val httpResponse = HttpResponse(Status.CREATED, emptyString)
       val result = httpParser.read("POST", "/some/url", httpResponse)
 
       result shouldBe Right(EmailVerificationRequestHttpParser.EmailVerificationRequestSent)
     }
 
     "successfully parse a CONFLICT response" in new Setup {
-      val httpResponse = HttpResponse(Status.CONFLICT, "")
+      val httpResponse = HttpResponse(Status.CONFLICT, emptyString)
       val result = httpParser.read("POST", "/some/url", httpResponse)
 
       result shouldBe Right(EmailVerificationRequestHttpParser.EmailAlreadyVerified)
@@ -45,8 +44,7 @@ class EmailVerificationRequestHttpParserSpec extends SpecBase {
 
       result shouldBe Left(
         EmailVerificationRequestHttpParser.EmailVerificationRequestFailure(
-        Status.BAD_REQUEST, "Invalid request"
-      ))
+          Status.BAD_REQUEST, "Invalid request"))
     }
   }
 

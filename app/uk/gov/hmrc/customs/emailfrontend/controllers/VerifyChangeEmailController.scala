@@ -28,6 +28,7 @@ import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -60,6 +61,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
     }
 
   def create: Action[AnyContent] = identify.async { implicit request =>
+
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
       details =>
         (details.currentEmail, details.newEmail) match {
@@ -75,16 +77,19 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), _, _, _) =>
         Future.successful(Ok(view(confirmVerifyChangeForm, Some(email))))
-      case SubscriptionDisplayResponse(Some(_), _, _, _) =>
-        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
+
       case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
+
       case SubscriptionDisplayResponse(None, _, Some(_), Some("FAIL")) =>
         Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
+
       case SubscriptionDisplayResponse(None, _, None, None) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
+
       case SubscriptionDisplayResponse(None, None, _, _) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
+
       case _ => Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
     }.recover {
       handleNonFatalException()
@@ -99,21 +104,32 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
 
   def verifyChangeEmail: Action[AnyContent] = identify.async { implicit request =>
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
+
       case SubscriptionDisplayResponse(Some(email), _, _, _) =>
         confirmVerifyChangeForm.bindFromRequest().fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, Some(email)))),
           formData =>
-          formData.isVerify match {
-            case Some(false) =>
-                  save4LaterService.saveJourneyType(request.user.internalId, JourneyType(formData.isVerify.get))
-                  save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), "", None)).map { _ =>
-                    Redirect(routes.WhatIsYourEmailController.whatIsEmailAddress)
-                  }
-            case Some(true) => {
-              save4LaterService.saveJourneyType(request.user.internalId, JourneyType(formData.isVerify.get))
-              callEmailVerificationService(request.user.internalId, EmailDetails(Some(email), email, None), request.user.eori)
+            formData.isVerify match {
+
+              case Some(false) =>
+                save4LaterService.saveJourneyType(request.user.internalId, JourneyType(formData.isVerify.get))
+
+                save4LaterService.saveEmail(request.user.internalId,
+                  EmailDetails(Some(email), emptyString, None)).map { _ =>
+
+                  Redirect(routes.WhatIsYourEmailController.whatIsEmailAddress)
+                }
+
+              case Some(true) => {
+                save4LaterService.saveJourneyType(request.user.internalId, JourneyType(formData.isVerify.get))
+
+                callEmailVerificationService(request.user.internalId,
+                  EmailDetails(Some(email), email, None), request.user.eori)
+              }
+
+              case _ =>
+                Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
             }
-          }
         )
       case _ =>
         Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
@@ -122,17 +138,20 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
 
   private def callEmailVerificationService(internalId: InternalId, details: EmailDetails, eori: String)
                                           (implicit request: Request[AnyContent]): Future[Result] =
-    emailVerificationService.createEmailVerificationRequest(details, routes.EmailConfirmedController.show.url, eori).flatMap {
+    emailVerificationService.createEmailVerificationRequest(
+      details, routes.EmailConfirmedController.show.url, eori).flatMap {
+
       case Some(EmailVerificationRequestSent) => Future.successful(Redirect(routes.VerifyYourEmailController.show))
+
       case Some(EmailAlreadyVerified) =>
         save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
           Redirect(routes.EmailConfirmedController.show)
         }
+
       case _ => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService))
     }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
     Future.successful(BadRequest(errorHandler.problemWithService()))
   }
-
 }

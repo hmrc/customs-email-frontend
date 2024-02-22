@@ -31,8 +31,7 @@ class ServiceNameController @Inject()(identify: IdentifierAction,
                                       appConfig: AppConfig,
                                       save4LaterService: Save4LaterService,
                                       mcc: MessagesControllerComponents)
-                                     (implicit override val messagesApi: MessagesApi,
-                                      ec: ExecutionContext)
+                                     (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
   def show(name: String): Action[AnyContent] =

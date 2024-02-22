@@ -27,7 +27,7 @@ class EmailLanguageController @Inject()(languageUtils: LanguageUtils, cc: Contro
   extends LanguageController(languageUtils, cc) {
   override protected def fallbackURL: String = "/customs/manage-email-cds"
 
-  def langToCall(lang: String): String => Call = EmailLanguageController.routeToSwitchLanguage
+  def langToCall: String => Call = EmailLanguageController.routeToSwitchLanguage
 
   override def languageMap: Map[String, Lang] = EmailLanguageController.languageMap
 }

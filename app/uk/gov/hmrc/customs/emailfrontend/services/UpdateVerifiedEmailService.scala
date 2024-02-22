@@ -30,28 +30,34 @@ import scala.concurrent.{ExecutionContext, Future}
 class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateVerifiedEmailConnector)
                                           (implicit ec: ExecutionContext) extends Logging {
 
-  def updateVerifiedEmail(currentEmail: Option[String], newEmail: String, eori: String, timestamp: DateTime)(
-    implicit hc: HeaderCarrier
-  ): Future[Option[Boolean]] = {
+  def updateVerifiedEmail(currentEmail: Option[String],
+                          newEmail: String,
+                          eori: String,
+                          timestamp: DateTime)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
 
     val requestDetail = RequestDetail(
       IDType = "EORI",
       IDNumber = eori,
       emailAddress = newEmail,
-      emailVerificationTimestamp = timestamp
-    )
+      emailVerificationTimestamp = timestamp)
+
     val request = VerifiedEmailRequest(UpdateVerifiedEmailRequest(RequestCommon(), requestDetail))
 
     updateVerifiedEmailConnector.updateVerifiedEmail(request, currentEmail).map {
       case Right(res)
-          if res.updateVerifiedEmailResponse.responseCommon.returnParameters
-            .exists(msp => msp.paramName == formBundleIdParamName) =>
+        if res.updateVerifiedEmailResponse.responseCommon.returnParameters
+          .exists(msp => msp.paramName == formBundleIdParamName) =>
         logger.info("Successfully updated verified email")
         Some(true)
+
       case Right(res) =>
         val statusText = res.updateVerifiedEmailResponse.responseCommon.statusText
-        logger.debug(s"Updating verified email unsuccessful with business error/status code: ${statusText.getOrElse("Status text empty")}")
+
+        logger.debug(s"Updating verified email unsuccessful with business error/status code:" +
+          s" ${statusText.getOrElse("Status text empty")}")
+
         Some(false)
+
       case Left(res) =>
         logger.warn(s"Updating verified email unsuccessful with response: $res")
         None

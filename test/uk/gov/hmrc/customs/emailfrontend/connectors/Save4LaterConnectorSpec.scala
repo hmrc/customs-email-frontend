@@ -26,6 +26,7 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, 
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, JourneyType, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, SessionId}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 import scala.concurrent.Future
 
@@ -34,11 +35,6 @@ class Save4LaterConnectorSpec extends SpecBase {
   val mockHttpClient = mock[HttpClient]
   val sessionId = SessionId("session_1234")
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
-
-  trait Setup {
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
-      .overrides(inject.bind[HttpClient].toInstance(mockHttpClient)).build()
-  }
 
   "Save4LaterConnector" should {
 
@@ -90,7 +86,7 @@ class Save4LaterConnectorSpec extends SpecBase {
     "GET referrer returns 'none' when NOT_FOUND response received" in new Setup {
 
       when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any))
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, emptyString)))
 
       running(app) {
         val connector = app.injector.instanceOf[Save4LaterConnector]
@@ -103,7 +99,7 @@ class Save4LaterConnectorSpec extends SpecBase {
     "GET Journey type returns 'none' when NOT_FOUND response received" in new Setup {
 
       when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any))
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, emptyString)))
 
       running(app) {
         val connector = app.injector.instanceOf[Save4LaterConnector]
@@ -116,7 +112,7 @@ class Save4LaterConnectorSpec extends SpecBase {
     "GET email details returns 'none' when NOT_FOUND response received" in new Setup {
 
       when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any))
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, emptyString)))
 
       running(app) {
         val connector = app.injector.instanceOf[Save4LaterConnector]
@@ -129,12 +125,12 @@ class Save4LaterConnectorSpec extends SpecBase {
     "DELETE returns unit when NO_CONTENT response received" in new Setup {
 
       when(mockHttpClient.DELETE[HttpResponse](any, any)(any, any, any)
-      ).thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
+      ).thenReturn(Future.successful(HttpResponse(NO_CONTENT, emptyString)))
 
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
-        val result: Unit = connector.delete("").futureValue
+        val result: Unit = connector.delete(emptyString).futureValue
         result shouldBe (())
       }
     }
@@ -142,12 +138,12 @@ class Save4LaterConnectorSpec extends SpecBase {
     "DELETE returns exception when BAD_REQUEST response received" in new Setup {
 
       when(mockHttpClient.DELETE[HttpResponse](any, any)(any, any, any)
-      ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
+      ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, emptyString)))
 
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
-        val result = connector.delete("").futureValue
+        val result = connector.delete(emptyString).futureValue
         result shouldBe Left(BadRequest)
       }
     }
@@ -161,63 +157,67 @@ class Save4LaterConnectorSpec extends SpecBase {
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
-        val result = connector.delete("").futureValue
+        val result = connector.delete(emptyString).futureValue
         result shouldBe Left(UnhandledException)
       }
     }
 
     "PUT returns unit when NO_CONTENT response received" in new Setup {
+
       val testJson = Json.toJson("test")
 
       when(mockHttpClient.PUT[JsValue, HttpResponse](any, any, any)(any, any, any, any)
-      ).thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
+      ).thenReturn(Future.successful(HttpResponse(NO_CONTENT, emptyString)))
 
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
-        val result: Unit = connector.put("", "", testJson).futureValue
+        val result: Unit = connector.put(emptyString, emptyString, testJson).futureValue
         result shouldBe (())
       }
     }
 
     "PUT returns unit when OK response received" in new Setup {
+
       val testJson = Json.toJson("test")
 
       when(mockHttpClient.PUT[JsValue, HttpResponse](any, any, any)(any, any, any, any)
-      ).thenReturn(Future.successful(HttpResponse(OK, "")))
+      ).thenReturn(Future.successful(HttpResponse(OK, emptyString)))
 
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
-        val result: Unit = connector.put("", "", testJson).futureValue
+        val result: Unit = connector.put(emptyString, emptyString, testJson).futureValue
         result shouldBe (())
       }
     }
 
     "PUT returns unit when CREATED response received" in new Setup {
+
       val testJson = Json.toJson("test")
 
       when(mockHttpClient.PUT[JsValue, HttpResponse](any, any, any)(any, any, any, any)
-      ).thenReturn(Future.successful(HttpResponse(CREATED, "")))
+      ).thenReturn(Future.successful(HttpResponse(CREATED, emptyString)))
 
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
-        val result: Unit = connector.put("", "", testJson).futureValue
+        val result: Unit = connector.put(emptyString, emptyString, testJson).futureValue
         result shouldBe (())
       }
     }
 
     "PUT returns exception when BAD_REQUEST response received" in new Setup {
+
       val testJson = Json.toJson("test")
 
       when(mockHttpClient.PUT[JsValue, HttpResponse](any, any, any)(any, any, any, any)
-      ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
+      ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, emptyString)))
 
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
-        val result = connector.put("", "", testJson).futureValue
+        val result = connector.put(emptyString, emptyString, testJson).futureValue
         result shouldBe Left(BadRequest)
       }
     }
@@ -233,9 +233,14 @@ class Save4LaterConnectorSpec extends SpecBase {
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
-        val result = connector.put("", "", testJson).futureValue
+        val result = connector.put(emptyString, emptyString, testJson).futureValue
         result shouldBe Left(UnhandledException)
       }
     }
+  }
+
+  trait Setup {
+    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+      .overrides(inject.bind[HttpClient].toInstance(mockHttpClient)).build()
   }
 }

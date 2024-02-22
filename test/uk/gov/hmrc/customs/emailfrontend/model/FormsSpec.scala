@@ -26,6 +26,7 @@ class FormsSpec extends PlaySpec {
     "bind/unbind the emailForm data correctly" in {
       val bind = Forms.emailForm.mapping.bind(Map("email" -> "test@email.com"))
       bind shouldBe Right(Email("test@email.com"))
+
       val unbind = Forms.emailForm.mapping.unbind(Email("test@email.com"))
       unbind shouldBe Map("email" -> "test@email.com")
     }
@@ -33,6 +34,7 @@ class FormsSpec extends PlaySpec {
     "bind/unbind the confirmEmailForm data correctly" in {
       val bind = Forms.confirmEmailForm.mapping.bind(Map("isYes" -> "true"))
       bind shouldBe Right(YesNo(Some(true)))
+
       val unbind = Forms.confirmEmailForm.mapping.unbind(YesNo(Some(true)))
       unbind shouldBe Map("isYes" -> "true")
     }
