@@ -28,7 +28,7 @@ object Validation {
     case _ => false
   }
 
-   var validEmailMaxLength = 50
+  val validEmailMaxLength = 50
 
   def isValidEmail: Constraint[String] =
     Constraint({

@@ -21,7 +21,7 @@ import play.api.libs.json.{JsValue, Json}
 
 case class EmailDetails(currentEmail: Option[String], newEmail: String, timestamp: Option[DateTime]) {
 
-  var twoHours = 2
+  val twoHours = 2
 
   lazy val amendmentInProgress = timestamp match {
     case Some(date) => !date.isBefore(DateTime.now.minusHours(twoHours))
