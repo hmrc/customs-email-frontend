@@ -30,10 +30,9 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)
-                                   (implicit ec: ExecutionContext) extends Logging {
-
-  val LoggerComponentId = "Save4LaterConnector"
+class Save4LaterConnector @Inject()(http: HttpClient,
+                                    appConfig: AppConfig,
+                                    audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
 
   def getEmailDetails(id: String, key: String)
                      (implicit hc: HeaderCarrier, reads: Reads[EmailDetails]): Future[Option[EmailDetails]] = {

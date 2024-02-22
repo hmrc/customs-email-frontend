@@ -28,8 +28,9 @@ import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, hyphen}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig, http: HttpClient, auditable: Auditable)
-                                            (implicit ec: ExecutionContext) {
+class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig,
+                                             http: HttpClient,
+                                             auditable: Auditable)(implicit ec: ExecutionContext) {
 
   def subscriptionDisplay(eori: String)(implicit hc: HeaderCarrier): Future[SubscriptionDisplayResponse] = {
     val request = ("EORI" -> eori) :: buildQueryParams

@@ -36,7 +36,6 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
                                          save4LaterService: Save4LaterService,
                                          errorHandler: ErrorHandler)
                                         (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-
   extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show: Action[AnyContent] =

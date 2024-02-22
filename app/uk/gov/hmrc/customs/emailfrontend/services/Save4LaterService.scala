@@ -75,8 +75,8 @@ object Save4LaterService extends Logging {
 
   implicit class EmailCacheServiceHelper(save4LaterService: Save4LaterService) {
 
-    def routeBasedOnAmendment(internalId: InternalId)(
-      redirectBasedOnEmailStatus: EmailDetails => Future[Result], noEmail: Future[Result])
+    def routeBasedOnAmendment(internalId: InternalId)
+                             (redirectBasedOnEmailStatus: EmailDetails => Future[Result], noEmail: Future[Result])
                              (implicit hc: HeaderCarrier,
                               executionContext: ExecutionContext): Future[play.api.mvc.Result] =
 

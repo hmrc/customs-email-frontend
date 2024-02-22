@@ -48,8 +48,10 @@ class ChangingYourEmailController @Inject()(identify: IdentifierAction,
 
   def submit: Action[AnyContent] = identify.async { implicit request =>
     save4LaterService.fetchEmail(request.user.internalId).flatMap {
+
       case Some(emailDetails) =>
         callEmailVerificationService(request.user.internalId, emailDetails, request.user.eori)
+
       case None =>
         logger.warn("emailStatus cache none, user logged out")
         Future.successful(Redirect(routes.SignOutController.signOut))
@@ -60,7 +62,6 @@ class ChangingYourEmailController @Inject()(identify: IdentifierAction,
                                            details: EmailDetails,
                                            eori: String)
                                           (implicit request: Request[AnyContent]): Future[Result] = {
-
     emailVerificationService.createEmailVerificationRequest(
       details,
       routes.EmailConfirmedController.show.url,

@@ -20,8 +20,11 @@ import org.joda.time.DateTime
 import play.api.libs.json.{JsValue, Json}
 
 case class EmailDetails(currentEmail: Option[String], newEmail: String, timestamp: Option[DateTime]) {
+
+  var twoHours = 2
+
   lazy val amendmentInProgress = timestamp match {
-    case Some(date) => !date.isBefore(DateTime.now.minusHours(2))
+    case Some(date) => !date.isBefore(DateTime.now.minusHours(twoHours))
     case None => false
   }
 }

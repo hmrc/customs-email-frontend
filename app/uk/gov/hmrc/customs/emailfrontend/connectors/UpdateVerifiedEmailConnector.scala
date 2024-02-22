@@ -28,8 +28,9 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
-class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig, http: HttpClient, audit: Auditable)
-                                            (implicit ec: ExecutionContext) extends Logging {
+class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig,
+                                             http: HttpClient,
+                                             audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
 
   def updateVerifiedEmail(request: VerifiedEmailRequest, currentEmail: Option[String])
                          (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {

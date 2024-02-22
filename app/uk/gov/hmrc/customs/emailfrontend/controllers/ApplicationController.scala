@@ -26,7 +26,6 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ApplicationController @Inject()(mcc: MessagesControllerComponents)
                                      (implicit override val messagesApi: MessagesApi, appConfig: AppConfig)
-
   extends FrontendController(mcc) with I18nSupport {
 
   def accessibilityStatement: Action[AnyContent] = Action {

@@ -32,13 +32,14 @@ class AmendmentInProgressController @Inject()(identify: IdentifierAction,
                                               save4LaterService: Save4LaterService,
                                               mcc: MessagesControllerComponents)
                                              (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-
   extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show: Action[AnyContent] = identify.async { implicit request =>
       save4LaterService.fetchEmail(request.user.internalId).map {
+
         case Some(emailDetails) =>
           Ok(view(emailDetails.newEmail))
+
         case None =>
           logger.warn("emailStatus not found")
           Redirect(routes.SignOutController.signOut)

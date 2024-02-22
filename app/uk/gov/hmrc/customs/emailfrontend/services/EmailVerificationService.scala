@@ -35,9 +35,10 @@ class EmailVerificationService @Inject()(emailVerificationConnector: EmailVerifi
       case Left(_) => None
     }
 
-  def createEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)(
-    implicit hc: HeaderCarrier
-  ): Future[Option[EmailVerificationRequestSuccess]] =
+  def createEmailVerificationRequest(details: EmailDetails,
+                                     continueUrl: String,
+                                     eoriNumber: String)
+                                    (implicit hc: HeaderCarrier): Future[Option[EmailVerificationRequestSuccess]] =
     emailVerificationConnector.createEmailVerificationRequest(details, continueUrl, eoriNumber).map(_.toOption)
 
 }

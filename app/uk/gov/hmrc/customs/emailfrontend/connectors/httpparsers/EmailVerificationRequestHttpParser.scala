@@ -37,7 +37,8 @@ object EmailVerificationRequestHttpParser extends Logging {
           Right(EmailAlreadyVerified)
 
         case status =>
-          logger.warn(s"Failed to create email verification. Received status: $status Response body: ${response.body}")
+          logger.warn(
+            s"Failed to create email verification. Received status: $status Response body: ${response.body}")
           Left(EmailVerificationRequestFailure(status, response.body))
       }
   }

@@ -40,6 +40,7 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
       emailAddress = emailAddress,
       url = appConfig.checkVerifiedEmailUrl
     )
+
     http.POST[JsObject, EmailVerificationStateResponse](
       appConfig.checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
   }
@@ -58,16 +59,19 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
     http.POST[JsObject, EmailVerificationRequestResponse](appConfig.createEmailVerificationRequestUrl, jsonBody)
   }
 
-  private def auditRequest(transactionName: String, auditType: String, emailAddress: String, url: String)
-                          (implicit hc: HeaderCarrier): Unit =
+  private def auditRequest(transactionName: String,
+                           auditType: String,
+                           emailAddress: String,
+                           url: String)(implicit hc: HeaderCarrier): Unit =
     auditable.sendDataEvent(
       transactionName = transactionName,
       path = url,
       detail = Map("emailAddress" -> emailAddress),
       auditType = auditType)
 
-  private def auditVerificationRequest(details: EmailDetails, url: String, eoriNumber: String)
-                                      (implicit hc: HeaderCarrier): Unit =
+  private def auditVerificationRequest(details: EmailDetails,
+                                       url: String,
+                                       eoriNumber: String)(implicit hc: HeaderCarrier): Unit =
     details.currentEmail match {
       case Some(emailAddress) =>
         auditable.sendDataEvent(

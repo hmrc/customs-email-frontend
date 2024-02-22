@@ -32,10 +32,12 @@ import scala.util.control.NonFatal
 import uk.gov.hmrc.http.HttpReads.Implicits._
 
 @Singleton
-class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, audit: Auditable)
-                                         (implicit ec: ExecutionContext) extends Logging {
+class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
+                                          httpClient: HttpClient,
+                                          audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
 
-  def storeEmailAddress(eori: Eori, email: String, timestamp: DateTime)
+  def storeEmailAddress(eori: Eori, email: String,
+                        timestamp: DateTime)
                        (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, HttpResponse]] = {
 
     val request = UpdateEmail(eori, email, timestamp)
@@ -43,7 +45,8 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
     auditRequest("DataStoreEmailRequestSubmitted", Map(
       "eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
 
-    httpClient.POST[UpdateEmail, HttpResponse](appConfig.customsDataStoreUrl, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
+    httpClient.POST[UpdateEmail, HttpResponse](
+        appConfig.customsDataStoreUrl, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
       .map { response =>
         auditResponse("DataStoreResponseReceived", response, appConfig.customsDataStoreUrl)
         response.status match {
@@ -67,13 +70,14 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig, httpClient: Http
       }
   }
 
-  private def auditRequest(transactionName: String, detail: Map[String, String])
-                          (implicit hc: HeaderCarrier): Unit =
+  private def auditRequest(transactionName: String,
+                           detail: Map[String, String])(implicit hc: HeaderCarrier): Unit =
     audit.sendDataEvent(transactionName = transactionName,
       path = appConfig.customsDataStoreUrl, detail = detail, auditType = "DataStoreRequest")
 
-  private def auditResponse(transactionName: String, response: HttpResponse, url: String)
-                           (implicit hc: HeaderCarrier): Unit =
+  private def auditResponse(transactionName: String,
+                            response: HttpResponse,
+                            url: String)(implicit hc: HeaderCarrier): Unit =
     audit.sendDataEvent(
       transactionName = transactionName,
       path = url,

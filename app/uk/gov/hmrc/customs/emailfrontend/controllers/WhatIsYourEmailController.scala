@@ -44,7 +44,6 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
                                           appConfig: AppConfig)
                                          (implicit override val messagesApi: MessagesApi,
                                           ec: ExecutionContext)
-
   extends FrontendController(mcc) with I18nSupport with Logging {
 
   def show: Action[AnyContent] =
@@ -99,7 +98,6 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   }
 
   private def subscriptionDisplay()(implicit request: AuthenticatedRequest[AnyContent]) =
-
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
       case SubscriptionDisplayResponse(Some(_), Some(_), _, _) =>
         Future.successful(Ok(view(emailForm, appConfig)))

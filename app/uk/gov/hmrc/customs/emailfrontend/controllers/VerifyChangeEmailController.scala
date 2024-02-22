@@ -54,7 +54,6 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
 
   private def redirectBasedOnEmailStatus(details: EmailDetails)
                                         (implicit request: Request[AnyContent]): Future[Result] =
-
     emailVerificationService.isEmailVerified(details.newEmail).map {
       case Some(true) => Redirect(routes.EmailConfirmedController.show)
       case Some(false) => Redirect(routes.CheckYourEmailController.show)
@@ -75,7 +74,6 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
   }
 
   private def subscriptionDisplay()(implicit request: AuthenticatedRequest[AnyContent]) =
-
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), _, _, _) =>
         Future.successful(Ok(view(confirmVerifyChangeForm, Some(email))))
@@ -105,7 +103,6 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
   }
 
   def verifyChangeEmail: Action[AnyContent] = identify.async { implicit request =>
-
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
 
       case SubscriptionDisplayResponse(Some(email), _, _, _) =>
@@ -141,7 +138,6 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
 
   private def callEmailVerificationService(internalId: InternalId, details: EmailDetails, eori: String)
                                           (implicit request: Request[AnyContent]): Future[Result] =
-
     emailVerificationService.createEmailVerificationRequest(
       details, routes.EmailConfirmedController.show.url, eori).flatMap {
 

@@ -1,16 +1,27 @@
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings.{integrationTestSettings, targetJvm}
+import uk.gov.hmrc.DefaultBuildSettings.{itSettings, targetJvm}
 
 val appName = "customs-email-frontend"
 
 val silencerVersion = "1.17.13"
+val scala2_13_8 = "2.13.8"
+val bootstrap = "7.22.0"
 
 val scalaStyleConfigFile = "scalastyle-config.xml"
 val testScalaStyleConfigFile = "test-scalastyle-config.xml"
 val testDirectory = "test"
 
+ThisBuild / majorVersion := 1
+ThisBuild / scalaVersion := scala2_13_8
+
 lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value /  scalaStyleConfigFile,
   (Test / scalastyleConfig) := baseDirectory.value/ testDirectory /  testScalaStyleConfigFile)
+
+lazy val it = project
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test")
+  .settings(itSettings())
+  .settings(libraryDependencies ++= Seq("uk.gov.hmrc" %% "bootstrap-test-play-28" % bootstrap % Test))
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)

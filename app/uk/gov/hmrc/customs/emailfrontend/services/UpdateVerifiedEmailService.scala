@@ -30,8 +30,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateVerifiedEmailConnector)
                                           (implicit ec: ExecutionContext) extends Logging {
 
-  def updateVerifiedEmail(currentEmail: Option[String], newEmail: String, eori: String, timestamp: DateTime)
-                         (implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
+  def updateVerifiedEmail(currentEmail: Option[String],
+                          newEmail: String,
+                          eori: String,
+                          timestamp: DateTime)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
 
     val requestDetail = RequestDetail(
       IDType = "EORI",

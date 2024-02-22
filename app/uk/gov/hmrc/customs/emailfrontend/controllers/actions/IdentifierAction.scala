@@ -42,7 +42,6 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
                                               errorHandler: ErrorHandler,
                                               val parser: BodyParsers.Default)
                                              (override implicit val executionContext: ExecutionContext)
-
   extends IdentifierAction with AuthorisedFunctions with AuthRedirects {
 
   override val config: Configuration = appConfig.config
