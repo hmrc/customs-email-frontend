@@ -11,7 +11,7 @@ val scalaStyleConfigFile = "scalastyle-config.xml"
 val testScalaStyleConfigFile = "test-scalastyle-config.xml"
 val testDirectory = "test"
 
-ThisBuild / majorVersion := 1
+ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := scala2_13_8
 
 lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value /  scalaStyleConfigFile,
@@ -27,8 +27,6 @@ lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
-    majorVersion := 0,
-    scalaVersion := "2.13.8",
     targetJvm := "jvm-11",
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
 

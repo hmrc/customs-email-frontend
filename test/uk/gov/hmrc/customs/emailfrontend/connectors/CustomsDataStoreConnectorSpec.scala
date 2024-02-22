@@ -120,7 +120,6 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
       result.swap.getOrElse(UnhandledException) shouldBe UnhandledException
     }
 
-
     "UpdateEmail model object serializes correctly" in {
       val updateEmail = UpdateEmail(testEori, testEmail, testDateTime)
       val result = Json.toJson(updateEmail).toString()

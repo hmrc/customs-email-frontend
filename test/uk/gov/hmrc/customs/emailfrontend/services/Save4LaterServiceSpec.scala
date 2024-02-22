@@ -29,17 +29,6 @@ import scala.concurrent.Future
 
 class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
 
-  trait Setup {
-    implicit val hc: HeaderCarrier = mock[HeaderCarrier]
-    protected val internalId: InternalId = InternalId("internalId-123")
-    protected val timestamp: DateTime = DateTimeUtil.dateTime
-    protected val emailDetails: EmailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
-    protected val journeyType: JourneyType = JourneyType(true)
-    protected val referrerName: ReferrerName = ReferrerName("customs-finance", "/xyz")
-    protected val mockSave4LaterConnector = mock[Save4LaterConnector]
-    protected val service = new Save4LaterService(mockSave4LaterConnector)
-  }
-
   "Save4LaterService" should {
     "save the emailDetails against the users InternalId" in new Setup {
 
@@ -103,5 +92,16 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
       val result: Unit = service.remove(internalId).futureValue
       result shouldBe (())
     }
+  }
+
+  trait Setup {
+    implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+    protected val internalId: InternalId = InternalId("internalId-123")
+    protected val timestamp: DateTime = DateTimeUtil.dateTime
+    protected val emailDetails: EmailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
+    protected val journeyType: JourneyType = JourneyType(true)
+    protected val referrerName: ReferrerName = ReferrerName("customs-finance", "/xyz")
+    protected val mockSave4LaterConnector = mock[Save4LaterConnector]
+    protected val service = new Save4LaterService(mockSave4LaterConnector)
   }
 }
