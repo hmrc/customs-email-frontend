@@ -16,22 +16,21 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.joda.time.DateTime
-import org.joda.time.format.ISODateTimeFormat
+import java.time.{Instant, ZoneOffset}
 import play.api.libs.json.{Format, JsString, Json, Reads, Writes}
 
-case class UpdateEmail(eori: Eori, address: String, timestamp: DateTime)
+case class UpdateEmail(eori: Eori, address: String, timestamp: Instant)
 
 object UpdateEmail {
 
-  val jodaDateReads = Reads[DateTime](js =>
-    js.validate[String].map[DateTime](dtString =>
-      DateTime.parse(dtString)
+  val instantDateReads = Reads[Instant](js =>
+    js.validate[String].map[Instant](dtString =>
+      Instant.parse(dtString)
     )
   )
 
-  private val jodaDateWrites: Writes[DateTime] =
-    (d: DateTime) => JsString(d.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC()))
+  private val instantDateWrites: Writes[Instant] =
+    (d: Instant) => JsString(d.atZone(ZoneOffset.UTC).toString)
 
   private val eoriWrites: Writes[Eori] = (eori: Eori) => JsString(eori.id)
 
@@ -42,6 +41,6 @@ object UpdateEmail {
   }
 
   implicit val formatEori = Format(eoriReads, eoriWrites)
-  implicit val dateTimeJF = Format(jodaDateReads, jodaDateWrites)
+  implicit val dateTimeJF = Format(instantDateReads, instantDateWrites)
   implicit val format = Json.format[UpdateEmail]
 }

@@ -16,20 +16,17 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import org.joda.time.DateTime
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{
-  EmailAlreadyVerified,
-  EmailVerificationRequestSent
-}
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
+import java.time.Instant
 import scala.concurrent.Future
 
 class ChangingYourEmailControllerSpec extends SpecBase {
@@ -208,7 +205,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
     val emailDetails: EmailDetails = EmailDetails(
       currentEmail = Some("test@test.com"),
       newEmail = "test_new@test.com",
-      timestamp = Some(DateTime.now()))
+      timestamp = Some(Instant.now()))
 
     protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
     protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]

@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import org.joda.time.DateTime
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -24,6 +23,8 @@ import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+
+import java.time.Instant
 import scala.concurrent.Future
 
 class VerifyYourEmailControllerSpec extends SpecBase {
@@ -60,7 +61,7 @@ class VerifyYourEmailControllerSpec extends SpecBase {
       "or uses already complete bookmarked request within 2 hours" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(Instant.now())))))
 
       running(app) {
         val request = FakeRequest(GET, routes.VerifyYourEmailController.show.url)

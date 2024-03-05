@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import org.joda.time.DateTime
+import java.time.Instant
 import play.api.Logging
 import play.api.http.HeaderNames.CONTENT_TYPE
 import play.api.http.MimeTypes
@@ -37,7 +37,7 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
                                           audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
 
   def storeEmailAddress(eori: Eori, email: String,
-                        timestamp: DateTime)
+                        timestamp: Instant)
                        (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, HttpResponse]] = {
 
     val request = UpdateEmail(eori, email, timestamp)

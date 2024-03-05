@@ -16,8 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import org.joda.time.{DateTime, DateTimeZone}
-import java.time.{Clock, Instant, ZoneId, ZonedDateTime}
+import java.time.{Clock, Instant, ZoneId, ZoneOffset, ZonedDateTime}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 class DateTimeServiceSpec extends SpecBase {
@@ -28,15 +27,17 @@ class DateTimeServiceSpec extends SpecBase {
       val dateTimeService: DateTimeService = new DateTimeService {
         override val UtcZoneId: ZoneId = ZoneId.of("UTC")
 
-        override def nowUtc(): DateTime = new DateTime(fixedClock.instant().toEpochMilli, DateTimeZone.UTC)
+        //override def nowUtc(): DateTime = new DateTime(fixedClock.instant().toEpochMilli, DateTimeZone.UTC)
+        override def nowUtc(): Instant = ZonedDateTime.now(ZoneOffset.UTC).toInstant
       }
 
-      val currentTime: DateTime = dateTimeService.nowUtc()
+      val currentTime: Instant = dateTimeService.nowUtc()
 
       currentTime.getYear shouldBe 2023
       currentTime.getMonthOfYear shouldBe 10
       currentTime.getDayOfMonth shouldBe 31
       currentTime.getHourOfDay shouldBe 12
+
     }
 
     "return instance of DateTime" in new Setup {

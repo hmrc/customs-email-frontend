@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import javax.inject.{Inject, Singleton}
-import org.joda.time.DateTime
+import java.time.Instant
 import play.api.Logging
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
@@ -28,7 +28,7 @@ import scala.concurrent.Future
 
 @Singleton
 class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector) extends Logging {
-  def storeEmail(enrolmentId: EnrolmentIdentifier, email: String, timestamp: DateTime)
+  def storeEmail(enrolmentId: EnrolmentIdentifier, email: String, timestamp: Instant)
                 (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, HttpResponse]] =
     customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email, timestamp)
 }

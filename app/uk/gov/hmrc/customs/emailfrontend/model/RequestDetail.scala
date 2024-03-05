@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.joda.time.DateTime
+import java.time.Instant
 import play.api.libs.json.Json
 
-case class RequestDetail(IDType: String, IDNumber: String, emailAddress: String, emailVerificationTimestamp: DateTime)
+case class RequestDetail(IDType: String, IDNumber: String, emailAddress: String, emailVerificationTimestamp: Instant)
 
 object RequestDetail {
 

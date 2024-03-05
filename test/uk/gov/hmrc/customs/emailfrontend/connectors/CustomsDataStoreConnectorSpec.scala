@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT}
@@ -28,9 +27,12 @@ import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, InternalServerException}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
+
+import java.time.Instant
 
 class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -43,7 +45,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
   private val url = "/customs-data-store/update-email"
   private val testEori: Eori = Eori("GB1234556789")
   private val testEmail = "email@test.com"
-  private val testDateTime = new DateTime("2021-01-01T11:11:11.111Z")
+  private val testDateTime = Instant.parse("2021-01-01T11:11:11.111Z")
   private val requestBody: UpdateEmail = UpdateEmail(testEori, testEmail, testDateTime)
   private val headers = Seq("Content-Type" -> "application/json")
 

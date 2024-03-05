@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.joda.time.DateTime
+import java.time.Instant
 import play.api.libs.json.Json
 
 case class ResponseCommon(status: String,
                           statusText: Option[String],
-                          processingDate: DateTime,
+                          processingDate: Instant,
                           returnParameters: List[MessagingServiceParam]) {
   require(returnParameters.nonEmpty)
 }

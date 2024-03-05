@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import org.joda.time.DateTime
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfterEach
@@ -27,9 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, _}
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{
-  EmailAlreadyVerified, EmailVerificationRequestSent, EmailVerificationRequestFailure
-}
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.connectors.{EmailVerificationConnector, SubscriptionDisplayConnector}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
 import uk.gov.hmrc.customs.emailfrontend.model._
@@ -39,7 +36,9 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
+import java.time.{Instant, Period}
 import scala.concurrent.Future
+
 
 class VerifyChangeEmailControllerSpec extends SpecBase
   with BeforeAndAfterEach {
@@ -51,7 +50,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
 
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(
-          Some(EmailDetails(None, "test@email.com", Some(DateTime.now().minusDays(2))))))
+          Some(EmailDetails(None, "test@email.com", Some(Instant.now().minus(Period.ofDays(2)))))))
 
       when(mockSave4LaterService.remove(any)(any)).thenReturn(Future.successful(Right(())))
 
@@ -123,7 +122,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       "for AmendmentInProgress" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(Instant.now())))))
 
       running(app) {
 
@@ -232,7 +231,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       "user already completed success amend email journey" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(Instant.now())))))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -337,7 +336,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
       "and user already complete success amend email journey " in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(Instant.now())))))
 
       running(app) {
         val request = fakeRequest(GET, routes.VerifyChangeEmailController.verifyChangeEmail.url)
