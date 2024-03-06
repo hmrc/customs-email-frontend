@@ -30,6 +30,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, InternalServerException}
 
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,7 +45,8 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
   private val url = "/customs-data-store/update-email"
   private val testEori: Eori = Eori("GB1234556789")
   private val testEmail = "email@test.com"
-  private val testDateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z")
+  protected val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+  private val testDateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z",dateTimeFormatter)
   private val requestBody: UpdateEmail = UpdateEmail(testEori, testEmail, testDateTime)
   private val headers = Seq("Content-Type" -> "application/json")
 
