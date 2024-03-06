@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import java.time.{Instant, ZoneId, ZoneOffset, ZonedDateTime}
+import java.time.{LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
 
 class DateTimeService {
-  val UtcZoneId = ZoneId.of("UTC")
-  def nowUtc(): Instant = ZonedDateTime.now(ZoneOffset.UTC).toInstant
+  val UtcZoneId: ZoneId = ZoneId.of("UTC")
+  def nowUtc(): LocalDateTime = ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime
   def zonedDateTimeUtc: ZonedDateTime = ZonedDateTime.now(UtcZoneId)
 }

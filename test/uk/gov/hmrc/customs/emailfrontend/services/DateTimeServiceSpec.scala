@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import java.time.{Clock, Instant, ZoneId, ZoneOffset, ZonedDateTime}
+import java.time.{Clock, Instant, LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 class DateTimeServiceSpec extends SpecBase {
@@ -28,21 +28,21 @@ class DateTimeServiceSpec extends SpecBase {
         override val UtcZoneId: ZoneId = ZoneId.of("UTC")
 
         //override def nowUtc(): DateTime = new DateTime(fixedClock.instant().toEpochMilli, DateTimeZone.UTC)
-        override def nowUtc(): Instant = ZonedDateTime.now(ZoneOffset.UTC).toInstant
+        override def nowUtc(): LocalDateTime = ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime
       }
 
-      val currentTime: Instant = dateTimeService.nowUtc()
+      val currentTime = dateTimeService.nowUtc()
 
       currentTime.getYear shouldBe 2023
-      currentTime.getMonthOfYear shouldBe 10
+      currentTime.getMonthValue shouldBe 10
       currentTime.getDayOfMonth shouldBe 31
-      currentTime.getHourOfDay shouldBe 12
+      currentTime.getHour shouldBe 12
 
     }
 
     "return instance of DateTime" in new Setup {
       val dateTimeServiceOb = new DateTimeService()
-      dateTimeServiceOb.nowUtc().isInstanceOf[DateTime] shouldBe true
+      dateTimeServiceOb.nowUtc().isInstanceOf[LocalDateTime] shouldBe true
     }
   }
 

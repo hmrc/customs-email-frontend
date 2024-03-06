@@ -16,24 +16,23 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import java.time.{Instant, ZoneOffset}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, OFormat}
 
-case class EmailDetails(currentEmail: Option[String], newEmail: String, timestamp: Option[Instant]) {
+import java.time.{LocalDateTime, ZoneOffset}
+
+case class EmailDetails(currentEmail: Option[String], newEmail: String, timestamp: Option[LocalDateTime]) {
 
   private val twoHours = 2
 
   lazy val amendmentInProgress = timestamp match {
-    case Some(date) => !date.isBefore(Instant.now.atOffset(ZoneOffset.UTC).minusHours(twoHours).toInstant)
+    case Some(date) => !date.isBefore(LocalDateTime.now.atOffset(ZoneOffset.UTC).minusHours(twoHours).toLocalDateTime)
     case None => false
   }
 }
 
 object EmailDetails {
 
-  import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
-
-  implicit val jsonFormat = Json.format[EmailDetails]
+  implicit val jsonFormat: OFormat[EmailDetails] = Json.format[EmailDetails]
 
   implicit def toJsonFormat(emailDetails: EmailDetails): JsValue = Json.toJson(emailDetails)
 
@@ -42,7 +41,7 @@ object EmailDetails {
 case class JourneyType(isVerify: Boolean)
 
 object JourneyType {
-  implicit val jsonFormat = Json.format[JourneyType]
+  implicit val jsonFormat: OFormat[JourneyType] = Json.format[JourneyType]
 
   implicit def toJsonFormat(journeyType: JourneyType): JsValue = Json.toJson(journeyType)
 }
