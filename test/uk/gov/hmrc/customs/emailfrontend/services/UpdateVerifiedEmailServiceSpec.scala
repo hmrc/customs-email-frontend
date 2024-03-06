@@ -24,6 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -36,7 +37,8 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val eoriNumber = "GBXXXXXXXXXXXX"
   private val email = "test@email.com"
-  private val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z")
+  protected val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+  private val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z",dateTimeFormatter)
   private val dateTimeInstance = Instant.parse("2021-01-01T11:11:11.111Z")
 
 
