@@ -29,6 +29,7 @@ import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
+import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 
 import scala.annotation.implicitNotFound
 import scala.reflect.ClassTag
@@ -72,7 +73,6 @@ trait SpecBase extends AnyWordSpecLike
 
 class FakeMetrics extends Metrics {
   override val defaultRegistry: MetricRegistry = new MetricRegistry
-  override val toJson: String = "{}"
 }
 
 object TestImplicits {

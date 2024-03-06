@@ -28,7 +28,6 @@ import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Ineligible, InternalId, LoggedInUser}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -16,15 +16,16 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import java.time.{Instant, ZoneOffset}
 import play.api.libs.json.{JsValue, Json}
 
-case class EmailDetails(currentEmail: Option[String], newEmail: String, timestamp: Option[Instant]) {
+import java.time.{LocalDateTime, ZoneOffset}
+
+case class EmailDetails(currentEmail: Option[String], newEmail: String, timestamp: Option[LocalDateTime]) {
 
   private val twoHours = 2
 
   lazy val amendmentInProgress = timestamp match {
-    case Some(date) => !date.isBefore(Instant.now.atOffset(ZoneOffset.UTC).minusHours(twoHours).toInstant)
+    case Some(date) => !date.isBefore(LocalDateTime.now.atOffset(ZoneOffset.UTC).minusHours(twoHours).toLocalDateTime)
     case None => false
   }
 }

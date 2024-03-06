@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import java.time.Instant
+import java.time.{Instant, LocalDateTime}
 import play.api.Logging
 import play.api.http.HeaderNames.CONTENT_TYPE
 import play.api.http.MimeTypes
@@ -24,9 +24,11 @@ import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.http._
+
 import javax.inject.{Inject, Singleton}
 import play.api.http.Status._
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -37,7 +39,7 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
                                           audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
 
   def storeEmailAddress(eori: Eori, email: String,
-                        timestamp: Instant)
+                        timestamp: LocalDateTime)
                        (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, HttpResponse]] = {
 
     val request = UpdateEmail(eori, email, timestamp)

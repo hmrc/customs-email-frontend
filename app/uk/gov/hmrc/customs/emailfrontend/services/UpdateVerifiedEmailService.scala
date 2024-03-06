@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import java.time.Instant
 import play.api.Logging
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
@@ -24,6 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDateTime
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -33,7 +33,7 @@ class UpdateVerifiedEmailService @Inject()(updateVerifiedEmailConnector: UpdateV
   def updateVerifiedEmail(currentEmail: Option[String],
                           newEmail: String,
                           eori: String,
-                          timestamp: Instant)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
+                          timestamp: LocalDateTime)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
 
     val requestDetail = RequestDetail(
       IDType = "EORI",
