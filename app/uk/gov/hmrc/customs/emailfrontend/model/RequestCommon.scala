@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.model
 
 import java.time.Instant
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.customs.emailfrontend.RandomUUIDGenerator
 
 case class RequestCommon(regime: String, receiptDate: Instant, acknowledgementReference: String)
@@ -29,5 +29,5 @@ object RequestCommon {
   def apply(): RequestCommon =
     RequestCommon("CDS", receiptDate = dateTime, acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString)
 
-  implicit val formats = Json.format[RequestCommon]
+  implicit val formats: OFormat[RequestCommon] = Json.format[RequestCommon]
 }

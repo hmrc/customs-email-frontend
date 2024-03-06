@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import java.time.{Instant, ZoneOffset}
-import play.api.libs.json.{Format, JsString, Json, Reads, Writes}
+import java.time.{Instant, LocalDateTime, ZoneOffset}
+import play.api.libs.json.{Format, JsString, Json, OFormat, Reads, Writes}
 
-case class UpdateEmail(eori: Eori, address: String, timestamp: Instant)
+case class UpdateEmail(eori: Eori, address: String, timestamp: LocalDateTime)
 
 object UpdateEmail {
 
@@ -40,7 +40,7 @@ object UpdateEmail {
     )
   }
 
-  implicit val formatEori = Format(eoriReads, eoriWrites)
-  implicit val dateTimeJF = Format(instantDateReads, instantDateWrites)
-  implicit val format = Json.format[UpdateEmail]
+  implicit val formatEori: Format[Eori] = Format(eoriReads, eoriWrites)
+  implicit val dateTimeJF: Format[Instant] = Format(instantDateReads, instantDateWrites)
+  implicit val format: OFormat[UpdateEmail] = Json.format[UpdateEmail]
 }

@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
+import play.api.libs.json.{Json, OFormat}
+
 import java.time.Instant
-import play.api.libs.json.Json
 
 case class ResponseCommon(status: String,
                           statusText: Option[String],
@@ -28,7 +29,5 @@ case class ResponseCommon(status: String,
 
 object ResponseCommon {
 
-  import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
-
-  implicit val format = Json.format[ResponseCommon]
+  implicit val format: OFormat[ResponseCommon] = Json.format[ResponseCommon]
 }
