@@ -25,11 +25,11 @@ import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
-import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
-import java.time.{Instant, Period}
+import java.time.{LocalDateTime, Period}
 import scala.concurrent.Future
 
 class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
@@ -52,7 +52,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "status of SEE_OTHER show method when email found in cache and email status is AmendmentCompleted" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(Instant.now().minus(Period.ofDays(2)))))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now().minus(Period.ofDays(2)))))))
 
       when(mockSave4LaterService.remove(any)(any))
         .thenReturn(Future.successful(Right(())))
@@ -174,7 +174,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       "cache with timestamp for AmendmentInProgress" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(Instant.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now())))))
 
       running(app) {
         val request = FakeRequest(GET, routes.WhatIsYourEmailController.show.url)
@@ -283,7 +283,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       "used and user already completed success amend email journey" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(Instant.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now())))))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -398,7 +398,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       " and user already complete success amend email journey " in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(Instant.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now())))))
 
       when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
         .thenReturn(Future.successful(Right(())))
@@ -497,7 +497,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "have a status SEE_OTHER when there is no current email fetched" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(Instant.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(LocalDateTime.now())))))
 
       when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
         .thenReturn(Future.successful(Right(())))

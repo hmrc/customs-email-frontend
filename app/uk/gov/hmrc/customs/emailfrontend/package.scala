@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs
 
-import java.time.{Instant, ZoneOffset, ZonedDateTime}
+import java.time.{Instant, LocalDateTime, ZoneOffset, ZonedDateTime}
 import play.api.libs.json._
 import uk.gov.hmrc.auth.core.retrieve.{~ => Retrieve}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, hyphen}
@@ -31,8 +31,8 @@ package object emailfrontend {
 
   object DateTimeUtil {
 
-    def dateTime: Instant = {
-      ZonedDateTime.now(ZoneOffset.UTC).toInstant
+    def dateTime: LocalDateTime = {
+      ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime
     }
 
     private def dateTimeWritesIsoUtc: Writes[Instant] = (d: Instant) =>

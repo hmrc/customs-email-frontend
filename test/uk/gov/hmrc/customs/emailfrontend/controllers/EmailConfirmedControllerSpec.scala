@@ -24,11 +24,11 @@ import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, JourneyType, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.services._
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
-import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
-import java.time.Instant
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class EmailConfirmedControllerSpec extends SpecBase {
@@ -166,7 +166,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
       "user retries the same request(user click back on successful request or refreshes the browser)" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(Instant.now())))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(LocalDateTime.now())))))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
@@ -271,7 +271,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
     protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
     protected val mockUpdateVerifiedEmailService: UpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
     protected val mockDateTimeService: DateTimeService = mock[DateTimeService]
-    protected val testDateTime: Instant = Instant.parse("2021-01-01T11:11:11.111Z")
+    protected val testDateTime: LocalDateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z")
 
     protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
       .overrides(

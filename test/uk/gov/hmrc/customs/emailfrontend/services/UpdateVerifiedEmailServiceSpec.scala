@@ -24,7 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.Instant
+import java.time.{Instant, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -36,14 +36,16 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val eoriNumber = "GBXXXXXXXXXXXX"
   private val email = "test@email.com"
-  private val dateTime = Instant.parse("2021-01-01T11:11:11.111Z")
+  private val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z")
+  private val dateTimeInstance = Instant.parse("2021-01-01T11:11:11.111Z")
+
 
   private val bundleIdUpdateVerifiedEmailResponse = VerifiedEmailResponse(
     UpdateVerifiedEmailResponse(
       ResponseCommon(
         "OK",
         None,
-        dateTime,
+        dateTimeInstance,
         List(MessagingServiceParam(formBundleIdParamName, "testValue")))
     )
   )
@@ -53,7 +55,7 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
       ResponseCommon(
         "OK",
         Some("004 - Duplicate Acknowledgement Reference"),
-        dateTime,
+        dateTimeInstance,
         List(MessagingServiceParam(positionParamName, Fail))
       )
     )

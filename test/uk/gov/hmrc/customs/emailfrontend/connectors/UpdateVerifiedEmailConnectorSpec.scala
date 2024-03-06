@@ -28,7 +28,7 @@ import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, MethodNotAllowedException, _}
 
-import java.time.Instant
+import java.time.{Instant, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -47,7 +47,8 @@ class UpdateVerifiedEmailConnectorSpec extends SpecBase with BeforeAndAfter {
   private val internalServerError = UpstreamErrorResponse("testMessage",
     INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)
 
-  private val dateTime: Instant = Instant.now()
+  private val dateTime: LocalDateTime = LocalDateTime.now()
+  private val dateTimeInstance: Instant = Instant.now()
   private val requestDetail = RequestDetail("idType", "idNumber", "test@email.com", dateTime)
   private val requestCommon = RequestCommon()
 
@@ -55,7 +56,7 @@ class UpdateVerifiedEmailConnectorSpec extends SpecBase with BeforeAndAfter {
     UpdateVerifiedEmailResponse(
       ResponseCommon("OK",
         None,
-        dateTime,
+        dateTimeInstance,
         List(MessagingServiceParam("name", "value")))))
 
   private val verifiedEmailRequest = VerifiedEmailRequest(
