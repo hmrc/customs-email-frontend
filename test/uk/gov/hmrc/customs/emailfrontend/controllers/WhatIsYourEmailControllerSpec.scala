@@ -55,7 +55,8 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "status of SEE_OTHER show method when email found in cache and email status is AmendmentCompleted" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now().minus(Period.ofDays(2)))))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email",
+          Some(LocalDateTime.now().minus(Period.ofDays(2)))))))
 
       when(mockSave4LaterService.remove(any)(any))
         .thenReturn(Future.successful(Right(())))

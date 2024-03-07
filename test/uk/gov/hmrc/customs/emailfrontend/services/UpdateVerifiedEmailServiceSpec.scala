@@ -38,7 +38,7 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val eoriNumber = "GBXXXXXXXXXXXX"
   private val email = "test@email.com"
   protected val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-  private val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z",dateTimeFormatter)
+  private val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateTimeFormatter)
   private val dateTimeInstance = Instant.parse("2021-01-01T11:11:11.111Z")
 
 

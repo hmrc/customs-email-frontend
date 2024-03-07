@@ -44,16 +44,17 @@ class UpdateEmailSpec extends PlaySpec {
       parsedUpdateEmail shouldBe updateEmail
     }
 
-    "handle invalid JSON" in new Setup{
+    "handle invalid JSON" in new Setup {
       val invalidJson = Json.parse("""{"invalidField": "test"}""")
       assertThrows[Exception] {
         invalidJson.as[UpdateEmail]
       }
     }
 
-    "handle different date formats correctly" in new Setup{
+    "handle different date formats correctly" in new Setup {
       val timestamp: String = LocalDateTime.now.format(dateTimeFormatter)
-      val timestampJson = Json.obj("eori" -> "testEori", "address" -> "test@example.com", "timestamp" -> timestamp)
+      val timestampJson = Json.obj("eori" -> "testEori",
+        "address" -> "test@example.com", "timestamp" -> timestamp)
       val parsedUpdateEmail = timestampJson.as[UpdateEmail]
 
       parsedUpdateEmail.timestamp mustBe a[LocalDateTime]

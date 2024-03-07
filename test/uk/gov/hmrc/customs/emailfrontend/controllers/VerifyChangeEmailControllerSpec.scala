@@ -26,8 +26,10 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, _}
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified,
-  EmailVerificationRequestFailure, EmailVerificationRequestSent}
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{
+  EmailAlreadyVerified,
+  EmailVerificationRequestFailure, EmailVerificationRequestSent
+}
 import uk.gov.hmrc.customs.emailfrontend.connectors.{EmailVerificationConnector, SubscriptionDisplayConnector}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
 import uk.gov.hmrc.customs.emailfrontend.model._

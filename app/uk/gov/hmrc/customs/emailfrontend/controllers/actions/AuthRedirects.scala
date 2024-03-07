@@ -51,10 +51,10 @@ trait AuthRedirects {
     }
 
   private val hostDefaults: Map[String, String] = Map(
-    "Dev.external-url.bas-gateway-frontend.host"           -> "http://localhost:9553",
-    "Dev.external-url.citizen-auth-frontend.host"          -> "http://localhost:9029",
+    "Dev.external-url.bas-gateway-frontend.host" -> "http://localhost:9553",
+    "Dev.external-url.citizen-auth-frontend.host" -> "http://localhost:9029",
     "Dev.external-url.identity-verification-frontend.host" -> "http://localhost:9938",
-    "Dev.external-url.stride-auth-frontend.host"           -> "http://localhost:9041"
+    "Dev.external-url.stride-auth-frontend.host" -> "http://localhost:9041"
   )
 
   private def host(service: String): String = {
@@ -84,11 +84,11 @@ trait AuthRedirects {
       ggLoginUrl,
       Map(
         "continue_url" -> Seq(continueUrl),
-        "origin"   -> Seq(origin)
+        "origin" -> Seq(origin)
       ))
 
   def toVerifyLogin(continueUrl: String): Result = Redirect(verifyLoginUrl).withSession(
-    SessionKeys.redirect    -> continueUrl,
+    SessionKeys.redirect -> continueUrl,
     SessionKeys.loginOrigin -> origin
   )
 
@@ -97,7 +97,7 @@ trait AuthRedirects {
       strideLoginUrl,
       Map(
         "successURL" -> Seq(successUrl),
-        "origin"     -> Seq(origin)
+        "origin" -> Seq(origin)
       ) ++ failureUrl.map(f => Map("failureURL" -> Seq(f))).getOrElse(Map()))
 
 }

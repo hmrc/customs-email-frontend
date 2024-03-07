@@ -58,7 +58,7 @@ class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
     protected val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
     protected val email = "abc@def.com"
     protected val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-    protected val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z",dateTimeFormatter)
+    protected val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateTimeFormatter)
     protected val badRequestException = new BadRequestException("testMessage")
   }
 }

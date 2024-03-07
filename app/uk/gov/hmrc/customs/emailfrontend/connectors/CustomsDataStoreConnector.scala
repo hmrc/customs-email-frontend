@@ -48,7 +48,7 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
       "eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
 
     httpClient.POST[UpdateEmail, HttpResponse](
-        appConfig.customsDataStoreUrl, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
+      appConfig.customsDataStoreUrl, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
       .map { response =>
         auditResponse("DataStoreResponseReceived", response, appConfig.customsDataStoreUrl)
         response.status match {
@@ -61,15 +61,16 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
             Left(BadRequest)
         }
       }.recover {
-        case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
+      case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
 
-        case _: InternalServerException | UpstreamErrorResponse(
-          _, INTERNAL_SERVER_ERROR, _, _) => Left(ServiceUnavailable)
+      case _: InternalServerException | UpstreamErrorResponse(
+      _, INTERNAL_SERVER_ERROR, _, _) => Left(ServiceUnavailable)
 
-        case NonFatal(e) =>
-          logger.error(s"Call to data stored failed url=" +
-            s"${appConfig.customsDataStoreUrl}, exception=$e"); Left(UnhandledException)
-      }
+      case NonFatal(e) =>
+        logger.error(s"Call to data stored failed url=" +
+          s"${appConfig.customsDataStoreUrl}, exception=$e");
+        Left(UnhandledException)
+    }
   }
 
   private def auditRequest(transactionName: String,

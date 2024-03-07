@@ -20,7 +20,8 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDateTime
 
-case class RequestDetail(IDType: String, IDNumber: String, emailAddress: String, emailVerificationTimestamp: LocalDateTime)
+case class RequestDetail(IDType: String, IDNumber: String,
+                         emailAddress: String, emailVerificationTimestamp: LocalDateTime)
 
 object RequestDetail {
 

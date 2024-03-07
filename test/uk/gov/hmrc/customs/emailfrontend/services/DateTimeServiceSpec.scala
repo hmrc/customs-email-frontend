@@ -27,7 +27,6 @@ class DateTimeServiceSpec extends SpecBase {
       val dateTimeService: DateTimeService = new DateTimeService {
         override val UtcZoneId: ZoneId = ZoneId.of("UTC")
 
-        //override def nowUtc(): DateTime = new DateTime(fixedClock.instant().toEpochMilli, DateTimeZone.UTC)
         override def nowUtc(): LocalDateTime = ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime
       }
 

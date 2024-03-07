@@ -46,7 +46,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
   private val testEori: Eori = Eori("GB1234556789")
   private val testEmail = "email@test.com"
   protected val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-  private val testDateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z",dateTimeFormatter)
+  private val testDateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateTimeFormatter)
   private val requestBody: UpdateEmail = UpdateEmail(testEori, testEmail, testDateTime)
   private val headers = Seq("Content-Type" -> "application/json")
 

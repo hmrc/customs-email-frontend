@@ -27,7 +27,8 @@ object RequestCommon {
   import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
 
   def apply(): RequestCommon =
-    RequestCommon("CDS", receiptDate = dateTime.toInstant(ZoneOffset.UTC), acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString)
+    RequestCommon("CDS", receiptDate = dateTime.toInstant(ZoneOffset.UTC),
+      acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString)
 
   implicit val formats: OFormat[RequestCommon] = Json.format[RequestCommon]
 }
