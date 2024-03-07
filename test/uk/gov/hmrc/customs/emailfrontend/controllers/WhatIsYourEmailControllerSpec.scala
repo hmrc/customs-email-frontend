@@ -45,6 +45,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val someSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(
     None, None, Some("statusText"), Some("FAIL"))
 
+  private val someSubscriptionDisplayResponseWithSuccessStatus = SubscriptionDisplayResponse(
+    None, None, Some("Processed Successfully"), None)
+
   private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None, None, None)
 
   "WhatIsYourEmailController" should {
@@ -152,6 +155,23 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
+    "have a status of INTERNAL_SERVER_ERROR for show method " +
+      "when email verification service returns none" in new Setup {
+
+      when(mockSave4LaterService.fetchEmail(any)(any))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
+
+      when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(None))
+
+      running(app) {
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show.url)
+        val result = route(app, request).value
+
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+      }
+    }
+
     "have a status of SEE_OTHER for show method when email found in " +
       "cache with no timestamp and email is not verified" in new Setup {
 
@@ -236,6 +256,23 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(noneSubscriptionDisplayResponse))
+
+      running(app) {
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
+        val result = route(app, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.verify.url
+      }
+    }
+
+    "have a status of SEE_OTHER for create method when status of " +
+      "subscription display returns processed successfully" in new Setup {
+
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
+
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(someSubscriptionDisplayResponseWithSuccessStatus))
 
       running(app) {
         val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)

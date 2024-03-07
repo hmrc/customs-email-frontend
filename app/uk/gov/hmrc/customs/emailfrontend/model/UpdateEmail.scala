@@ -16,21 +16,25 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import java.time.{Instant, LocalDateTime, ZoneOffset}
-import play.api.libs.json.{Format, JsString, Json, OFormat, Reads, Writes}
+import play.api.libs.json._
+
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDateTime, ZoneOffset}
 
 case class UpdateEmail(eori: Eori, address: String, timestamp: LocalDateTime)
 
 object UpdateEmail {
 
-  val instantDateReads = Reads[Instant](js =>
-    js.validate[String].map[Instant](dtString =>
-      Instant.parse(dtString)
+  protected val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+
+  val localDateTimeReads = Reads[LocalDateTime](js =>
+    js.validate[String].map[LocalDateTime](dtString =>
+      LocalDateTime.parse(dtString, dateTimeFormatter)
     )
   )
 
-  private val instantDateWrites: Writes[Instant] =
-    (d: Instant) => JsString(d.atZone(ZoneOffset.UTC).toString)
+  private val localDateTimeWrites: Writes[LocalDateTime] =
+    (d: LocalDateTime) => JsString(d.atZone(ZoneOffset.UTC).format(dateTimeFormatter))
 
   private val eoriWrites: Writes[Eori] = (eori: Eori) => JsString(eori.id)
 
@@ -41,6 +45,6 @@ object UpdateEmail {
   }
 
   implicit val formatEori: Format[Eori] = Format(eoriReads, eoriWrites)
-  implicit val dateTimeJF: Format[Instant] = Format(instantDateReads, instantDateWrites)
+  implicit val dateTimeJF: Format[LocalDateTime] = Format(localDateTimeReads, localDateTimeWrites)
   implicit val format: OFormat[UpdateEmail] = Json.format[UpdateEmail]
 }

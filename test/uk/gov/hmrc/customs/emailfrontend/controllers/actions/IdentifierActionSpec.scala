@@ -58,6 +58,25 @@ class IdentifierActionSpec extends SpecBase {
       }
     }
 
+    "redirect the user to ineligible when has no enrolments, internalId and Affinity are provided" in new Setup {
+      private val mockAuthConnector = mock[AuthConnector]
+
+      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](
+        any, any)(any, any)).thenReturn(Future.successful(
+        Enrolments(Set.empty) ~ None ~ None ~ None))
+
+      private val authAction = new AuthenticatedIdentifierAction(
+        mockAuthConnector, config, env, errorHandler, bodyParsers)
+
+      private val controller = new Harness(authAction)
+
+      running(app) {
+        val result = controller.onPageLoad()(FakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.NoEnrolment).url
+      }
+    }
+
     "redirect the user to ineligible (no-enrolment) when has no eori enrolment" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
       private val enrolments = Set(Enrolment("someKey", Seq(EnrolmentIdentifier("someKey", "someValue")), "ACTIVE"))
@@ -219,7 +238,7 @@ class IdentifierActionSpec extends SpecBase {
   }
 
   implicit class Ops[A](a: A) {
-    def ~[B](b: B): A ~ B = new~(a, b)
+    def ~[B](b: B): A ~ B = new ~(a, b)
   }
 
   trait Setup {
