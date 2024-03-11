@@ -19,11 +19,11 @@ package uk.gov.hmrc.customs.emailfrontend.model
 import play.api.libs.json.{Format, JsError, JsResult, JsSuccess, JsValue, Json, OFormat}
 
 import java.time.format.DateTimeFormatter
-import java.time.{Instant, LocalDateTime}
+import java.time.LocalDateTime
 
 case class ResponseCommon(status: String,
                           statusText: Option[String],
-                          processingDate: Instant,
+                          processingDate: LocalDateTime,
                           returnParameters: List[MessagingServiceParam]) {
   require(returnParameters.nonEmpty)
 }

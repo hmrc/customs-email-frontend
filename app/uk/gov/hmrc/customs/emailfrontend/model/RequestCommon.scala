@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import java.time.{Instant, LocalDateTime, ZoneOffset}
+import java.time.LocalDateTime
 import play.api.libs.json.{Format, JsError, JsResult, JsSuccess, JsValue, Json, OFormat}
 import uk.gov.hmrc.customs.emailfrontend.RandomUUIDGenerator
 
 import java.time.format.DateTimeFormatter
 
-case class RequestCommon(regime: String, receiptDate: Instant, acknowledgementReference: String)
+case class RequestCommon(regime: String, receiptDate: LocalDateTime, acknowledgementReference: String)
 
 object RequestCommon {
 
@@ -45,7 +45,7 @@ object RequestCommon {
   }
 
   def apply(): RequestCommon =
-    RequestCommon("CDS", receiptDate = dateTime.toInstant(ZoneOffset.UTC),
+    RequestCommon("CDS", receiptDate = dateTime,
       acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString)
 
   implicit val formats: OFormat[RequestCommon] = Json.format[RequestCommon]
