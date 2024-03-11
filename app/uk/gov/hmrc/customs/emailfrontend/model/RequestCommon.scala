@@ -16,15 +16,33 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import java.time.{Instant, ZoneOffset}
-import play.api.libs.json.{Json, OFormat}
+import java.time.{Instant, LocalDateTime, ZoneOffset}
+import play.api.libs.json.{Format, JsError, JsResult, JsSuccess, JsValue, Json, OFormat}
 import uk.gov.hmrc.customs.emailfrontend.RandomUUIDGenerator
+
+import java.time.format.DateTimeFormatter
 
 case class RequestCommon(regime: String, receiptDate: Instant, acknowledgementReference: String)
 
 object RequestCommon {
 
   import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
+
+  implicit val localDateTimeFormat: Format[LocalDateTime] = new Format[LocalDateTime] {
+    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+
+    override def writes(o: LocalDateTime): JsValue = Json.toJson(formatter.format(o))
+
+    override def reads(json: JsValue): JsResult[LocalDateTime] = {
+      json.validate[String].flatMap { str =>
+        try {
+          JsSuccess(LocalDateTime.parse(str, formatter))
+        } catch {
+          case _: Throwable => JsError("Invalid LocalDateTime format")
+        }
+      }
+    }
+  }
 
   def apply(): RequestCommon =
     RequestCommon("CDS", receiptDate = dateTime.toInstant(ZoneOffset.UTC),
