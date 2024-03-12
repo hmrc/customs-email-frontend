@@ -16,15 +16,16 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import org.joda.time.DateTime
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{HttpErrorResponse, ServiceUnavailable, VerifiedEmailRequest, VerifiedEmailResponse}
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
 import uk.gov.hmrc.customs.emailfrontend.model._
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -36,7 +37,7 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val eoriNumber = "GBXXXXXXXXXXXX"
   private val email = "test@email.com"
-  private val dateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
+  private val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
 
   private val bundleIdUpdateVerifiedEmailResponse = VerifiedEmailResponse(
     UpdateVerifiedEmailResponse(

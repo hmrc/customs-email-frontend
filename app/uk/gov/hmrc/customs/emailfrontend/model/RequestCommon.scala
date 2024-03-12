@@ -16,18 +16,27 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.joda.time.DateTime
-import play.api.libs.json.Json
+import java.time.LocalDateTime
+import play.api.libs.json.{Format, JsResult, JsValue, Json, OFormat}
 import uk.gov.hmrc.customs.emailfrontend.RandomUUIDGenerator
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils
 
-case class RequestCommon(regime: String, receiptDate: DateTime, acknowledgementReference: String)
+case class RequestCommon(regime: String, receiptDate: LocalDateTime, acknowledgementReference: String)
 
 object RequestCommon {
 
   import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
 
-  def apply(): RequestCommon =
-    RequestCommon("CDS", receiptDate = dateTime, acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString)
+  implicit val localDateTimeFormat: Format[LocalDateTime] = new Format[LocalDateTime] {
 
-  implicit val formats = Json.format[RequestCommon]
+    override def writes(o: LocalDateTime): JsValue = Utils.writesLocalDateTime(o)
+
+    override def reads(json: JsValue): JsResult[LocalDateTime] = Utils.readsLocalDateTime(json)
+  }
+
+  def apply(): RequestCommon =
+    RequestCommon("CDS", receiptDate = dateTime,
+      acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString)
+
+  implicit val formats: OFormat[RequestCommon] = Json.format[RequestCommon]
 }

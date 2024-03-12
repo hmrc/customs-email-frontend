@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, OFormat}
 
 case class ReferrerName(name: String, continueUrl: String)
 
 object ReferrerName {
-  implicit val formats = Json.format[ReferrerName]
+  implicit val formats: OFormat[ReferrerName] = Json.format[ReferrerName]
 
   implicit def toJsonFormat(referrerName: ReferrerName): JsValue = Json.toJson(referrerName)
 }

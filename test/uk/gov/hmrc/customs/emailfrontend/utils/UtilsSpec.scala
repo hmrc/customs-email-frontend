@@ -16,8 +16,11 @@
 
 package utils
 
+import play.api.libs.json.{JsError, JsValue, Json}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils._
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+
+import java.time.LocalDateTime
 
 class UtilsSpec extends SpecBase {
 
@@ -38,4 +41,26 @@ class UtilsSpec extends SpecBase {
       singleSpace shouldBe " "
     }
   }
+
+  "writesLocalDateTime" should {
+
+    "correctly write LocalDateTime to string value" in {
+      val result: JsValue = writesLocalDateTime(LocalDateTime.now())
+      Json.stringify(result) should not be empty
+    }
+  }
+
+  "readsLocalDateTime" should {
+
+    "correctly parse LocalDateTime and return correct value" in {
+      val result = readsLocalDateTime(Json.toJson("2024-03-12T16:34:38Z"))
+      result.get shouldBe a[LocalDateTime]
+    }
+
+    "throw Exception if wrong datetime format is used" in {
+      val result = readsLocalDateTime(Json.toJson("2024-03-11T14:30:00.123456789Z"))
+      result shouldBe a[JsError]
+    }
+  }
+
 }

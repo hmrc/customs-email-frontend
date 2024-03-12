@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import org.joda.time.DateTime
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Reads
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
@@ -25,6 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, Journe
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
@@ -97,7 +97,7 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
   trait Setup {
     implicit val hc: HeaderCarrier = mock[HeaderCarrier]
     protected val internalId: InternalId = InternalId("internalId-123")
-    protected val timestamp: DateTime = DateTimeUtil.dateTime
+    protected val timestamp: LocalDateTime = DateTimeUtil.dateTime
     protected val emailDetails: EmailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
     protected val journeyType: JourneyType = JourneyType(true)
     protected val referrerName: ReferrerName = ReferrerName("customs-finance", "/xyz")

@@ -16,19 +16,26 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.joda.time.DateTime
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, JsResult, JsValue, Json, OFormat}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils
+
+import java.time.LocalDateTime
 
 case class ResponseCommon(status: String,
                           statusText: Option[String],
-                          processingDate: DateTime,
+                          processingDate: LocalDateTime,
                           returnParameters: List[MessagingServiceParam]) {
   require(returnParameters.nonEmpty)
 }
 
 object ResponseCommon {
 
-  import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
+  implicit val localDateTimeFormat: Format[LocalDateTime] = new Format[LocalDateTime] {
 
-  implicit val format = Json.format[ResponseCommon]
+    override def writes(o: LocalDateTime): JsValue = Utils.writesLocalDateTime(o)
+
+    override def reads(json: JsValue): JsResult[LocalDateTime] = Utils.readsLocalDateTime(json)
+  }
+
+  implicit val format: OFormat[ResponseCommon] = Json.format[ResponseCommon]
 }

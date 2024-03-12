@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class MessagingServiceParam(paramName: String, paramValue: String)
 
 object MessagingServiceParam {
-  implicit val formats = Json.format[MessagingServiceParam]
+  implicit val formats: OFormat[MessagingServiceParam] = Json.format[MessagingServiceParam]
 
   val positionParamName = "POSITION"
   val Fail = "FAIL"

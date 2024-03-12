@@ -16,14 +16,24 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.joda.time.DateTime
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, JsResult, JsValue, Json, OFormat}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils
 
-case class RequestDetail(IDType: String, IDNumber: String, emailAddress: String, emailVerificationTimestamp: DateTime)
+import java.time.LocalDateTime
+
+case class RequestDetail(IDType: String,
+                         IDNumber: String,
+                         emailAddress: String,
+                         emailVerificationTimestamp: LocalDateTime)
 
 object RequestDetail {
 
-  import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
+  implicit val localDateTimeFormat: Format[LocalDateTime] = new Format[LocalDateTime] {
 
-  implicit val formats = Json.format[RequestDetail]
+    override def writes(o: LocalDateTime): JsValue = Utils.writesLocalDateTime(o)
+
+    override def reads(json: JsValue): JsResult[LocalDateTime] = Utils.readsLocalDateTime(json)
+  }
+
+  implicit val formats: OFormat[RequestDetail] = Json.format[RequestDetail]
 }

@@ -16,16 +16,18 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import org.joda.time.DateTime
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status._
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
-import scala.concurrent.Future
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
+
+import java.time.LocalDateTime
+import scala.concurrent.Future
 
 class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
 
@@ -55,7 +57,7 @@ class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
     protected val service = new CustomsDataStoreService(mockConnector)
     protected val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
     protected val email = "abc@def.com"
-    protected val dateTime = DateTime.parse("2021-01-01T11:11:11.111Z")
+    protected val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
     protected val badRequestException = new BadRequestException("testMessage")
   }
 }

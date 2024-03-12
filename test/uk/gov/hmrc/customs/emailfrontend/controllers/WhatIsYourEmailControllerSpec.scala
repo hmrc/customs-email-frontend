@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.FakeRequest
@@ -26,10 +25,11 @@ import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
-import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
+import java.time.{LocalDateTime, Period}
 import scala.concurrent.Future
 
 class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
@@ -45,6 +45,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val someSubscriptionDisplayResponseWithStatus = SubscriptionDisplayResponse(
     None, None, Some("statusText"), Some("FAIL"))
 
+  private val someSubscriptionDisplayResponseWithSuccessStatus = SubscriptionDisplayResponse(
+    None, None, Some("Processed Successfully"), None)
+
   private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None, None, None)
 
   "WhatIsYourEmailController" should {
@@ -52,7 +55,8 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "status of SEE_OTHER show method when email found in cache and email status is AmendmentCompleted" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now().minusDays(2))))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email",
+          Some(LocalDateTime.now().minus(Period.ofDays(2)))))))
 
       when(mockSave4LaterService.remove(any)(any))
         .thenReturn(Future.successful(Right(())))
@@ -152,6 +156,23 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
+    "have a status of INTERNAL_SERVER_ERROR for show method " +
+      "when email verification service returns none" in new Setup {
+
+      when(mockSave4LaterService.fetchEmail(any)(any))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
+
+      when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(None))
+
+      running(app) {
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.show.url)
+        val result = route(app, request).value
+
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+      }
+    }
+
     "have a status of SEE_OTHER for show method when email found in " +
       "cache with no timestamp and email is not verified" in new Setup {
 
@@ -174,7 +195,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       "cache with timestamp for AmendmentInProgress" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now())))))
 
       running(app) {
         val request = FakeRequest(GET, routes.WhatIsYourEmailController.show.url)
@@ -246,6 +267,23 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
+    "have a status of SEE_OTHER for create method when status of " +
+      "subscription display returns processed successfully" in new Setup {
+
+      when(mockSave4LaterService.fetchEmail(any)(any)).thenReturn(Future.successful(None))
+
+      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(someSubscriptionDisplayResponseWithSuccessStatus))
+
+      running(app) {
+        val request = FakeRequest(GET, routes.WhatIsYourEmailController.create.url)
+        val result = route(app, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.verify.url
+      }
+    }
+
     "have a status of OK for create method when email found in cache with no timestamp" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
@@ -283,7 +321,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       "used and user already completed success amend email journey" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now())))))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -398,7 +436,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       " and user already complete success amend email journey " in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now())))))
 
       when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
         .thenReturn(Future.successful(Right(())))
@@ -497,7 +535,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "have a status SEE_OTHER when there is no current email fetched" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(DateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(LocalDateTime.now())))))
 
       when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
         .thenReturn(Future.successful(Right(())))

@@ -16,27 +16,9 @@
 
 package uk.gov.hmrc.customs.emailfrontend.utils
 
-import play.api.libs.json.{JsError, JsResult, JsSuccess, JsValue, Json}
-
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-object Utils {
-  val emptyString = ""
-  val hyphen = "-"
-  val singleSpace = " "
-  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-
-  def writesLocalDateTime(o: LocalDateTime): JsValue = Json.toJson(dateFormatter.format(o))
-
-  def readsLocalDateTime(json: JsValue): JsResult[LocalDateTime] = {
-    json.validate[String].flatMap { str =>
-      try {
-        JsSuccess(LocalDateTime.parse(str, dateFormatter))
-      } catch {
-        case _: Throwable => JsError("Invalid LocalDateTime format")
-      }
-    }
-  }
-
+object TestData {
+  val dateFormatter01: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+  val dateFormatter02: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
 }

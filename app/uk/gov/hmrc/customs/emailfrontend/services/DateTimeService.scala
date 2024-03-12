@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import org.joda.time.{DateTime, DateTimeZone}
-
-import java.time.{Clock, ZoneId, ZonedDateTime}
+import java.time.{LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
 
 class DateTimeService {
-  val UtcZoneId = ZoneId.of("UTC")
-  def nowUtc(): DateTime = new DateTime(Clock.systemUTC().instant().toEpochMilli, DateTimeZone.UTC)
+  val UtcZoneId: ZoneId = ZoneId.of("UTC")
+
+  def nowUtc(): LocalDateTime = ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime
+
   def zonedDateTimeUtc: ZonedDateTime = ZonedDateTime.now(UtcZoneId)
 }
