@@ -16,17 +16,15 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.scalatest.matchers.should.Matchers._
-import org.scalatestplus.play.PlaySpec
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.libs.json.Json
+import uk.gov.hmrc.customs.emailfrontend.utils.CommonUtils.dateFormatter01
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
-class UpdateEmailSpec extends PlaySpec {
+class UpdateEmailSpec extends SpecBase {
 
   trait Setup {
-    val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     val testDateTime01: LocalDateTime = LocalDateTime.now()
   }
 
@@ -35,7 +33,7 @@ class UpdateEmailSpec extends PlaySpec {
     "serialize timestamp correctly" in new Setup {
       val eori = Eori("testEori")
       val address = "test@example.com"
-      val timestamp = LocalDateTime.parse(testDateTime01.format(dateTimeFormatter), dateTimeFormatter)
+      val timestamp = LocalDateTime.parse(testDateTime01.format(dateFormatter01), dateFormatter01)
 
       val updateEmail = UpdateEmail(eori, address, timestamp)
       val json = Json.toJson(updateEmail)
@@ -52,7 +50,7 @@ class UpdateEmailSpec extends PlaySpec {
     }
 
     "handle different date formats correctly" in new Setup {
-      val timestamp: String = LocalDateTime.now.format(dateTimeFormatter)
+      val timestamp: String = LocalDateTime.now.format(dateFormatter01)
       val timestampJson = Json.obj("eori" -> "testEori",
         "address" -> "test@example.com", "timestamp" -> timestamp)
       val parsedUpdateEmail = timestampJson.as[UpdateEmail]

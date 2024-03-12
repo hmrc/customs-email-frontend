@@ -17,8 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.model
 
 import play.api.libs.json.{Format, JsError, JsResult, JsSuccess, JsValue, Json, OFormat}
-
-import java.time.format.DateTimeFormatter
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils
 import java.time.{LocalDateTime, ZoneOffset}
 
 case class EmailDetails(currentEmail: Option[String], newEmail: String, timestamp: Option[LocalDateTime]) {
@@ -34,19 +33,10 @@ case class EmailDetails(currentEmail: Option[String], newEmail: String, timestam
 object EmailDetails {
 
   implicit val localDateTimeFormat: Format[LocalDateTime] = new Format[LocalDateTime] {
-    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
-    override def writes(o: LocalDateTime): JsValue = Json.toJson(formatter.format(o))
+    override def writes(o: LocalDateTime): JsValue = Utils.writesLocalDateTime(o)
 
-    override def reads(json: JsValue): JsResult[LocalDateTime] = {
-      json.validate[String].flatMap { str =>
-        try {
-          JsSuccess(LocalDateTime.parse(str, formatter))
-        } catch {
-          case _: Throwable => JsError("Invalid LocalDateTime format")
-        }
-      }
-    }
+    override def reads(json: JsValue): JsResult[LocalDateTime] = Utils.readsLocalDateTime(json)
   }
 
   implicit val jsonFormat: OFormat[EmailDetails] = Json.format[EmailDetails]

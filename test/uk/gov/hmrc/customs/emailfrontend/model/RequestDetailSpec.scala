@@ -16,16 +16,15 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.scalatest.matchers.should.Matchers._
-import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
+import uk.gov.hmrc.customs.emailfrontend.utils.CommonUtils.dateFormatter01
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
-class RequestDetailSpec extends PlaySpec {
+class RequestDetailSpec extends SpecBase {
 
-  "serialize and deserialize to/from JSON properly for correct value of RequestDetail" in new Setup {
+  "reads and writes from/to JSON properly for correct value of RequestDetail" in new Setup {
 
     val json = Json.toJson(requestDtl01)
 
@@ -39,7 +38,7 @@ class RequestDetailSpec extends PlaySpec {
     parsedReqCmn.emailVerificationTimestamp shouldBe requestDtl01.emailVerificationTimestamp
   }
 
-  "deserialization from JSON should fail for invalid value" in new Setup {
+  "reads from JSON should fail for invalid value" in new Setup {
     intercept[Exception] {
       inCorrectEmailDetailsJson.as[RequestDetail]
     }
@@ -51,10 +50,9 @@ class RequestDetailSpec extends PlaySpec {
     val IdNumber = "GBXXXXXXXXXXXX"
     val emailId = "sample@example.com"
     val validDateTime = "2024-03-11T14:30:00Z"
-    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-    val validLocalDateTime: LocalDateTime = LocalDateTime.parse(validDateTime, formatter)
+    val validLocalDateTime: LocalDateTime = LocalDateTime.parse(validDateTime, dateFormatter01)
     val incorrectDateTime = "2024-03-11T14:30:00.123456789Z"
-    val requestDtl01 = RequestDetail(idType,IdNumber, emailId, validLocalDateTime)
+    val requestDtl01 = RequestDetail(idType, IdNumber, emailId, validLocalDateTime)
 
     val correctEmailDetailsJson = Json.obj(
       "IDType" -> idType,

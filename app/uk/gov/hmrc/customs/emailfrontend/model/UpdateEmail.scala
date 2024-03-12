@@ -17,24 +17,22 @@
 package uk.gov.hmrc.customs.emailfrontend.model
 
 import play.api.libs.json._
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils
 
-import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, ZoneOffset}
 
 case class UpdateEmail(eori: Eori, address: String, timestamp: LocalDateTime)
 
 object UpdateEmail {
 
-  protected val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-
   val localDateTimeReads = Reads[LocalDateTime](js =>
     js.validate[String].map[LocalDateTime](dtString =>
-      LocalDateTime.parse(dtString, dateTimeFormatter)
+      LocalDateTime.parse(dtString, Utils.dateFormatter)
     )
   )
 
   private val localDateTimeWrites: Writes[LocalDateTime] =
-    (d: LocalDateTime) => JsString(d.atZone(ZoneOffset.UTC).format(dateTimeFormatter))
+    (d: LocalDateTime) => JsString(d.atZone(ZoneOffset.UTC).format(Utils.dateFormatter))
 
   private val eoriWrites: Writes[Eori] = (eori: Eori) => JsString(eori.id)
 

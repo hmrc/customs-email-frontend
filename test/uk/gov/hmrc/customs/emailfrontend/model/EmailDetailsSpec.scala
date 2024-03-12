@@ -16,16 +16,15 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.scalatest.matchers.should.Matchers._
-import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
+import uk.gov.hmrc.customs.emailfrontend.utils.CommonUtils.dateFormatter01
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
-class EmailDetailsSpec extends PlaySpec {
+class EmailDetailsSpec extends SpecBase {
 
-  "serialize and deserialize to/from JSON properly for correct datetime value in EmailDetails" in new Setup {
+  "reads and writes from/to JSON properly for correct datetime value in EmailDetails" in new Setup {
 
     val json = Json.toJson(emailDetails01)
 
@@ -36,7 +35,7 @@ class EmailDetailsSpec extends PlaySpec {
     parsedEmailDetails shouldBe emailDetails01
   }
 
-  "deserialization from JSON should fail for invalid datetime value in EmailDetails" in new Setup {
+  "reads from JSON should fail for invalid datetime value in EmailDetails" in new Setup {
     intercept[Exception] {
       inCorrectEmailDetailsJson.as[EmailDetails]
     }
@@ -44,10 +43,9 @@ class EmailDetailsSpec extends PlaySpec {
 
   trait Setup {
 
-    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     val validDateTime = "2024-03-11T14:30:00Z"
     val emailDetails01 = EmailDetails(Some("old@example.com"), "new@example.com",
-      Some(LocalDateTime.parse(validDateTime, formatter)))
+      Some(LocalDateTime.parse(validDateTime, dateFormatter01)))
 
     val correctEmailDetailsJson = Json.obj(
       "currentEmail" -> "old@example.com",

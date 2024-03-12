@@ -24,7 +24,7 @@ import java.time.LocalDateTime
 
 class RequestCommonSpec extends PlaySpec {
 
-  "serialize and deserialize to/from JSON properly for correct datetime value in RequestCommon" in new Setup {
+  "reads and writes from/to JSON properly for correct datetime value in RequestCommon" in new Setup {
 
     val json = Json.toJson(requestCmn01)
 
@@ -36,7 +36,7 @@ class RequestCommonSpec extends PlaySpec {
   }
 
 
-  "deserialization from JSON should fail for invalid datetime value in RequestCommon" in new Setup {
+  "reads from JSON should fail for invalid datetime value in RequestCommon" in new Setup {
     intercept[Exception] {
       inCorrectEmailDetailsJson.as[RequestCommon]
     }

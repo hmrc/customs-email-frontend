@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import java.time.{LocalDateTime}
+import java.time.LocalDateTime
 import play.api.Logging
 import play.api.http.HeaderNames.CONTENT_TYPE
 import play.api.http.MimeTypes

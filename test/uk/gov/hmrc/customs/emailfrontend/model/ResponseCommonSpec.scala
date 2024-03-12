@@ -16,17 +16,16 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.scalatest.matchers.should.Matchers._
-import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam.formBundleIdParamName
+import uk.gov.hmrc.customs.emailfrontend.utils.CommonUtils.dateFormatter01
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
-class ResponseCommonSpec extends PlaySpec {
+class ResponseCommonSpec extends SpecBase {
 
-  "serialize and deserialize to/from JSON properly for correct ResponseCommon" in new Setup {
+  "reads and writes from/to JSON properly for correct ResponseCommon" in new Setup {
 
     val json = Json.toJson(requestCmn01)
 
@@ -37,7 +36,7 @@ class ResponseCommonSpec extends PlaySpec {
     parsedReqCmn.statusText shouldBe requestCmn01.statusText
   }
 
-  "deserialization from JSON should fail for invalid datetime in ResponseCommon" in new Setup {
+  "reads from JSON should fail for invalid datetime in ResponseCommon" in new Setup {
     intercept[Exception] {
       inCorrectResponseCmnJson.as[ResponseCommon]
     }
@@ -49,8 +48,7 @@ class ResponseCommonSpec extends PlaySpec {
     val statusText = Some("200 - OK")
     val validDateTime = "2024-03-11T14:30:00Z"
     val invalidDateTime = "2024-03-11T14:30:00.123456789Z"
-    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-    val validDateTimeObj: LocalDateTime = LocalDateTime.parse(validDateTime, formatter)
+    val validDateTimeObj: LocalDateTime = LocalDateTime.parse(validDateTime, dateFormatter01)
     val returnParams = List(MessagingServiceParam(formBundleIdParamName, "testValue"))
     val requestCmn01 = ResponseCommon(status, statusText, validDateTimeObj, returnParams)
 

@@ -24,12 +24,12 @@ import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, JourneyType, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.services._
+import uk.gov.hmrc.customs.emailfrontend.utils.CommonUtils.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import scala.concurrent.Future
 
 class EmailConfirmedControllerSpec extends SpecBase {
@@ -272,8 +272,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
     protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
     protected val mockUpdateVerifiedEmailService: UpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
     protected val mockDateTimeService: DateTimeService = mock[DateTimeService]
-    protected val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-    protected val testDateTime: LocalDateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateTimeFormatter)
+    protected val testDateTime: LocalDateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
 
     protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
       .overrides(
