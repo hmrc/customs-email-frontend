@@ -21,7 +21,7 @@ import play.api.http.Status._
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
-import uk.gov.hmrc.customs.emailfrontend.utils.CommonUtils.dateFormatter02
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}

@@ -42,7 +42,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import java.time.{LocalDateTime, Period}
 import scala.concurrent.Future
 
-
 class VerifyChangeEmailControllerSpec extends SpecBase
   with BeforeAndAfterEach {
 

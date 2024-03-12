@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.model
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.customs.emailfrontend.utils.CommonUtils.dateFormatter01
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter01
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 import java.time.LocalDateTime

@@ -18,7 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.utils
 
 import java.time.format.DateTimeFormatter
 
-object CommonUtils {
+object TestData {
   val dateFormatter01: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
   val dateFormatter02: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
 }

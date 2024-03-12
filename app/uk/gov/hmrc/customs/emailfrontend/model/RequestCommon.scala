@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.model
 
 import java.time.LocalDateTime
-import play.api.libs.json.{Format, JsError, JsResult, JsSuccess, JsValue, Json, OFormat}
+import play.api.libs.json.{Format, JsResult, JsValue, Json, OFormat}
 import uk.gov.hmrc.customs.emailfrontend.RandomUUIDGenerator
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils
 

@@ -5,7 +5,7 @@ val appName = "customs-email-frontend"
 
 val silencerVersion = "1.7.16"
 val scala2_13_12 = "2.13.12"
-val bootstrap = "8.4.0"
+val bootstrap = "8.5.0"
 
 val scalaStyleConfigFile = "scalastyle-config.xml"
 val testScalaStyleConfigFile = "test-scalastyle-config.xml"

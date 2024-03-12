@@ -18,15 +18,12 @@ package uk.gov.hmrc.customs.emailfrontend.model
 
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.libs.json.Json
-import uk.gov.hmrc.customs.emailfrontend.utils.CommonUtils.dateFormatter01
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter01
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 import java.time.LocalDateTime
-class UpdateEmailSpec extends SpecBase {
 
-  trait Setup {
-    val testDateTime01: LocalDateTime = LocalDateTime.now()
-  }
+class UpdateEmailSpec extends SpecBase {
 
   "UpdateEmail" should {
 
@@ -57,5 +54,9 @@ class UpdateEmailSpec extends SpecBase {
 
       parsedUpdateEmail.timestamp mustBe a[LocalDateTime]
     }
+  }
+
+  trait Setup {
+    val testDateTime01: LocalDateTime = LocalDateTime.now()
   }
 }

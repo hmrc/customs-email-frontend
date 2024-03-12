@@ -21,7 +21,7 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{HttpErrorResponse, ServiceUnavailable, VerifiedEmailRequest, VerifiedEmailResponse}
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
 import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.customs.emailfrontend.utils.CommonUtils.dateFormatter02
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -38,7 +38,6 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val eoriNumber = "GBXXXXXXXXXXXX"
   private val email = "test@email.com"
   private val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
-
 
   private val bundleIdUpdateVerifiedEmailResponse = VerifiedEmailResponse(
     UpdateVerifiedEmailResponse(

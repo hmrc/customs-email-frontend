@@ -26,9 +26,7 @@ case class UpdateEmail(eori: Eori, address: String, timestamp: LocalDateTime)
 object UpdateEmail {
 
   val localDateTimeReads = Reads[LocalDateTime](js =>
-    js.validate[String].map[LocalDateTime](dtString =>
-      LocalDateTime.parse(dtString, Utils.dateFormatter)
-    )
+    js.validate[String].map[LocalDateTime](dtString => LocalDateTime.parse(dtString, Utils.dateFormatter))
   )
 
   private val localDateTimeWrites: Writes[LocalDateTime] =
