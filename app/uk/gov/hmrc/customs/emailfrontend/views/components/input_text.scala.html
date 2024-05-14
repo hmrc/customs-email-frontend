@@ -14,11 +14,13 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
+
 @this(govukInput: GovukInput)
 
 @(field: Field,
   label: String,
-  formGroupClasses: Option[String] = None,
+  formGroupClasses: FormGroup = FormGroup.empty,
   autocomplete: Option[String] = None,
   inputType: String = "text",
   inputMode: Option[String] = None,
@@ -43,7 +45,7 @@
         content = Text(messages(e.message)),
         visuallyHiddenText= Some(messages("site.error"))
     )),
-    formGroupClasses = formGroupClasses.getOrElse(""),
+    formGroup = formGroupClasses,
     autocomplete = autocomplete,
     inputType = inputType,
     inputmode = inputMode,
