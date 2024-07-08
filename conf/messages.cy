@@ -57,9 +57,9 @@ customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=Gall
 customs.emailfrontend.verify-email.title=Cadarnhau’ch cyfeiriad e-bost
 customs.emailfrontend.verify-email.para1=Cliciwch ar y cysylltiad yn yr e-bost rydym wedi’i anfon at <strong class="bold">{0}</strong> i gadarnhau’ch cyfeiriad e-bost
 customs.emailfrontend.verify-email.progressive-disclosure.heading=Ches i ddim e-bost
-customs.emailfrontend.verify-email.progressive-disclosure.content=Gwiriwch eich ffolderi e-byst sbam neu sothach. Os nad yw’r e-bost yno, gallwn
-customs.emailfrontend.verify-email.progressive-disclosure.contentLink=ei hanfon eto
-customs.emailfrontend.verify-email.progressive-disclosure.content2=Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio
+customs.emailfrontend.verify-email.progressive-disclosure.content=Gwiriwch eich ffolderi e-byst sbam neu sothach. Os nad yw’r e-bost yno,
+customs.emailfrontend.verify-email.progressive-disclosure.contentLink=gallwn ei anfon eto
+customs.emailfrontend.verify-email.progressive-disclosure.content2=Os byddwn yn anfon eich e-bost eto, ni fydd unrhyw un o’r cysylltiadau blaenorol yn gweithio.
 
 customs.emailfrontend.changing-your-email.title-and-heading=Newid eich cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau
 customs.emailfrontend.changing-your-email.text1=Mae’r Gwasanaeth Datganiadau Tollau yn defnyddio un cyfeiriad e-bost ar gyfer nifer o wasanaethau sy’n gysylltiedig â thollau.
