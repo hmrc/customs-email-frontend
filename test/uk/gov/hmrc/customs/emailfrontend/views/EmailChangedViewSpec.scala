@@ -55,4 +55,3 @@ class EmailChangedViewSpec extends SpecBase {
     val view: email_changed = app.injector.instanceOf[email_changed]
   }
 }
-
