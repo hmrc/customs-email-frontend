@@ -18,14 +18,12 @@ package uk.gov.hmrc.customs.emailfrontend.views
 
 import play.api.Application
 import play.api.i18n.Messages
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, stubMessages}
-import play.api.test.{FakeHeaders, FakeRequest}
 import play.twirl.api.Html
+import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_changed
-import uk.gov.hmrc.customs.emailfrontend.utils.{SpecBase, FakeIdentifierAgentAction}
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes
-import java.time.{Instant, OffsetDateTime, ZoneOffset}
-import play.api.libs.json.Json
 
 class EmailChangedViewSpec extends SpecBase {
 
@@ -35,13 +33,10 @@ class EmailChangedViewSpec extends SpecBase {
       val html: Html = view(newEmail, prevEmail, referrerName, referrerUrl)
       val content: String = contentAsString(html)
 
-      // Verify the title and headings are included
       content should include(messages("customs.emailfrontend.email-changed.title-and-heading"))
       content should include(messages("customs.emailfrontend.email-confirmed.info1"))
 
-      // Verify the new email is displayed
       content should include(newEmail)
-
     }
   }
 
@@ -52,27 +47,12 @@ class EmailChangedViewSpec extends SpecBase {
     val prevEmail: Option[String] = Some("old@example.com")
     val referrerName: Option[String] = Some("referrer")
     val referrerUrl: Option[String] = Some("/referrer")
-    val eori: String = "EORINOTIMESTAMP"
 
-    val mandatoryHeaders: Seq[(String, String)] = Seq(
-      "Date" -> OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC).toString,
-      "X-Correlation-ID" -> "8b3c1eb9-7b17-49b8-a32b-b4a1566cb5d4",
-      "X-Forwarded-Host" -> "0.0.0.0",
-      "Accept" -> "application/json"
-    )
-
-    def queryParameters(eori: String): String =
-      s"?EORI=$eori&regime=CDS&acknowledgementReference=11a2b17559e64b14be257a112a7d9e8e"
-
-    implicit val request: FakeRequest[_] = FakeRequest(
-      "GET",
-      routes.EmailConfirmedController.show.url + queryParameters(eori),
-      FakeHeaders(mandatoryHeaders),
-      Json.parse("{}")
-    )
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "/some/resource/path")
 
     implicit val messages: Messages = stubMessages()
 
     val view: email_changed = app.injector.instanceOf[email_changed]
   }
 }
+
