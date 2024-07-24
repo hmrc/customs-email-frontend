@@ -33,10 +33,4 @@
 
     @panel(newEmail = Some(newEmail))
     @p(Html(messages("customs.emailfrontend.email-confirmed.info1")))
-
-    @referrerName.map{ name =>
-        @referrerUrl.map{ url =>
-            @p(Html(messages(s"customs.emailfrontend.email-changed.redirect.info.$name", url)))
-        }
-    }
 }
