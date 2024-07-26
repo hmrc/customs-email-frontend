@@ -25,10 +25,11 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.TwoThirdsOneThirdMainContent
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcLanguageSelectHelper, HmrcStandardPage}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
-
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
+@import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 @this(appConfig: AppConfig,
-    hmrcLayout: HmrcStandardPage,
+    hmrcStandardPage: HmrcStandardPage,
     govukBackLink: GovukBackLink,
     twoThirdsMainContent: TwoThirdsMainContent,
     twoThirdsOneThirdMainContent: TwoThirdsOneThirdMainContent,
@@ -37,7 +38,7 @@
 )
 
 @(pageTitle: Option[String] = None,
-        backLink: Option[String] = None,
+        backLinkUrl: Option[String] = None,
         helpAndSupport: Boolean = true,
         deskpro: Boolean = true,
         startPage: Boolean = false,
@@ -80,7 +81,7 @@
                 signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
                 accessibilityStatementUrl = Some(appConfig.accessibilityLinkUrl)
             ),
-            backLink = backLink,
+            backLink = Some(BackLink(href = backLinkUrl.getOrElse(emptyString))),
             templateOverrides = TemplateOverrides(
                 additionalHeadBlock = Some(additionalHead),
                 mainContentLayout = Some(sideBarContent match {
@@ -89,8 +90,7 @@
                 })
             ),
             banners = Banners(
-                phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
-                userResearchBanner = Some(UserResearchBanner(url = appConfig.helpMakeGovUkBetterUrl))
+                phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent)))
             ),
             isWelshTranslationAvailable = welshToggle
         ))(mainContent)

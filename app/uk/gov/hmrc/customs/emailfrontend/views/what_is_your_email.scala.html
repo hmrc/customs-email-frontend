@@ -33,7 +33,7 @@
 @layout(Some(messages("customs.emailfrontend.what-is-your-email.title-and-heading"))) {
     @errorSummary(emailForm)
 
-    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.verifySubmit,'id -> "emailForm", 'novalidate -> "novalidate") {
+    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.verifySubmit,Symbol("id") -> "emailForm", Symbol("novalidate") -> "novalidate") {
         @CSRF.formField
         @input_text(emailForm("email"), messages("customs.emailfrontend.what-is-your-email.label"), autocomplete = Some("email"), isPageHeading = true, labelClasses = Some("govuk-!-margin-bottom-8"))
         @button(messages("customs.emailfrontend.continue-button"))

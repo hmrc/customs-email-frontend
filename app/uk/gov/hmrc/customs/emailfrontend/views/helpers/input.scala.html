@@ -25,7 +25,7 @@
 
 @allErrors = @{
     elements.errors ++ args.flatMap {
-        case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
+        case (Symbol("otherErrors"), otherErrors: Seq[_]) => otherErrors.map(_.toString)
         case _ => Seq.empty
     }
 }
@@ -38,11 +38,11 @@
 }
 
 @isLabelH1 = @{
-    elements.args.getOrElse('_isLabelH1, false).asInstanceOf[Boolean]
+    elements.args.getOrElse(Symbol("_isLabelH1"), false).asInstanceOf[Boolean]
 }
 
 @autocomplete = @{
-elements.args.getOrElse('autocomplete, "").asInstanceOf[String]
+elements.args.getOrElse(Symbol("autocomplete"), "").asInstanceOf[String]
 }
 
 <div id="@elements.field.name-outer" class="form-group @if(!isLabelH1 && allErrors.nonEmpty) {form-group-error}">
@@ -60,8 +60,8 @@ elements.args.getOrElse('autocomplete, "").asInstanceOf[String]
                 @if(!isLabelH1) {
                     @elements.label
                 }
-                @if(elements.args.get('_hintText)) {
-                    <span class="form-hint" id="@(field.id)-hint">@elements.args.get('_hintText)</span>
+                @if(elements.args.get(Symbol("_hintText"))) {
+                    <span class="form-hint" id="@(field.id)-hint">@elements.args.get(Symbol("_hintText"))</span>
                 }
                 @if(allErrors.nonEmpty) {
                     @allErrors.map { error => <span class="error-message">@error</span> }
@@ -80,14 +80,14 @@ elements.args.getOrElse('autocomplete, "").asInstanceOf[String]
             <input
             type="email"
             @outputAttributes(elements)(
-            'ariaautocomplete -> "aria-autocomplete",
-            'ariahaspopup -> "aria-haspopup",
-            'ariaowns -> "aria-owns")
+            Symbol("ariaautocomplete") -> "aria-autocomplete",
+            Symbol("ariahaspopup") -> "aria-haspopup",
+            Symbol("ariaowns") -> "aria-owns")
             name="@elements.field.name"
             id="@elements.field.name"
             spellcheck="false"
             class="form-control @if(allErrors.nonEmpty) {form-control-error}"
-            @if(elements.args.contains('autocomplete)) { autocomplete="@elements.args.get('autocomplete)" }
+            @if(elements.args.contains(Symbol("autocomplete"))) { autocomplete="@elements.args.get(Symbol("autocomplete"))" }
             value="@elements.field.value" />
 
         </div>

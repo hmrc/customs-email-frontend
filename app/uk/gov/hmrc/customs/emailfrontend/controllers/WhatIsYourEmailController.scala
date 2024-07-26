@@ -188,6 +188,6 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
-    Future.successful(BadRequest(errorHandler.problemWithService()))
+    errorHandler.problemWithService().map(html => BadRequest(html))
   }
 }
