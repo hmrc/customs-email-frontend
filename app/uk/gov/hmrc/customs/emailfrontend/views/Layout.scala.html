@@ -20,13 +20,15 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.TwoThirdsMainContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.phasebanner.PhaseBanner
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcLayout, HmrcReportTechnicalIssueHelper}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcTimeoutDialog
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
 @import uk.gov.hmrc.govukfrontend.views.html.components.TwoThirdsOneThirdMainContent
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcLanguageSelectHelper, HmrcStandardPage}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+
 
 @this(appConfig: AppConfig,
-    hmrcLayout: HmrcLayout,
+    hmrcLayout: HmrcStandardPage,
     govukBackLink: GovukBackLink,
     twoThirdsMainContent: TwoThirdsMainContent,
     twoThirdsOneThirdMainContent: TwoThirdsOneThirdMainContent,
@@ -41,7 +43,7 @@
         startPage: Boolean = false,
         welshToggle: Boolean = true,
         sideBarContent: Option[Html] = None
-)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @phaseBannerContent = {
         @messages("customs.emailfrontend.phase-banner1")
@@ -70,17 +72,25 @@
         }
     }
 
-    @hmrcLayout(
-        pageTitle = pageTitle,
-        serviceUrl = None,
-        signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
-        backLinkUrl = backLink,
-        additionalHeadBlock = Some(additionalHead),
-        phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
-        isWelshTranslationAvailable = welshToggle,
-        accessibilityStatementUrl = Some(appConfig.accessibilityLinkUrl),
-        mainContentLayout = Some(sideBarContent match {
-            case Some(value) => twoThirdsOneThirdMainContent(value)
-            case None => twoThirdsMainContent(_)
-        })
-    )(mainContent)
+    @hmrcStandardPage(
+        HmrcStandardPageParams(
+            pageTitle = pageTitle,
+            serviceURLs =  ServiceURLs(
+                serviceUrl =  None,
+                signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
+                accessibilityStatementUrl = Some(appConfig.accessibilityLinkUrl)
+            ),
+            backLink = backLink,
+            templateOverrides = TemplateOverrides(
+                additionalHeadBlock = Some(additionalHead),
+                mainContentLayout = Some(sideBarContent match {
+                    case Some(value) => twoThirdsOneThirdMainContent(value)
+                    case None => twoThirdsMainContent(_)
+                })
+            ),
+            banners = Banners(
+                phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
+                userResearchBanner = Some(UserResearchBanner(url = appConfig.helpMakeGovUkBetterUrl))
+            ),
+            isWelshTranslationAvailable = welshToggle
+        ))(mainContent)

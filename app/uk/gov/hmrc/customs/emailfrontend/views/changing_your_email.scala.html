@@ -25,7 +25,7 @@
         button: components.button
 )
 
-@(emailForm: Form[Email])(implicit request: Request[_], messages: Messages)
+@(emailForm: Form[Email])(implicit request: RequestHeader, messages: Messages)
 @layout(Some(messages("customs.emailfrontend.changing-your-email.title-and-heading"))) {
 
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.ChangingYourEmailController.submit,
