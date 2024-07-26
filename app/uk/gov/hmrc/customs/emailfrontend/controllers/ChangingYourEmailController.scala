@@ -76,7 +76,7 @@ class ChangingYourEmailController @Inject()(identify: IdentifierAction,
         }
 
       case _ =>
-        Future.successful(Redirect(routes.CheckYourEmailController.problemWithService))
+        Future.successful(Redirect(routes.CheckYourEmailController.problemWithService()))
     }
   }
 

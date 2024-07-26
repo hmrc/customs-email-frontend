@@ -20,10 +20,11 @@ import play.api.libs.json._
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils
 
 import java.time.{LocalDateTime, ZoneOffset}
+import play.api.libs.ws.BodyWritable
 
 case class UpdateEmail(eori: Eori, address: String, timestamp: LocalDateTime)
 
-object UpdateEmail {
+  object UpdateEmail {
 
   val localDateTimeReads = Reads[LocalDateTime](js =>
     js.validate[String].map[LocalDateTime](dtString => LocalDateTime.parse(dtString, Utils.dateFormatter))
@@ -43,4 +44,9 @@ object UpdateEmail {
   implicit val formatEori: Format[Eori] = Format(eoriReads, eoriWrites)
   implicit val dateTimeJF: Format[LocalDateTime] = Format(localDateTimeReads, localDateTimeWrites)
   implicit val format: OFormat[UpdateEmail] = Json.format[UpdateEmail]
+
+  implicit def jsonBodyWritable[T](implicit
+                                   writes: Writes[T],
+                                   jsValueBodyWritable: BodyWritable[JsValue]
+                                  ): BodyWritable[T] = jsValueBodyWritable.map(writes.writes)
 }

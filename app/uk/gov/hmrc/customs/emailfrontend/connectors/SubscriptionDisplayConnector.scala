@@ -24,26 +24,32 @@ import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HttpClient, _}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, hyphen}
+import uk.gov.hmrc.http.client.HttpClientV2
+
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig,
-                                             http: HttpClient,
+                                             http: HttpClientV2,
                                              auditable: Auditable)(implicit ec: ExecutionContext) {
 
   def subscriptionDisplay(eori: String)(implicit hc: HeaderCarrier): Future[SubscriptionDisplayResponse] = {
     val request = ("EORI" -> eori) :: buildQueryParams
 
-    http.GET[SubscriptionDisplayResponse](appConfig.subscriptionDisplayUrl, request).map { displayResponse =>
-      auditResponse(
-        transactionName = "customs-email-subscription-display",
-        auditType = "subscriptionDisplayResponse",
-        response = displayResponse,
-        url = appConfig.subscriptionDisplayUrl
-      )
-      displayResponse
-    }
+    //TODO
+    //http.GET[SubscriptionDisplayResponse](appConfig.subscriptionDisplayUrl, request)
+    http.get(url"${appConfig.subscriptionDisplayUrl}")
+      .execute[SubscriptionDisplayResponse]
+      .map { displayResponse =>
+        auditResponse(
+          transactionName = "customs-email-subscription-display",
+          auditType = "subscriptionDisplayResponse",
+          response = displayResponse,
+          url = appConfig.subscriptionDisplayUrl
+        )
+        displayResponse
+      }
   }
 
   private def auditResponse(transactionName: String,
