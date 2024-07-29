@@ -30,8 +30,6 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.play.bootstrap.metrics.Metrics
-import org.scalatest.matchers.should.{Matchers => ShouldMatcher}
-import org.scalatest.matchers.must.{Matchers => MustMatcher}
 
 import scala.annotation.implicitNotFound
 import scala.reflect.ClassTag
@@ -85,6 +83,3 @@ object TestImplicits {
     }
   }
 }
-
-trait ShouldMatchers extends ShouldMatcher
-trait MustMatchers extends MustMatcher

@@ -37,8 +37,6 @@ class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig,
   def subscriptionDisplay(eori: String)(implicit hc: HeaderCarrier): Future[SubscriptionDisplayResponse] = {
     val request = ("EORI" -> eori) :: buildQueryParams
 
-    //TODO
-    //http.GET[SubscriptionDisplayResponse](appConfig.subscriptionDisplayUrl, request)
     http.get(url"${appConfig.subscriptionDisplayUrl}")
       .transform(_.withQueryStringParameters(request: _*))
       .execute[SubscriptionDisplayResponse]

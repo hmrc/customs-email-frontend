@@ -53,8 +53,7 @@ class VerifyYourEmailControllerSpec extends SpecBase {
         val result = route(app, request).value
 
         status(result) shouldBe OK
-        //TODO
-        //contentAsString(result) must include("abc@def.com")
+        contentAsString(result) should include("abc@def.com")
       }
     }
 
