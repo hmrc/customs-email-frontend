@@ -18,11 +18,12 @@ package uk.gov.hmrc.customs.emailfrontend.model
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter01
-import uk.gov.hmrc.customs.emailfrontend.utils.{MustMatchers, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import org.scalatest.matchers.must.Matchers.mustBe
 
 import java.time.LocalDateTime
 
-class UpdateEmailSpec extends SpecBase with MustMatchers{
+class UpdateEmailSpec extends SpecBase{
 
   "UpdateEmail" should {
 

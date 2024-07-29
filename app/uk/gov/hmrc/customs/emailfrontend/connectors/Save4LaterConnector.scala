@@ -40,12 +40,12 @@ class Save4LaterConnector @Inject()(http: HttpClientV2,
   def getEmailDetails(id: String, key: String)
                      (implicit hc: HeaderCarrier, reads: Reads[EmailDetails]): Future[Option[EmailDetails]] = {
 
-    val url = s"${appConfig.save4LaterUrl}/$id/$key"
+    val getUrl = s"${appConfig.save4LaterUrl}/$id/$key"
 
-    http.get(url"${appConfig.save4LaterUrl}/$id/$key")
+    http.get(url"$getUrl")
       .execute[EmailDetails]
       .map { response =>
-        auditCallResponse[EmailDetails](url, response)
+        auditCallResponse[EmailDetails](getUrl, response)
         Some(response)
       }.recover {
         case e => logger.error(s"Unable to get Email Details :${e.getMessage}")
@@ -56,11 +56,11 @@ class Save4LaterConnector @Inject()(http: HttpClientV2,
   def getReferrerName(id: String, key: String)
                      (implicit hc: HeaderCarrier, reads: Reads[ReferrerName]): Future[Option[ReferrerName]] = {
 
-    val url = s"${appConfig.save4LaterUrl}/$id/$key"
-    http.get(url"${appConfig.save4LaterUrl}/$id/$key")
+    val getUrl = s"${appConfig.save4LaterUrl}/$id/$key"
+    http.get(url"$getUrl")
       .execute[ReferrerName]
       .map { response =>
-        auditCallResponse[ReferrerName](url, response)
+        auditCallResponse[ReferrerName](getUrl, response)
         Some(response)
       }.recover {
         case e => logger.error(s"Unable to get Referrer :${e.getMessage}")
@@ -72,7 +72,7 @@ class Save4LaterConnector @Inject()(http: HttpClientV2,
                     (implicit hc: HeaderCarrier, reads: Reads[JourneyType]): Future[Option[JourneyType]] = {
 
     val getUrl = s"${appConfig.save4LaterUrl}/$id/$key"
-    http.get(url"getUrl")
+    http.get(url"$getUrl")
       .execute[JourneyType]
       .map { response =>
         auditCallResponse[JourneyType](getUrl, response)
@@ -90,7 +90,7 @@ class Save4LaterConnector @Inject()(http: HttpClientV2,
     logger.info(s"PUT: $putUrl")
     auditCallRequest(putUrl, payload)
 
-    http.put(url"putUrl")
+    http.put(url"$putUrl")
       .withBody[JsValue](payload)
       .execute[HttpResponse]
       .map { response =>
@@ -111,7 +111,7 @@ class Save4LaterConnector @Inject()(http: HttpClientV2,
     logger.info(s"DELETE: $deleteUrl")
     auditCallRequest(deleteUrl, JsNull)
 
-    http.delete(url"deleteUrl")
+    http.delete(url"$deleteUrl")
       .execute[HttpResponse]
       .map { response =>
         auditCallResponse(deleteUrl, response.status)

@@ -17,10 +17,11 @@
 package uk.gov.hmrc.customs.emailfrontend.forms
 
 import play.api.data.validation.{Invalid, Valid, ValidationError}
-import uk.gov.hmrc.customs.emailfrontend.utils.{MustMatchers, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, singleSpace}
+import org.scalatest.matchers.must.Matchers.mustBe
 
-class ValidationSpec extends SpecBase with MustMatchers{
+class ValidationSpec extends SpecBase{
 
   "validEmail" should {
     "return correct result" when {

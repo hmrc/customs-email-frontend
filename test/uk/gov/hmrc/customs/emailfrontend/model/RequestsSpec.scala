@@ -20,9 +20,10 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.POST
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
-import uk.gov.hmrc.customs.emailfrontend.utils.{MustMatchers, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import org.scalatest.matchers.must.Matchers.mustBe
 
-class RequestsSpec extends SpecBase with MustMatchers {
+class RequestsSpec extends SpecBase {
   "user" should {
     "return the logged in user" in new Setup {
       authenticReq.user mustBe user
