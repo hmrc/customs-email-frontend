@@ -27,7 +27,10 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificatio
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser._
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.HeaderCarrier
+import org.mockito.Mockito.{ when, reset}
+import org.mockito.ArgumentMatchers.any
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -36,7 +39,7 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
 
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
-  private val mockHttpClient = mock[HttpClient]
+  private val mockHttpClient = mock[HttpClientV2]
 
   val connector = new EmailVerificationConnector(mockHttpClient, mockAppConfig, mockAuditable)
   implicit val hc: HeaderCarrier = HeaderCarrier()

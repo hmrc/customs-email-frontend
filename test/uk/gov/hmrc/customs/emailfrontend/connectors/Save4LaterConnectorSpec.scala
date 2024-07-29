@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
+import org.mockito.Mockito.{ when, reset}
 import play.api.http.Status._
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
@@ -27,12 +28,14 @@ import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, JourneyType, Refer
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, SessionId}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
+import uk.gov.hmrc.http.client.HttpClientV2
+import org.mockito.ArgumentMatchers.any
 
 import scala.concurrent.Future
 
 class Save4LaterConnectorSpec extends SpecBase {
 
-  val mockHttpClient = mock[HttpClient]
+  val mockHttpClient = mock[HttpClientV2]
   val sessionId = SessionId("session_1234")
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
 

@@ -39,6 +39,9 @@ import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecB
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 import java.time.{LocalDateTime, Period}
 import scala.concurrent.Future
 

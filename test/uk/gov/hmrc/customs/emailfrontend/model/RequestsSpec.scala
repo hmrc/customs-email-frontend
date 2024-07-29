@@ -16,14 +16,13 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.POST
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
-import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.{MustMatchers, SpecBase}
 
-class RequestsSpec extends SpecBase {
+class RequestsSpec extends SpecBase with MustMatchers {
   "user" should {
     "return the logged in user" in new Setup {
       authenticReq.user mustBe user

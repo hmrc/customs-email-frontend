@@ -32,6 +32,9 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import java.time.{LocalDateTime, Period}
 import scala.concurrent.Future
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"

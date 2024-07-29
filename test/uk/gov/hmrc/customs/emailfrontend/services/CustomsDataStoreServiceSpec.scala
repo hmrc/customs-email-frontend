@@ -29,6 +29,9 @@ import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   "Customs Data Store Service" should {

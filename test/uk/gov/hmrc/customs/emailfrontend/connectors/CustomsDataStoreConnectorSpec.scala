@@ -28,7 +28,10 @@ import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
 import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, InternalServerException}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, InternalServerException}
+import org.mockito.Mockito.{when, reset}
+import org.mockito.ArgumentMatchers.any
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val mockHttp = mock[HttpClient]
+  private val mockHttp = mock[HttpClientV2]
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
   private val mockDateTimeService = mock[DateTimeService]

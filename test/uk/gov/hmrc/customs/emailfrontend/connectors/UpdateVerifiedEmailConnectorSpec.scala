@@ -26,7 +26,11 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, MethodNotAllowedException, _}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, MethodNotAllowedException, _}
+
+import org.mockito.Mockito.{ when, reset}
+import org.mockito.ArgumentMatchers.any
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,7 +40,7 @@ class UpdateVerifiedEmailConnectorSpec extends SpecBase with BeforeAndAfter {
 
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
-  private val mockHttpClient = mock[HttpClient]
+  private val mockHttpClient = mock[HttpClientV2]
   private val forbiddenException = new ForbiddenException("testMessage")
   private val badRequestException = new BadRequestException("testMessage")
   private val internalServerException = new InternalServerException("testMessage")

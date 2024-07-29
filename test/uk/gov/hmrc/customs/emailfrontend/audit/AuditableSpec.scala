@@ -16,18 +16,19 @@
 
 package uk.gov.hmrc.customs.emailfrontend.audit
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.{Application, inject}
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, MustMatchers, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, RequestId}
 import uk.gov.hmrc.play.audit.AuditExtensions.AuditHeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.model.{Audit, DataEvent}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{doNothing, when}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuditableSpec extends SpecBase {
+class AuditableSpec extends SpecBase with MustMatchers {
 
   "sendDataEvent" should {
     "send a data event" ignore new Setup {

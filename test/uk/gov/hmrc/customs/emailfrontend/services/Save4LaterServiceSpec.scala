@@ -24,6 +24,9 @@ import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, Journe
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 import java.time.LocalDateTime
 import scala.concurrent.Future
 

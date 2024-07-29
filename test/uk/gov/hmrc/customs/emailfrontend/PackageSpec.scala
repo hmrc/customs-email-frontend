@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.customs.emailfrontend
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
-import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.{MustMatchers, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, singleSpace}
 
-class PackageSpec extends SpecBase {
+class PackageSpec extends SpecBase with MustMatchers{
   "Utils.replaceSpaceWithEmptyString" should {
     "replace the spaces with empty string" in new SetUp {
       Utils.stripWhiteSpaces(stringWithOnlySpaces) mustBe emptyString

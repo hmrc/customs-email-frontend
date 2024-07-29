@@ -22,14 +22,17 @@ import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import org.mockito.Mockito.{reset, when}
+import uk.gov.hmrc.http.client.HttpClientV2
+import org.mockito.ArgumentMatchers.any
 
 class SubscriptionDisplayConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val mockHttp = mock[HttpClient]
+  private val mockHttp = mock[HttpClientV2]
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
   private implicit val hc: HeaderCarrier = HeaderCarrier()

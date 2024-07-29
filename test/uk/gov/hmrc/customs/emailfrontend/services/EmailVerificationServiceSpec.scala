@@ -28,6 +28,8 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
+import org.mockito.Mockito.{when,reset}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

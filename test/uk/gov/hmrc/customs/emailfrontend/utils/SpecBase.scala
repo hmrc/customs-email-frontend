@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.utils
 
 import com.codahale.metrics.MetricRegistry
-import org.mockito.scalatest.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
@@ -30,6 +30,8 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.play.bootstrap.metrics.Metrics
+import org.scalatest.matchers.should.{Matchers => ShouldMatcher}
+import org.scalatest.matchers.must.{Matchers => MustMatcher}
 
 import scala.annotation.implicitNotFound
 import scala.reflect.ClassTag
@@ -83,3 +85,6 @@ object TestImplicits {
     }
   }
 }
+
+trait ShouldMatchers extends ShouldMatcher
+trait MustMatchers extends MustMatcher

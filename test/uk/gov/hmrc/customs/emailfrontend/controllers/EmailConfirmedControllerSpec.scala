@@ -32,6 +32,9 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 class EmailConfirmedControllerSpec extends SpecBase {
 
   "EmailConfirmedController" should {

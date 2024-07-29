@@ -29,7 +29,7 @@ class ApplicationControllerSpec extends SpecBase {
       val app: Application = applicationBuilder(disableAuth = true).build()
 
       running(app) {
-        val request = FakeRequest(GET, routes.ApplicationController.accessibilityStatement().url)
+        val request = FakeRequest(GET, routes.ApplicationController.accessibilityStatement().url())
         val result = route(app, request).value
 
         status(result) shouldBe SEE_OTHER
