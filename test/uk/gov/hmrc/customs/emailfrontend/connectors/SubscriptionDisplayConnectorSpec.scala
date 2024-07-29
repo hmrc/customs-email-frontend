@@ -26,7 +26,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{doNothing, reset, when}
 import uk.gov.hmrc.http.client.HttpClientV2
 import org.mockito.ArgumentMatchers.any
 

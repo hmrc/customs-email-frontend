@@ -450,7 +450,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         val result = route(app, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
       }
     }
 
@@ -540,7 +540,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
 
         status(result) shouldBe SEE_OTHER
 
-        redirectLocation(result) shouldBe Some(routes.CheckYourEmailController.problemWithService.url)
+        redirectLocation(result) shouldBe Some(routes.CheckYourEmailController.problemWithService().url)
       }
     }
 
@@ -557,7 +557,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         val result = route(app, requestWithForm).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(routes.VerifyChangeEmailController.problemWithService.url)
+        redirectLocation(result) shouldBe Some(routes.VerifyChangeEmailController.problemWithService().url)
       }
     }
 
@@ -573,7 +573,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
       }
     }
 
@@ -581,7 +581,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
 
       running(app) {
         val errorHandler = app.injector.instanceOf[ErrorHandler]
-        val request = fakeRequest(GET, routes.WhatIsYourEmailController.problemWithService.url)
+        val request = fakeRequest(GET, routes.WhatIsYourEmailController.problemWithService().url)
           .withFormUrlEncodedBody("email" -> emptyString)
 
         val result = route(app, request).value

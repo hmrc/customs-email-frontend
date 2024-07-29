@@ -244,6 +244,6 @@ class Save4LaterConnectorSpec extends SpecBase {
 
   trait Setup {
     protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
-      .overrides(inject.bind[HttpClient].toInstance(mockHttpClient)).build()
+      .overrides(inject.bind[HttpClientV2].toInstance(mockHttpClient)).build()
   }
 }

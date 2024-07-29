@@ -131,7 +131,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
     "redirect to 'there is a problem with the service' page" in new Setup {
       running(app) {
 
-        val request = FakeRequest(routes.CheckYourEmailController.problemWithService)
+        val request = FakeRequest(routes.CheckYourEmailController.problemWithService())
         val result = route(app, request).value
 
         status(result) shouldBe BAD_REQUEST
@@ -199,7 +199,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
         val result = route(app, requestWithForm).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(routes.CheckYourEmailController.problemWithService.url)
+        redirectLocation(result) shouldBe Some(routes.CheckYourEmailController.problemWithService().url)
       }
     }
   }

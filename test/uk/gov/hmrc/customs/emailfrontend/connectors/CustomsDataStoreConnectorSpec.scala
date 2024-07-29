@@ -30,7 +30,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, InternalServerException}
-import org.mockito.Mockito.{when, reset}
+import org.mockito.Mockito.{doNothing, reset, when}
 import org.mockito.ArgumentMatchers.any
 
 import java.time.LocalDateTime
