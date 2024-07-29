@@ -18,21 +18,21 @@ package uk.gov.hmrc.customs.emailfrontend.config
 
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
-import play.api.mvc.RequestHeader
+import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
 import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
+import uk.gov.hmrc.play.bootstrap.frontend.http.LegacyFrontendErrorHandler
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject()(override val messagesApi: MessagesApi,
                              errorView: error_template,
-                             customErrorView: problem_with_this_service)(protected val ec: ExecutionContext) extends FrontendErrorHandler {
+                             customErrorView: problem_with_this_service) extends LegacyFrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)
-                                    (implicit request: RequestHeader): Future[Html] = Future.successful(errorView(pageTitle, heading, message))
+                                    (implicit request: Request[_]): Html = errorView(pageTitle, heading, message)
 
-  def problemWithService()(implicit request: RequestHeader): Future[Html] = Future.successful(customErrorView())
+  def problemWithService()(implicit request: Request[_]): Html = customErrorView()
 }

@@ -22,7 +22,7 @@
         p: components.p,
         button: components.button
 )
-@(email: String)(implicit request: RequestHeader, messages: Messages)
+@(email: String)(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.verification-in-progress.title-and-heading"))) {
     @h1_xl(messages("customs.emailfrontend.verification-in-progress.title-and-heading"))

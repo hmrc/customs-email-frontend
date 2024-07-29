@@ -19,7 +19,7 @@
 
 @this(layout: Layout)
 
-@(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader, messages: Messages)
+@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = Some(pageTitle)) {
 

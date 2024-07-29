@@ -40,6 +40,7 @@ class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig,
     //TODO
     //http.GET[SubscriptionDisplayResponse](appConfig.subscriptionDisplayUrl, request)
     http.get(url"${appConfig.subscriptionDisplayUrl}")
+      .transform(_.withQueryStringParameters(request: _*))
       .execute[SubscriptionDisplayResponse]
       .map { displayResponse =>
         auditResponse(

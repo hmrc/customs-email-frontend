@@ -44,7 +44,7 @@
         startPage: Boolean = false,
         welshToggle: Boolean = true,
         sideBarContent: Option[Html] = None
-)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @phaseBannerContent = {
         @messages("customs.emailfrontend.phase-banner1")

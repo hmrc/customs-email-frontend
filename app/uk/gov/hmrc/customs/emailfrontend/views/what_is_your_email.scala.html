@@ -28,7 +28,7 @@
         h1_xl: components.h1_xl
 )
 
-@(emailForm: Form[Email])(implicit request: RequestHeader, messages: Messages)
+@(emailForm: Form[Email])(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.what-is-your-email.title-and-heading"))) {
     @errorSummary(emailForm)

@@ -81,7 +81,7 @@ class ChangingYourEmailController @Inject()(identify: IdentifierAction,
   }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
-    errorHandler.problemWithService().map(html => BadRequest(html))
+    Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 
 }

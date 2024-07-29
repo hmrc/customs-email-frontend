@@ -23,7 +23,7 @@
         p: components.p,
         button: components.button
 )
-@(ineligible:Ineligible.Value)(implicit request: RequestHeader, messages: Messages)
+@(ineligible:Ineligible.Value)(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.you-cant-use-service.heading"))) {
     @h1_xl(messages("customs.emailfrontend.you-cant-use-service.heading"))

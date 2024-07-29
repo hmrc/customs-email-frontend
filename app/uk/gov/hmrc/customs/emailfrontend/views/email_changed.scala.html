@@ -24,7 +24,7 @@
         button: components.button,
         panel: components.emailPanel
 )
-@(newEmail: String, prevEmail: Option[String], referrerName: Option[String], referrerUrl: Option[String])(implicit request: RequestHeader, messages: Messages)
+@(newEmail: String, prevEmail: Option[String], referrerName: Option[String], referrerUrl: Option[String])(implicit request: Request[_], messages: Messages)
 
 @layout(
     Some(messages("customs.emailfrontend.email-changed.title-and-heading")),
