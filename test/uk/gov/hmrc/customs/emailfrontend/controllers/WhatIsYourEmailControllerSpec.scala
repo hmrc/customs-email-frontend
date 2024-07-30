@@ -32,6 +32,9 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import java.time.{LocalDateTime, Period}
 import scala.concurrent.Future
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
@@ -365,7 +368,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(app, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
       }
     }
 
@@ -382,7 +385,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(app, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
       }
     }
 
@@ -476,7 +479,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(app, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
       }
     }
 
@@ -528,7 +531,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(app, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
       }
     }
 
@@ -566,7 +569,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(app, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
       }
     }
 
@@ -601,7 +604,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         val errorHandler = app.injector.instanceOf[ErrorHandler]
 
         val request = FakeRequest(GET,
-          routes.WhatIsYourEmailController.problemWithService.url).withFormUrlEncodedBody("email" -> emptyString)
+          routes.WhatIsYourEmailController.problemWithService().url).withFormUrlEncodedBody("email" -> emptyString)
 
         val result = route(app, request).value
 

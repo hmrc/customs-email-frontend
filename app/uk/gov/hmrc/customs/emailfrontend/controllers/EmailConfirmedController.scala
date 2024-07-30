@@ -83,10 +83,10 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
               Ok(emailChangedView(details.newEmail, details.currentEmail,
                 maybeReferrerName.map(_.name), maybeReferrerName.map(_.continueUrl)))
             }
-          }).recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService) }
+          }).recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService()) }
 
         case _ =>
-          Future.successful(Redirect(routes.EmailConfirmedController.problemWithService))
+          Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))
       }
   }
 

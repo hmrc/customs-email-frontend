@@ -17,6 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.model
 
 import play.api.libs.json.{Reads, Writes}
+import play.api.libs.json._
 import play.api.mvc.{PathBindable, QueryStringBindable}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
@@ -24,7 +25,7 @@ object Ineligible extends Enumeration {
   val NoEnrolment, IsAgent, NotAdmin = Value
 
   implicit val reads: Reads[Ineligible.Value] = Reads.enumNameReads(Ineligible)
-  implicit val writes: Writes[Ineligible.Value] = Writes.enumNameWrites
+  implicit val writes: Writes[Ineligible.Value] = (value: Ineligible.Value) => JsString(value.toString)
 
   implicit lazy val pathBindable: PathBindable[Ineligible.Value] =
     new PathBindable[Ineligible.Value] {

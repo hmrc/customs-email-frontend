@@ -18,18 +18,18 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import play.api.Application
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import play.api.test.Helpers.*
+import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 
 class ApplicationControllerSpec extends SpecBase {
 
   "ApplicationController" should {
     "allow  the user to access the accessibility statement page, without auth" in {
 
-      val app: Application = applicationBuilder(disableAuth = true).build()
+      val app: Application = applicationBuilder[FakeIdentifierAgentAction](disableAuth = true).build()
 
       running(app) {
-        val request = FakeRequest(GET, routes.ApplicationController.accessibilityStatement().url)
+        val request = FakeRequest(GET, routes.ApplicationController.accessibilityStatement().url())
         val result = route(app, request).value
 
         status(result) shouldBe SEE_OTHER

@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors.http.responses
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{JsValue, Json, OFormat, Writes}
+import play.api.libs.ws.BodyWritable
 import uk.gov.hmrc.customs.emailfrontend.model.{UpdateVerifiedEmailRequest, UpdateVerifiedEmailResponse}
 
 sealed trait HttpErrorResponse
@@ -42,4 +43,9 @@ case class VerifiedEmailRequest(updateVerifiedEmailRequest: UpdateVerifiedEmailR
 
 object VerifiedEmailRequest {
   implicit val formats: OFormat[VerifiedEmailRequest] = Json.format[VerifiedEmailRequest]
+
+  implicit def jsonBodyWritable[T](implicit
+                                   writes: Writes[T],
+                                   jsValueBodyWritable: BodyWritable[JsValue]
+                                  ): BodyWritable[T] = jsValueBodyWritable.map(writes.writes)
 }

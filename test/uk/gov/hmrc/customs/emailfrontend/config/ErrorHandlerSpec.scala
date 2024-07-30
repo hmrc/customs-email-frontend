@@ -24,13 +24,17 @@ import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecB
 import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
 import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
 
+import scala.concurrent.ExecutionContext
+import play.twirl.api.Html
+
 class ErrorHandlerSpec extends SpecBase {
 
   private val app = applicationBuilder[FakeIdentifierAgentAction]().build()
   private val view = app.injector.instanceOf[error_template]
   private val customView = app.injector.instanceOf[problem_with_this_service]
   private val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  private val errorHandler = new ErrorHandler(messagesApi, view, customView)
+  implicit val ec: ExecutionContext = ExecutionContext.global
+  private val errorHandler = new ErrorHandler(messagesApi, view, customView)(ec)
   private val request = FakeRequest()
 
   "ErrorHandlerSpec" should {
@@ -38,17 +42,19 @@ class ErrorHandlerSpec extends SpecBase {
     "define standardErrorTemplate" in {
 
       val result = errorHandler.standardErrorTemplate("title", "heading", "message")(request)
-      val doc = Jsoup.parse(contentAsString(result))
 
-      doc.title shouldBe "title"
-      doc.body.getElementsByTag("h1").text shouldBe "heading"
-      doc.body.getElementById("main-content")
-        .text shouldBe "heading message Is this page not working properly? (opens in new tab)"
+      result.map { htmlVal =>
+        val doc = Jsoup.parse(contentAsString(htmlVal))
+        doc.title shouldBe "title"
+        doc.body.getElementsByTag("h1").text shouldBe "heading"
+        doc.body.getElementById("main-content")
+          .text shouldBe "heading message Is this page not working properly? (opens in new tab)"
+      }
     }
 
     "have custom error view to show 'problem with the service' page" in {
 
-      val result = errorHandler.problemWithService()(request)
+      val result: Html = errorHandler.problemWithService()(request)
       val doc = Jsoup.parse(contentAsString(result))
 
       doc.title shouldBe "Sorry, there is a problem with the service"

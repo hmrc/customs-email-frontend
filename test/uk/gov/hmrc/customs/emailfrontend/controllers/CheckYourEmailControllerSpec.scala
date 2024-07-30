@@ -28,6 +28,9 @@ import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecB
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 class CheckYourEmailControllerSpec extends SpecBase {
 
   "ConfirmEmailController" should {
@@ -135,7 +138,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
     "redirect to 'there is a problem with the service' page" in new Setup {
 
       running(app) {
-        val request = FakeRequest(GET, routes.CheckYourEmailController.problemWithService.url)
+        val request = FakeRequest(GET, routes.CheckYourEmailController.problemWithService().url)
           .withFormUrlEncodedBody("email" -> emptyString)
 
         val result = route(app, request).value

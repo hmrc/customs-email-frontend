@@ -26,6 +26,9 @@ import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecB
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 class AmendmentInProgressControllerSpec extends SpecBase {
 
   trait Setup {

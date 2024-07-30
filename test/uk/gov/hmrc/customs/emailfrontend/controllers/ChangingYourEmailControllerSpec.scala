@@ -20,8 +20,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.
-  {EmailAlreadyVerified, EmailVerificationRequestSent}
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser._
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
@@ -29,6 +28,9 @@ import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecB
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
+
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
 
 class ChangingYourEmailControllerSpec extends SpecBase {
 
@@ -128,7 +130,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
     "redirect to 'there is a problem with the service' page" in new Setup {
       running(app) {
 
-        val request = FakeRequest(routes.CheckYourEmailController.problemWithService)
+        val request = FakeRequest(routes.CheckYourEmailController.problemWithService())
         val result = route(app, request).value
 
         status(result) shouldBe BAD_REQUEST
@@ -196,7 +198,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
         val result = route(app, requestWithForm).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(routes.CheckYourEmailController.problemWithService.url)
+        redirectLocation(result) shouldBe Some(routes.CheckYourEmailController.problemWithService().url)
       }
     }
   }

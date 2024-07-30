@@ -23,13 +23,16 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationKeys._
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.EmailVerificationRequestResponse
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.EmailVerificationStateResponse
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfig, auditable: Auditable)
+class EmailVerificationConnector @Inject()(http: HttpClientV2, appConfig: AppConfig, auditable: Auditable)
                                           (implicit ec: ExecutionContext) {
 
   def getEmailVerificationState(emailAddress: String)
@@ -41,8 +44,12 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
       url = appConfig.checkVerifiedEmailUrl
     )
 
-    http.POST[JsObject, EmailVerificationStateResponse](
-      appConfig.checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
+    http.post(url"${appConfig.checkVerifiedEmailUrl}")
+      .withBody[JsObject](Json.obj("email" -> emailAddress))
+      .execute[EmailVerificationStateResponse]
+      .flatMap {
+        response => Future.successful(response)
+      }
   }
 
   def createEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)
@@ -56,7 +63,12 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
 
     auditVerificationRequest(details, appConfig.createEmailVerificationRequestUrl, eoriNumber)
 
-    http.POST[JsObject, EmailVerificationRequestResponse](appConfig.createEmailVerificationRequestUrl, jsonBody)
+    http.post(url"${appConfig.createEmailVerificationRequestUrl}")
+      .withBody[JsObject](jsonBody)
+      .execute[EmailVerificationRequestResponse]
+      .flatMap {
+        response => Future.successful(response)
+      }
   }
 
   private def auditRequest(transactionName: String,

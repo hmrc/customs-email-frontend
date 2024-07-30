@@ -22,14 +22,15 @@ import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{ForbiddenException, HttpClient, _}
-
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{ForbiddenException, _}
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig,
-                                             http: HttpClient,
+                                             http: HttpClientV2,
                                              audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
 
   def updateVerifiedEmail(request: VerifiedEmailRequest, currentEmail: Option[String])
@@ -40,11 +41,12 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig,
 
     auditRequest(currentEmail, newEmail, eori, "changeEmailAddressVerified")
 
-    http.PUT[VerifiedEmailRequest, VerifiedEmailResponse](appConfig.updateVerifiedEmailUrl, request).map { resp =>
-      auditRequest(currentEmail, newEmail, eori, "changeEmailAddressConfirmed")
-      Right(resp)
-
-    } recover {
+    http.put(url"${appConfig.updateVerifiedEmailUrl}")
+      .withBody[VerifiedEmailRequest](request)
+      .execute[VerifiedEmailResponse].map { resp =>
+        auditRequest(currentEmail, newEmail, eori, "changeEmailAddressConfirmed")
+        Right(resp)
+      } recover {
       case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
       case _: ForbiddenException | UpstreamErrorResponse(_, FORBIDDEN, _, _) => Left(Forbidden)
       case _: InternalServerException | UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>

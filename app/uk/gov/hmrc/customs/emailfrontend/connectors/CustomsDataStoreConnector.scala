@@ -32,10 +32,13 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.client.HttpClientV2
+
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
 @Singleton
 class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
-                                          httpClient: HttpClient,
+                                          httpClient: HttpClientV2,
                                           audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
 
   def storeEmailAddress(eori: Eori, email: String,
@@ -47,8 +50,10 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
     auditRequest("DataStoreEmailRequestSubmitted", Map(
       "eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
 
-    httpClient.POST[UpdateEmail, HttpResponse](
-      appConfig.customsDataStoreUrl, request, Seq(CONTENT_TYPE -> MimeTypes.JSON))
+    httpClient.post(url"${appConfig.customsDataStoreUrl}")
+      .setHeader(CONTENT_TYPE -> MimeTypes.JSON)
+      .withBody[UpdateEmail](request)
+      .execute[HttpResponse]
       .map { response =>
         auditResponse("DataStoreResponseReceived", response, appConfig.customsDataStoreUrl)
         response.status match {
@@ -61,16 +66,15 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
             Left(BadRequest)
         }
       }.recover {
-      case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
+        case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
 
-      case _: InternalServerException | UpstreamErrorResponse(
-      _, INTERNAL_SERVER_ERROR, _, _) => Left(ServiceUnavailable)
+        case _: InternalServerException | UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) => Left(ServiceUnavailable)
 
-      case NonFatal(e) =>
-        logger.error(s"Call to data stored failed url=" +
-          s"${appConfig.customsDataStoreUrl}, exception=$e");
-        Left(UnhandledException)
-    }
+        case NonFatal(e) =>
+          logger.error(s"Call to data stored failed url=" +
+            s"${appConfig.customsDataStoreUrl}, exception=$e");
+          Left(UnhandledException)
+      }
   }
 
   private def auditRequest(transactionName: String,

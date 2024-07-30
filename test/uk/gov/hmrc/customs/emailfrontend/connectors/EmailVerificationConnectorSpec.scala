@@ -16,36 +16,41 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfter
 import play.api.http.Status
-import play.api.http.Status._
-import play.api.libs.json.{JsObject, Json}
+import play.api.http.Status.*
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser._
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser._
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.*
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.*
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
+import org.mockito.Mockito.{doNothing, reset, when}
+import org.mockito.ArgumentMatchers.any
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
 
   private val mockAuditable = mock[Auditable]
+  private val requestBuilder = mock[RequestBuilder]
   private val mockAppConfig = mock[AppConfig]
-  private val mockHttpClient = mock[HttpClient]
+  private val mockHttpClient = mock[HttpClientV2]
+
+  private val emailBaseUrl = "http://localhost:9744/email-verification"
 
   val connector = new EmailVerificationConnector(mockHttpClient, mockAppConfig, mockAuditable)
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   before {
-    reset(mockAuditable, mockAppConfig, mockHttpClient)
+    reset(mockAuditable, mockAppConfig, mockHttpClient, requestBuilder)
+
     doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
-    when(mockAppConfig.checkVerifiedEmailUrl).thenReturn("testUrlCheck")
-    when(mockAppConfig.createEmailVerificationRequestUrl).thenReturn("testUrlCreate")
+    when(mockAppConfig.checkVerifiedEmailUrl).thenReturn(s"$emailBaseUrl/verified-email-check")
+    when(mockAppConfig.createEmailVerificationRequestUrl).thenReturn(s"$emailBaseUrl/verification-requests")
 
     when(mockAppConfig.emailVerificationTemplateId).thenReturn("verifyEmailAddress")
     when(mockAppConfig.emailVerificationLinkExpiryDuration).thenReturn("P3D")
@@ -55,12 +60,10 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
     "the email is verified" should {
       "return an EmailVerified response" in {
 
-        when(mockHttpClient.POST[JsObject, EmailVerificationStateResponse](
-          meq("testUrlCheck"),
-          meq(Json.obj("email" -> "email-address")),
-          any
-        )(any, any, any[HeaderCarrier], any)
-        ).thenReturn(Future.successful(Right(EmailVerified)))
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+        when(requestBuilder.execute(any[HttpReads[EmailVerificationStateResponse]], any[ExecutionContext]))
+          .thenReturn(Future.successful(Right(EmailVerified)))
+        when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result =
           connector.getEmailVerificationState("email-address").futureValue
@@ -72,14 +75,10 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
     "the email is not verified" should {
       "return an EmailNotVerified response" in {
 
-        when(mockHttpClient.POST[JsObject, EmailVerificationStateResponse](any,
-          any,
-          any)(
-          any,
-          any,
-          any[HeaderCarrier],
-          any)
-        ).thenReturn(Future.successful(Right(EmailNotVerified)))
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+        when(requestBuilder.execute(any[HttpReads[EmailVerificationStateResponse]], any[ExecutionContext]))
+          .thenReturn(Future.successful(Right(EmailNotVerified)))
+        when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector.getEmailVerificationState("email-address").futureValue
 
@@ -89,15 +88,12 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
 
     "the email service provides an unexpected state" should {
       "return an EmailVerificationStateErrorResponse" in {
-        when(mockHttpClient.POST[JsObject, EmailVerificationStateResponse](any,
-          any,
-          any)(
-          any,
-          any,
-          any[HeaderCarrier],
-          any)
-        ).thenReturn(Future.successful(Left(
-          EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, "Internal Server Error"))))
+
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+        when(requestBuilder.execute(any[HttpReads[EmailVerificationStateResponse]], any[ExecutionContext]))
+          .thenReturn(Future.successful(Left(
+            EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, "Internal Server Error"))))
+        when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector.getEmailVerificationState("email-address").futureValue
 
@@ -111,20 +107,10 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
     "the request is successful" should {
       "return an EmailVerificationRequestSent" in {
 
-        when(
-          mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](
-            meq("testUrlCreate"),
-            meq(
-              Json.obj(
-                "email" -> "email-address",
-                "templateId" -> "verifyEmailAddress",
-                "templateParameters" -> Json.obj(),
-                "linkExpiryDuration" -> "P3D",
-                "continueUrl" -> "test-continue-url")
-            ),
-            any
-          )(any, any, any[HeaderCarrier], any)
-        ).thenReturn(Future.successful(Right(EmailVerificationRequestSent)))
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+        when(requestBuilder.execute(any[HttpReads[EmailVerificationRequestResponse]], any[ExecutionContext]))
+          .thenReturn(Future.successful(Right(EmailVerificationRequestSent)))
+        when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector
           .createEmailVerificationRequest(
@@ -140,15 +126,10 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
     "the email is already verified" should {
       "return an EmailAlreadyVerified" in {
 
-        when(mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](
-          any,
-          any,
-          any)(
-          any,
-          any,
-          any[HeaderCarrier],
-          any)
-        ).thenReturn(Future.successful(Right(EmailAlreadyVerified)))
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+        when(requestBuilder.execute(any[HttpReads[EmailVerificationRequestResponse]], any[ExecutionContext]))
+          .thenReturn(Future.successful(Right(EmailAlreadyVerified)))
+        when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector
           .createEmailVerificationRequest(
@@ -164,19 +145,14 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
     "the request is not successful" should {
       "return an Internal Server Error" in {
 
-        when(mockHttpClient.POST[JsObject, EmailVerificationRequestResponse](
-          any,
-          any,
-          any)(
-          any,
-          any,
-          any[HeaderCarrier],
-          any)
-        ).thenReturn(
-          Future
-            .successful(
-              Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR,
-                "Internal server error"))))
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+        when(requestBuilder.execute(any[HttpReads[EmailVerificationRequestResponse]], any[ExecutionContext]))
+          .thenReturn(
+            Future
+              .successful(
+                Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR,
+                  "Internal server error"))))
+        when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector
           .createEmailVerificationRequest(

@@ -16,24 +16,27 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import org.mockito.Mockito.{doNothing, reset, when}
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
+import org.mockito.ArgumentMatchers.any
 
 class SubscriptionDisplayConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val mockHttp = mock[HttpClient]
+  private val mockHttp = mock[HttpClientV2]
+  private val requestBuilder = mock[RequestBuilder]
   private val mockAuditable = mock[Auditable]
   private val mockAppConfig = mock[AppConfig]
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private val url = "customs-email-proxy/subscription-display"
+  private val url = "http://localhost:8989/customs-email-proxy/subscription-display"
   private val testEori = "GB1234556789"
   val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
 
@@ -48,20 +51,17 @@ class SubscriptionDisplayConnectorSpec extends SpecBase with BeforeAndAfterEach 
   val testConnector = new SubscriptionDisplayConnector(mockAppConfig, mockHttp, mockAuditable)
 
   override def beforeEach(): Unit = {
-    reset(mockHttp, mockAuditable, mockAppConfig)
+    reset(mockHttp, mockAuditable, mockAppConfig, requestBuilder)
     when(mockAppConfig.subscriptionDisplayUrl).thenReturn(url)
   }
 
   "SubscriptionDisplayConnector" should {
     "successfully send a query request return SubscriptionDisplayResponse with email inside" in {
 
-      when(mockHttp.GET(meq(url),
-        any[Seq[(String, String)]],
-        any[Seq[(String, String)]])(
-        any[HttpReads[SubscriptionDisplayResponse]],
-        any[HeaderCarrier],
-        any[ExecutionContext])
-      ).thenReturn(Future.successful(someSubscriptionDisplayResponse))
+      when(requestBuilder.transform(any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[SubscriptionDisplayResponse]], any[ExecutionContext]))
+        .thenReturn(Future.successful(someSubscriptionDisplayResponse))
+      when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
 
       doNothing
         .when(mockAuditable)
@@ -73,13 +73,11 @@ class SubscriptionDisplayConnectorSpec extends SpecBase with BeforeAndAfterEach 
     }
 
     "successfully send a query request return SubscriptionDisplayResponse with none for a value inside" in {
-      when(mockHttp.GET(meq(url),
-        any[Seq[(String, String)]],
-        any[Seq[(String, String)]])(
-        any[HttpReads[SubscriptionDisplayResponse]],
-        any[HeaderCarrier],
-        any[ExecutionContext])
-      ).thenReturn(Future.successful(noneSubscriptionDisplayResponse))
+
+      when(requestBuilder.transform(any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[SubscriptionDisplayResponse]], any[ExecutionContext]))
+        .thenReturn(Future.successful(noneSubscriptionDisplayResponse))
+      when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
 
       doNothing
         .when(mockAuditable)

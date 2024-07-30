@@ -32,6 +32,9 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 class EmailConfirmedControllerSpec extends SpecBase {
 
   "EmailConfirmedController" should {
@@ -201,7 +204,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService.url
+          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService().url
         }
       }
 
@@ -223,7 +226,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService.url
+          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService().url
         }
       }
 
@@ -245,7 +248,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService.url
+          redirectLocation(result).get shouldBe routes.EmailConfirmedController.problemWithService().url
         }
       }
     }
@@ -254,7 +257,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
       "when user is redirected to .problemWithService" in new Setup {
 
         running(app) {
-          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.problemWithService.url)
+          val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.problemWithService().url)
             .withFormUrlEncodedBody("email" -> emptyString)
 
           val result = route(app, requestWithForm).value

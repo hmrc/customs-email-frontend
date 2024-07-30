@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.utils
 
 import com.codahale.metrics.MetricRegistry
-import org.mockito.scalatest.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers

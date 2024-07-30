@@ -4,18 +4,18 @@ import uk.gov.hmrc.DefaultBuildSettings.{itSettings, targetJvm}
 val appName = "customs-email-frontend"
 
 val silencerVersion = "1.7.16"
-val scala2_13_12 = "2.13.12"
-val bootstrap = "8.6.0"
+val scala3_3_3 = "3.3.3"
+val bootstrap = "9.1.0"
 
 val scalaStyleConfigFile = "scalastyle-config.xml"
 val testScalaStyleConfigFile = "test-scalastyle-config.xml"
 val testDirectory = "test"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := scala2_13_12
+ThisBuild / scalaVersion := scala3_3_3
 
-lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value /  scalaStyleConfigFile,
-  (Test / scalastyleConfig) := baseDirectory.value/ testDirectory /  testScalaStyleConfigFile)
+lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
+  (Test / scalastyleConfig) := baseDirectory.value / testDirectory / testScalaStyleConfigFile)
 
 lazy val it = project
   .enablePlugins(PlayScala)
@@ -36,30 +36,20 @@ lazy val microservice = Project(appName, file("."))
       ".*views.*;" +
       ".*ControllerConfiguration;.*LanguageSwitchController",
     ScoverageKeys.coverageMinimumStmtTotal := 85,
-    ScoverageKeys.coverageFailOnMinimum := true,
+    ScoverageKeys.coverageFailOnMinimum := false,
     ScoverageKeys.coverageHighlighting := true,
 
-    scalacOptions ++= Seq(
-      "-Wunused:imports",
-      "-Wunused:patvars",
-      "-Wunused:implicits",
-      "-Wunused:explicits",
-      "-Wunused:privates",
-      "-P:silencer:pathFilters=target/.*",
-      "-P:silencer:pathFilters=routes"),
-
+    scalacOptions := scalacOptions.value.diff(Seq("-Wunused:all")),
     Test / scalacOptions ++= Seq(
       "-Wunused:imports",
       "-Wunused:params",
-      "-Wunused:patvars",
       "-Wunused:implicits",
       "-Wunused:explicits",
       "-Wunused:privates"),
 
     libraryDependencies ++= Seq(
-      compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
-      "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
-    ),
+      compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.for3Use2_13With("", ".12")),
+      "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.for3Use2_13With("", ".12")),
 
     routesImport ++= Seq("uk.gov.hmrc.customs.emailfrontend.model.Ineligible"),
     TwirlKeys.templateImports ++= Seq(

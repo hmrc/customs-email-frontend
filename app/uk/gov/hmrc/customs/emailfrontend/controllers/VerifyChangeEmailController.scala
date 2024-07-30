@@ -67,7 +67,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
         (details.currentEmail, details.newEmail) match {
           case (Some(currentEmail), _) =>
             Future.successful(Ok(view(confirmVerifyChangeForm, Some(currentEmail))))
-          case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService))
+          case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
         },
       subscriptionDisplay()
     )
@@ -82,7 +82,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
 
       case SubscriptionDisplayResponse(None, _, Some(_), Some("FAIL")) =>
-        Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
+        Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService()))
 
       case SubscriptionDisplayResponse(None, _, None, None) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
@@ -90,7 +90,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
       case SubscriptionDisplayResponse(None, None, _, _) =>
         Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
 
-      case _ => Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
+      case _ => Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService()))
     }.recover {
       handleNonFatalException()
     }
@@ -98,7 +98,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
   private def handleNonFatalException(): PartialFunction[Throwable, Result] = {
     case NonFatal(e) => {
       logger.error(s"Subscription display failed with ${e.getMessage}")
-      Redirect(routes.VerifyChangeEmailController.problemWithService)
+      Redirect(routes.VerifyChangeEmailController.problemWithService())
     }
   }
 
@@ -128,11 +128,11 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
               }
 
               case _ =>
-                Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
+                Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService()))
             }
         )
       case _ =>
-        Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService))
+        Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService()))
     }
   }
 
@@ -148,7 +148,7 @@ class VerifyChangeEmailController @Inject()(identify: IdentifierAction,
           Redirect(routes.EmailConfirmedController.show)
         }
 
-      case _ => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService))
+      case _ => Future.successful(Redirect(routes.CheckYourEmailController.problemWithService()))
     }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>

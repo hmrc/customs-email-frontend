@@ -39,6 +39,9 @@ import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecB
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 import java.time.{LocalDateTime, Period}
 import scala.concurrent.Future
 
@@ -447,7 +450,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         val result = route(app, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
       }
     }
 
@@ -537,7 +540,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
 
         status(result) shouldBe SEE_OTHER
 
-        redirectLocation(result) shouldBe Some(routes.CheckYourEmailController.problemWithService.url)
+        redirectLocation(result) shouldBe Some(routes.CheckYourEmailController.problemWithService().url)
       }
     }
 
@@ -554,7 +557,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         val result = route(app, requestWithForm).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(routes.VerifyChangeEmailController.problemWithService.url)
+        redirectLocation(result) shouldBe Some(routes.VerifyChangeEmailController.problemWithService().url)
       }
     }
 
@@ -570,7 +573,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
 
         val result = route(app, request).value
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService.url
+        redirectLocation(result).value shouldBe routes.WhatIsYourEmailController.problemWithService().url
       }
     }
 
@@ -578,7 +581,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase
 
       running(app) {
         val errorHandler = app.injector.instanceOf[ErrorHandler]
-        val request = fakeRequest(GET, routes.WhatIsYourEmailController.problemWithService.url)
+        val request = fakeRequest(GET, routes.WhatIsYourEmailController.problemWithService().url)
           .withFormUrlEncodedBody("email" -> emptyString)
 
         val result = route(app, request).value
