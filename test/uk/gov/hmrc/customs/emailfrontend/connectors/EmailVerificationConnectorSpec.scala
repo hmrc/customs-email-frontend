@@ -47,6 +47,7 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
 
   before {
     reset(mockAuditable, mockAppConfig, mockHttpClient, requestBuilder)
+
     doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
     when(mockAppConfig.checkVerifiedEmailUrl).thenReturn(s"$emailBaseUrl/verified-email-check")
     when(mockAppConfig.createEmailVerificationRequestUrl).thenReturn(s"$emailBaseUrl/verification-requests")
@@ -87,6 +88,7 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
 
     "the email service provides an unexpected state" should {
       "return an EmailVerificationStateErrorResponse" in {
+
         when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
         when(requestBuilder.execute(any[HttpReads[EmailVerificationStateResponse]], any[ExecutionContext]))
           .thenReturn(Future.successful(Left(
@@ -104,6 +106,7 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
   "Calling createEmailVerificationRequest" when {
     "the request is successful" should {
       "return an EmailVerificationRequestSent" in {
+
         when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
         when(requestBuilder.execute(any[HttpReads[EmailVerificationRequestResponse]], any[ExecutionContext]))
           .thenReturn(Future.successful(Right(EmailVerificationRequestSent)))

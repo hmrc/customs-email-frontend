@@ -35,9 +35,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class Save4LaterConnectorSpec extends SpecBase {
 
-  val mockHttpClient = mock[HttpClientV2]
-  val requestBuilder = mock[RequestBuilder]
-  val sessionId = SessionId("session_1234")
+  val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
+  val requestBuilder: RequestBuilder = mock[RequestBuilder]
+  val sessionId: SessionId = SessionId("session_1234")
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
 
   "Save4LaterConnector" should {
@@ -52,8 +52,8 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       running(app) {
         val connector = app.injector.instanceOf[Save4LaterConnector]
-
         val result = connector.getEmailDetails("id", "key").futureValue
+
         result shouldBe Some(emailDetails)
       }
     }
@@ -163,12 +163,11 @@ class Save4LaterConnectorSpec extends SpecBase {
     "DELETE returns unhandled exception when BAD_REQUEST exception response received" in new Setup {
 
       val badRequestException = new BadRequestException("testMessage")
+      val connector = app.injector.instanceOf[Save4LaterConnector]
 
       when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
         .thenReturn(Future.failed(badRequestException))
       when(mockHttpClient.delete(any)(any)).thenReturn(requestBuilder)
-
-      val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
         val result = connector.delete(emptyString).futureValue
@@ -178,13 +177,12 @@ class Save4LaterConnectorSpec extends SpecBase {
 
     "PUT returns unit when NO_CONTENT response received" in new Setup {
 
-      val testJson = Json.toJson("test")
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(NO_CONTENT, emptyString)))
       when(mockHttpClient.put(any)(any)).thenReturn(requestBuilder)
 
+      val testJson = Json.toJson("test")
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
@@ -195,13 +193,12 @@ class Save4LaterConnectorSpec extends SpecBase {
 
     "PUT returns unit when OK response received" in new Setup {
 
-      val testJson = Json.toJson("test")
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(OK, emptyString)))
       when(mockHttpClient.put(any)(any)).thenReturn(requestBuilder)
 
+      val testJson = Json.toJson("test")
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
@@ -212,12 +209,12 @@ class Save4LaterConnectorSpec extends SpecBase {
 
     "PUT returns unit when CREATED response received" in new Setup {
 
-      val testJson = Json.toJson("test")
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(CREATED, emptyString)))
       when(mockHttpClient.put(any)(any)).thenReturn(requestBuilder)
 
+      val testJson = Json.toJson("test")
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
@@ -228,12 +225,12 @@ class Save4LaterConnectorSpec extends SpecBase {
 
     "PUT returns exception when BAD_REQUEST response received" in new Setup {
 
-      val testJson = Json.toJson("test")
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, emptyString)))
       when(mockHttpClient.put(any)(any)).thenReturn(requestBuilder)
 
+      val testJson = Json.toJson("test")
       val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
@@ -246,12 +243,12 @@ class Save4LaterConnectorSpec extends SpecBase {
 
       val badRequestException = new BadRequestException("testMessage")
       val testJson = Json.toJson("test")
+      val connector = app.injector.instanceOf[Save4LaterConnector]
+
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
         .thenReturn(Future.failed(badRequestException))
       when(mockHttpClient.put(any)(any)).thenReturn(requestBuilder)
-
-      val connector = app.injector.instanceOf[Save4LaterConnector]
 
       running(app) {
         val result = connector.put(emptyString, emptyString, testJson).futureValue

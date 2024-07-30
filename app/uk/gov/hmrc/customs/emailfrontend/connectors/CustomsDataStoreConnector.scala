@@ -36,7 +36,6 @@ import uk.gov.hmrc.http.client.HttpClientV2
 
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
-
 @Singleton
 class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
                                           httpClient: HttpClientV2,
@@ -69,8 +68,7 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
       }.recover {
         case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
 
-        case _: InternalServerException | UpstreamErrorResponse(
-        _, INTERNAL_SERVER_ERROR, _, _) => Left(ServiceUnavailable)
+        case _: InternalServerException | UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) => Left(ServiceUnavailable)
 
         case NonFatal(e) =>
           logger.error(s"Call to data stored failed url=" +

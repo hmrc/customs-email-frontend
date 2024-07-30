@@ -40,12 +40,12 @@ class Save4LaterConnector @Inject()(http: HttpClientV2,
   def getEmailDetails(id: String, key: String)
                      (implicit hc: HeaderCarrier, reads: Reads[EmailDetails]): Future[Option[EmailDetails]] = {
 
-    val getUrl = s"${appConfig.save4LaterUrl}/$id/$key"
+    val urlString = s"${appConfig.save4LaterUrl}/$id/$key"
 
-    http.get(url"$getUrl")
+    http.get(url"$urlString")
       .execute[EmailDetails]
       .map { response =>
-        auditCallResponse[EmailDetails](getUrl, response)
+        auditCallResponse[EmailDetails](urlString, response)
         Some(response)
       }.recover {
         case e => logger.error(s"Unable to get Email Details :${e.getMessage}")
@@ -56,11 +56,12 @@ class Save4LaterConnector @Inject()(http: HttpClientV2,
   def getReferrerName(id: String, key: String)
                      (implicit hc: HeaderCarrier, reads: Reads[ReferrerName]): Future[Option[ReferrerName]] = {
 
-    val getUrl = s"${appConfig.save4LaterUrl}/$id/$key"
-    http.get(url"$getUrl")
+    val urlString = s"${appConfig.save4LaterUrl}/$id/$key"
+
+    http.get(url"$urlString")
       .execute[ReferrerName]
       .map { response =>
-        auditCallResponse[ReferrerName](getUrl, response)
+        auditCallResponse[ReferrerName](urlString, response)
         Some(response)
       }.recover {
         case e => logger.error(s"Unable to get Referrer :${e.getMessage}")
@@ -71,11 +72,12 @@ class Save4LaterConnector @Inject()(http: HttpClientV2,
   def getJourneyType(id: String, key: String)
                     (implicit hc: HeaderCarrier, reads: Reads[JourneyType]): Future[Option[JourneyType]] = {
 
-    val getUrl = s"${appConfig.save4LaterUrl}/$id/$key"
-    http.get(url"$getUrl")
+    val urlString = s"${appConfig.save4LaterUrl}/$id/$key"
+
+    http.get(url"$urlString")
       .execute[JourneyType]
       .map { response =>
-        auditCallResponse[JourneyType](getUrl, response)
+        auditCallResponse[JourneyType](urlString, response)
         Some(response)
       }.recover {
         case e => logger.error(s"Unable to get journey type :${e.getMessage}")
@@ -86,41 +88,43 @@ class Save4LaterConnector @Inject()(http: HttpClientV2,
   def put[T](id: String, key: String, payload: JsValue)
             (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
 
-    val putUrl = s"${appConfig.save4LaterUrl}/$id/$key"
-    logger.info(s"PUT: $putUrl")
-    auditCallRequest(putUrl, payload)
+    val urlString = s"${appConfig.save4LaterUrl}/$id/$key"
 
-    http.put(url"$putUrl")
+    logger.info(s"PUT: $urlString")
+    auditCallRequest(urlString, payload)
+
+    http.put(url"$urlString")
       .withBody[JsValue](payload)
       .execute[HttpResponse]
       .map { response =>
-        auditCallResponse(putUrl, response.status)
+        auditCallResponse(urlString, response.status)
         response.status match {
           case NO_CONTENT | CREATED | OK => Right(())
           case _ => Left(BadRequest)
         }
       }.recover {
-        case e => logger.error(s"Request failed for call to $putUrl, exception: ${e.getMessage}")
+        case e => logger.error(s"Request failed for call to $urlString, exception: ${e.getMessage}")
           Left(UnhandledException)
       }
   }
 
   def delete[T](id: String)(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
 
-    val deleteUrl = s"${appConfig.save4LaterUrl}/$id"
-    logger.info(s"DELETE: $deleteUrl")
-    auditCallRequest(deleteUrl, JsNull)
+    val urlString = s"${appConfig.save4LaterUrl}/$id"
 
-    http.delete(url"$deleteUrl")
+    logger.info(s"DELETE: $urlString")
+    auditCallRequest(urlString, JsNull)
+
+    http.delete(url"$urlString")
       .execute[HttpResponse]
       .map { response =>
-        auditCallResponse(deleteUrl, response.status)
+        auditCallResponse(urlString, response.status)
         response.status match {
           case NO_CONTENT => Right(())
           case _ => Left(BadRequest)
         }
       }.recover {
-        case e => logger.error(s"Request failed for call to $deleteUrl, exception: ${e.getMessage}")
+        case e => logger.error(s"Request failed for call to $urlString, exception: ${e.getMessage}")
           Left(UnhandledException)
       }
   }

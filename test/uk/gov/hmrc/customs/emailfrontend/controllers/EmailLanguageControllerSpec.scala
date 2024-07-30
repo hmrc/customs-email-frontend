@@ -21,7 +21,6 @@ import play.api.i18n.Lang
 import play.api.test.Helpers.running
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 
-
 class EmailLanguageControllerSpec extends SpecBase {
 
   "Email Language Controller" should {

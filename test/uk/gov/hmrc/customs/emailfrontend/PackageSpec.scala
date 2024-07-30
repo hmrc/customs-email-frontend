@@ -20,7 +20,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, singleSpace}
 import org.scalatest.matchers.must.Matchers.mustBe
 
-class PackageSpec extends SpecBase{
+class PackageSpec extends SpecBase {
   "Utils.replaceSpaceWithEmptyString" should {
     "replace the spaces with empty string" in new SetUp {
       Utils.stripWhiteSpaces(stringWithOnlySpaces) mustBe emptyString

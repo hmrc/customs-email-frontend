@@ -53,6 +53,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     reset(mockHttp, mockAuditable, mockAppConfig, requestBuilder)
+
     when(mockAppConfig.customsDataStoreUrl).thenReturn(postUrl)
     when(mockDateTimeService.nowUtc())
       .thenReturn(testDateTime)
