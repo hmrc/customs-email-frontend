@@ -133,14 +133,11 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
 
     emailForm.bindFromRequest().fold(
       formWithErrors => {
-        subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).map {
-          case SubscriptionDisplayResponse(_, _, _, _) =>
-            BadRequest(view(formWithErrors, appConfig))
-
-          case _ => Redirect(routes.WhatIsYourEmailController.problemWithService())
-        }.recover {
-          handleNonFatalException()
-        }
+        subscriptionDisplayConnector.subscriptionDisplay(request.user.eori)
+          .map(_ => BadRequest(view(formWithErrors, appConfig)))
+          .recover {
+            handleNonFatalException()
+          }
       },
       formData => {
         save4LaterService.fetchEmail(request.user.internalId).flatMap {
