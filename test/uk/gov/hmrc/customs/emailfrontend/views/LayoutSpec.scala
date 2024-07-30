@@ -29,7 +29,6 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 import org.scalatest.matchers.must.Matchers.mustBe
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 
-
 class LayoutSpec extends SpecBase {
 
   "layout" should {
