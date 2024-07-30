@@ -24,18 +24,23 @@ import uk.gov.hmrc.customs.emailfrontend.model.{Email, VerifyChange, YesNo}
 
 object Forms {
 
-  val emailForm: Form[Email] = Form(mapping("email" -> text.verifying(isValidEmail).transform(
-    stripWhiteSpaces, identity[String]))(Email.apply)(email => Some(email.value)))
+  val emailForm: Form[Email] =
+    Form(
+      mapping("email" -> text.verifying(isValidEmail).transform(stripWhiteSpaces, identity[String]))
+        (Email.apply)(email => Some(email.value))
+    )
 
-  val confirmEmailForm: Form[YesNo] = Form(
-    mapping("isYes" -> optional(boolean).verifying(
-      validYesNo("customs.emailfrontend.errors.valid-confirm-email"))
-    )(YesNo.apply)(arg => Some(arg.isYes))
-  )
+  val confirmEmailForm: Form[YesNo] =
+    Form(
+      mapping("isYes" -> optional(boolean)
+        .verifying(validYesNo("customs.emailfrontend.errors.valid-confirm-email"))
+      )(YesNo.apply)(yesNo => Some(yesNo.isYes))
+    )
 
-  val confirmVerifyChangeForm: Form[VerifyChange] = Form(
-    mapping("isVerify" -> optional(boolean).verifying(
-      validVerifyChange("customs.emailfrontend.errors.verify-change"))
-    )(VerifyChange.apply)(arg => Some(arg.isVerify))
-  )
+  val confirmVerifyChangeForm: Form[VerifyChange] =
+    Form(
+      mapping("isVerify" -> optional(boolean)
+        .verifying(validVerifyChange("customs.emailfrontend.errors.verify-change"))
+      )(VerifyChange.apply)(verifyChange => Some(verifyChange.isVerify))
+    )
 }

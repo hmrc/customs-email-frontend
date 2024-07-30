@@ -14,8 +14,8 @@ val testDirectory = "test"
 ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := scala3_3_3
 
-lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value /  scalaStyleConfigFile,
-  (Test / scalastyleConfig) := baseDirectory.value/ testDirectory /  testScalaStyleConfigFile)
+lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
+  (Test / scalastyleConfig) := baseDirectory.value / testDirectory / testScalaStyleConfigFile)
 
 lazy val it = project
   .enablePlugins(PlayScala)
@@ -49,7 +49,7 @@ lazy val microservice = Project(appName, file("."))
 
     libraryDependencies ++= Seq(
       compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.for3Use2_13With("", ".12")),
-      "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.for3Use2_13With("",".12")),
+      "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.for3Use2_13With("", ".12")),
 
     routesImport ++= Seq("uk.gov.hmrc.customs.emailfrontend.model.Ineligible"),
     TwirlKeys.templateImports ++= Seq(

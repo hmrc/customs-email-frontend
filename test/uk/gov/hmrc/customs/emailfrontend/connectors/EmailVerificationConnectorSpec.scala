@@ -90,7 +90,7 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
         when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
         when(requestBuilder.execute(any[HttpReads[EmailVerificationStateResponse]], any[ExecutionContext]))
           .thenReturn(Future.successful(Left(
-          EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, "Internal Server Error"))))
+            EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, "Internal Server Error"))))
         when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector.getEmailVerificationState("email-address").futureValue
@@ -145,10 +145,10 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
         when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
         when(requestBuilder.execute(any[HttpReads[EmailVerificationRequestResponse]], any[ExecutionContext]))
           .thenReturn(
-          Future
-            .successful(
-              Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR,
-                "Internal server error"))))
+            Future
+              .successful(
+                Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR,
+                  "Internal server error"))))
         when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector

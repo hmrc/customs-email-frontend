@@ -28,7 +28,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
-import org.mockito.Mockito.{when,reset}
+import org.mockito.Mockito.{when, reset}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -118,7 +118,7 @@ class EmailVerificationServiceSpec extends SpecBase with BeforeAndAfterEach {
         mockCreateEmailVerificationRequest(emailDetails,
           continueUrl,
           eoriNumber)(
-        (Future.successful(Right(EmailVerificationRequestSent))))
+          (Future.successful(Right(EmailVerificationRequestSent))))
 
         val res: Option[EmailVerificationRequestSuccess] = {
           service

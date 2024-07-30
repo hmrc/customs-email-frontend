@@ -29,7 +29,7 @@ import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-import org.mockito.Mockito.{when,reset}
+import org.mockito.Mockito.{when, reset}
 import org.mockito.ArgumentMatchers.any
 
 class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {

@@ -21,7 +21,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, singleSpace}
 import org.scalatest.matchers.must.Matchers.mustBe
 
-class ValidationSpec extends SpecBase{
+class ValidationSpec extends SpecBase {
 
   "validEmail" should {
     "return correct result" when {

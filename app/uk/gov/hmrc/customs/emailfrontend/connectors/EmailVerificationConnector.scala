@@ -44,9 +44,6 @@ class EmailVerificationConnector @Inject()(http: HttpClientV2, appConfig: AppCon
       url = appConfig.checkVerifiedEmailUrl
     )
 
-    /*http.POST[JsObject, EmailVerificationStateResponse](
-      appConfig.checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))*/
-
     http.post(url"${appConfig.checkVerifiedEmailUrl}")
       .withBody[JsObject](Json.obj("email" -> emailAddress))
       .execute[EmailVerificationStateResponse]
@@ -65,8 +62,6 @@ class EmailVerificationConnector @Inject()(http: HttpClientV2, appConfig: AppCon
       ContinueUrlKey -> continueUrl)
 
     auditVerificationRequest(details, appConfig.createEmailVerificationRequestUrl, eoriNumber)
-
-    /*http.POST[JsObject, EmailVerificationRequestResponse](appConfig.createEmailVerificationRequestUrl, jsonBody)*/
 
     http.post(url"${appConfig.createEmailVerificationRequestUrl}")
       .withBody[JsObject](jsonBody)

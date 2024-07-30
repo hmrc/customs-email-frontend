@@ -23,7 +23,7 @@ import org.scalatest.matchers.must.Matchers.mustBe
 
 import java.time.LocalDateTime
 
-class UpdateEmailSpec extends SpecBase{
+class UpdateEmailSpec extends SpecBase {
 
   "UpdateEmail" should {
 
