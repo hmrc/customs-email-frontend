@@ -53,6 +53,7 @@ customs.emailfrontend.email-confirmed.info1=Your email address for the Customs D
 customs.emailfrontend.email-confirmed.redirect.info.customs-finance=You can now continue to <a href="{0}">view your customs financial accounts</a>.
 customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=You can now continue to <a href="{0}">enter your Movement Reference Number</a>
 customs.emailfrontend.email-confirmed.redirect.info.report-or-check-de-minimis-aid-northern-ireland=You can now continue to <a href="{0}">Report De Minimis aid claim.</a>
+customs.emailfrontend.email-confirmed.redirect.info.trader-goods-profiles=You can now continue to <a href="{0}">Trader Goods Profiles</a>
 
 customs.emailfrontend.verify-email.title=Confirm your email address
 customs.emailfrontend.verify-email.para1=Click on the link in the email we''ve sent to <strong class="bold">{0}</strong> to confirm your email address.
