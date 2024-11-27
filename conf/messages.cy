@@ -53,6 +53,7 @@ customs.emailfrontend.email-verified.info1=Erbyn hyn, gallwch ddefnyddio’r Gwa
 customs.emailfrontend.email-confirmed.info1=Mae’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau wedi’i ddiweddaru.
 customs.emailfrontend.email-confirmed.redirect.info.customs-finance=Nawr, gallwch fynd yn eich blaen i’r dudalen <a href="{0}">bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau</a>
 customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=Gallwch nawr barhau i <a href="{0}">fynd i mewn i'ch Movement Reference Number</a>
+customs.emailfrontend.email-confirmed.redirect.info.trader-goods-profiles=Gallwch nawr barhau i <a href="{0}">Trader Goods Profiles</a>
 
 customs.emailfrontend.verify-email.title=Cadarnhau’ch cyfeiriad e-bost
 customs.emailfrontend.verify-email.para1=Cliciwch ar y cysylltiad yn yr e-bost rydym wedi’i anfon at <strong class="bold">{0}</strong> i gadarnhau’ch cyfeiriad e-bost
