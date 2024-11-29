@@ -49,10 +49,11 @@ customs.emailfrontend.confirm-your-email.no=Na, mae angen i mi newid y cyfeiriad
 
 customs.emailfrontend.email-changed.title-and-heading=Cyfeiriad e-bost wedi’i newid
 customs.emailfrontend.email-verified.title-and-heading=Cyfeiriad e-bost wedi’i gadarnhau
-customs.emailfrontend.email-verified.info1=Erbyn hyn, gallwch ddefnyddio’r Gwasanaeth Datganiadau Tollau ar-lein.
-customs.emailfrontend.email-confirmed.info1=Mae’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau wedi’i ddiweddaru.
-customs.emailfrontend.email-confirmed.redirect.info.customs-finance=Nawr, gallwch fynd yn eich blaen i’r dudalen <a href="{0}">bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau</a>
-customs.emailfrontend.email-confirmed.redirect.info.cds-reimbursement-claim=Gallwch nawr barhau i <a href="{0}">fynd i mewn i'ch Movement Reference Number</a>
+customs.emailfrontend.email-verified.info=Erbyn hyn, gallwch ddefnyddio’r Gwasanaeth Datganiadau Tollau ar-lein.
+customs.emailfrontend.email-confirmed.info=Mae’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau wedi’i ddiweddaru.
+customs.emailfrontend.email.redirect.info=Gallwch nawr barhau i
+customs.emailfrontend.email.redirect.info.customs-finance.link=Reoli tollau mewnforio a chyfrifon TAW.
+customs.emailfrontend.email.redirect.info.trader-goods-profiles.link=reoli’ch Proffil Nwyddau Masnachwyr.
 
 customs.emailfrontend.verify-email.title=Cadarnhau’ch cyfeiriad e-bost
 customs.emailfrontend.verify-email.para1=Cliciwch ar y cysylltiad yn yr e-bost rydym wedi’i anfon at <strong class="bold">{0}</strong> i gadarnhau’ch cyfeiriad e-bost

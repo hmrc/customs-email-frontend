@@ -19,6 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.config
 import javax.inject.{Inject, Singleton}
 import play.api.{ConfigLoader, Configuration}
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
+import uk.gov.hmrc.customs.emailfrontend.config.AppConfig.configLoader
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.jdk.CollectionConverters._
@@ -65,16 +66,23 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val save4LaterUrl: String = s"$customsHodsProxyBaseUrl/$save4LaterContext"
 
+  lazy val referrerName: Seq[ReferrerName] = config.get[Seq[ReferrerName]]("referrer-services")
+
+  lazy val customsFinanceReferrer: Option[ReferrerName] =
+      config.get[Seq[ReferrerName]]("referrer-services").find(_.name == "customs-finance")
+
+  lazy val traderGoodsProfilesReferrer: Option[ReferrerName] =
+    config.get[Seq[ReferrerName]]("referrer-services").find(_.name == "trader-goods-profiles")
+
+  lazy val timeout: Int = config.get[Int]("timeout.timeout")
+  lazy val countdown: Int = config.get[Int]("timeout.countdown")
+  lazy val loginContinueUrl: String = config.get[String]("external-url.loginContinue")
+}
+
+object AppConfig {
   implicit val configLoader: ConfigLoader[Seq[ReferrerName]] =
     ConfigLoader(_.getConfigList).map(
       _.asScala.toList
         .map(config => ReferrerName(config.getString("name"), config.getString("continueUrl")))
     )
-
-  lazy val referrerName: Seq[ReferrerName] =
-    config.get[Seq[ReferrerName]]("referrer-services")
-
-  lazy val timeout: Int = config.get[Int]("timeout.timeout")
-  lazy val countdown: Int = config.get[Int]("timeout.countdown")
-  lazy val loginContinueUrl: String = config.get[String]("external-url.loginContinue")
 }
