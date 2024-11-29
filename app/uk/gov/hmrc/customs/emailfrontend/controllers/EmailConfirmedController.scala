@@ -75,12 +75,11 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
 
       maybeReferrerName <- save4LaterService.fetchReferrer(request.user.internalId)
       journeyType <- save4LaterService.fetchJourneyType(request.user.internalId)
+
     } yield EmailVerifiedOrChangedViewModel(
       details.newEmail,
       maybeReferrerName.map(_.continueUrl),
-      journeyType.fold {
-        logger.warn("Unable to determine journey type!")
-        true } { _.isVerify },
+      journeyType.get.isVerify,
       appConfig
     )
 

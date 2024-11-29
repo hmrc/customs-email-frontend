@@ -33,13 +33,11 @@ case class EmailVerifiedOrChangedViewModel(
     if (isVerifyJourney) { "customs.emailfrontend.email-verified.panel" }
     else { "customs.emailfrontend.email-changed.panel" }
 
-  def messageKey: Option[String] = {
-    if (hasLink) {
-      if (isVerifyJourney) Some("customs.emailfrontend.email-verified.info") else None
-    } else {
-      if (isVerifyJourney) { Some("customs.emailfrontend.email-verified.info") }
-      else { Some("customs.emailfrontend.email-confirmed.info") }
-    }
+  def messageKey: Option[String] = (hasLink, isVerifyJourney) match {
+    case (true, true)  => Some("customs.emailfrontend.email-verified.info")
+    case (true, false) => None
+    case (false, true) => Some("customs.emailfrontend.email-verified.info")
+    case (false, false) => Some("customs.emailfrontend.email-confirmed.info")
   }
 
   def link: Option[(String, String)] = referrerUrl.flatMap {
