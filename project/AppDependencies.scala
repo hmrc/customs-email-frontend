@@ -9,7 +9,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "bootstrap-frontend-play-30" % bootstrapVersion,
     "uk.gov.hmrc" %% "play-frontend-hmrc-play-30" % "10.5.0",
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-30" % "2.2.0",
-    "uk.gov.hmrc" % "emailaddress-play-30" % "4.0.0" cross CrossVersion.for3Use2_13 excludeAll(
+    "uk.gov.hmrc" % "emailaddress-play-30" % "4.1.0" cross CrossVersion.for3Use2_13 excludeAll(
       ExclusionRule("org.apache.pekko", "pekko-slf4j_2.13"),
       ExclusionRule("org.apache.pekko", "pekko-serialization-jackson_2.13"),
       ExclusionRule("org.apache.pekko", "pekko-actor-typed_2.13"),
