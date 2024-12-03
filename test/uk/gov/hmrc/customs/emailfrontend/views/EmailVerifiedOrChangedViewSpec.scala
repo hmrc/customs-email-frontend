@@ -35,7 +35,7 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
 
     "render the email verified page correctly with a link" in new Setup {
       val viewModel = EmailVerifiedOrChangedViewModel(
-        email = "test@example.com",
+        email = testEmail,
         referrerUrl = referrerUrl,
         isVerifyJourney = true,
         appConfig = mockAppConfig
@@ -52,7 +52,7 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
 
     "render the email changed page correctly without a link" in new Setup {
       val viewModel = EmailVerifiedOrChangedViewModel(
-        email = "test@example.com",
+        email = testEmail,
         referrerUrl = None,
         isVerifyJourney = false,
         appConfig = mockAppConfig
@@ -71,7 +71,7 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
     val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
     protected val mockAppConfig: AppConfig = mock[AppConfig]
 
-    val email: String = "test@example.com"
+    val email: String = testEmail
     val referrerUrl: Option[String] = Some("https://finance.example.com")
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "/some/resource/path")
@@ -81,6 +81,7 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
 
     val tgpUrl = "https://trader-goods.example.com"
     val customsFinanceUrl = "https://finance.example.com"
+    val testEmail = "test@example.com"
 
     when(mockAppConfig.customsFinanceReferrer).thenReturn(Some(ReferrerName("Customs Finance", customsFinanceUrl)))
     when(mockAppConfig.traderGoodsProfilesReferrer).thenReturn(Some(ReferrerName("Trader Goods Profiles", tgpUrl)))

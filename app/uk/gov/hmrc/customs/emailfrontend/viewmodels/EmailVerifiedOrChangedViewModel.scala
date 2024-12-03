@@ -17,6 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.viewmodels
 
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 case class EmailVerifiedOrChangedViewModel(
                                             email: String,
@@ -29,14 +30,9 @@ case class EmailVerifiedOrChangedViewModel(
     if (isVerifyJourney)  { "customs.emailfrontend.email-verified.title-and-heading" }
     else { "customs.emailfrontend.email-changed.title-and-heading" }
 
-  def panelKey: String =
-    if (isVerifyJourney) { "customs.emailfrontend.email-verified.panel" }
-    else { "customs.emailfrontend.email-changed.panel" }
-
   def messageKey: Option[String] = (hasLink, isVerifyJourney) match {
-    case (true, true)  => Some("customs.emailfrontend.email-verified.info")
+    case (_, true)  => Some("customs.emailfrontend.email-verified.info")
     case (true, false) => None
-    case (false, true) => Some("customs.emailfrontend.email-verified.info")
     case (false, false) => Some("customs.emailfrontend.email-confirmed.info")
   }
 
@@ -51,8 +47,8 @@ case class EmailVerifiedOrChangedViewModel(
   private def hasLink: Boolean = link.isDefined
 
   private def matchesFinanceReferrer(url: String): Boolean =
-    url == appConfig.customsFinanceReferrer.fold("")(_.continueUrl)
+    url == appConfig.customsFinanceReferrer.fold(emptyString)(_.continueUrl)
 
   private def matchesTraderGoodsProfilesReferrer(url: String): Boolean =
-    url == appConfig.traderGoodsProfilesReferrer.fold("")(_.continueUrl)
+    url == appConfig.traderGoodsProfilesReferrer.fold(emptyString)(_.continueUrl)
 }

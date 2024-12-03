@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.customs.emailfrontend.config
 
-import javax.inject.{Inject, Singleton}
 import play.api.{ConfigLoader, Configuration}
-import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig.configLoader
+import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import scala.jdk.CollectionConverters._
+import javax.inject.{Inject, Singleton}
+import scala.jdk.CollectionConverters.*
 
 @Singleton
 class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesConfig) {
@@ -68,11 +68,9 @@ class AppConfig @Inject()(val config: Configuration, servicesConfig: ServicesCon
 
   lazy val referrerName: Seq[ReferrerName] = config.get[Seq[ReferrerName]]("referrer-services")
 
-  lazy val customsFinanceReferrer: Option[ReferrerName] =
-      config.get[Seq[ReferrerName]]("referrer-services").find(_.name == "customs-finance")
+  lazy val customsFinanceReferrer: Option[ReferrerName] = referrerName.find(_.name == "customs-finance")
 
-  lazy val traderGoodsProfilesReferrer: Option[ReferrerName] =
-    config.get[Seq[ReferrerName]]("referrer-services").find(_.name == "trader-goods-profiles")
+  lazy val traderGoodsProfilesReferrer: Option[ReferrerName] = referrerName.find(_.name == "trader-goods-profiles")
 
   lazy val timeout: Int = config.get[Int]("timeout.timeout")
   lazy val countdown: Int = config.get[Int]("timeout.countdown")

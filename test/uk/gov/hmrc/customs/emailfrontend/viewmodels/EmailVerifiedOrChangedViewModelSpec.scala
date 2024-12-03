@@ -30,7 +30,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
 
     "return correct titleKey for verify journey" in new Setup {
       val viewModel = EmailVerifiedOrChangedViewModel(
-        email = "test@example.com",
+        email = testEmail,
         referrerUrl = None,
         isVerifyJourney = true,
         appConfig = appConfig
@@ -41,7 +41,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
 
     "return correct titleKey for change journey" in new Setup {
       val viewModel = EmailVerifiedOrChangedViewModel(
-        email = "test@example.com",
+        email = testEmail,
         referrerUrl = None,
         isVerifyJourney = false,
         appConfig = appConfig
@@ -52,7 +52,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
 
     "return correct messageKey and link for verify journey with finance referrer" in new Setup {
       val viewModel = EmailVerifiedOrChangedViewModel(
-        email = "test@example.com",
+        email = testEmail,
         referrerUrl = Some(customsFinanceUrl),
         isVerifyJourney = true,
         appConfig = appConfig
@@ -64,7 +64,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
 
     "return correct messageKey and link for change journey with trader goods profiles referrer" in new Setup {
       val viewModel = EmailVerifiedOrChangedViewModel(
-        email = "test@example.com",
+        email = testEmail,
         referrerUrl = Some(tgpUrl),
         isVerifyJourney = false,
         appConfig = appConfig
@@ -76,7 +76,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
 
     "return default messageKey for verify journey with no matching referrer" in new Setup {
       val viewModel = EmailVerifiedOrChangedViewModel(
-        email = "test@example.com",
+        email = testEmail,
         referrerUrl = Some("https://unknown.example.com"),
         isVerifyJourney = true,
         appConfig = appConfig
@@ -88,7 +88,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
 
     "return default messageKey for change journey with no matching referrer" in new Setup {
       val viewModel = EmailVerifiedOrChangedViewModel(
-        email = "test@example.com",
+        email = testEmail,
         referrerUrl = Some("https://unknown.example.com"),
         isVerifyJourney = false,
         appConfig = appConfig
@@ -105,6 +105,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
 
     val tgpUrl = "https://trader-goods.example.com"
     val customsFinanceUrl = "https://finance.example.com"
+    val testEmail = "test@example.com"
 
     when(appConfig.customsFinanceReferrer).thenReturn(Some(ReferrerName("Customs Finance", customsFinanceUrl)))
     when(appConfig.traderGoodsProfilesReferrer).thenReturn(Some(ReferrerName("Trader Goods Profiles", tgpUrl)))

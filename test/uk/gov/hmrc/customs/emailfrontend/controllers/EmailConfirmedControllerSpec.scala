@@ -221,7 +221,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
           .thenReturn(Future.successful(None))
 
         when(mockSave4LaterService.saveEmail(any, any)(any))
-          .thenReturn(Future.failed(new InternalServerException("")))
+          .thenReturn(Future.failed(new InternalServerException(emptyString)))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
