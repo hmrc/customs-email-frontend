@@ -16,14 +16,15 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import org.mockito.ArgumentMatchers.{eq => meq}
+import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.Mockito.when
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{status, _}
+import play.api.test.Helpers.{status, *}
 import play.api.{Application, inject}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, JourneyType, ReferrerName}
-import uk.gov.hmrc.customs.emailfrontend.services._
+import uk.gov.hmrc.customs.emailfrontend.services.*
 import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
@@ -31,9 +32,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
-
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
 
 class EmailConfirmedControllerSpec extends SpecBase {
 
@@ -222,6 +220,9 @@ class EmailConfirmedControllerSpec extends SpecBase {
           meq(None), meq("abc@def.com"), meq("fakeEori"), meq(testDateTime))(any))
           .thenReturn(Future.successful(None))
 
+        when(mockSave4LaterService.saveEmail(any, any)(any))
+          .thenReturn(Future.failed(new InternalServerException(emptyString)))
+
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
           val result = route(app, requestWithForm).value
@@ -243,6 +244,9 @@ class EmailConfirmedControllerSpec extends SpecBase {
         when(mockUpdateVerifiedEmailService.updateVerifiedEmail(
           meq(None), meq("abc@def.com"), meq("fakeEori"), meq(testDateTime))(any))
           .thenReturn(Future.successful(Some(false)))
+
+        when(mockSave4LaterService.saveEmail(any, any)(any))
+          .thenReturn(Future.successful(Right(())))
 
         running(app) {
           val requestWithForm = FakeRequest(GET, routes.EmailConfirmedController.show.url)
