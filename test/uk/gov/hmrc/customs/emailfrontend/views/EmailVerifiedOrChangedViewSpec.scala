@@ -46,7 +46,7 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
 
       content must include(messages(viewModel.titleKey))
       content must include(viewModel.email)
-      content must include(messages("customs.emailfrontend.email-verified.info"))
+      content must not include(messages("customs.emailfrontend.email-verified.info"))
       content must include(referrerUrl.get)
     }
 

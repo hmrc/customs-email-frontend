@@ -58,7 +58,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
         appConfig = appConfig
       )
 
-      viewModel.messageKey mustBe Some("customs.emailfrontend.email-verified.info")
+      viewModel.messageKey mustBe None
       viewModel.link mustBe Some("customs.emailfrontend.email.redirect.info.customs-finance.link" -> customsFinanceUrl)
     }
 

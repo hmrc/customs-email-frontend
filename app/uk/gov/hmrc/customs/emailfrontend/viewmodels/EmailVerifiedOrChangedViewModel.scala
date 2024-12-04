@@ -31,8 +31,8 @@ case class EmailVerifiedOrChangedViewModel(
     else { "customs.emailfrontend.email-changed.title-and-heading" }
 
   def messageKey: Option[String] = (hasLink, isVerifyJourney) match {
-    case (_, true)  => Some("customs.emailfrontend.email-verified.info")
-    case (true, false) => None
+    case (false, true)  => Some("customs.emailfrontend.email-verified.info")
+    case (true, _) => None
     case (false, false) => Some("customs.emailfrontend.email-confirmed.info")
   }
 
