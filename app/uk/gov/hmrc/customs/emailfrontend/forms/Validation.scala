@@ -25,13 +25,13 @@ object Validation {
 
   private def isValid(e: String): Boolean = e match {
     case e if emailRegex.findFirstMatchIn(e).isDefined => true
-    case _ => false
+    case _                                             => false
   }
 
   private val validEmailMaxLength = 50
 
   def isValidEmail: Constraint[String] =
-    Constraint({
+    Constraint {
       case e if Option(e).isEmpty =>
         Invalid(ValidationError("customs.emailfrontend.errors.valid-email.empty"))
 
@@ -45,17 +45,17 @@ object Validation {
         Invalid(ValidationError("customs.emailfrontend.errors.valid-email.wrong-format"))
 
       case _ => Valid
-    })
+    }
 
   def validYesNo(errorMessage: String): Constraint[Option[Boolean]] =
-    Constraint({
+    Constraint {
       case None => Invalid(ValidationError(errorMessage))
-      case _ => Valid
-    })
+      case _    => Valid
+    }
 
   def validVerifyChange(errorMessage: String): Constraint[Option[Boolean]] =
-    Constraint({
+    Constraint {
       case None => Invalid(ValidationError(errorMessage))
-      case _ => Valid
-    })
+      case _    => Valid
+    }
 }

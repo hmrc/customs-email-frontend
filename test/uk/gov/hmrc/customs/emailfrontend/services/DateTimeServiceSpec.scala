@@ -32,10 +32,10 @@ class DateTimeServiceSpec extends SpecBase {
 
       val currentTime = dateTimeService.nowUtc()
 
-      currentTime.getYear should be >= 2023
+      currentTime.getYear       should be >= 2023
       currentTime.getMonthValue should (be >= 1 and be <= 12)
       currentTime.getDayOfMonth should (be >= 1 and be <= 31)
-      currentTime.getHour should (be >= 1 and be <= 24)
+      currentTime.getHour       should (be >= 1 and be <= 24)
 
     }
 
@@ -56,10 +56,10 @@ class DateTimeServiceSpec extends SpecBase {
 
       val currentTime: ZonedDateTime = dateTimeService.zonedDateTimeUtc
 
-      currentTime.getYear shouldBe 2023
+      currentTime.getYear       shouldBe 2023
       currentTime.getMonthValue shouldBe 10
       currentTime.getDayOfMonth shouldBe 31
-      currentTime.getHour shouldBe 12
+      currentTime.getHour       shouldBe 12
     }
 
     "return correct ZoneId" in new Setup {
@@ -70,6 +70,6 @@ class DateTimeServiceSpec extends SpecBase {
 
   trait Setup {
     val fixedInstant: Instant = Instant.parse("2023-10-31T12:00:00Z")
-    val fixedClock: Clock = Clock.fixed(fixedInstant, ZoneId.of("UTC"))
+    val fixedClock: Clock     = Clock.fixed(fixedInstant, ZoneId.of("UTC"))
   }
 }

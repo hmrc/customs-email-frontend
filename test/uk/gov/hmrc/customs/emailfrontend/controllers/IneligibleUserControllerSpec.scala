@@ -30,15 +30,15 @@ class IneligibleUserControllerSpec extends SpecBase {
     "have a status of Unauthorised (401)" in {
       val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
 
-      val view = app.injector.instanceOf[ineligible_user]
+      val view       = app.injector.instanceOf[ineligible_user]
       val controller = app.injector.instanceOf[IneligibleUserController]
-      val messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+      val messages   = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
       running(app) {
-        val request = FakeRequest()
+        val request        = FakeRequest()
         val eventualResult = controller.show(Ineligible.NoEnrolment).apply(request)
 
-        status(eventualResult) shouldBe UNAUTHORIZED
+        status(eventualResult)          shouldBe UNAUTHORIZED
         contentAsString(eventualResult) shouldBe view(Ineligible.NoEnrolment)(request, messages).toString
       }
     }

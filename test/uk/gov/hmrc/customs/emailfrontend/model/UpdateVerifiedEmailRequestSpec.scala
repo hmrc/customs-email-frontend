@@ -33,7 +33,7 @@ class UpdateVerifiedEmailRequestSpec extends PlaySpec {
   )
 
   private val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
-  private val verifiedEmailRequest = VerifiedEmailRequest(updateVerifiedEmailRequest = updateVerifiedEmailRequest)
+  private val verifiedEmailRequest       = VerifiedEmailRequest(updateVerifiedEmailRequest = updateVerifiedEmailRequest)
 
   "UpdateVerifiedEmailRequest" should {
     "parse the model to correct json format" in {
@@ -41,11 +41,10 @@ class UpdateVerifiedEmailRequestSpec extends PlaySpec {
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress" shouldBe JsDefined(
         JsString("test@email.com")
       )
-      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDNumber" shouldBe JsDefined(
+      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDNumber"     shouldBe JsDefined(
         JsString("GBXXXXXXXXXXXX")
       )
-      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDType" shouldBe JsDefined(
-        JsString("EORI"))
+      requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDType"       shouldBe JsDefined(JsString("EORI"))
     }
   }
 }

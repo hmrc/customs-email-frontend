@@ -26,18 +26,18 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, hyphen}
 import uk.gov.hmrc.http.client.HttpClientV2
 
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig,
-                                             http: HttpClientV2,
-                                             auditable: Auditable)(implicit ec: ExecutionContext) {
+class SubscriptionDisplayConnector @Inject() (appConfig: AppConfig, http: HttpClientV2, auditable: Auditable)(implicit
+  ec: ExecutionContext
+) {
 
   def subscriptionDisplay(eori: String)(implicit hc: HeaderCarrier): Future[SubscriptionDisplayResponse] = {
     val request = ("EORI" -> eori) :: buildQueryParams
 
-    http.get(url"${appConfig.subscriptionDisplayUrl}")
+    http
+      .get(url"${appConfig.subscriptionDisplayUrl}")
       .transform(_.withQueryStringParameters(request: _*))
       .execute[SubscriptionDisplayResponse]
       .map { displayResponse =>
@@ -51,23 +51,24 @@ class SubscriptionDisplayConnector @Inject()(appConfig: AppConfig,
       }
   }
 
-  private def auditResponse(transactionName: String,
-                            auditType: String,
-                            response: SubscriptionDisplayResponse,
-                            url: String)
-                           (implicit hc: HeaderCarrier): Unit =
-
+  private def auditResponse(
+    transactionName: String,
+    auditType: String,
+    response: SubscriptionDisplayResponse,
+    url: String
+  )(implicit hc: HeaderCarrier): Unit =
     auditable.sendDataEvent(
       transactionName = transactionName,
       path = url,
       detail = Map(
-        "emailAddress" -> response.email.getOrElse("No email address received"),
+        "emailAddress"               -> response.email.getOrElse("No email address received"),
         "emailVerificationTimestamp" -> response.emailVerificationTimestamp
           .getOrElse("No emailVerificationTimestamp  received"),
-        "statusText" -> response.statusText.getOrElse("No status text"),
-        "paramValue" -> response.paramValue.getOrElse("paramValue")
+        "statusText"                 -> response.statusText.getOrElse("No status text"),
+        "paramValue"                 -> response.paramValue.getOrElse("paramValue")
       ),
-      auditType = auditType)
+      auditType = auditType
+    )
 
   private def buildQueryParams: List[(String, String)] =
     List("regime" -> "CDS", "acknowledgementReference" -> generateUUIDAsString)

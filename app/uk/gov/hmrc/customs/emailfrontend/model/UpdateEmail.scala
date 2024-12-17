@@ -36,17 +36,15 @@ object UpdateEmail {
   private val eoriWrites: Writes[Eori] = (eori: Eori) => JsString(eori.id)
 
   val eoriReads: Reads[Eori] = Reads[Eori] { js =>
-    js.validate[String].map[Eori](eori =>
-      Eori(eori)
-    )
+    js.validate[String].map[Eori](eori => Eori(eori))
   }
 
-  implicit val formatEori: Format[Eori] = Format(eoriReads, eoriWrites)
+  implicit val formatEori: Format[Eori]          = Format(eoriReads, eoriWrites)
   implicit val dateTimeJF: Format[LocalDateTime] = Format(localDateTimeReads, localDateTimeWrites)
-  implicit val format: OFormat[UpdateEmail] = Json.format[UpdateEmail]
+  implicit val format: OFormat[UpdateEmail]      = Json.format[UpdateEmail]
 
   implicit def jsonBodyWritable[T](implicit
-                                   writes: Writes[T],
-                                   jsValueBodyWritable: BodyWritable[JsValue]
-                                  ): BodyWritable[T] = jsValueBodyWritable.map(writes.writes)
+    writes: Writes[T],
+    jsValueBodyWritable: BodyWritable[JsValue]
+  ): BodyWritable[T] = jsValueBodyWritable.map(writes.writes)
 }

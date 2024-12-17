@@ -35,14 +35,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
 
-  private val mockAuditable = mock[Auditable]
+  private val mockAuditable  = mock[Auditable]
   private val requestBuilder = mock[RequestBuilder]
-  private val mockAppConfig = mock[AppConfig]
+  private val mockAppConfig  = mock[AppConfig]
   private val mockHttpClient = mock[HttpClientV2]
 
   private val emailBaseUrl = "http://localhost:9744/email-verification"
 
-  val connector = new EmailVerificationConnector(mockHttpClient, mockAppConfig, mockAuditable)
+  val connector                  = new EmailVerificationConnector(mockHttpClient, mockAppConfig, mockAuditable)
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   before {
@@ -91,14 +91,14 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
 
         when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
         when(requestBuilder.execute(any[HttpReads[EmailVerificationStateResponse]], any[ExecutionContext]))
-          .thenReturn(Future.successful(Left(
-            EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, "Internal Server Error"))))
+          .thenReturn(
+            Future.successful(Left(EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, "Internal Server Error")))
+          )
         when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector.getEmailVerificationState("email-address").futureValue
 
-        result shouldBe Left(
-          EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, "Internal Server Error"))
+        result shouldBe Left(EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, "Internal Server Error"))
       }
     }
   }
@@ -116,7 +116,8 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
           .createEmailVerificationRequest(
             EmailDetails(Some("old-email-address"), "email-address", None),
             "test-continue-url",
-            "EORINumber")
+            "EORINumber"
+          )
           .futureValue
 
         result shouldBe Right(EmailVerificationRequestSent)
@@ -132,10 +133,7 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
         when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector
-          .createEmailVerificationRequest(
-            EmailDetails(None, "email-address", None),
-            "test-continue-url",
-            "EORINumber")
+          .createEmailVerificationRequest(EmailDetails(None, "email-address", None), "test-continue-url", "EORINumber")
           .futureValue
 
         result shouldBe Right(EmailAlreadyVerified)
@@ -149,16 +147,12 @@ class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
         when(requestBuilder.execute(any[HttpReads[EmailVerificationRequestResponse]], any[ExecutionContext]))
           .thenReturn(
             Future
-              .successful(
-                Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR,
-                  "Internal server error"))))
+              .successful(Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR, "Internal server error")))
+          )
         when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector
-          .createEmailVerificationRequest(
-            EmailDetails(None, "email-address", None),
-            "test-continue-url",
-            "EORINumber")
+          .createEmailVerificationRequest(EmailDetails(None, "email-address", None), "test-continue-url", "EORINumber")
           .futureValue
 
         result shouldBe Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR, "Internal server error"))

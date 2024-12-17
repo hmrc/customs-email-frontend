@@ -32,8 +32,7 @@ case object UnhandledException extends HttpErrorResponse
 
 sealed trait HttpSuccessResponse
 
-case class VerifiedEmailResponse(updateVerifiedEmailResponse: UpdateVerifiedEmailResponse)
-  extends HttpSuccessResponse
+case class VerifiedEmailResponse(updateVerifiedEmailResponse: UpdateVerifiedEmailResponse) extends HttpSuccessResponse
 
 object VerifiedEmailResponse {
   implicit val format: OFormat[VerifiedEmailResponse] = Json.format[VerifiedEmailResponse]
@@ -45,7 +44,7 @@ object VerifiedEmailRequest {
   implicit val formats: OFormat[VerifiedEmailRequest] = Json.format[VerifiedEmailRequest]
 
   implicit def jsonBodyWritable[T](implicit
-                                   writes: Writes[T],
-                                   jsValueBodyWritable: BodyWritable[JsValue]
-                                  ): BodyWritable[T] = jsValueBodyWritable.map(writes.writes)
+    writes: Writes[T],
+    jsValueBodyWritable: BodyWritable[JsValue]
+  ): BodyWritable[T] = jsValueBodyWritable.map(writes.writes)
 }

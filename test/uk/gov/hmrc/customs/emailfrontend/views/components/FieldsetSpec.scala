@@ -21,12 +21,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.Helpers._
 import play.api.test.Helpers
-import play.twirl.api.{HtmlFormat, Html}
+import play.twirl.api.{Html, HtmlFormat}
 import play.api.i18n.Messages
-import uk.gov.hmrc.customs.emailfrontend.utils.{
-  SpecBase,
-  FakeIdentifierAgentAction
-}
+import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.components.fieldset
 
 class FieldsetSpec extends SpecBase {
@@ -36,7 +33,7 @@ class FieldsetSpec extends SpecBase {
 
       running(app) {
         val fieldsetView = app.injector.instanceOf[fieldset]
-        val content = Html("<div>Fieldset content</div>")
+        val content      = Html("<div>Fieldset content</div>")
 
         val output: HtmlFormat.Appendable = fieldsetView(
           legend = "Heading",
@@ -46,7 +43,8 @@ class FieldsetSpec extends SpecBase {
 
         val html: Document = Jsoup.parse(contentAsString(output))
 
-        html.getElementsByClass("govuk-fieldset__legend")
+        html
+          .getElementsByClass("govuk-fieldset__legend")
           .attr("class") should include("govuk-fieldset__legend--xl")
       }
     }
@@ -55,7 +53,7 @@ class FieldsetSpec extends SpecBase {
 
       running(app) {
         val fieldsetView = app.injector.instanceOf[fieldset]
-        val content = Html("<div>Fieldset content</div>")
+        val content      = Html("<div>Fieldset content</div>")
 
         val output: HtmlFormat.Appendable = fieldsetView(
           legend = "Heading",
@@ -65,8 +63,9 @@ class FieldsetSpec extends SpecBase {
 
         val html: Document = Jsoup.parse(contentAsString(output))
 
-        html.getElementsByClass("govuk-fieldset__legend")
-          .attr("class") should not include ("govuk-fieldset__legend--xl")
+        html
+          .getElementsByClass("govuk-fieldset__legend")
+          .attr("class") should not include "govuk-fieldset__legend--xl"
       }
 
     }
@@ -74,6 +73,6 @@ class FieldsetSpec extends SpecBase {
 
   trait Setup {
     implicit val messages: Messages = Helpers.stubMessages()
-    val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
+    val app: Application            = applicationBuilder[FakeIdentifierAgentAction]().build()
   }
 }

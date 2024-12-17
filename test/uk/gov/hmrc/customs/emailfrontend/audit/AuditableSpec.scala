@@ -37,30 +37,29 @@ class AuditableSpec extends SpecBase {
       doNothing.when(mockAudit).sendDataEvent(any)(any)
       when(mockConnector.sendEvent(dataEvent)(hc, ec)).thenReturn(Future.successful(Success))
 
-      auditableOb.sendDataEvent(
-        "test_transaction",
-        "test_path",
-        Map("test_other" -> "other"),
-        "test_audit")(hc) mustBe()
+      auditableOb.sendDataEvent("test_transaction", "test_path", Map("test_other" -> "other"), "test_audit")(
+        hc
+      ) mustBe ()
     }
   }
 
   trait Setup {
-    implicit val hc: HeaderCarrier = HeaderCarrier(
-      requestId = Some(RequestId("test_value")),
-      sessionId = Some(uk.gov.hmrc.http.SessionId("test_id")))
+    implicit val hc: HeaderCarrier =
+      HeaderCarrier(requestId = Some(RequestId("test_value")), sessionId = Some(uk.gov.hmrc.http.SessionId("test_id")))
 
-    implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+    implicit val ec: ExecutionContext                   = scala.concurrent.ExecutionContext.Implicits.global
     implicit val auditHeaderCarrier: AuditHeaderCarrier = new AuditHeaderCarrier(hc)
 
-    val dataEvent: DataEvent = DataEvent("test_source", "test", "test")
+    val dataEvent: DataEvent          = DataEvent("test_source", "test", "test")
     val mockConnector: AuditConnector = mock[AuditConnector]
-    val mockAudit: Audit = mock[Audit]
+    val mockAudit: Audit              = mock[Audit]
 
-    val app: Application = applicationBuilder[FakeIdentifierAgentAction]().overrides(
-      inject.bind[AuditConnector].toInstance(mockConnector),
-      inject.bind[Audit].toInstance(mockAudit)
-    ).build()
+    val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+      .overrides(
+        inject.bind[AuditConnector].toInstance(mockConnector),
+        inject.bind[Audit].toInstance(mockAudit)
+      )
+      .build()
 
     val auditableOb: Auditable = app.injector.instanceOf[Auditable]
   }

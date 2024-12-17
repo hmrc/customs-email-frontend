@@ -31,19 +31,21 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmailConfirmedController @Inject()(identify: IdentifierAction,
-                                         emailVerifiedOrChangedView: email_verified_or_changed,
-                                         customsDataStoreService: CustomsDataStoreService,
-                                         save4LaterService: Save4LaterService,
-                                         emailVerificationService: EmailVerificationService,
-                                         updateVerifiedEmailService: UpdateVerifiedEmailService,
-                                         mcc: MessagesControllerComponents,
-                                         errorHandler: ErrorHandler,
-                                         dateTimeService: DateTimeService,
-                                         appConfig: AppConfig)
-                                        (implicit override val messagesApi: MessagesApi,
-                                         ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with Logging {
+class EmailConfirmedController @Inject() (
+  identify: IdentifierAction,
+  emailVerifiedOrChangedView: email_verified_or_changed,
+  customsDataStoreService: CustomsDataStoreService,
+  save4LaterService: Save4LaterService,
+  emailVerificationService: EmailVerificationService,
+  updateVerifiedEmailService: UpdateVerifiedEmailService,
+  mcc: MessagesControllerComponents,
+  errorHandler: ErrorHandler,
+  dateTimeService: DateTimeService,
+  appConfig: AppConfig
+)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+    extends FrontendController(mcc)
+    with I18nSupport
+    with Logging {
 
   def show: Action[AnyContent] =
     identify.async { implicit request =>
@@ -53,15 +55,16 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
       )
     }
 
-  private def redirectBasedOnEmailStatus(details: EmailDetails)
-                                        (implicit request: AuthenticatedRequest[_]): Future[Result] =
+  private def redirectBasedOnEmailStatus(
+    details: EmailDetails
+  )(implicit request: AuthenticatedRequest[_]): Future[Result] =
     for {
       verified <- emailVerificationService.isEmailVerified(details.newEmail)
       redirect <- if (verified.contains(true)) {
-        updateEmail(details)
-      } else {
-        Future.successful(Redirect(routes.VerifyYourEmailController.show))
-      }
+                    updateEmail(details)
+                  } else {
+                    Future.successful(Redirect(routes.VerifyYourEmailController.show))
+                  }
     } yield redirect
 
   private def updateEmail(details: EmailDetails)(implicit request: AuthenticatedRequest[_]): Future[Result] = {
@@ -70,11 +73,12 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
     lazy val viewModel = for {
       _ <- save4LaterService.saveEmail(request.user.internalId, details.copy(timestamp = Some(timestamp)))
 
-      _ <- customsDataStoreService.storeEmail(
-        EnrolmentIdentifier("EORINumber", request.user.eori), details.newEmail, timestamp)
+      _ <-
+        customsDataStoreService
+          .storeEmail(EnrolmentIdentifier("EORINumber", request.user.eori), details.newEmail, timestamp)
 
       maybeReferrerName <- save4LaterService.fetchReferrer(request.user.internalId)
-      journeyType <- save4LaterService.fetchJourneyType(request.user.internalId)
+      journeyType       <- save4LaterService.fetchJourneyType(request.user.internalId)
 
     } yield EmailVerifiedOrChangedViewModel(
       details.newEmail,
@@ -86,8 +90,10 @@ class EmailConfirmedController @Inject()(identify: IdentifierAction,
     updateVerifiedEmailService
       .updateVerifiedEmail(details.currentEmail, details.newEmail, request.user.eori, timestamp)
       .flatMap {
-        case Some(true) => viewModel.map(vm => Ok(emailVerifiedOrChangedView(vm)))
-          .recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService()) }
+        case Some(true) =>
+          viewModel
+            .map(vm => Ok(emailVerifiedOrChangedView(vm)))
+            .recover { case _ => Redirect(routes.EmailConfirmedController.problemWithService()) }
 
         case _ =>
           Future.successful(Redirect(routes.EmailConfirmedController.problemWithService()))

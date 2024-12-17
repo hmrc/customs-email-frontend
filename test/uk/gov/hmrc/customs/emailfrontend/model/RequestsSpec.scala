@@ -33,14 +33,14 @@ class RequestsSpec extends SpecBase {
 
   trait Setup {
     val currentEmail = "test_current_mail@test.com"
-    val newMail = "test_new_mail@test.com"
-    val eori = "test_eori"
+    val newMail      = "test_new_mail@test.com"
+    val eori         = "test_eori"
 
-    val fakeReq: FakeRequest[EmailDetails] = FakeRequest().withBody(EmailDetails(Some(currentEmail), newMail, None))
-    val user: LoggedInUser = LoggedInUser(InternalId("some_id"), None, None, eori)
+    val fakeReq: FakeRequest[EmailDetails]           = FakeRequest().withBody(EmailDetails(Some(currentEmail), newMail, None))
+    val user: LoggedInUser                           = LoggedInUser(InternalId("some_id"), None, None, eori)
     val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(POST, routes.ChangingYourEmailController.submit.url)
 
     val authenticReq = new AuthenticatedRequest[EmailDetails](request = fakeReq, user)
-    val eorirequest = new EoriRequest[EmailDetails](authenticReq, Eori(eori))
+    val eorirequest  = new EoriRequest[EmailDetails](authenticReq, Eori(eori))
   }
 }

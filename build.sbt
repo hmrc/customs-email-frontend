@@ -57,9 +57,13 @@ lazy val microservice = Project(appName, file("."))
       "controllers.routes._",
       "uk.gov.hmrc.govukfrontend.views.html.components._"
     ),
+    scalafmtDetailedError := true,
+    scalafmtPrintDiff := true,
+    scalafmtFailOnErrors := true
   )
   .settings(PlayKeys.playDefaultPort := 9898)
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(scalastyleSettings)
 
-addCommandAlias("runAllChecks", ";clean;compile;coverage;test;it/test;scalastyle;Test/scalastyle;coverageReport")
+addCommandAlias("runAllChecks",
+  ";clean;compile;coverage;test;it/test;scalafmtAll;scalastyle;Test/scalastyle;coverageReport")
