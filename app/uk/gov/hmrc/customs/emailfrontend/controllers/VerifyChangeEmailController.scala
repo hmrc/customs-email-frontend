@@ -151,10 +151,10 @@ class VerifyChangeEmailController @Inject() (
       .createEmailVerificationRequest(details, routes.EmailConfirmedController.show.url, eori)
       .flatMap {
 
-      case Some(EmailVerificationRequestSent) =>
-        save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
-          Redirect(routes.VerifyYourEmailController.show)
-        }
+        case Some(EmailVerificationRequestSent) =>
+          save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
+            Redirect(routes.VerifyYourEmailController.show)
+          }
 
         case Some(EmailAlreadyVerified) =>
           save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>

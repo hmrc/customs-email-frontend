@@ -37,7 +37,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
-import org.mockito.Mockito.{verify, when, times}
+import org.mockito.Mockito.{times, verify, when}
 import org.mockito.ArgumentMatchers.any
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
 
@@ -515,7 +515,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = route(app, requestWithForm).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)           shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(routes.VerifyYourEmailController.show.url)
 
         verify(mockSave4LaterService, times(1)).saveJourneyType(any, any)(any)
@@ -525,29 +525,29 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "redirect to verify your email page when user is happy with the email but" +
       " email fails to store in the DB" in new Setup {
-      when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(someSubscriptionDisplayResponse))
+        when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
-      when(mockSave4LaterService.saveJourneyType(any, any)(any)).thenReturn(Future.successful(Right((): Unit)))
-      when(mockSave4LaterService.saveEmail(any, any)(any)).thenReturn(Future.successful(Left(BadRequest)))
+        when(mockSave4LaterService.saveJourneyType(any, any)(any)).thenReturn(Future.successful(Right((): Unit)))
+        when(mockSave4LaterService.saveEmail(any, any)(any)).thenReturn(Future.successful(Left(BadRequest)))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
-        .thenReturn(Future.successful(Some(EmailVerificationRequestSent)))
+        when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
+          .thenReturn(Future.successful(Some(EmailVerificationRequestSent)))
 
-      running(app) {
-        val requestWithForm: FakeRequest[AnyContentAsFormUrlEncoded] =
-          fakeRequest(POST,
-            routes.VerifyChangeEmailController.verifyChangeEmail.url).withFormUrlEncodedBody(("isVerify", "true"))
+        running(app) {
+          val requestWithForm: FakeRequest[AnyContentAsFormUrlEncoded] =
+            fakeRequest(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
+              .withFormUrlEncodedBody(("isVerify", "true"))
 
-        val result = route(app, requestWithForm).value
+          val result = route(app, requestWithForm).value
 
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(routes.VerifyYourEmailController.show.url)
+          status(result)           shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(routes.VerifyYourEmailController.show.url)
 
-        verify(mockSave4LaterService, times(1)).saveJourneyType(any, any)(any)
-        verify(mockSave4LaterService, times(1)).saveEmail(any, any)(any)
+          verify(mockSave4LaterService, times(1)).saveJourneyType(any, any)(any)
+          verify(mockSave4LaterService, times(1)).saveEmail(any, any)(any)
+        }
       }
-    }
 
     "redirect to check your email, problem with the service page when user is happy with the email" in new Setup {
 
