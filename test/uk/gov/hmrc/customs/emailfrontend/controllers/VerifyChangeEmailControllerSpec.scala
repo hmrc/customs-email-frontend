@@ -17,29 +17,27 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers.{eq => meq}
+import org.mockito.ArgumentMatchers.eq as meq
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{redirectLocation, _}
+import play.api.test.Helpers.{redirectLocation, *}
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{
-  EmailAlreadyVerified,
-  EmailVerificationRequestFailure, EmailVerificationRequestSent
+  EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestSent
 }
 import uk.gov.hmrc.customs.emailfrontend.connectors.{EmailVerificationConnector, SubscriptionDisplayConnector}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
-import uk.gov.hmrc.customs.emailfrontend.model._
+import uk.gov.hmrc.customs.emailfrontend.model.*
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
-
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when, times}
 import org.mockito.ArgumentMatchers.any
 
 import java.time.{LocalDateTime, Period}
@@ -503,6 +501,8 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
 
       when(mockSave4LaterService.saveJourneyType(any, any)(any)).thenReturn(Future.successful(Right((): Unit)))
+      when(mockSave4LaterService.saveEmail(any, any)(any)).thenReturn(Future.successful(Right((): Unit)))
+
       when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
         .thenReturn(Future.successful(Some(EmailVerificationRequestSent)))
 
@@ -514,8 +514,10 @@ class VerifyChangeEmailControllerSpec extends SpecBase
         val result = route(app, requestWithForm).value
 
         status(result) shouldBe SEE_OTHER
-
         redirectLocation(result) shouldBe Some(routes.VerifyYourEmailController.show.url)
+
+        verify(mockSave4LaterService, times(1)).saveJourneyType(any, any)(any)
+        verify(mockSave4LaterService, times(1)).saveEmail(any, any)(any)
       }
     }
 
