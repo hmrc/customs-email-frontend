@@ -26,16 +26,13 @@ import uk.gov.hmrc.play.audit.model.{Audit, DataEvent, ExtendedDataEvent}
 
 import scala.concurrent.ExecutionContext
 
-class Auditable @Inject()(auditConnector: AuditConnector, appConfig: AppConfig)
-                         (implicit ec: ExecutionContext) {
+class Auditable @Inject() (auditConnector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
-  private val audit = Audit(appConfig.appName, auditConnector)
+  private val audit               = Audit(appConfig.appName, auditConnector)
   private val auditSource: String = appConfig.appName
 
-  def sendDataEvent(transactionName: String,
-                    path: String = "N/A",
-                    detail: Map[String, String],
-                    auditType: String)(implicit hc: HeaderCarrier
+  def sendDataEvent(transactionName: String, path: String = "N/A", detail: Map[String, String], auditType: String)(
+    implicit hc: HeaderCarrier
   ): Unit =
     audit.sendDataEvent(
       DataEvent(
@@ -46,15 +43,14 @@ class Auditable @Inject()(auditConnector: AuditConnector, appConfig: AppConfig)
       )
     )
 
-  def sendExtendedDataEvent(transactionName: String,
-                            path: String = "N/A",
-                            tags: Map[String, String] = Map.empty,
-                            details: JsValue,
-                            eventType: String)(implicit hc: HeaderCarrier): Unit = {
-
+  def sendExtendedDataEvent(
+    transactionName: String,
+    path: String = "N/A",
+    tags: Map[String, String] = Map.empty,
+    details: JsValue,
+    eventType: String
+  )(implicit hc: HeaderCarrier): Unit =
     auditConnector.sendExtendedEvent(
-      ExtendedDataEvent(auditSource, eventType,
-        tags = hc.toAuditTags(transactionName, path) ++ tags, detail = details)
+      ExtendedDataEvent(auditSource, eventType, tags = hc.toAuditTags(transactionName, path) ++ tags, detail = details)
     )
-  }
 }

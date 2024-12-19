@@ -35,8 +35,7 @@ object RequestCommon {
   }
 
   def apply(): RequestCommon =
-    RequestCommon("CDS", receiptDate = dateTime,
-      acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString)
+    RequestCommon("CDS", receiptDate = dateTime, acknowledgementReference = RandomUUIDGenerator.generateUUIDAsString)
 
   implicit val formats: OFormat[RequestCommon] = Json.format[RequestCommon]
 }

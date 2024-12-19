@@ -98,13 +98,13 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
   }
 
   trait Setup {
-    implicit val hc: HeaderCarrier = mock[HeaderCarrier]
-    protected val internalId: InternalId = InternalId("internalId-123")
-    protected val timestamp: LocalDateTime = DateTimeUtil.dateTime
+    implicit val hc: HeaderCarrier           = mock[HeaderCarrier]
+    protected val internalId: InternalId     = InternalId("internalId-123")
+    protected val timestamp: LocalDateTime   = DateTimeUtil.dateTime
     protected val emailDetails: EmailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
-    protected val journeyType: JourneyType = JourneyType(true)
+    protected val journeyType: JourneyType   = JourneyType(true)
     protected val referrerName: ReferrerName = ReferrerName("customs-finance", "/xyz")
-    protected val mockSave4LaterConnector = mock[Save4LaterConnector]
-    protected val service = new Save4LaterService(mockSave4LaterConnector)
+    protected val mockSave4LaterConnector    = mock[Save4LaterConnector]
+    protected val service                    = new Save4LaterService(mockSave4LaterConnector)
   }
 }

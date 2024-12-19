@@ -27,15 +27,16 @@ import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ErrorHandler @Inject()(override val messagesApi: MessagesApi,
-                             errorView: error_template,
-                             customErrorView: problem_with_this_service)
-                            (protected val ec: ExecutionContext) extends FrontendErrorHandler {
+class ErrorHandler @Inject() (
+  override val messagesApi: MessagesApi,
+  errorView: error_template,
+  customErrorView: problem_with_this_service
+)(protected val ec: ExecutionContext)
+    extends FrontendErrorHandler {
 
-  override def standardErrorTemplate(pageTitle: String,
-                                     heading: String,
-                                     message: String)
-                                    (implicit request: RequestHeader): Future[Html] =
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit
+    request: RequestHeader
+  ): Future[Html] =
     Future.successful(errorView(pageTitle, heading, message))
 
   def problemWithService()(implicit request: RequestHeader): Html = customErrorView()

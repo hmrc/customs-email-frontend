@@ -20,28 +20,28 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 case class EmailVerifiedOrChangedViewModel(
-                                            email: String,
-                                            referrerUrl: Option[String],
-                                            isVerifyJourney: Boolean,
-                                            appConfig: AppConfig
-                                          ) {
+  email: String,
+  referrerUrl: Option[String],
+  isVerifyJourney: Boolean,
+  appConfig: AppConfig
+) {
 
   def titleKey: String =
-    if (isVerifyJourney)  { "customs.emailfrontend.email-verified.title-and-heading" }
+    if (isVerifyJourney) { "customs.emailfrontend.email-verified.title-and-heading" }
     else { "customs.emailfrontend.email-changed.title-and-heading" }
 
   def messageKey: Option[String] = (hasLink, isVerifyJourney) match {
     case (false, true)  => Some("customs.emailfrontend.email-verified.info")
-    case (true, _) => None
+    case (true, _)      => None
     case (false, false) => Some("customs.emailfrontend.email-confirmed.info")
   }
 
   def link: Option[(String, String)] = referrerUrl.flatMap {
-    case url if matchesFinanceReferrer(url) =>
+    case url if matchesFinanceReferrer(url)             =>
       Some("customs.emailfrontend.email.redirect.info.customs-finance.link" -> url)
     case url if matchesTraderGoodsProfilesReferrer(url) =>
       Some("customs.emailfrontend.email.redirect.info.trader-goods-profiles.link" -> url)
-    case _ => None
+    case _                                              => None
   }
 
   private def hasLink: Boolean = link.isDefined

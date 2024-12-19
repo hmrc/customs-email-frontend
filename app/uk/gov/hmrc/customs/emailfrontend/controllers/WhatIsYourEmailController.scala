@@ -33,18 +33,20 @@ import scala.util.control.NonFatal
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 @Singleton
-class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
-                                          view: change_your_email,
-                                          whatIsYourEmailView: what_is_your_email,
-                                          save4LaterService: Save4LaterService,
-                                          mcc: MessagesControllerComponents,
-                                          subscriptionDisplayConnector: SubscriptionDisplayConnector,
-                                          emailVerificationService: EmailVerificationService,
-                                          errorHandler: ErrorHandler,
-                                          appConfig: AppConfig)
-                                         (implicit override val messagesApi: MessagesApi,
-                                          ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with Logging {
+class WhatIsYourEmailController @Inject() (
+  identify: IdentifierAction,
+  view: change_your_email,
+  whatIsYourEmailView: what_is_your_email,
+  save4LaterService: Save4LaterService,
+  mcc: MessagesControllerComponents,
+  subscriptionDisplayConnector: SubscriptionDisplayConnector,
+  emailVerificationService: EmailVerificationService,
+  errorHandler: ErrorHandler,
+  appConfig: AppConfig
+)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+    extends FrontendController(mcc)
+    with I18nSupport
+    with Logging {
 
   def show: Action[AnyContent] =
     identify.async { implicit request =>
@@ -54,30 +56,26 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
       )
     }
 
-  private def redirectBasedOnEmailStatus(details: EmailDetails)
-                                        (implicit request: Request[AnyContent]): Future[Result] =
-
+  private def redirectBasedOnEmailStatus(details: EmailDetails)(implicit request: Request[AnyContent]): Future[Result] =
     emailVerificationService.isEmailVerified(details.newEmail).map {
-      case Some(true) => Redirect(routes.EmailConfirmedController.show)
+      case Some(true)  => Redirect(routes.EmailConfirmedController.show)
       case Some(false) => Redirect(routes.CheckYourEmailController.show)
-      case None => InternalServerError(errorHandler.problemWithService())
+      case None        => InternalServerError(errorHandler.problemWithService())
     }
 
   def create: Action[AnyContent] = identify.async { implicit request =>
-
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
       details =>
         (details.currentEmail, details.newEmail) match {
           case (Some(_), _) => Future.successful(Ok(view(emailForm, appConfig)))
-          case (None, _) => Future.successful(Ok(whatIsYourEmailView(emailForm)))
-          case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
+          case (None, _)    => Future.successful(Ok(whatIsYourEmailView(emailForm)))
+          case _            => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
         },
       subscriptionDisplay()
     )
   }
 
   def whatIsEmailAddress: Action[AnyContent] = identify.async { implicit request =>
-
     subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
       case SubscriptionDisplayResponse(Some(email), Some(_), _, _) =>
         save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), emptyString, None))
@@ -98,26 +96,29 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   }
 
   private def subscriptionDisplay()(implicit request: AuthenticatedRequest[AnyContent]) =
-    subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
-      case SubscriptionDisplayResponse(Some(_), Some(_), _, _) =>
-        Future.successful(Ok(view(emailForm, appConfig)))
+    subscriptionDisplayConnector
+      .subscriptionDisplay(request.user.eori)
+      .flatMap {
+        case SubscriptionDisplayResponse(Some(_), Some(_), _, _) =>
+          Future.successful(Ok(view(emailForm, appConfig)))
 
-      case SubscriptionDisplayResponse(Some(_), _, _, _) =>
-        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
+        case SubscriptionDisplayResponse(Some(_), _, _, _) =>
+          Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
 
-      case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
-        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
+        case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
+          Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
 
-      case SubscriptionDisplayResponse(None, _, Some(_), Some("FAIL")) =>
-        Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
+        case SubscriptionDisplayResponse(None, _, Some(_), Some("FAIL")) =>
+          Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
 
-      case SubscriptionDisplayResponse(None, _, None, None) =>
-        Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
+        case SubscriptionDisplayResponse(None, _, None, None) =>
+          Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
 
-      case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
-    }.recover {
-      handleNonFatalException()
-    }
+        case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
+      }
+      .recover {
+        handleNonFatalException()
+      }
 
   def verify: Action[AnyContent] = identify.async { implicit request =>
 
@@ -130,58 +131,63 @@ class WhatIsYourEmailController @Inject()(identify: IdentifierAction,
   }
 
   def submit: Action[AnyContent] = identify.async { implicit request =>
+    emailForm
+      .bindFromRequest()
+      .fold(
+        formWithErrors =>
+          subscriptionDisplayConnector
+            .subscriptionDisplay(request.user.eori)
+            .map(_ => BadRequest(view(formWithErrors, appConfig)))
+            .recover {
+              handleNonFatalException()
+            },
+        formData =>
+          save4LaterService
+            .fetchEmail(request.user.internalId)
+            .flatMap {
+              case Some(emailDetails) if emailDetails.currentEmail.isEmpty =>
+                save4LaterService
+                  .saveEmail(request.user.internalId, EmailDetails(None, formData.value.trim, None))
+                  .map { _ =>
+                    Redirect(routes.CheckYourEmailController.show)
+                  }
 
-    emailForm.bindFromRequest().fold(
-      formWithErrors => {
-        subscriptionDisplayConnector.subscriptionDisplay(request.user.eori)
-          .map(_ => BadRequest(view(formWithErrors, appConfig)))
-          .recover {
-            handleNonFatalException()
-          }
-      },
-      formData => {
-        save4LaterService.fetchEmail(request.user.internalId).flatMap {
-          case Some(emailDetails) if emailDetails.currentEmail.isEmpty =>
-            save4LaterService
-              .saveEmail(request.user.internalId, EmailDetails(None, formData.value.trim, None))
-              .map { _ =>
-                Redirect(routes.CheckYourEmailController.show)
-              }
+              case Some(emailDetails) if emailDetails.currentEmail.isDefined =>
+                save4LaterService
+                  .saveEmail(
+                    request.user.internalId,
+                    EmailDetails(emailDetails.currentEmail, formData.value.trim, None)
+                  )
+                  .map { _ =>
+                    Redirect(routes.CheckYourEmailController.show)
+                  }
 
-          case Some(emailDetails) if emailDetails.currentEmail.isDefined =>
-            save4LaterService
-              .saveEmail(request.user.internalId, EmailDetails(emailDetails.currentEmail, formData.value.trim, None))
-              .map { _ =>
-                Redirect(routes.CheckYourEmailController.show)
-              }
-
-          case _ =>
-            Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
-        }
-      }.recover {
-        handleNonFatalException()
-      }
-    )
+              case _ =>
+                Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
+            }
+            .recover {
+              handleNonFatalException()
+            }
+      )
   }
 
   def verifySubmit: Action[AnyContent] = identify.async { implicit request =>
-    emailForm.bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(formWithErrors))),
-      formData => {
-        save4LaterService
-          .saveEmail(request.user.internalId, EmailDetails(None, formData.value, None))
-          .map { _ =>
-            Redirect(routes.CheckYourEmailController.show)
-          }
-      }
-    )
+    emailForm
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(formWithErrors))),
+        formData =>
+          save4LaterService
+            .saveEmail(request.user.internalId, EmailDetails(None, formData.value, None))
+            .map { _ =>
+              Redirect(routes.CheckYourEmailController.show)
+            }
+      )
   }
 
-  private def handleNonFatalException(): PartialFunction[Throwable, Result] = {
-    case NonFatal(e) => {
-      logger.error(s"Subscription display failed with ${e.getMessage}")
-      Redirect(routes.WhatIsYourEmailController.problemWithService())
-    }
+  private def handleNonFatalException(): PartialFunction[Throwable, Result] = { case NonFatal(e) =>
+    logger.error(s"Subscription display failed with ${e.getMessage}")
+    Redirect(routes.WhatIsYourEmailController.problemWithService())
   }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>

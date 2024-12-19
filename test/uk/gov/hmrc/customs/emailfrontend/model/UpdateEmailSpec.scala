@@ -28,12 +28,12 @@ class UpdateEmailSpec extends SpecBase {
   "UpdateEmail" should {
 
     "serialize timestamp correctly" in new Setup {
-      val eori = Eori("testEori")
-      val address = "test@example.com"
+      val eori      = Eori("testEori")
+      val address   = "test@example.com"
       val timestamp = LocalDateTime.parse(testDateTime01.format(dateFormatter01), dateFormatter01)
 
-      val updateEmail = UpdateEmail(eori, address, timestamp)
-      val json = Json.toJson(updateEmail)
+      val updateEmail       = UpdateEmail(eori, address, timestamp)
+      val json              = Json.toJson(updateEmail)
       val parsedUpdateEmail = json.as[UpdateEmail]
 
       parsedUpdateEmail shouldBe updateEmail
@@ -48,8 +48,7 @@ class UpdateEmailSpec extends SpecBase {
 
     "handle different date formats correctly" in new Setup {
       val timestamp: String = LocalDateTime.now.format(dateFormatter01)
-      val timestampJson = Json.obj("eori" -> "testEori",
-        "address" -> "test@example.com", "timestamp" -> timestamp)
+      val timestampJson     = Json.obj("eori" -> "testEori", "address" -> "test@example.com", "timestamp" -> timestamp)
       val parsedUpdateEmail = timestampJson.as[UpdateEmail]
 
       parsedUpdateEmail.timestamp mustBe a[LocalDateTime]

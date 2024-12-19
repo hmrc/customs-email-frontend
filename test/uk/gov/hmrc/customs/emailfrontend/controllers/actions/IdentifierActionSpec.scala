@@ -44,18 +44,19 @@ class IdentifierActionSpec extends SpecBase {
     "redirect the user to ineligible (no-enrolment) when has no enrolments" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
 
-      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](
-        any, any)(any, any)).thenReturn(Future.successful(
-        Enrolments(Set.empty) ~ Some("internalId") ~ Some(Organisation) ~ Some(User)))
+      when(
+        mockAuthConnector
+          .authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any)
+      ).thenReturn(Future.successful(Enrolments(Set.empty) ~ Some("internalId") ~ Some(Organisation) ~ Some(User)))
 
-      private val authAction = new AuthenticatedIdentifierAction(
-        mockAuthConnector, config, env, errorHandler, bodyParsers)
+      private val authAction =
+        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
 
       private val controller = new Harness(authAction)
 
       running(app) {
         val result = controller.onPageLoad()(FakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.NoEnrolment).url
       }
     }
@@ -63,38 +64,40 @@ class IdentifierActionSpec extends SpecBase {
     "redirect the user to ineligible when has no enrolments, internalId and Affinity are provided" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
 
-      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](
-        any, any)(any, any)).thenReturn(Future.successful(
-        Enrolments(Set.empty) ~ None ~ None ~ None))
+      when(
+        mockAuthConnector
+          .authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any)
+      ).thenReturn(Future.successful(Enrolments(Set.empty) ~ None ~ None ~ None))
 
-      private val authAction = new AuthenticatedIdentifierAction(
-        mockAuthConnector, config, env, errorHandler, bodyParsers)
+      private val authAction =
+        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
 
       private val controller = new Harness(authAction)
 
       running(app) {
         val result = controller.onPageLoad()(FakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.NoEnrolment).url
       }
     }
 
     "redirect the user to ineligible (no-enrolment) when has no eori enrolment" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
-      private val enrolments = Set(Enrolment("someKey", Seq(EnrolmentIdentifier("someKey", "someValue")), "ACTIVE"))
+      private val enrolments        = Set(Enrolment("someKey", Seq(EnrolmentIdentifier("someKey", "someValue")), "ACTIVE"))
 
-      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](
-        any, any)(any, any)).thenReturn(Future.successful(
-        Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ Some(User)))
+      when(
+        mockAuthConnector
+          .authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any)
+      ).thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ Some(User)))
 
-      private val authAction = new AuthenticatedIdentifierAction(
-        mockAuthConnector, config, env, errorHandler, bodyParsers)
+      private val authAction =
+        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
 
       private val controller = new Harness(authAction)
 
       running(app) {
         val result = controller.onPageLoad()(FakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.NoEnrolment).url
       }
     }
@@ -104,36 +107,39 @@ class IdentifierActionSpec extends SpecBase {
 
       private val enrolments = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
 
-      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](
-        any, any)(any, any)).thenReturn(Future.successful(
-        Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ None))
+      when(
+        mockAuthConnector
+          .authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any)
+      ).thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ None))
 
-      private val authAction = new AuthenticatedIdentifierAction(
-        mockAuthConnector, config, env, errorHandler, bodyParsers)
+      private val authAction =
+        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
 
       private val controller = new Harness(authAction)
 
       running(app) {
         val result = controller.onPageLoad()(FakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.NotAdmin).url
       }
     }
 
     "redirect the user (Agent affinity group) to ineligible (is-agent) when has no credential role" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
-      private val enrolments = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
+      private val enrolments        = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
 
-      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](
-        any, any)(any, any)).thenReturn(Future.successful(
-        Enrolments(enrolments) ~ Some("internalId") ~ Some(Agent) ~ None))
+      when(
+        mockAuthConnector
+          .authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any)
+      ).thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Agent) ~ None))
 
-      private val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+      private val authAction =
+        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
       private val controller = new Harness(authAction)
 
       running(app) {
         val result = controller.onPageLoad()(FakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.IsAgent).url
       }
     }
@@ -143,16 +149,18 @@ class IdentifierActionSpec extends SpecBase {
 
       private val enrolments = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
 
-      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](
-        any, any)(any, any)).thenReturn(Future.successful(
-        Enrolments(enrolments) ~ Some("internalId") ~ None ~ Some(User)))
+      when(
+        mockAuthConnector
+          .authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any)
+      ).thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ None ~ Some(User)))
 
-      private val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+      private val authAction =
+        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
       private val controller = new Harness(authAction)
 
       running(app) {
         val result = controller.onPageLoad()(FakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.IneligibleUserController.show(Ineligible.NoEnrolment).url
       }
     }
@@ -160,16 +168,19 @@ class IdentifierActionSpec extends SpecBase {
     "redirect the user to unauthorised controller when an auth error happens" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
 
-      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](
-        any, any)(any, any)).thenReturn(Future.failed(new RuntimeException("something went wrong")))
+      when(
+        mockAuthConnector
+          .authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any)
+      ).thenReturn(Future.failed(new RuntimeException("something went wrong")))
 
-      private val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+      private val authAction =
+        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
       private val controller = new Harness(authAction)
 
       running(app) {
         val request = FakeRequest().withHeaders("X-Session-Id" -> "someSessionId")
-        val result = controller.onPageLoad()(request)
-        status(result) shouldBe INTERNAL_SERVER_ERROR
+        val result  = controller.onPageLoad()(request)
+        status(result)          shouldBe INTERNAL_SERVER_ERROR
         contentAsString(result) shouldBe errorHandler.problemWithService()(request).toString()
       }
     }
@@ -179,11 +190,13 @@ class IdentifierActionSpec extends SpecBase {
 
       private val enrolments = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
 
-      when(mockAuthConnector.authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](
-        any, any)(any, any)).thenReturn(Future.successful(
-        Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ Some(User)))
+      when(
+        mockAuthConnector
+          .authorise[Enrolments ~ Option[String] ~ Option[AffinityGroup] ~ Option[CredentialRole]](any, any)(any, any)
+      ).thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ Some(User)))
 
-      private val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+      private val authAction =
+        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
       private val controller = new Harness(authAction)
 
       running(app) {
@@ -196,12 +209,17 @@ class IdentifierActionSpec extends SpecBase {
       "redirect to gov gateway sign in" in new Setup {
 
         private val authAction = new AuthenticatedIdentifierAction(
-          new FakeFailingAuthConnector(new MissingBearerToken), config, env, errorHandler, bodyParsers)
+          new FakeFailingAuthConnector(new MissingBearerToken),
+          config,
+          env,
+          errorHandler,
+          bodyParsers
+        )
 
         private val controller = new Harness(authAction)
-        private val result = controller.onPageLoad()(FakeRequest())
+        private val result     = controller.onPageLoad()(FakeRequest())
 
-        status(result) shouldBe SEE_OTHER
+        status(result)             shouldBe SEE_OTHER
         redirectLocation(result).get should startWith("/bas-gateway/sign-in?continue_url=")
       }
     }
@@ -210,12 +228,17 @@ class IdentifierActionSpec extends SpecBase {
       "redirect the user to log in " in new Setup {
 
         private val authAction = new AuthenticatedIdentifierAction(
-          new FakeFailingAuthConnector(new MissingBearerToken), config, env, errorHandler, bodyParsers)
+          new FakeFailingAuthConnector(new MissingBearerToken),
+          config,
+          env,
+          errorHandler,
+          bodyParsers
+        )
 
         private val controller = new Harness(authAction)
-        private val result = controller.onPageLoad()(FakeRequest())
+        private val result     = controller.onPageLoad()(FakeRequest())
 
-        status(result) shouldBe SEE_OTHER
+        status(result)             shouldBe SEE_OTHER
         redirectLocation(result).get should startWith("/bas-gateway/sign-in?continue_url=")
       }
     }
@@ -224,19 +247,24 @@ class IdentifierActionSpec extends SpecBase {
       "redirect the user to the unauthorised page" in new Setup {
 
         private val authAction = new AuthenticatedIdentifierAction(
-          new FakeFailingAuthConnector(new InsufficientEnrolments), config, env, errorHandler, bodyParsers)
+          new FakeFailingAuthConnector(new InsufficientEnrolments),
+          config,
+          env,
+          errorHandler,
+          bodyParsers
+        )
 
         private val controller = new Harness(authAction)
-        private val result = controller.onPageLoad()(FakeRequest())
+        private val result     = controller.onPageLoad()(FakeRequest())
 
-        status(result) shouldBe SEE_OTHER
+        status(result)                 shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe routes.IneligibleUserController.show(Ineligible.NoEnrolment).url
       }
     }
   }
 
   class Harness(authAction: IdentifierAction) {
-    def onPageLoad(): Action[AnyContent] = authAction { _ => Results.Ok }
+    def onPageLoad(): Action[AnyContent] = authAction(_ => Results.Ok)
   }
 
   implicit class Ops[A](a: A) {
@@ -244,18 +272,20 @@ class IdentifierActionSpec extends SpecBase {
   }
 
   trait Setup {
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]().overrides().build()
-    protected val config: AppConfig = app.injector.instanceOf[AppConfig]
+    protected val app: Application                 = applicationBuilder[FakeIdentifierAgentAction]().overrides().build()
+    protected val config: AppConfig                = app.injector.instanceOf[AppConfig]
     protected val bodyParsers: BodyParsers.Default = app.injector.instanceOf[BodyParsers.Default]
-    protected val env: Environment = app.injector.instanceOf[Environment]
-    protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
+    protected val env: Environment                 = app.injector.instanceOf[Environment]
+    protected val errorHandler: ErrorHandler       = app.injector.instanceOf[ErrorHandler]
   }
 }
 
-class FakeFailingAuthConnector @Inject()(exceptionToReturn: Throwable) extends AuthConnector {
+class FakeFailingAuthConnector @Inject() (exceptionToReturn: Throwable) extends AuthConnector {
   val serviceUrl: String = emptyString
 
-  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])
-                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =
+  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[A] =
     Future.failed(exceptionToReturn)
 }

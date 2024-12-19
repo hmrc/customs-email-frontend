@@ -24,7 +24,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 class AppConfigSpec extends SpecBase {
 
-  lazy val app: Application = new GuiceApplicationBuilder().build()
+  lazy val app: Application     = new GuiceApplicationBuilder().build()
   lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   "AppConfig" should {
@@ -60,8 +60,14 @@ class AppConfigSpec extends SpecBase {
         ReferrerName("customs-finance", "/customs/payment-records"),
         ReferrerName("customs-exports", "/customs-declare-exports/"),
         ReferrerName("cds-file-upload", "/cds-file-upload-service/"),
-        ReferrerName("cds-reimbursement-claim", "/claim-for-reimbursement-of-import-duties/enter-movement-reference-number/"),
-        ReferrerName("report-or-check-de-minimis-aid-northern-ireland", "/report-or-check-de-minimis-aid-northern-ireland/"),
+        ReferrerName(
+          "cds-reimbursement-claim",
+          "/claim-for-reimbursement-of-import-duties/enter-movement-reference-number/"
+        ),
+        ReferrerName(
+          "report-or-check-de-minimis-aid-northern-ireland",
+          "/report-or-check-de-minimis-aid-northern-ireland/"
+        ),
         ReferrerName("trader-goods-profiles", "/trader-goods-profiles/")
       )
       appConfig.referrerName mustEqual expectedReferrers
@@ -69,7 +75,9 @@ class AppConfigSpec extends SpecBase {
 
     "load specific referrer services correctly" in {
       appConfig.customsFinanceReferrer mustEqual Some(ReferrerName("customs-finance", "/customs/payment-records"))
-      appConfig.traderGoodsProfilesReferrer mustEqual Some(ReferrerName("trader-goods-profiles", "/trader-goods-profiles/"))
+      appConfig.traderGoodsProfilesReferrer mustEqual Some(
+        ReferrerName("trader-goods-profiles", "/trader-goods-profiles/")
+      )
     }
   }
 }

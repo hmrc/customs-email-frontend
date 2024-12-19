@@ -38,18 +38,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val mockHttp = mock[HttpClientV2]
-  private val requestBuilder = mock[RequestBuilder]
-  private val mockAuditable = mock[Auditable]
-  private val mockAppConfig = mock[AppConfig]
+  private val mockHttp            = mock[HttpClientV2]
+  private val requestBuilder      = mock[RequestBuilder]
+  private val mockAuditable       = mock[Auditable]
+  private val mockAppConfig       = mock[AppConfig]
   private val mockDateTimeService = mock[DateTimeService]
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private val connector = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
-  private val postUrl = "http://localhost:9893/customs-data-store/update-email"
-  private val testEori: Eori = Eori("GB1234556789")
-  private val testEmail = "email@test.com"
-  private val testDateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
+  private val connector                  = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
+  private val postUrl                    = "http://localhost:9893/customs-data-store/update-email"
+  private val testEori: Eori             = Eori("GB1234556789")
+  private val testEmail                  = "email@test.com"
+  private val testDateTime               = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
 
   override def beforeEach(): Unit = {
     reset(mockHttp, mockAuditable, mockAppConfig, requestBuilder)
@@ -138,7 +138,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
     "UpdateEmail model object serializes correctly" in {
       val updateEmail = UpdateEmail(testEori, testEmail, testDateTime)
-      val result = Json.toJson(updateEmail).toString()
+      val result      = Json.toJson(updateEmail).toString()
 
       result shouldBe """{"eori":"GB1234556789","address":"email@test.com","timestamp":"2021-01-01T11:11:11Z"}"""
     }

@@ -18,7 +18,9 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{HttpErrorResponse, ServiceUnavailable, VerifiedEmailRequest, VerifiedEmailResponse}
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{
+  HttpErrorResponse, ServiceUnavailable, VerifiedEmailRequest, VerifiedEmailResponse
+}
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
 import uk.gov.hmrc.customs.emailfrontend.model._
 import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
@@ -29,26 +31,22 @@ import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-import org.mockito.Mockito.{when, reset}
+import org.mockito.Mockito.{reset, when}
 import org.mockito.ArgumentMatchers.any
 
 class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
-  private val mockConnector = mock[UpdateVerifiedEmailConnector]
-  val service = new UpdateVerifiedEmailService(mockConnector)
+  private val mockConnector      = mock[UpdateVerifiedEmailConnector]
+  val service                    = new UpdateVerifiedEmailService(mockConnector)
 
   private val eoriNumber = "GBXXXXXXXXXXXX"
-  private val email = "test@email.com"
-  private val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
+  private val email      = "test@email.com"
+  private val dateTime   = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
 
   private val bundleIdUpdateVerifiedEmailResponse = VerifiedEmailResponse(
     UpdateVerifiedEmailResponse(
-      ResponseCommon(
-        "OK",
-        None,
-        dateTime,
-        List(MessagingServiceParam(formBundleIdParamName, "testValue")))
+      ResponseCommon("OK", None, dateTime, List(MessagingServiceParam(formBundleIdParamName, "testValue")))
     )
   )
 
@@ -69,9 +67,8 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   def mockGetEmailVerificationState(response: Either[HttpErrorResponse, VerifiedEmailResponse]): Unit =
     when(
-      mockConnector.updateVerifiedEmail(
-        any[VerifiedEmailRequest],
-        any[Option[String]])(any[HeaderCarrier])) thenReturn Future
+      mockConnector.updateVerifiedEmail(any[VerifiedEmailRequest], any[Option[String]])(any[HeaderCarrier])
+    ) thenReturn Future
       .successful(response)
 
   "Calling UpdateVerifiedEmailService updateVerifiedEmail" should {

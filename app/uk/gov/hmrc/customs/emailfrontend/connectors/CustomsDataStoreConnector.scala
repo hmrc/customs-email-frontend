@@ -37,20 +37,23 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
 @Singleton
-class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
-                                          httpClient: HttpClientV2,
-                                          audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
+class CustomsDataStoreConnector @Inject() (appConfig: AppConfig, httpClient: HttpClientV2, audit: Auditable)(implicit
+  ec: ExecutionContext
+) extends Logging {
 
-  def storeEmailAddress(eori: Eori, email: String,
-                        timestamp: LocalDateTime)
-                       (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, HttpResponse]] = {
+  def storeEmailAddress(eori: Eori, email: String, timestamp: LocalDateTime)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[HttpErrorResponse, HttpResponse]] = {
 
     val request = UpdateEmail(eori, email, timestamp)
 
-    auditRequest("DataStoreEmailRequestSubmitted", Map(
-      "eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString()))
+    auditRequest(
+      "DataStoreEmailRequestSubmitted",
+      Map("eori number" -> eori.id, "emailAddress" -> email, "timestamp" -> timestamp.toString())
+    )
 
-    httpClient.post(url"${appConfig.customsDataStoreUrl}")
+    httpClient
+      .post(url"${appConfig.customsDataStoreUrl}")
       .setHeader(CONTENT_TYPE -> MimeTypes.JSON)
       .withBody[UpdateEmail](request)
       .execute[HttpResponse]
@@ -65,26 +68,33 @@ class CustomsDataStoreConnector @Inject()(appConfig: AppConfig,
             logger.warn(s"CustomsDataStore: data store request is failed with status ${response.status}")
             Left(BadRequest)
         }
-      }.recover {
+      }
+      .recover {
         case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
 
-        case _: InternalServerException | UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) => Left(ServiceUnavailable)
+        case _: InternalServerException | UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
+          Left(ServiceUnavailable)
 
         case NonFatal(e) =>
-          logger.error(s"Call to data stored failed url=" +
-            s"${appConfig.customsDataStoreUrl}, exception=$e");
+          logger.error(
+            s"Call to data stored failed url=" +
+              s"${appConfig.customsDataStoreUrl}, exception=$e"
+          );
           Left(UnhandledException)
       }
   }
 
-  private def auditRequest(transactionName: String,
-                           detail: Map[String, String])(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(transactionName = transactionName,
-      path = appConfig.customsDataStoreUrl, detail = detail, auditType = "DataStoreRequest")
+  private def auditRequest(transactionName: String, detail: Map[String, String])(implicit hc: HeaderCarrier): Unit =
+    audit.sendDataEvent(
+      transactionName = transactionName,
+      path = appConfig.customsDataStoreUrl,
+      detail = detail,
+      auditType = "DataStoreRequest"
+    )
 
-  private def auditResponse(transactionName: String,
-                            response: HttpResponse,
-                            url: String)(implicit hc: HeaderCarrier): Unit =
+  private def auditResponse(transactionName: String, response: HttpResponse, url: String)(implicit
+    hc: HeaderCarrier
+  ): Unit =
     audit.sendDataEvent(
       transactionName = transactionName,
       path = url,

@@ -30,13 +30,16 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourEmailController @Inject()(identify: IdentifierAction,
-                                         view: check_your_email,
-                                         mcc: MessagesControllerComponents,
-                                         save4LaterService: Save4LaterService,
-                                         errorHandler: ErrorHandler)
-                                        (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with Logging {
+class CheckYourEmailController @Inject() (
+  identify: IdentifierAction,
+  view: check_your_email,
+  mcc: MessagesControllerComponents,
+  save4LaterService: Save4LaterService,
+  errorHandler: ErrorHandler
+)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+    extends FrontendController(mcc)
+    with I18nSupport
+    with Logging {
 
   def show: Action[AnyContent] =
     identify.async { implicit request =>
@@ -50,9 +53,12 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
     save4LaterService.fetchEmail(request.user.internalId).flatMap {
 
       case Some(emailDetails) =>
-        confirmEmailForm.bindFromRequest().fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail))),
-          formData => handleYesNo(request.user.internalId, formData))
+        confirmEmailForm
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, emailDetails.newEmail))),
+            formData => handleYesNo(request.user.internalId, formData)
+          )
 
       case None =>
         logger.warn("emailStatus cache none, user logged out")
@@ -60,12 +66,12 @@ class CheckYourEmailController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def handleYesNo(internalId: InternalId, confirmEmail: YesNo)
-                         (implicit request: Request[AnyContent]): Future[Result] =
-
+  private def handleYesNo(internalId: InternalId, confirmEmail: YesNo)(implicit
+    request: Request[AnyContent]
+  ): Future[Result] =
     confirmEmail.isYes match {
       case Some(true) => Future.successful(Redirect(routes.ChangingYourEmailController.show))
-      case _ =>
+      case _          =>
         save4LaterService
           .remove(internalId)
           .flatMap(_ => Future.successful(Redirect(routes.WhatIsYourEmailController.whatIsEmailAddress)))

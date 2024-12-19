@@ -26,20 +26,21 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VerifyYourEmailController @Inject()(identify: IdentifierAction,
-                                          view: verify_your_email,
-                                          save4LaterService: Save4LaterService,
-                                          mcc: MessagesControllerComponents)
-                                         (implicit override val messagesApi: MessagesApi,
-                                          ex: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+class VerifyYourEmailController @Inject() (
+  identify: IdentifierAction,
+  view: verify_your_email,
+  save4LaterService: Save4LaterService,
+  mcc: MessagesControllerComponents
+)(implicit override val messagesApi: MessagesApi, ex: ExecutionContext)
+    extends FrontendController(mcc)
+    with I18nSupport {
 
-  def show: Action[AnyContent] = (identify).async { implicit request =>
-      save4LaterService.routeBasedOnAmendment(request.user.internalId)(
-        redirectWithEmail,
-        Future.successful(Redirect(routes.SignOutController.signOut))
-      )
-    }
+  def show: Action[AnyContent] = identify.async { implicit request =>
+    save4LaterService.routeBasedOnAmendment(request.user.internalId)(
+      redirectWithEmail,
+      Future.successful(Redirect(routes.SignOutController.signOut))
+    )
+  }
 
   private def redirectWithEmail(details: EmailDetails)(implicit request: Request[_]): Future[Result] =
     Future.successful(Ok(view(details.newEmail)))

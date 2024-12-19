@@ -39,7 +39,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.ChangingYourEmailController.show.url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) shouldBe OK
       }
@@ -57,7 +57,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, requestWithForm).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.SignOutController.signOut.url
       }
     }
@@ -74,7 +74,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, requestWithForm).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.SignOutController.signOut.url
       }
     }
@@ -91,7 +91,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, requestWithForm).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.SignOutController.signOut.url
       }
     }
@@ -115,25 +115,25 @@ class ChangingYourEmailControllerSpec extends SpecBase {
     "have a status of SEE_OTHER when user clicks back on the successful request or user " +
       "already complete bookmarked request within 2 hours" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(None))
+        when(mockSave4LaterService.fetchEmail(any)(any))
+          .thenReturn(Future.successful(None))
 
-      running(app) {
+        running(app) {
 
-        val requestWithForm = fakeRequestWithCsrf(POST, routes.ChangingYourEmailController.submit.url)
-          .withFormUrlEncodedBody(("isYes", "false"))
-        val result = route(app, requestWithForm).value
-        status(result) shouldBe SEE_OTHER
+          val requestWithForm = fakeRequestWithCsrf(POST, routes.ChangingYourEmailController.submit.url)
+            .withFormUrlEncodedBody(("isYes", "false"))
+          val result          = route(app, requestWithForm).value
+          status(result) shouldBe SEE_OTHER
+        }
       }
-    }
 
     "redirect to 'there is a problem with the service' page" in new Setup {
       running(app) {
 
         val request = FakeRequest(routes.CheckYourEmailController.problemWithService())
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
-        status(result) shouldBe BAD_REQUEST
+        status(result)          shouldBe BAD_REQUEST
         contentAsString(result) shouldBe errorHandler.problemWithService()(request).toString()
       }
     }
@@ -145,8 +145,8 @@ class ChangingYourEmailControllerSpec extends SpecBase {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(emailDetails)))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any)).thenReturn(
-        Future.successful(Some(EmailAlreadyVerified)))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
+        .thenReturn(Future.successful(Some(EmailAlreadyVerified)))
 
       when(mockSave4LaterService.saveEmail(any, any)(any)).thenReturn(Future.successful(Right((): Unit)))
 
@@ -157,7 +157,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, requestWithForm).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)           shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(routes.EmailConfirmedController.show.url)
       }
     }
@@ -167,8 +167,8 @@ class ChangingYourEmailControllerSpec extends SpecBase {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(emailDetails)))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any)).thenReturn(
-        Future.successful(Some(EmailVerificationRequestSent)))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
+        .thenReturn(Future.successful(Some(EmailVerificationRequestSent)))
 
       running(app) {
 
@@ -177,7 +177,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, requestWithForm).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)           shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(routes.VerifyYourEmailController.show.url)
       }
     }
@@ -187,8 +187,8 @@ class ChangingYourEmailControllerSpec extends SpecBase {
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(Future.successful(Some(emailDetails)))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any)).thenReturn(
-        Future.successful(None))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any, any, any)(any))
+        .thenReturn(Future.successful(None))
 
       running(app) {
 
@@ -197,7 +197,7 @@ class ChangingYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, requestWithForm).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)           shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(routes.CheckYourEmailController.problemWithService().url)
       }
     }
@@ -208,9 +208,10 @@ class ChangingYourEmailControllerSpec extends SpecBase {
     val emailDetails: EmailDetails = EmailDetails(
       currentEmail = Some("test@test.com"),
       newEmail = "test_new@test.com",
-      timestamp = Some(LocalDateTime.now()))
+      timestamp = Some(LocalDateTime.now())
+    )
 
-    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
+    protected val mockSave4LaterService: Save4LaterService               = mock[Save4LaterService]
     protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
 
     protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()

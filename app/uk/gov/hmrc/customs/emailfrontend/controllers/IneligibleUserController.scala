@@ -25,9 +25,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IneligibleUserController @Inject()(view: ineligible_user, mcc: MessagesControllerComponents)
-                                        (implicit override val messagesApi: MessagesApi)
-  extends FrontendController(mcc) with I18nSupport {
+class IneligibleUserController @Inject() (view: ineligible_user, mcc: MessagesControllerComponents)(implicit
+  override val messagesApi: MessagesApi
+) extends FrontendController(mcc)
+    with I18nSupport {
 
   def show(ineligible: Ineligible.Value): Action[AnyContent] = Action { implicit request =>
     Unauthorized(view(ineligible))

@@ -27,22 +27,25 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AmendmentInProgressController @Inject()(identify: IdentifierAction,
-                                              view: amendment_in_progress,
-                                              save4LaterService: Save4LaterService,
-                                              mcc: MessagesControllerComponents)
-                                             (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with Logging {
+class AmendmentInProgressController @Inject() (
+  identify: IdentifierAction,
+  view: amendment_in_progress,
+  save4LaterService: Save4LaterService,
+  mcc: MessagesControllerComponents
+)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+    extends FrontendController(mcc)
+    with I18nSupport
+    with Logging {
 
   def show: Action[AnyContent] = identify.async { implicit request =>
-      save4LaterService.fetchEmail(request.user.internalId).map {
+    save4LaterService.fetchEmail(request.user.internalId).map {
 
-        case Some(emailDetails) =>
-          Ok(view(emailDetails.newEmail))
+      case Some(emailDetails) =>
+        Ok(view(emailDetails.newEmail))
 
-        case None =>
-          logger.warn("emailStatus not found")
-          Redirect(routes.SignOutController.signOut)
-      }
+      case None =>
+        logger.warn("emailStatus not found")
+        Redirect(routes.SignOutController.signOut)
     }
+  }
 }

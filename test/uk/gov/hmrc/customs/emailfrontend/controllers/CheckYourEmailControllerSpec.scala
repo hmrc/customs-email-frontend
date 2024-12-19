@@ -41,7 +41,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CheckYourEmailController.show.url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
         status(result) shouldBe OK
       }
     }
@@ -52,9 +52,9 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CheckYourEmailController.show.url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.SignOutController.signOut.url
       }
     }
@@ -69,7 +69,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, requestWithForm).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.SignOutController.signOut.url
       }
     }
@@ -100,7 +100,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, requestWithForm).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.WhatIsYourEmailController.whatIsEmailAddress.url
       }
     }
@@ -115,7 +115,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, requestWithForm).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe routes.ChangingYourEmailController.show.url
       }
     }
@@ -123,17 +123,17 @@ class CheckYourEmailControllerSpec extends SpecBase {
     "have a status of SEE_OTHER when user clicks back on the successful request" +
       "or user already complete bookmarked request within 2 hours" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(LocalDateTime.now())))))
+        when(mockSave4LaterService.fetchEmail(any)(any))
+          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(LocalDateTime.now())))))
 
-      running(app) {
-        val request = FakeRequest(GET, routes.CheckYourEmailController.show.url)
-        val result = route(app, request).value
+        running(app) {
+          val request = FakeRequest(GET, routes.CheckYourEmailController.show.url)
+          val result  = route(app, request).value
 
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show.url
+          status(result)               shouldBe SEE_OTHER
+          redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show.url
+        }
       }
-    }
 
     "redirect to 'there is a problem with the service' page" in new Setup {
 
@@ -143,7 +143,7 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
         val result = route(app, request).value
 
-        status(result) shouldBe BAD_REQUEST
+        status(result)          shouldBe BAD_REQUEST
         contentAsString(result) shouldBe errorHandler.problemWithService()(request).toString()
       }
     }
@@ -199,14 +199,15 @@ class CheckYourEmailControllerSpec extends SpecBase {
 
   trait Setup {
 
-    protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
+    protected val mockSave4LaterService: Save4LaterService               = mock[Save4LaterService]
     protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
 
     protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
       .overrides(
         inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
         inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService)
-      ).build()
+      )
+      .build()
 
     protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
   }

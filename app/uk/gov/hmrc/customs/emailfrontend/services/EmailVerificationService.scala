@@ -19,26 +19,28 @@ package uk.gov.hmrc.customs.emailfrontend.services
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.EmailVerificationRequestSuccess
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerified}
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{
+  EmailNotVerified, EmailVerified
+}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailVerificationService @Inject()(emailVerificationConnector: EmailVerificationConnector)
-                                        (implicit ec: ExecutionContext) {
+class EmailVerificationService @Inject() (emailVerificationConnector: EmailVerificationConnector)(implicit
+  ec: ExecutionContext
+) {
 
   def isEmailVerified(email: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] =
     emailVerificationConnector.getEmailVerificationState(email).map {
-      case Right(EmailVerified) => Some(true)
+      case Right(EmailVerified)    => Some(true)
       case Right(EmailNotVerified) => Some(false)
-      case Left(_) => None
+      case Left(_)                 => None
     }
 
-  def createEmailVerificationRequest(details: EmailDetails,
-                                     continueUrl: String,
-                                     eoriNumber: String)
-                                    (implicit hc: HeaderCarrier): Future[Option[EmailVerificationRequestSuccess]] =
+  def createEmailVerificationRequest(details: EmailDetails, continueUrl: String, eoriNumber: String)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[EmailVerificationRequestSuccess]] =
     emailVerificationConnector.createEmailVerificationRequest(details, continueUrl, eoriNumber).map(_.toOption)
 
 }

@@ -29,26 +29,29 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
-class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig,
-                                             http: HttpClientV2,
-                                             audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
+class UpdateVerifiedEmailConnector @Inject() (appConfig: AppConfig, http: HttpClientV2, audit: Auditable)(implicit
+  ec: ExecutionContext
+) extends Logging {
 
-  def updateVerifiedEmail(request: VerifiedEmailRequest, currentEmail: Option[String])
-                         (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
+  def updateVerifiedEmail(request: VerifiedEmailRequest, currentEmail: Option[String])(implicit
+    hc: HeaderCarrier
+  ): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
 
     val newEmail = request.updateVerifiedEmailRequest.requestDetail.emailAddress
-    val eori = request.updateVerifiedEmailRequest.requestDetail.IDNumber
+    val eori     = request.updateVerifiedEmailRequest.requestDetail.IDNumber
 
     auditRequest(currentEmail, newEmail, eori, "changeEmailAddressVerified")
 
-    http.put(url"${appConfig.updateVerifiedEmailUrl}")
+    http
+      .put(url"${appConfig.updateVerifiedEmailUrl}")
       .withBody[VerifiedEmailRequest](request)
-      .execute[VerifiedEmailResponse].map { resp =>
+      .execute[VerifiedEmailResponse]
+      .map { resp =>
         auditRequest(currentEmail, newEmail, eori, "changeEmailAddressConfirmed")
         Right(resp)
       } recover {
-      case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
-      case _: ForbiddenException | UpstreamErrorResponse(_, FORBIDDEN, _, _) => Left(Forbidden)
+      case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _)               => Left(BadRequest)
+      case _: ForbiddenException | UpstreamErrorResponse(_, FORBIDDEN, _, _)                  => Left(Forbidden)
       case _: InternalServerException | UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
         Left(ServiceUnavailable)
 
@@ -58,8 +61,9 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig,
     }
   }
 
-  private def auditRequest(currentEmail: Option[String], newEmail: String, eoriNumber: String, auditType: String)
-                          (implicit hc: HeaderCarrier): Unit =
+  private def auditRequest(currentEmail: Option[String], newEmail: String, eoriNumber: String, auditType: String)(
+    implicit hc: HeaderCarrier
+  ): Unit =
     currentEmail.fold(
       audit.sendDataEvent(
         transactionName = "UpdateVerifiedEmailRequestSubmitted",
@@ -67,13 +71,12 @@ class UpdateVerifiedEmailConnector @Inject()(appConfig: AppConfig,
         detail = Map("newEmailAddress" -> newEmail, "eori" -> eoriNumber),
         auditType = auditType
       )
-    )(
-      emailAddress =>
-        audit.sendDataEvent(
-          transactionName = "UpdateVerifiedEmailRequestSubmitted",
-          path = appConfig.updateVerifiedEmailUrl,
-          detail = Map("currentEmailAddress" -> emailAddress, "newEmailAddress" -> newEmail, "eori" -> eoriNumber),
-          auditType = auditType
-        )
+    )(emailAddress =>
+      audit.sendDataEvent(
+        transactionName = "UpdateVerifiedEmailRequestSubmitted",
+        path = appConfig.updateVerifiedEmailUrl,
+        detail = Map("currentEmailAddress" -> emailAddress, "newEmailAddress" -> newEmail, "eori" -> eoriNumber),
+        auditType = auditType
+      )
     )
 }

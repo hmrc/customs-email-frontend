@@ -34,28 +34,22 @@ import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import scala.annotation.implicitNotFound
 import scala.reflect.ClassTag
 
-trait SpecBase extends AnyWordSpecLike
-  with Matchers
-  with MockitoSugar
-  with OptionValues
-  with ScalaFutures {
+trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with OptionValues with ScalaFutures {
 
-  def fakeRequest(method: String, path: String): FakeRequest[AnyContentAsEmpty.type] = {
+  def fakeRequest(method: String, path: String): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(method, path)
       .withHeaders("X-Session-ID" -> "someSessionId")
-  }
 
-  def fakeRequestWithCsrf(method: String, path: String): FakeRequest[AnyContentAsEmpty.type] = {
-    fakeRequest(method, path)
-      .withCSRFToken
+  def fakeRequestWithCsrf(method: String, path: String): FakeRequest[AnyContentAsEmpty.type] =
+    fakeRequest(method, path).withCSRFToken
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-  }
 
   @implicitNotFound("Pass a type for the identifier action")
-  def applicationBuilder[IA <: IdentifierAction](disableAuth: Boolean = false)
-                                                (implicit c: ClassTag[IA]): GuiceApplicationBuilder = {
+  def applicationBuilder[IA <: IdentifierAction](
+    disableAuth: Boolean = false
+  )(implicit c: ClassTag[IA]): GuiceApplicationBuilder = {
 
-    val overrides: List[GuiceableModule] = List(bind[Metrics].toInstance(new FakeMetrics))
+    val overrides: List[GuiceableModule]         = List(bind[Metrics].toInstance(new FakeMetrics))
     val optionalOverrides: List[GuiceableModule] = if (disableAuth) {
       Nil
     } else {
@@ -64,10 +58,12 @@ trait SpecBase extends AnyWordSpecLike
 
     new GuiceApplicationBuilder()
       .overrides(overrides ::: optionalOverrides: _*)
-      .configure("play.filters.csp.nonce.enabled" -> false,
-        "auditing.enabled" -> "false",
+      .configure(
+        "play.filters.csp.nonce.enabled"        -> false,
+        "auditing.enabled"                      -> "false",
         "microservice.metrics.graphite.enabled" -> "false",
-        "metrics.enabled" -> "false")
+        "metrics.enabled"                       -> "false"
+      )
   }
 }
 

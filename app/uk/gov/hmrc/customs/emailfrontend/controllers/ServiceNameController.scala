@@ -27,21 +27,21 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ServiceNameController @Inject()(identify: IdentifierAction,
-                                      appConfig: AppConfig,
-                                      save4LaterService: Save4LaterService,
-                                      mcc: MessagesControllerComponents)
-                                     (implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+class ServiceNameController @Inject() (
+  identify: IdentifierAction,
+  appConfig: AppConfig,
+  save4LaterService: Save4LaterService,
+  mcc: MessagesControllerComponents
+)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+    extends FrontendController(mcc)
+    with I18nSupport {
 
   def show(name: String): Action[AnyContent] =
     identify.async { implicit request =>
       (for {
         referrerName <- fromOption[Future](appConfig.referrerName.find(_.name == name))
-        _ <- liftF(save4LaterService.saveReferrer(request.user.internalId, referrerName))
-      }
-      yield {
-        Redirect(routes.VerifyChangeEmailController.create)
-      }).getOrElse(Redirect(routes.VerifyChangeEmailController.create))
+        _            <- liftF(save4LaterService.saveReferrer(request.user.internalId, referrerName))
+      } yield Redirect(routes.VerifyChangeEmailController.create))
+        .getOrElse(Redirect(routes.VerifyChangeEmailController.create))
     }
 }

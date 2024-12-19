@@ -21,15 +21,11 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{EitherValues, OptionValues}
 import play.api.mvc.{PathBindable, QueryStringBindable}
 
-class IneligibleSpec
-  extends AnyWordSpec
-    with Matchers
-    with EitherValues
-    with OptionValues {
+class IneligibleSpec extends AnyWordSpec with Matchers with EitherValues with OptionValues {
 
   "Ineligible" must {
 
-    val pathBindable = implicitly[PathBindable[Ineligible.Value]]
+    val pathBindable  = implicitly[PathBindable[Ineligible.Value]]
     val queryBindable = implicitly[QueryStringBindable[Ineligible.Value]]
 
     "bind to `NotAdmin` from path" in {

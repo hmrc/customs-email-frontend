@@ -41,12 +41,12 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
         appConfig = mockAppConfig
       )
 
-      val html = view(viewModel)
+      val html    = view(viewModel)
       val content = contentAsString(html)
 
       content must include(messages(viewModel.titleKey))
       content must include(viewModel.email)
-      content must not include(messages("customs.emailfrontend.email-verified.info"))
+      content must not include (messages("customs.emailfrontend.email-verified.info"))
       content must include(referrerUrl.get)
     }
 
@@ -58,7 +58,7 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
         appConfig = mockAppConfig
       )
 
-      val html = view(viewModel)
+      val html    = view(viewModel)
       val content = contentAsString(html)
 
       content must include(messages(viewModel.titleKey))
@@ -68,20 +68,20 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
+    val app: Application                   = applicationBuilder[FakeIdentifierAgentAction]().build()
     protected val mockAppConfig: AppConfig = mock[AppConfig]
 
-    val email: String = testEmail
+    val email: String               = testEmail
     val referrerUrl: Option[String] = Some("https://finance.example.com")
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "/some/resource/path")
-    implicit val messages: Messages = stubMessages()
+    implicit val messages: Messages                           = stubMessages()
 
     val view: email_verified_or_changed = app.injector.instanceOf[email_verified_or_changed]
 
-    val tgpUrl = "https://trader-goods.example.com"
+    val tgpUrl            = "https://trader-goods.example.com"
     val customsFinanceUrl = "https://finance.example.com"
-    val testEmail = "test@example.com"
+    val testEmail         = "test@example.com"
 
     when(mockAppConfig.customsFinanceReferrer).thenReturn(Some(ReferrerName("Customs Finance", customsFinanceUrl)))
     when(mockAppConfig.traderGoodsProfilesReferrer).thenReturn(Some(ReferrerName("Trader Goods Profiles", tgpUrl)))
