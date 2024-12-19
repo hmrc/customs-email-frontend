@@ -66,4 +66,4 @@ lazy val microservice = Project(appName, file("."))
   .settings(scalastyleSettings)
 
 addCommandAlias("runAllChecks",
-  ";clean;compile;coverage;test;it/test;scalafmtAll;scalastyle;Test/scalastyle;coverageReport")
+  ";clean;compile;coverage;test;it/test;scalafmtCheckAll;scalastyle;Test/scalastyle;coverageReport")
