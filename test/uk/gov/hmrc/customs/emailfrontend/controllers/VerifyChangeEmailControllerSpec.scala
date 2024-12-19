@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers.eq as meq
+import org.mockito.ArgumentMatchers.{eq => meq}
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
