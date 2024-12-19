@@ -101,11 +101,11 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
 
   trait Setup {
     implicit val messages: Messages = Helpers.stubMessages()
-    val appConfig: AppConfig = mock[AppConfig]
+    val appConfig: AppConfig        = mock[AppConfig]
 
-    val tgpUrl = "https://trader-goods.example.com"
+    val tgpUrl            = "https://trader-goods.example.com"
     val customsFinanceUrl = "https://finance.example.com"
-    val testEmail = "test@example.com"
+    val testEmail         = "test@example.com"
 
     when(appConfig.customsFinanceReferrer).thenReturn(Some(ReferrerName("Customs Finance", customsFinanceUrl)))
     when(appConfig.traderGoodsProfilesReferrer).thenReturn(Some(ReferrerName("Trader Goods Profiles", tgpUrl)))

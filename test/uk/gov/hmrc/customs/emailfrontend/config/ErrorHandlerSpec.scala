@@ -29,13 +29,13 @@ import play.twirl.api.Html
 
 class ErrorHandlerSpec extends SpecBase {
 
-  private val app = applicationBuilder[FakeIdentifierAgentAction]().build()
-  private val view = app.injector.instanceOf[error_template]
-  private val customView = app.injector.instanceOf[problem_with_this_service]
+  private val app                      = applicationBuilder[FakeIdentifierAgentAction]().build()
+  private val view                     = app.injector.instanceOf[error_template]
+  private val customView               = app.injector.instanceOf[problem_with_this_service]
   private val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val ec: ExecutionContext = ExecutionContext.global
-  private val errorHandler = new ErrorHandler(messagesApi, view, customView)(ec)
-  private val request = FakeRequest()
+  implicit val ec: ExecutionContext    = ExecutionContext.global
+  private val errorHandler             = new ErrorHandler(messagesApi, view, customView)(ec)
+  private val request                  = FakeRequest()
 
   "ErrorHandlerSpec" should {
 
@@ -45,17 +45,18 @@ class ErrorHandlerSpec extends SpecBase {
 
       result.map { htmlVal =>
         val doc = Jsoup.parse(contentAsString(htmlVal))
-        doc.title shouldBe "title"
+        doc.title                            shouldBe "title"
         doc.body.getElementsByTag("h1").text shouldBe "heading"
-        doc.body.getElementById("main-content")
-          .text shouldBe "heading message Is this page not working properly? (opens in new tab)"
+        doc.body
+          .getElementById("main-content")
+          .text                              shouldBe "heading message Is this page not working properly? (opens in new tab)"
       }
     }
 
     "have custom error view to show 'problem with the service' page" in {
 
       val result: Html = errorHandler.problemWithService()(request)
-      val doc = Jsoup.parse(contentAsString(result))
+      val doc          = Jsoup.parse(contentAsString(result))
 
       doc.title shouldBe "Sorry, there is a problem with the service"
     }
@@ -63,9 +64,11 @@ class ErrorHandlerSpec extends SpecBase {
     "have correct text error to show 'email has not been updated' page" in {
 
       val result = errorHandler.problemWithService()(request)
-      val doc = Jsoup.parse(contentAsString(result))
+      val doc    = Jsoup.parse(contentAsString(result))
 
-      doc.body.getElementsByClass("govuk-body").first()
+      doc.body
+        .getElementsByClass("govuk-body")
+        .first()
         .text shouldBe "Your email has not been updated. Try again later."
     }
   }

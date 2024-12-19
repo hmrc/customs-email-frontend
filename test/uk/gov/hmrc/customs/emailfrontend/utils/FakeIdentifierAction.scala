@@ -31,8 +31,12 @@ trait FakeIdentifierAction extends IdentifierAction {
   protected val parsers: PlayBodyParsers
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-    block(AuthenticatedRequest(request, LoggedInUser(InternalId(
-      "fakeInternalId"), Some(affinityGroup), Some(User), "fakeEori")))
+    block(
+      AuthenticatedRequest(
+        request,
+        LoggedInUser(InternalId("fakeInternalId"), Some(affinityGroup), Some(User), "fakeEori")
+      )
+    )
 
   override def parser: BodyParser[AnyContent] = parsers.default
 
@@ -40,17 +44,17 @@ trait FakeIdentifierAction extends IdentifierAction {
     scala.concurrent.ExecutionContext.Implicits.global
 }
 
-class FakeIdentifierAgentAction @Inject()(bodyParsers: PlayBodyParsers) extends FakeIdentifierAction {
+class FakeIdentifierAgentAction @Inject() (bodyParsers: PlayBodyParsers) extends FakeIdentifierAction {
   override protected val affinityGroup: AffinityGroup = Agent
-  override protected val parsers: PlayBodyParsers = bodyParsers
+  override protected val parsers: PlayBodyParsers     = bodyParsers
 }
 
-class FakeIdentifierIndividualAction @Inject()(bodyParsers: PlayBodyParsers) extends FakeIdentifierAction {
+class FakeIdentifierIndividualAction @Inject() (bodyParsers: PlayBodyParsers) extends FakeIdentifierAction {
   override protected val affinityGroup: AffinityGroup = Individual
-  override protected val parsers: PlayBodyParsers = bodyParsers
+  override protected val parsers: PlayBodyParsers     = bodyParsers
 }
 
-class FakeIdentifierOrganisationAction @Inject()(bodyParsers: PlayBodyParsers) extends FakeIdentifierAction {
+class FakeIdentifierOrganisationAction @Inject() (bodyParsers: PlayBodyParsers) extends FakeIdentifierAction {
   override protected val affinityGroup: AffinityGroup = Organisation
-  override protected val parsers: PlayBodyParsers = bodyParsers
+  override protected val parsers: PlayBodyParsers     = bodyParsers
 }

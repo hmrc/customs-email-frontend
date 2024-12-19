@@ -28,8 +28,9 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class CustomsDataStoreService @Inject()(customsDataStoreConnector: CustomsDataStoreConnector) extends Logging {
-  def storeEmail(enrolmentId: EnrolmentIdentifier, email: String, timestamp: LocalDateTime)
-                (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, HttpResponse]] =
+class CustomsDataStoreService @Inject() (customsDataStoreConnector: CustomsDataStoreConnector) extends Logging {
+  def storeEmail(enrolmentId: EnrolmentIdentifier, email: String, timestamp: LocalDateTime)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[HttpErrorResponse, HttpResponse]] =
     customsDataStoreConnector.storeEmailAddress(Eori(enrolmentId), email, timestamp)
 }

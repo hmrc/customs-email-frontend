@@ -21,10 +21,12 @@ import uk.gov.hmrc.customs.emailfrontend.utils.Utils
 
 import java.time.LocalDateTime
 
-case class ResponseCommon(status: String,
-                          statusText: Option[String],
-                          processingDate: LocalDateTime,
-                          returnParameters: List[MessagingServiceParam]) {
+case class ResponseCommon(
+  status: String,
+  statusText: Option[String],
+  processingDate: LocalDateTime,
+  returnParameters: List[MessagingServiceParam]
+) {
   require(returnParameters.nonEmpty)
 }
 

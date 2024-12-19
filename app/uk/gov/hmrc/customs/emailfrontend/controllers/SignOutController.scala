@@ -23,15 +23,16 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SignOutController @Inject()(appConfig: AppConfig, mcc: MessagesControllerComponents)
-                                 (implicit override val messagesApi: MessagesApi)
-  extends FrontendController(mcc) with I18nSupport {
+class SignOutController @Inject() (appConfig: AppConfig, mcc: MessagesControllerComponents)(implicit
+  override val messagesApi: MessagesApi
+) extends FrontendController(mcc)
+    with I18nSupport {
 
   def signOut: Action[AnyContent] = Action {
     Redirect(appConfig.feedbackUrl).withNewSession
   }
 
-  def logoutNoSurvey: Action[AnyContent] = Action  {
+  def logoutNoSurvey: Action[AnyContent] = Action {
     Redirect(appConfig.loginContinueUrl).withNewSession
   }
 }

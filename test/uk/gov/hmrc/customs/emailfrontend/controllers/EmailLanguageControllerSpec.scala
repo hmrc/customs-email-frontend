@@ -51,6 +51,6 @@ class EmailLanguageControllerSpec extends SpecBase {
 
   trait Setup {
     val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
-    val controller = app.injector.instanceOf[EmailLanguageController]
+    val controller       = app.injector.instanceOf[EmailLanguageController]
   }
 }

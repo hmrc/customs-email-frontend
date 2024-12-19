@@ -33,78 +33,93 @@ import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Save4LaterConnector @Inject()(http: HttpClientV2,
-                                    appConfig: AppConfig,
-                                    audit: Auditable)(implicit ec: ExecutionContext) extends Logging {
+class Save4LaterConnector @Inject() (http: HttpClientV2, appConfig: AppConfig, audit: Auditable)(implicit
+  ec: ExecutionContext
+) extends Logging {
 
-  def getEmailDetails(id: String, key: String)
-                     (implicit hc: HeaderCarrier, reads: Reads[EmailDetails]): Future[Option[EmailDetails]] = {
+  def getEmailDetails(id: String, key: String)(implicit
+    hc: HeaderCarrier,
+    reads: Reads[EmailDetails]
+  ): Future[Option[EmailDetails]] = {
 
     val urlString = s"${appConfig.save4LaterUrl}/$id/$key"
 
-    http.get(url"$urlString")
+    http
+      .get(url"$urlString")
       .execute[EmailDetails]
       .map { response =>
         auditCallResponse[EmailDetails](urlString, response)
         Some(response)
-      }.recover {
-        case e => logger.error(s"Unable to get Email Details :${e.getMessage}")
-          None
+      }
+      .recover { case e =>
+        logger.error(s"Unable to get Email Details :${e.getMessage}")
+        None
       }
   }
 
-  def getReferrerName(id: String, key: String)
-                     (implicit hc: HeaderCarrier, reads: Reads[ReferrerName]): Future[Option[ReferrerName]] = {
+  def getReferrerName(id: String, key: String)(implicit
+    hc: HeaderCarrier,
+    reads: Reads[ReferrerName]
+  ): Future[Option[ReferrerName]] = {
 
     val urlString = s"${appConfig.save4LaterUrl}/$id/$key"
 
-    http.get(url"$urlString")
+    http
+      .get(url"$urlString")
       .execute[ReferrerName]
       .map { response =>
         auditCallResponse[ReferrerName](urlString, response)
         Some(response)
-      }.recover {
-        case e => logger.error(s"Unable to get Referrer :${e.getMessage}")
-          None
+      }
+      .recover { case e =>
+        logger.error(s"Unable to get Referrer :${e.getMessage}")
+        None
       }
   }
 
-  def getJourneyType(id: String, key: String)
-                    (implicit hc: HeaderCarrier, reads: Reads[JourneyType]): Future[Option[JourneyType]] = {
+  def getJourneyType(id: String, key: String)(implicit
+    hc: HeaderCarrier,
+    reads: Reads[JourneyType]
+  ): Future[Option[JourneyType]] = {
 
     val urlString = s"${appConfig.save4LaterUrl}/$id/$key"
 
-    http.get(url"$urlString")
+    http
+      .get(url"$urlString")
       .execute[JourneyType]
       .map { response =>
         auditCallResponse[JourneyType](urlString, response)
         Some(response)
-      }.recover {
-        case e => logger.error(s"Unable to get journey type :${e.getMessage}")
-          None
+      }
+      .recover { case e =>
+        logger.error(s"Unable to get journey type :${e.getMessage}")
+        None
       }
   }
 
-  def put[T](id: String, key: String, payload: JsValue)
-            (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
+  def put[T](id: String, key: String, payload: JsValue)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[HttpErrorResponse, Unit]] = {
 
     val urlString = s"${appConfig.save4LaterUrl}/$id/$key"
 
     logger.info(s"PUT: $urlString")
     auditCallRequest(urlString, payload)
 
-    http.put(url"$urlString")
+    http
+      .put(url"$urlString")
       .withBody[JsValue](payload)
       .execute[HttpResponse]
       .map { response =>
         auditCallResponse(urlString, response.status)
         response.status match {
           case NO_CONTENT | CREATED | OK => Right(())
-          case _ => Left(BadRequest)
+          case _                         => Left(BadRequest)
         }
-      }.recover {
-        case e => logger.error(s"Request failed for call to $urlString, exception: ${e.getMessage}")
-          Left(UnhandledException)
+      }
+      .recover { case e =>
+        logger.error(s"Request failed for call to $urlString, exception: ${e.getMessage}")
+        Left(UnhandledException)
       }
   }
 
@@ -115,22 +130,23 @@ class Save4LaterConnector @Inject()(http: HttpClientV2,
     logger.info(s"DELETE: $urlString")
     auditCallRequest(urlString, JsNull)
 
-    http.delete(url"$urlString")
+    http
+      .delete(url"$urlString")
       .execute[HttpResponse]
       .map { response =>
         auditCallResponse(urlString, response.status)
         response.status match {
           case NO_CONTENT => Right(())
-          case _ => Left(BadRequest)
+          case _          => Left(BadRequest)
         }
-      }.recover {
-        case e => logger.error(s"Request failed for call to $urlString, exception: ${e.getMessage}")
-          Left(UnhandledException)
+      }
+      .recover { case e =>
+        logger.error(s"Request failed for call to $urlString, exception: ${e.getMessage}")
+        Left(UnhandledException)
       }
   }
 
-  private def auditCallRequest[T](url: String, request: JsValue)
-                                 (implicit hc: HeaderCarrier): Future[Unit] =
+  private def auditCallRequest[T](url: String, request: JsValue)(implicit hc: HeaderCarrier): Future[Unit] =
     Future {
       audit.sendExtendedDataEvent(
         transactionName = "Save4laterRequest",
@@ -140,8 +156,10 @@ class Save4LaterConnector @Inject()(http: HttpClientV2,
       )
     }
 
-  private def auditCallResponse[T](url: String, response: T)
-                                  (implicit hc: HeaderCarrier, writes: Writes[T]): Future[Unit] =
+  private def auditCallResponse[T](url: String, response: T)(implicit
+    hc: HeaderCarrier,
+    writes: Writes[T]
+  ): Future[Unit] =
     Future {
       audit.sendExtendedDataEvent(
         transactionName = "Save4laterResponse",

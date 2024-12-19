@@ -19,25 +19,26 @@ package uk.gov.hmrc.customs.emailfrontend.model
 import play.api.Logging
 import play.api.libs.json.{JsValue, Reads}
 
-case class SubscriptionDisplayResponse(email: Option[String],
-                                       emailVerificationTimestamp: Option[String],
-                                       statusText: Option[String],
-                                       paramValue: Option[String]) extends Logging
+case class SubscriptionDisplayResponse(
+  email: Option[String],
+  emailVerificationTimestamp: Option[String],
+  statusText: Option[String],
+  paramValue: Option[String]
+) extends Logging
 
 object SubscriptionDisplayResponse {
   implicit val etmpReads: Reads[SubscriptionDisplayResponse] =
-    (json: JsValue) => for {
-      email <- (json \ "subscriptionDisplayResponse" \ "responseDetail" \ "contactInformation" \ "emailAddress")
-        .validateOpt[String]
-      emailVerificationTimestamp <- (
-        json \ "subscriptionDisplayResponse" \ "responseDetail" \ "contactInformation" \ "emailVerificationTimestamp")
-        .validateOpt[String]
-      statusText <- (json \ "subscriptionDisplayResponse" \ "responseCommon" \ "statusText")
-        .validateOpt[String]
-      paramValue <- (json \ "subscriptionDisplayResponse" \ "responseCommon" \ "returnParameters" \ 0 \ "paramValue")
-        .validateOpt[String]
+    (json: JsValue) =>
+      for {
+        email                      <- (json \ "subscriptionDisplayResponse" \ "responseDetail" \ "contactInformation" \ "emailAddress")
+                                        .validateOpt[String]
+        emailVerificationTimestamp <-
+          (json \ "subscriptionDisplayResponse" \ "responseDetail" \ "contactInformation" \ "emailVerificationTimestamp")
+            .validateOpt[String]
+        statusText                 <- (json \ "subscriptionDisplayResponse" \ "responseCommon" \ "statusText")
+                                        .validateOpt[String]
+        paramValue                 <- (json \ "subscriptionDisplayResponse" \ "responseCommon" \ "returnParameters" \ 0 \ "paramValue")
+                                        .validateOpt[String]
 
-    } yield {
-      SubscriptionDisplayResponse(email, emailVerificationTimestamp, statusText, paramValue)
-    }
+      } yield SubscriptionDisplayResponse(email, emailVerificationTimestamp, statusText, paramValue)
 }

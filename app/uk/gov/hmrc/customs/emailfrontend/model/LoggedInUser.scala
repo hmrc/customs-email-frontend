@@ -18,10 +18,12 @@ package uk.gov.hmrc.customs.emailfrontend.model
 
 import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole, EnrolmentIdentifier}
 
-case class LoggedInUser(internalId: InternalId,
-                        affinityGroup: Option[AffinityGroup],
-                        credentialRole: Option[CredentialRole],
-                        eori: String)
+case class LoggedInUser(
+  internalId: InternalId,
+  affinityGroup: Option[AffinityGroup],
+  credentialRole: Option[CredentialRole],
+  eori: String
+)
 
 case class Eori(id: String)
 

@@ -23,7 +23,7 @@ case class MessagingServiceParam(paramName: String, paramValue: String)
 object MessagingServiceParam {
   implicit val formats: OFormat[MessagingServiceParam] = Json.format[MessagingServiceParam]
 
-  val positionParamName = "POSITION"
-  val Fail = "FAIL"
+  val positionParamName     = "POSITION"
+  val Fail                  = "FAIL"
   val formBundleIdParamName = "ETMPFORMBUNDLENUMBER"
 }

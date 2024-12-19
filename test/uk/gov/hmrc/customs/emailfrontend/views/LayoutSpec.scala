@@ -37,9 +37,9 @@ class LayoutSpec extends SpecBase {
 
       "title and back link are provided" in new Setup {
 
-        val layoutView: Document = Jsoup.parse(app.injector.instanceOf[Layout].apply(
-          pageTitle = Some(pageTitle),
-          backLinkUrl = Some(linkUrl))(content).body)
+        val layoutView: Document = Jsoup.parse(
+          app.injector.instanceOf[Layout].apply(pageTitle = Some(pageTitle), backLinkUrl = Some(linkUrl))(content).body
+        )
 
         shouldContainCorrectTitle(layoutView, pageTitle)
         shouldContainCorrectServiceUrls(layoutView.html())
@@ -59,47 +59,46 @@ class LayoutSpec extends SpecBase {
     }
   }
 
-  private def shouldContainCorrectTitle(viewDoc: Document,
-                                        title: String = emptyString) = {
+  private def shouldContainCorrectTitle(viewDoc: Document, title: String = emptyString) =
     if (title.nonEmpty) {
       viewDoc.title() mustBe title
     } else {
       viewDoc.title() mustBe "GOV.UK - The best place to find government services and information"
     }
-  }
 
   private def shouldContainCorrectServiceUrls(viewDoc: String) = {
     viewDoc.contains(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url) mustBe true
     viewDoc.contains("/accessibility-statement/manage-email-cds") mustBe true
   }
 
-  private def shouldContainCorrectBackLink(viewDoc: Document,
-                                           backLinkUrl: Option[String] = None) = {
-
+  private def shouldContainCorrectBackLink(viewDoc: Document, backLinkUrl: Option[String] = None) =
     if (backLinkUrl.isDefined) {
       viewDoc.getElementsByClass("govuk-back-link").text() mustBe "Back"
-      viewDoc.getElementsByClass("govuk-back-link").attr("href")
+      viewDoc
+        .getElementsByClass("govuk-back-link")
+        .attr("href")
         .contains(backLinkUrl.get) mustBe true
     } else {
       viewDoc.getElementsByClass("govuk-back-link").text() mustBe "Back"
-      viewDoc.getElementsByClass("govuk-back-link").attr("href")
+      viewDoc
+        .getElementsByClass("govuk-back-link")
+        .attr("href")
         .contains("#") mustBe true
     }
-  }
 
-  private def shouldContainCorrectBanners(viewDoc: Document) = {
-    viewDoc.getElementsByClass("govuk-phase-banner")
+  private def shouldContainCorrectBanners(viewDoc: Document) =
+    viewDoc
+      .getElementsByClass("govuk-phase-banner")
       .text() mustBe "BETA This is a new service – your feedback will help us to improve it."
-  }
 
   trait Setup {
     val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
-    val content: Html = Html("test")
-    val pageTitle = "test_title"
-    val linkUrl = "test.com"
+    val content: Html    = Html("test")
+    val pageTitle        = "test_title"
+    val linkUrl          = "test.com"
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "test_path")
-    implicit val msgs: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+    implicit val msgs: Messages                               = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
+    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
   }
 }

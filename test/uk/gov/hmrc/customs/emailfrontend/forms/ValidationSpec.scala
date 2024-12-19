@@ -57,46 +57,53 @@ class ValidationSpec extends SpecBase {
     "return invalid" when {
       "email is invalid email does not contain a .XYZ" in new SetUp {
         Validation.isValidEmail(invalidEmail_1) mustBe Invalid(
-          List(ValidationError(List("customs.emailfrontend.errors.valid-email.wrong-format"))))
+          List(ValidationError(List("customs.emailfrontend.errors.valid-email.wrong-format")))
+        )
       }
 
       "email is invalid when email has no @ or .XYZ" in new SetUp {
         Validation.isValidEmail(invalidEmail_2) mustBe Invalid(
-          List(ValidationError(List("customs.emailfrontend.errors.valid-email.wrong-format"))))
+          List(ValidationError(List("customs.emailfrontend.errors.valid-email.wrong-format")))
+        )
       }
 
       "email is invalid when email has not @" in new SetUp {
         Validation.isValidEmail(invalidEmail_3) mustBe Invalid(
-          List(ValidationError(List("customs.emailfrontend.errors.valid-email.wrong-format"))))
+          List(ValidationError(List("customs.emailfrontend.errors.valid-email.wrong-format")))
+        )
       }
 
       "email is invalid when email has no @ or front" in new SetUp {
         Validation.isValidEmail(invalidEmail_4) mustBe Invalid(
-          List(ValidationError(List("customs.emailfrontend.errors.valid-email.wrong-format"))))
+          List(ValidationError(List("customs.emailfrontend.errors.valid-email.wrong-format")))
+        )
       }
 
       "email is invalid when email is to long" in new SetUp {
         Validation.isValidEmail(invalidEmail_5) mustBe Invalid(
-          List(ValidationError(List("customs.emailfrontend.errors.valid-email.too-long"))))
+          List(ValidationError(List("customs.emailfrontend.errors.valid-email.too-long")))
+        )
       }
 
       "email is invalid when email is empty" in new SetUp {
         Validation.isValidEmail(invalidEmail_6) mustBe Invalid(
-          List(ValidationError(List("customs.emailfrontend.errors.valid-email.empty"))))
+          List(ValidationError(List("customs.emailfrontend.errors.valid-email.empty")))
+        )
       }
 
       "email is invalid email is just white space" in new SetUp {
         Validation.isValidEmail(invalidEmail_7) mustBe Invalid(
-          List(ValidationError(List("customs.emailfrontend.errors.valid-email.empty"))))
+          List(ValidationError(List("customs.emailfrontend.errors.valid-email.empty")))
+        )
       }
     }
   }
 }
 
 trait SetUp {
-  val spaces = "   "
-  val emailWithLeadingSpaces: String = spaces.concat("abc@test.com")
-  val emailWithTrailingSpaces: String = "abc@test.com".concat(spaces)
+  val spaces                                    = "   "
+  val emailWithLeadingSpaces: String            = spaces.concat("abc@test.com")
+  val emailWithTrailingSpaces: String           = "abc@test.com".concat(spaces)
   val emailWithLeadingAndTrailingSpaces: String = spaces.concat("abc@test.com").concat(spaces)
 
   val emailWithSpacesWithIn_1 = "abc @test.com"

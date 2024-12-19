@@ -21,10 +21,12 @@ import uk.gov.hmrc.customs.emailfrontend.utils.Utils
 
 import java.time.LocalDateTime
 
-case class RequestDetail(IDType: String,
-                         IDNumber: String,
-                         emailAddress: String,
-                         emailVerificationTimestamp: LocalDateTime)
+case class RequestDetail(
+  IDType: String,
+  IDNumber: String,
+  emailAddress: String,
+  emailVerificationTimestamp: LocalDateTime
+)
 
 object RequestDetail {
 

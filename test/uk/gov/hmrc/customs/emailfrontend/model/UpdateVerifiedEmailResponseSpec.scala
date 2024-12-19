@@ -26,8 +26,8 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
   "UpdateVerifiedEmailResponse" should {
 
     "parse the json to model VerifiedEmailResponse" in {
-      Json.parse(
-        """{
+      Json
+        .parse("""{
           |  "updateVerifiedEmailResponse": {
           |    "responseCommon": {
           |      "status": "OK",
@@ -40,14 +40,14 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
           |      ]
           |    }
           |  }
-          |}""".stripMargin).as[VerifiedEmailResponse]
+          |}""".stripMargin)
+        .as[VerifiedEmailResponse]
     }
 
     "parse the json to model VerifiedEmailResponse when status text is available" in {
 
       Json
-        .parse(
-          """{
+        .parse("""{
             |  "updateVerifiedEmailResponse": {
             |    "responseCommon": {
             |      "status": "OK",
@@ -69,8 +69,7 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
 
       intercept[IllegalArgumentException] {
         Json
-          .parse(
-            """{
+          .parse("""{
               |  "updateVerifiedEmailResponse": {
               |    "responseCommon": {
               |      "status": "OK",
