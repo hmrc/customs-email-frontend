@@ -43,18 +43,20 @@ class EmailDetailsSpec extends SpecBase {
 
   trait Setup {
 
-    val validDateTime = "2024-03-11T14:30:00Z"
-    val emailDetails01 = EmailDetails(Some("old@example.com"), "new@example.com",
-      Some(LocalDateTime.parse(validDateTime, dateFormatter01)))
+    val validDateTime  = "2024-03-11T14:30:00Z"
+    val emailDetails01 = EmailDetails(
+      Some("old@example.com"),
+      "new@example.com",
+      Some(LocalDateTime.parse(validDateTime, dateFormatter01))
+    )
 
-    val correctEmailDetailsJson = Json.obj(
-      "currentEmail" -> "old@example.com",
-      "newEmail" -> "new@example.com",
-      "timestamp" -> validDateTime)
+    val correctEmailDetailsJson =
+      Json.obj("currentEmail" -> "old@example.com", "newEmail" -> "new@example.com", "timestamp" -> validDateTime)
 
     val inCorrectEmailDetailsJson = Json.obj(
       "currentEmail" -> "old@example.com",
-      "newEmail" -> "new@example.com",
-      "timestamp" -> "2024-03-11T14:30:00.123456789Z")
+      "newEmail"     -> "new@example.com",
+      "timestamp"    -> "2024-03-11T14:30:00.123456789Z"
+    )
   }
 }

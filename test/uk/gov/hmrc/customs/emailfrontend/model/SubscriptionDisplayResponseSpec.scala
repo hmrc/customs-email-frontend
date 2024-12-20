@@ -23,8 +23,8 @@ import play.api.libs.json.Json
 class SubscriptionDisplayResponseSpec extends PlaySpec {
 
   private val subscriptionDisplayResponse =
-    Json.parse(
-      """{
+    Json
+      .parse("""{
         |  "subscriptionDisplayResponse": {
         |    "responseDetail": {
         |      "contactInformation": {
@@ -33,11 +33,12 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
         |      }
         |    }
         |  }
-        |}""".stripMargin).as[SubscriptionDisplayResponse]
+        |}""".stripMargin)
+      .as[SubscriptionDisplayResponse]
 
   private val noFormBundleSubscriptionDisplayResponse =
-    Json.parse(
-      """{
+    Json
+      .parse("""{
         |  "subscriptionDisplayResponse": {
         |    "responseCommon": {
         |      "status": "OK",
@@ -49,11 +50,12 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
         |          }]
         |     }
         |    }
-        |}""".stripMargin).as[SubscriptionDisplayResponse]
+        |}""".stripMargin)
+      .as[SubscriptionDisplayResponse]
 
   private val noEmailSubscriptionDisplayResponse =
-    Json.parse(
-      """{
+    Json
+      .parse("""{
         |  "subscriptionDisplayResponse": {
         |    "responseDetail": {
         |      "contactInformation": {
@@ -61,19 +63,18 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
         |      }
         |    }
         |  }
-        |}""".stripMargin).as[SubscriptionDisplayResponse]
+        |}""".stripMargin)
+      .as[SubscriptionDisplayResponse]
 
   "SubscriptionDisplayResponse Object" should {
 
     "contain email when present in response" in {
-      subscriptionDisplayResponse.email shouldBe Some("test@email.com")
-      subscriptionDisplayResponse.emailVerificationTimestamp shouldBe Some(
-        "2019-09-06T12:30:59Z")
+      subscriptionDisplayResponse.email                      shouldBe Some("test@email.com")
+      subscriptionDisplayResponse.emailVerificationTimestamp shouldBe Some("2019-09-06T12:30:59Z")
     }
 
     "contain status when present in response" in {
-      noFormBundleSubscriptionDisplayResponse.statusText shouldBe Some(
-        "005 - No form bundle found")
+      noFormBundleSubscriptionDisplayResponse.statusText shouldBe Some("005 - No form bundle found")
     }
 
     "return None when email is not present in response" in {

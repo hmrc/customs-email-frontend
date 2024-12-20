@@ -36,9 +36,9 @@ class VerifyYourEmailControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.VerifyYourEmailController.show.url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)                 shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe "/manage-email-cds/signout"
       }
     }
@@ -50,9 +50,9 @@ class VerifyYourEmailControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.VerifyYourEmailController.show.url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
-        status(result) shouldBe OK
+        status(result)        shouldBe OK
         contentAsString(result) should include("abc@def.com")
       }
     }
@@ -60,22 +60,22 @@ class VerifyYourEmailControllerSpec extends SpecBase {
     "have a status of SEE_OTHER when user clicks browser back on the successful request " +
       "or uses already complete bookmarked request within 2 hours" in new Setup {
 
-      when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(LocalDateTime.now())))))
+        when(mockSave4LaterService.fetchEmail(any)(any))
+          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(LocalDateTime.now())))))
 
-      running(app) {
-        val request = FakeRequest(GET, routes.VerifyYourEmailController.show.url)
-        val result = route(app, request).value
+        running(app) {
+          val request = FakeRequest(GET, routes.VerifyYourEmailController.show.url)
+          val result  = route(app, request).value
 
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show.url
+          status(result)               shouldBe SEE_OTHER
+          redirectLocation(result).get shouldBe routes.AmendmentInProgressController.show.url
+        }
       }
-    }
   }
 
   trait Setup {
     protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+    protected val app: Application                         = applicationBuilder[FakeIdentifierAgentAction]()
       .overrides(inject.bind[Save4LaterService].toInstance(mockSave4LaterService))
       .build()
   }

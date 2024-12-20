@@ -48,21 +48,21 @@ class FormsSpec extends SpecBase {
       val mapValues_1: Map[String, String] = Map("email" -> "abctest")
       val mapValues_2: Map[String, String] = Map("email" -> "st.com")
       val mapValues_3: Map[String, String] = Map("email" -> emptyString)
-      val mapValues_4: Map[String, String] = Map(
-        "email" -> "this value is more than fifty characters long hence invalid for email")
+      val mapValues_4: Map[String, String] =
+        Map("email" -> "this value is more than fifty characters long hence invalid for email")
 
       val result1 = emailForm.bind(mapValues_1)
       val result2 = emailForm.bind(mapValues_2)
       val result3 = emailForm.bind(mapValues_3)
       val result4 = emailForm.bind(mapValues_4)
 
-      result1.errors.size shouldBe 1
+      result1.errors.size         shouldBe 1
       result1.errors.head.message shouldBe "customs.emailfrontend.errors.valid-email.wrong-format"
-      result2.errors.size shouldBe 1
+      result2.errors.size         shouldBe 1
       result2.errors.head.message shouldBe "customs.emailfrontend.errors.valid-email.wrong-format"
-      result3.errors.size shouldBe 1
+      result3.errors.size         shouldBe 1
       result3.errors.head.message shouldBe "customs.emailfrontend.errors.valid-email.empty"
-      result4.errors.size shouldBe 1
+      result4.errors.size         shouldBe 1
       result4.errors.head.message shouldBe "customs.emailfrontend.errors.valid-email.too-long"
     }
   }

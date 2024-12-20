@@ -29,13 +29,14 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector) extends Logging {
+class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) extends Logging {
   private val referrerKey = "referrer"
-  private val emailKey = "email"
-  private val journeyKey = "journey"
+  private val emailKey    = "email"
+  private val journeyKey  = "journey"
 
-  def saveEmail(internalId: InternalId, emailDetails: EmailDetails)
-               (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] =
+  def saveEmail(internalId: InternalId, emailDetails: EmailDetails)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[HttpErrorResponse, Unit]] =
     save4LaterConnector.put[EmailDetails](internalId.id, emailKey, emailDetails)
 
   def fetchEmail(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[EmailDetails]] = {
@@ -43,8 +44,9 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector) exte
     save4LaterConnector.getEmailDetails(internalId.id, emailKey)
   }
 
-  def saveJourneyType(internalId: InternalId, isVerify: JourneyType)
-                     (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
+  def saveJourneyType(internalId: InternalId, isVerify: JourneyType)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[HttpErrorResponse, Unit]] = {
     logger.info("saving journey type from mongo")
     save4LaterConnector.put(internalId.id, journeyKey, isVerify)
   }
@@ -54,8 +56,9 @@ class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector) exte
     save4LaterConnector.getJourneyType(internalId.id, journeyKey)
   }
 
-  def saveReferrer(internalId: InternalId, referrerName: ReferrerName)
-                  (implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, Unit]] = {
+  def saveReferrer(internalId: InternalId, referrerName: ReferrerName)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[HttpErrorResponse, Unit]] = {
     logger.info("saving referrer name and referrer url  from mongo")
     save4LaterConnector.put[ReferrerName](internalId.id, referrerKey, referrerName)
   }
@@ -75,27 +78,25 @@ object Save4LaterService extends Logging {
 
   implicit class EmailCacheServiceHelper(save4LaterService: Save4LaterService) {
 
-    def routeBasedOnAmendment(internalId: InternalId)
-                             (redirectBasedOnEmailStatus: EmailDetails => Future[Result], noEmail: Future[Result])
-                             (implicit hc: HeaderCarrier,
-                              executionContext: ExecutionContext): Future[play.api.mvc.Result] =
-
+    def routeBasedOnAmendment(
+      internalId: InternalId
+    )(redirectBasedOnEmailStatus: EmailDetails => Future[Result], noEmail: Future[Result])(implicit
+      hc: HeaderCarrier,
+      executionContext: ExecutionContext
+    ): Future[play.api.mvc.Result] =
       save4LaterService.fetchEmail(internalId).flatMap {
 
-        case Some(data) if data.amendmentInProgress => {
+        case Some(data) if data.amendmentInProgress =>
           logger.info("email amendment in-progress")
           Future.successful(Redirect(AmendmentInProgressController.show))
-        }
 
-        case Some(EmailDetails(_, _, Some(_))) => {
+        case Some(EmailDetails(_, _, Some(_))) =>
           logger.info("email amendment completed")
           save4LaterService.remove(internalId).flatMap(_ => noEmail)
-        }
 
-        case Some(details@EmailDetails(_, _, None)) => {
+        case Some(details @ EmailDetails(_, _, None)) =>
           logger.info("email amendment not determined")
           redirectBasedOnEmailStatus(details)
-        }
 
         case _ =>
           logger.info("email details not found in the cache")

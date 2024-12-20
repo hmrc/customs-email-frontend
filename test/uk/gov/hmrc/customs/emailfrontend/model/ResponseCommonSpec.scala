@@ -44,24 +44,26 @@ class ResponseCommonSpec extends SpecBase {
 
   trait Setup {
 
-    val status = "OK"
-    val statusText = Some("200 - OK")
-    val validDateTime = "2024-03-11T14:30:00Z"
-    val invalidDateTime = "2024-03-11T14:30:00.123456789Z"
+    val status                          = "OK"
+    val statusText                      = Some("200 - OK")
+    val validDateTime                   = "2024-03-11T14:30:00Z"
+    val invalidDateTime                 = "2024-03-11T14:30:00.123456789Z"
     val validDateTimeObj: LocalDateTime = LocalDateTime.parse(validDateTime, dateFormatter01)
-    val returnParams = List(MessagingServiceParam(formBundleIdParamName, "testValue"))
-    val requestCmn01 = ResponseCommon(status, statusText, validDateTimeObj, returnParams)
+    val returnParams                    = List(MessagingServiceParam(formBundleIdParamName, "testValue"))
+    val requestCmn01                    = ResponseCommon(status, statusText, validDateTimeObj, returnParams)
 
     val correctResponseCmnJson = Json.obj(
-      "status" -> status,
-      "statusText" -> statusText,
-      "processingDate" -> validDateTime,
-      "returnParameters" -> returnParams)
+      "status"           -> status,
+      "statusText"       -> statusText,
+      "processingDate"   -> validDateTime,
+      "returnParameters" -> returnParams
+    )
 
     val inCorrectResponseCmnJson = Json.obj(
-      "status" -> status,
-      "statusText" -> statusText,
-      "processingDate" -> invalidDateTime,
-      "returnParameters" -> returnParams)
+      "status"           -> status,
+      "statusText"       -> statusText,
+      "processingDate"   -> invalidDateTime,
+      "returnParameters" -> returnParams
+    )
   }
 }

@@ -31,20 +31,21 @@ import org.mockito.ArgumentMatchers.any
 
 class SubscriptionDisplayConnectorSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val mockHttp = mock[HttpClientV2]
-  private val requestBuilder = mock[RequestBuilder]
-  private val mockAuditable = mock[Auditable]
-  private val mockAppConfig = mock[AppConfig]
+  private val mockHttp                   = mock[HttpClientV2]
+  private val requestBuilder             = mock[RequestBuilder]
+  private val mockAuditable              = mock[Auditable]
+  private val mockAppConfig              = mock[AppConfig]
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private val url = "http://localhost:8989/customs-email-proxy/subscription-display"
-  private val testEori = "GB1234556789"
-  val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
+  private val url                        = "http://localhost:8989/customs-email-proxy/subscription-display"
+  private val testEori                   = "GB1234556789"
+  val emailVerificationTimeStamp         = "2016-3-17T9:30:47.114"
 
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(
     Some("test@test.com"),
     Some(emailVerificationTimeStamp),
     Some("statusCode"),
-    Some("FAIL"))
+    Some("FAIL")
+  )
 
   private val noneSubscriptionDisplayResponse = SubscriptionDisplayResponse(None, None, None, None)
 

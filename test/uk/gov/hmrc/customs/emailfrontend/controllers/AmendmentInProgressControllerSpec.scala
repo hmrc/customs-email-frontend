@@ -34,7 +34,7 @@ class AmendmentInProgressControllerSpec extends SpecBase {
   trait Setup {
 
     protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+    protected val app: Application                         = applicationBuilder[FakeIdentifierAgentAction]()
       .overrides(
         inject.bind[Save4LaterService].toInstance(mockSave4LaterService)
       )
@@ -49,9 +49,9 @@ class AmendmentInProgressControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.AmendmentInProgressController.show.url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)                 shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe "/manage-email-cds/signout"
       }
     }
@@ -63,7 +63,7 @@ class AmendmentInProgressControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.AmendmentInProgressController.show.url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) shouldBe OK
       }

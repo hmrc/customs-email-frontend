@@ -32,16 +32,20 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[AuthenticatedIdentifierAction])
-trait IdentifierAction extends ActionBuilder[AuthenticatedRequest, AnyContent]
-  with ActionFunction[Request, AuthenticatedRequest]
+trait IdentifierAction
+    extends ActionBuilder[AuthenticatedRequest, AnyContent]
+    with ActionFunction[Request, AuthenticatedRequest]
 
-class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthConnector,
-                                              appConfig: AppConfig,
-                                              override val env: Environment,
-                                              errorHandler: ErrorHandler,
-                                              val parser: BodyParsers.Default)
-                                             (override implicit val executionContext: ExecutionContext)
-  extends IdentifierAction with AuthorisedFunctions with AuthRedirects {
+class AuthenticatedIdentifierAction @Inject() (
+  override val authConnector: AuthConnector,
+  appConfig: AppConfig,
+  override val env: Environment,
+  errorHandler: ErrorHandler,
+  val parser: BodyParsers.Default
+)(override implicit val executionContext: ExecutionContext)
+    extends IdentifierAction
+    with AuthorisedFunctions
+    with AuthRedirects {
 
   override val config: Configuration = appConfig.config
 
@@ -51,7 +55,8 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised().retrieve(
-      Retrievals.allEnrolments and Retrievals.internalId and Retrievals.affinityGroup and Retrievals.credentialRole) {
+      Retrievals.allEnrolments and Retrievals.internalId and Retrievals.affinityGroup and Retrievals.credentialRole
+    ) {
 
       case allEnrolments ~ Some(internalId) ~ affinityGroup ~ credentialRole =>
         (affinityGroup, credentialRole) match {
@@ -76,12 +81,12 @@ class AuthenticatedIdentifierAction @Inject()(override val authConnector: AuthCo
             Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
 
         }
-      case _ =>
+      case _                                                                 =>
         Future.successful(Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment)))
     }
   }.recover {
-    case _: NoActiveSession => toGGLogin(continueUrl = ggSignInRedirectUrl)
+    case _: NoActiveSession        => toGGLogin(continueUrl = ggSignInRedirectUrl)
     case _: InsufficientEnrolments => Redirect(routes.IneligibleUserController.show(Ineligible.NoEnrolment))
-    case _: Throwable => InternalServerError(errorHandler.problemWithService()(request))
+    case _: Throwable              => InternalServerError(errorHandler.problemWithService()(request))
   }
 }

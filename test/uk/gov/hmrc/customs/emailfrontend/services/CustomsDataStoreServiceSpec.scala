@@ -55,12 +55,12 @@ class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
   }
 
   trait Setup {
-    protected val mockConnector = mock[CustomsDataStoreConnector]
-    implicit val hc: HeaderCarrier = HeaderCarrier()
-    protected val service = new CustomsDataStoreService(mockConnector)
+    protected val mockConnector       = mock[CustomsDataStoreConnector]
+    implicit val hc: HeaderCarrier    = HeaderCarrier()
+    protected val service             = new CustomsDataStoreService(mockConnector)
     protected val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
-    protected val email = "abc@def.com"
-    protected val dateTime = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
+    protected val email               = "abc@def.com"
+    protected val dateTime            = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
     protected val badRequestException = new BadRequestException("testMessage")
   }
 }

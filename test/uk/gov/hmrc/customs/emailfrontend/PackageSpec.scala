@@ -35,8 +35,8 @@ class PackageSpec extends SpecBase {
 }
 
 trait SetUp {
-  val stringWithOnlySpaces = singleSpace * 6
-  val stringWithLeadingSpaces = "  abc13456"
+  val stringWithOnlySpaces     = singleSpace * 6
+  val stringWithLeadingSpaces  = "  abc13456"
   val stringWithTrailingSpaces = "abc13456   "
   val stringWithSpacesWithIn_1 = "abt@ test.com"
   val stringWithSpacesWithIn_2 = "a b t@ test.com"

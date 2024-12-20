@@ -22,21 +22,20 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object Utils {
-  val emptyString = ""
-  val hyphen = "-"
-  val singleSpace = " "
+  val emptyString                      = ""
+  val hyphen                           = "-"
+  val singleSpace                      = " "
   val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
   def writesLocalDateTime(o: LocalDateTime): JsValue = Json.toJson(dateFormatter.format(o))
 
-  def readsLocalDateTime(json: JsValue): JsResult[LocalDateTime] = {
+  def readsLocalDateTime(json: JsValue): JsResult[LocalDateTime] =
     json.validate[String].flatMap { str =>
-      try {
+      try
         JsSuccess(LocalDateTime.parse(str, dateFormatter))
-      } catch {
+      catch {
         case _: Throwable => JsError("Invalid LocalDateTime format")
       }
     }
-  }
 
 }

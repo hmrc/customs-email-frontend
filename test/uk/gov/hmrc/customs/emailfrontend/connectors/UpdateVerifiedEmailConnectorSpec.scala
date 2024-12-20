@@ -35,38 +35,32 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UpdateVerifiedEmailConnectorSpec extends SpecBase with BeforeAndAfter {
 
-  private val mockAuditable = mock[Auditable]
-  private val mockAppConfig = mock[AppConfig]
-  private val mockHttpClient = mock[HttpClientV2]
-  private val requestBuilder = mock[RequestBuilder]
-  private val forbiddenException = new ForbiddenException("testMessage")
-  private val badRequestException = new BadRequestException("testMessage")
+  private val mockAuditable           = mock[Auditable]
+  private val mockAppConfig           = mock[AppConfig]
+  private val mockHttpClient          = mock[HttpClientV2]
+  private val requestBuilder          = mock[RequestBuilder]
+  private val forbiddenException      = new ForbiddenException("testMessage")
+  private val badRequestException     = new BadRequestException("testMessage")
   private val internalServerException = new InternalServerException("testMessage")
-  private val unhandledException = new MethodNotAllowedException("testMessage")
-  private val badRequest = UpstreamErrorResponse("testMessage", BAD_REQUEST, BAD_REQUEST)
-  private val forbidden = UpstreamErrorResponse("testMessage", FORBIDDEN, FORBIDDEN)
+  private val unhandledException      = new MethodNotAllowedException("testMessage")
+  private val badRequest              = UpstreamErrorResponse("testMessage", BAD_REQUEST, BAD_REQUEST)
+  private val forbidden               = UpstreamErrorResponse("testMessage", FORBIDDEN, FORBIDDEN)
 
-  private val internalServerError = UpstreamErrorResponse("testMessage",
-    INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)
+  private val internalServerError = UpstreamErrorResponse("testMessage", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)
 
   private val dateTime: LocalDateTime = LocalDateTime.now()
-  private val requestDetail = RequestDetail("idType", "idNumber", "test@email.com", dateTime)
-  private val requestCommon = RequestCommon()
+  private val requestDetail           = RequestDetail("idType", "idNumber", "test@email.com", dateTime)
+  private val requestCommon           = RequestCommon()
 
   private val verifiedEmailResponse = VerifiedEmailResponse(
-    UpdateVerifiedEmailResponse(
-      ResponseCommon("OK",
-        None,
-        dateTime,
-        List(MessagingServiceParam("name", "value")))))
+    UpdateVerifiedEmailResponse(ResponseCommon("OK", None, dateTime, List(MessagingServiceParam("name", "value"))))
+  )
 
-  private val verifiedEmailRequest = VerifiedEmailRequest(
-    UpdateVerifiedEmailRequest(requestCommon, requestDetail))
+  private val verifiedEmailRequest = VerifiedEmailRequest(UpdateVerifiedEmailRequest(requestCommon, requestDetail))
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  val connector = new UpdateVerifiedEmailConnector(mockAppConfig,
-    mockHttpClient, mockAuditable)
+  val connector = new UpdateVerifiedEmailConnector(mockAppConfig, mockHttpClient, mockAuditable)
 
   before {
     reset(mockAuditable, mockAppConfig, mockHttpClient, requestBuilder)

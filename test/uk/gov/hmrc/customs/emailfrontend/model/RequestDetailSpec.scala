@@ -34,7 +34,7 @@ class RequestDetailSpec extends SpecBase {
 
     val parsedReqCmn = json.as[RequestDetail]
 
-    parsedReqCmn.IDType shouldBe requestDtl01.IDType
+    parsedReqCmn.IDType                     shouldBe requestDtl01.IDType
     parsedReqCmn.emailVerificationTimestamp shouldBe requestDtl01.emailVerificationTimestamp
   }
 
@@ -46,24 +46,26 @@ class RequestDetailSpec extends SpecBase {
 
   trait Setup {
 
-    val idType = "EORI"
-    val IdNumber = "GBXXXXXXXXXXXX"
-    val emailId = "sample@example.com"
-    val validDateTime = "2024-03-11T14:30:00Z"
+    val idType                            = "EORI"
+    val IdNumber                          = "GBXXXXXXXXXXXX"
+    val emailId                           = "sample@example.com"
+    val validDateTime                     = "2024-03-11T14:30:00Z"
     val validLocalDateTime: LocalDateTime = LocalDateTime.parse(validDateTime, dateFormatter01)
-    val incorrectDateTime = "2024-03-11T14:30:00.123456789Z"
-    val requestDtl01 = RequestDetail(idType, IdNumber, emailId, validLocalDateTime)
+    val incorrectDateTime                 = "2024-03-11T14:30:00.123456789Z"
+    val requestDtl01                      = RequestDetail(idType, IdNumber, emailId, validLocalDateTime)
 
     val correctEmailDetailsJson = Json.obj(
-      "IDType" -> idType,
-      "IDNumber" -> IdNumber,
-      "emailAddress" -> emailId,
-      "emailVerificationTimestamp" -> validDateTime)
+      "IDType"                     -> idType,
+      "IDNumber"                   -> IdNumber,
+      "emailAddress"               -> emailId,
+      "emailVerificationTimestamp" -> validDateTime
+    )
 
     val inCorrectEmailDetailsJson = Json.obj(
-      "IDType" -> idType,
-      "IDNumber" -> IdNumber,
-      "emailAddress" -> emailId,
-      "emailVerificationTimestamp" -> incorrectDateTime)
+      "IDType"                     -> idType,
+      "IDNumber"                   -> IdNumber,
+      "emailAddress"               -> emailId,
+      "emailVerificationTimestamp" -> incorrectDateTime
+    )
   }
 }

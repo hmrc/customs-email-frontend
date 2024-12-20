@@ -31,9 +31,9 @@ class SignOutControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.SignOutController.signOut.url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).value should endWith("/feedback/manage-email-cds")
       }
     }
@@ -42,12 +42,12 @@ class SignOutControllerSpec extends SpecBase {
 
       running(app) {
         val signOutRequest = FakeRequest(GET, routes.SignOutController.signOut.url)
-        val signOutResult = route(app, signOutRequest).value
+        val signOutResult  = route(app, signOutRequest).value
 
         status(signOutResult) shouldBe SEE_OTHER
 
         val startPageRequest = FakeRequest(GET, routes.SignOutController.signOut.url)
-        val startPageResult = route(app, startPageRequest).value
+        val startPageResult  = route(app, startPageRequest).value
 
         session(startPageResult) shouldBe Session.emptyCookie
       }
@@ -59,9 +59,9 @@ class SignOutControllerSpec extends SpecBase {
 
       running(app) {
         val logOutNoSurveyRequest = FakeRequest(GET, routes.SignOutController.logoutNoSurvey.url)
-        val result = route(app, logOutNoSurveyRequest).value
+        val result                = route(app, logOutNoSurveyRequest).value
 
-        status(result) shouldBe SEE_OTHER
+        status(result)               shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe config.loginContinueUrl
       }
     }

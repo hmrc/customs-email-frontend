@@ -43,12 +43,12 @@ class ViewUtilsSpec extends SpecBase {
 
   "errorPrefix" must {
     "return error prefix when form has any error" in new SetUp {
-      ViewUtils.errorPrefix(formWithError) shouldBe messages("site.errorPrefix")
+      ViewUtils.errorPrefix(formWithError)                     shouldBe messages("site.errorPrefix")
       ViewUtils.errorPrefix(formWithError, "error.prefix.msg") shouldBe messages("error.prefix.msg")
     }
 
     "return empty string when form has no error" in new SetUp {
-      ViewUtils.errorPrefix(formWithNoError) shouldBe emptyString
+      ViewUtils.errorPrefix(formWithNoError)                     shouldBe emptyString
       ViewUtils.errorPrefix(formWithNoError, "error.prefix.msg") shouldBe emptyString
     }
   }
@@ -59,7 +59,7 @@ trait SetUp {
   val mapValues_2: Map[String, String] = Map("isVerify" -> "None")
 
   val formWithNoError: Form[VerifyChange] = confirmVerifyChangeForm.bind(mapValues_1)
-  val formWithError: Form[VerifyChange] = confirmVerifyChangeForm.bind(mapValues_2)
+  val formWithError: Form[VerifyChange]   = confirmVerifyChangeForm.bind(mapValues_2)
 
   implicit val messages: Messages = Helpers.stubMessages()
 }

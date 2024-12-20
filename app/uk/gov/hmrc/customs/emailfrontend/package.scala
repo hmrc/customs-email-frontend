@@ -31,17 +31,15 @@ package object emailfrontend {
 
   object DateTimeUtil {
 
-    def dateTime: LocalDateTime = {
+    def dateTime: LocalDateTime =
       ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime
-    }
 
-    private def dateTimeWritesIsoUtc: Writes[Instant] = (d: Instant) =>
-      JsString(d.atZone(ZoneOffset.UTC).toString)
+    private def dateTimeWritesIsoUtc: Writes[Instant] = (d: Instant) => JsString(d.atZone(ZoneOffset.UTC).toString)
 
     private def dateTimeReadsIso: Reads[Instant] = (value: JsValue) =>
       JsSuccess(ZonedDateTime.parse(value.as[String]).toInstant)
 
-    implicit val dateTimeReads: Reads[Instant] = dateTimeReadsIso
+    implicit val dateTimeReads: Reads[Instant]   = dateTimeReadsIso
     implicit val dateTimeWrites: Writes[Instant] = dateTimeWritesIsoUtc
 
   }
