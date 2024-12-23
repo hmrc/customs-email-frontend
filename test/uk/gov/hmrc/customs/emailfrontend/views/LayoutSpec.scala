@@ -47,13 +47,13 @@ class LayoutSpec extends SpecBase {
         shouldContainCorrectBanners(layoutView)
       }
 
-      "there is no value for title and back link" in new Setup {
+      "there is no value for title and no back link" in new Setup {
 
         val layoutView: Document = Jsoup.parse(app.injector.instanceOf[Layout].apply()(content).body)
 
         shouldContainCorrectTitle(layoutView)
         shouldContainCorrectServiceUrls(layoutView.html())
-        shouldContainCorrectBackLink(layoutView)
+        layoutView.getElementsByClass("govuk-back-link").text() mustBe emptyString
         shouldContainCorrectBanners(layoutView)
       }
     }
