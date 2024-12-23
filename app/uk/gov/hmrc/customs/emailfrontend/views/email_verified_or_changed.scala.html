@@ -30,7 +30,7 @@
 
 @(viewModel: EmailVerifiedOrChangedViewModel)(implicit request: Request[_], messages: Messages)
 
-@layout(Some(messages(viewModel.titleKey)), welshToggle = false) {
+@layout(Some(messages(viewModel.titleKey)), welshToggle = false, backLinkUrl = None) {
 
   @if(viewModel.isVerifyJourney) {
     @verifiedPanel(Some(viewModel.email))
