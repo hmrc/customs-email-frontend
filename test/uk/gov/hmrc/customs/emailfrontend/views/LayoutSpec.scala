@@ -53,7 +53,7 @@ class LayoutSpec extends SpecBase {
 
         shouldContainCorrectTitle(layoutView)
         shouldContainCorrectServiceUrls(layoutView.html())
-        layoutView.getElementsByClass("govuk-back-link").text() mustBe emptyString
+        shouldNotContainBackLink(layoutView)
         shouldContainCorrectBanners(layoutView)
       }
     }
@@ -69,6 +69,10 @@ class LayoutSpec extends SpecBase {
   private def shouldContainCorrectServiceUrls(viewDoc: String) = {
     viewDoc.contains(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url) mustBe true
     viewDoc.contains("/accessibility-statement/manage-email-cds") mustBe true
+  }
+
+  private def shouldNotContainBackLink(viewDoc: Document) = {
+    viewDoc.getElementsByClass("govuk-back-link").text() mustBe emptyString
   }
 
   private def shouldContainCorrectBackLink(viewDoc: Document, backLinkUrl: Option[String] = None) =

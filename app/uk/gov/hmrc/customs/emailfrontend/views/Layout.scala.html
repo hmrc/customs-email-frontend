@@ -81,7 +81,7 @@
                 signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
                 accessibilityStatementUrl = Some(appConfig.accessibilityLinkUrl)
             ),
-            backLink = backLinkUrl.map(url => BackLink(href = url)),
+            backLink = backLinkUrl.filter(_.nonEmpty).map(url => BackLink(href = url)),
             templateOverrides = TemplateOverrides(
                 additionalHeadBlock = Some(additionalHead),
                 mainContentLayout = Some(sideBarContent match {
