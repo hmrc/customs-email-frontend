@@ -47,13 +47,13 @@ class LayoutSpec extends SpecBase {
         shouldContainCorrectBanners(layoutView)
       }
 
-      "there is no value for title and back link" in new Setup {
+      "there is no value for title and no back link" in new Setup {
 
         val layoutView: Document = Jsoup.parse(app.injector.instanceOf[Layout].apply()(content).body)
 
         shouldContainCorrectTitle(layoutView)
         shouldContainCorrectServiceUrls(layoutView.html())
-        shouldContainCorrectBackLink(layoutView)
+        shouldNotContainBackLink(layoutView)
         shouldContainCorrectBanners(layoutView)
       }
     }
@@ -70,6 +70,9 @@ class LayoutSpec extends SpecBase {
     viewDoc.contains(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url) mustBe true
     viewDoc.contains("/accessibility-statement/manage-email-cds") mustBe true
   }
+
+  private def shouldNotContainBackLink(viewDoc: Document) =
+    viewDoc.getElementsByClass("govuk-back-link").text() mustBe emptyString
 
   private def shouldContainCorrectBackLink(viewDoc: Document, backLinkUrl: Option[String] = None) =
     if (backLinkUrl.isDefined) {
