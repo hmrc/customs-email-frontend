@@ -71,9 +71,8 @@ class LayoutSpec extends SpecBase {
     viewDoc.contains("/accessibility-statement/manage-email-cds") mustBe true
   }
 
-  private def shouldNotContainBackLink(viewDoc: Document) = {
+  private def shouldNotContainBackLink(viewDoc: Document) =
     viewDoc.getElementsByClass("govuk-back-link").text() mustBe emptyString
-  }
 
   private def shouldContainCorrectBackLink(viewDoc: Document, backLinkUrl: Option[String] = None) =
     if (backLinkUrl.isDefined) {
