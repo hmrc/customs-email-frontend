@@ -27,20 +27,22 @@
 )
 
 @(emailForm: Form[Email], appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
-@layout(Some(messages("customs.emailfrontend.change-your-email.heading"))) {
+@layout(Some(messages("customs.emailfrontend.change-your-email.heading")),
+    backLinkUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.VerifyChangeEmailController.create.url)) {
 
     @errorSummary(emailForm)
 
-    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.submit, Symbol("id") -> "emailForm", Symbol("novalidate") -> "novalidate") {
-        @CSRF.formField
-        @h1_xl(messages("customs.emailfrontend.change-your-email.heading"))
-        @input_text(
-            emailForm("email"), 
-            messages("customs.emailfrontend.change-your-email.email"),
-            autocomplete = Some("email"),
-            inputType = "email",
-            spellcheck = Some(false)
-        )
+    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.WhatIsYourEmailController.submit,
+        Symbol("id") -> "emailForm", Symbol("novalidate") -> "novalidate") {
+            @CSRF.formField
+            @h1_xl(messages("customs.emailfrontend.change-your-email.heading"))
+            @input_text(
+                emailForm("email"),
+                messages("customs.emailfrontend.change-your-email.email"),
+                autocomplete = Some("email"),
+                inputType = "email",
+                spellcheck = Some(false)
+            )
         @button(messages("customs.emailfrontend.continue-button"))
     }
 }
