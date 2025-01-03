@@ -26,7 +26,8 @@
 )
 
 @(emailForm: Form[Email])(implicit request: Request[_], messages: Messages)
-@layout(Some(messages("customs.emailfrontend.changing-your-email.title-and-heading"))) {
+@layout(Some(messages("customs.emailfrontend.changing-your-email.title-and-heading")),
+    backLinkUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show.url)) {
 
     @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.ChangingYourEmailController.submit,
         Symbol("id") -> "changingYourEmail", Symbol("novalidate") -> "novalidate") {
