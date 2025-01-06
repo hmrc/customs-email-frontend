@@ -64,9 +64,8 @@ class CheckYourEmailViewSpec extends SpecBase {
     viewDoc.contains("/accessibility-statement/manage-email-cds") mustBe true
   }
 
-  private def shouldContainCorrectBackLink(viewDoc: Document) = {
+  private def shouldContainCorrectBackLink(viewDoc: Document) =
     viewDoc.getElementsByClass("govuk-back-link").text() mustBe "Back"
-  }
 
   private def shouldContainCorrectBanners(viewDoc: Document) =
     viewDoc
@@ -80,15 +79,19 @@ class CheckYourEmailViewSpec extends SpecBase {
 
     val linkUrl = "test.com"
 
-    implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequestWithCsrf(
-      "GET", "/some/resource/path")
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+      fakeRequestWithCsrf("GET", "/some/resource/path")
 
-    implicit val msgs: Messages = app.injector.instanceOf[MessagesApi].preferred(
-      fakeRequest(emptyString, emptyString))
+    implicit val msgs: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-    val view: Document = Jsoup.parse(app.injector.instanceOf[check_your_email].apply(
-      confirmEmailForm, "linkUrl")(request = request, messages = msgs).body)
+    val view: Document =
+      Jsoup.parse(
+        app.injector
+          .instanceOf[check_your_email]
+          .apply(confirmEmailForm, "linkUrl")(request = request, messages = msgs)
+          .body
+      )
   }
 }
