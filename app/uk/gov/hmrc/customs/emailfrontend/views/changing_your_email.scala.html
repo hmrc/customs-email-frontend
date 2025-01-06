@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 @import uk.gov.hmrc.customs.emailfrontend.views.html.components
 @import uk.gov.hmrc.customs.emailfrontend.model.Email
+@import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 @import views.html.helper._
 
 @this(layout: Layout,
@@ -27,9 +28,9 @@
 
 @(emailForm: Form[Email])(implicit request: Request[_], messages: Messages)
 @layout(Some(messages("customs.emailfrontend.changing-your-email.title-and-heading")),
-    backLinkUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController.show.url)) {
+    backLinkUrl = Some(routes.CheckYourEmailController.show.url)) {
 
-    @helper.form(uk.gov.hmrc.customs.emailfrontend.controllers.routes.ChangingYourEmailController.submit,
+    @helper.form(routes.ChangingYourEmailController.submit,
         Symbol("id") -> "changingYourEmail", Symbol("novalidate") -> "novalidate") {
             @CSRF.formField
             @h1_xl(messages("customs.emailfrontend.changing-your-email.title-and-heading"))
