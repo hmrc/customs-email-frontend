@@ -27,9 +27,9 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
-import uk.gov.hmrc.customs.emailfrontend.views.html.change_your_email
+import uk.gov.hmrc.customs.emailfrontend.views.html.changing_your_email
 
-class ChangeYourEmailViewSpec extends SpecBase {
+class ChangingYourEmailViewSpec extends SpecBase {
 
   "ChangeYourEmail" should {
     "display correct guidance" when {
@@ -56,7 +56,7 @@ class ChangeYourEmailViewSpec extends SpecBase {
     if (title.nonEmpty) {
       viewDoc.title() mustBe title
     } else {
-      viewDoc.title() mustBe "Enter a new email address"
+      viewDoc.title() mustBe "Changing your email address for the Customs Declaration Service"
     }
 
   private def shouldContainCorrectServiceUrls(viewDoc: String) = {
@@ -86,7 +86,7 @@ class ChangeYourEmailViewSpec extends SpecBase {
 
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-    val view: Document = Jsoup.parse(app.injector.instanceOf[change_your_email].apply(
-      emailForm, appConfig)(request = request, messages = msgs).body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[changing_your_email].apply(
+      emailForm)(request = request, messages = msgs).body)
   }
 }

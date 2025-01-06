@@ -24,12 +24,12 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
+import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
-import uk.gov.hmrc.customs.emailfrontend.views.html.change_your_email
+import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 
-class ChangeYourEmailViewSpec extends SpecBase {
+class CheckYourEmailViewSpec extends SpecBase {
 
   "ChangeYourEmail" should {
     "display correct guidance" when {
@@ -56,7 +56,7 @@ class ChangeYourEmailViewSpec extends SpecBase {
     if (title.nonEmpty) {
       viewDoc.title() mustBe title
     } else {
-      viewDoc.title() mustBe "Enter a new email address"
+      viewDoc.title() mustBe "Check your email address"
     }
 
   private def shouldContainCorrectServiceUrls(viewDoc: String) = {
@@ -78,6 +78,8 @@ class ChangeYourEmailViewSpec extends SpecBase {
       .configure("play.filters.csrf.enabled" -> "false")
       .build()
 
+    val linkUrl = "test.com"
+
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequestWithCsrf(
       "GET", "/some/resource/path")
 
@@ -86,7 +88,7 @@ class ChangeYourEmailViewSpec extends SpecBase {
 
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-    val view: Document = Jsoup.parse(app.injector.instanceOf[change_your_email].apply(
-      emailForm, appConfig)(request = request, messages = msgs).body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[check_your_email].apply(
+      confirmEmailForm, "linkUrl")(request = request, messages = msgs).body)
   }
 }
