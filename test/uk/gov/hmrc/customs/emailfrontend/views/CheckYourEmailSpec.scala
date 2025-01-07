@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
@@ -31,7 +30,7 @@ import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecB
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 
-class CheckYourEmailSpec extends SpecBase {
+class CheckYourEmailSpec extends SpecBase with ViewTestHelper {
 
   "CheckYourEmail" should {
     "display correct guidance" when {
@@ -60,21 +59,6 @@ class CheckYourEmailSpec extends SpecBase {
     } else {
       viewDoc.title() mustBe "Check your email address"
     }
-
-  private def shouldContainCorrectServiceUrls(viewDoc: String) = {
-    viewDoc.contains(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url) mustBe true
-    viewDoc.contains("/accessibility-statement/manage-email-cds") mustBe true
-  }
-
-  def shouldContainBackLinkUrl(viewDoc: Document, url: String): Assertion = {
-    viewDoc.getElementsByClass("govuk-back-link").text() mustBe "Back"
-    viewDoc.html().contains(url) mustBe true
-  }
-
-  private def shouldContainCorrectBanners(viewDoc: Document) =
-    viewDoc
-      .getElementsByClass("govuk-phase-banner")
-      .text() mustBe "BETA This is a new service – your feedback will help us to improve it."
 
   trait Setup {
     val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
