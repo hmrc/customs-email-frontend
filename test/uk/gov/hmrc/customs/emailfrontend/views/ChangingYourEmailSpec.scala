@@ -18,6 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
@@ -28,10 +29,11 @@ import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.changing_your_email
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 
-class ChangingYourEmailViewSpec extends SpecBase {
+class ChangingYourEmailSpec extends SpecBase {
 
-  "ChangeYourEmail" should {
+  "ChangingYourEmail" should {
     "display correct guidance" when {
 
       "banner is visible" in new Setup {
@@ -47,7 +49,7 @@ class ChangingYourEmailViewSpec extends SpecBase {
       }
 
       "backlink is visible" in new Setup {
-        shouldContainCorrectBackLink(view)
+        shouldContainBackLinkUrl(view, routes.CheckYourEmailController.show.url)
       }
     }
   }
@@ -64,8 +66,10 @@ class ChangingYourEmailViewSpec extends SpecBase {
     viewDoc.contains("/accessibility-statement/manage-email-cds") mustBe true
   }
 
-  private def shouldContainCorrectBackLink(viewDoc: Document) =
+  def shouldContainBackLinkUrl(viewDoc: Document, url: String): Assertion = {
     viewDoc.getElementsByClass("govuk-back-link").text() mustBe "Back"
+    viewDoc.html().contains(url) mustBe true
+  }
 
   private def shouldContainCorrectBanners(viewDoc: Document) =
     viewDoc
