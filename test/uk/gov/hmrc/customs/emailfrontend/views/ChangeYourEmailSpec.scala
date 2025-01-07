@@ -26,11 +26,11 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, ViewTestHelper}
 import uk.gov.hmrc.customs.emailfrontend.views.html.change_your_email
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 
-class ChangeYourEmailSpec extends SpecBase with ViewTestHelper {
+class ChangeYourEmailSpec extends ViewTestHelper {
 
   "ChangeYourEmail" should {
     "display correct guidance" when {
@@ -44,7 +44,7 @@ class ChangeYourEmailSpec extends SpecBase with ViewTestHelper {
       }
 
       "service urls are visible" in new Setup {
-        shouldContainCorrectServiceUrls(view.html())
+        shouldContainCorrectServiceUrls(view.html(), routes.SignOutController.signOut.url)
       }
 
       "backlink is visible" in new Setup {

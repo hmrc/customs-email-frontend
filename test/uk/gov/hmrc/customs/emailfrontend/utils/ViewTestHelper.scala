@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.views
+package uk.gov.hmrc.customs.emailfrontend.utils
 
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
-import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import org.scalatest.matchers.must.Matchers.mustBe
 
 trait ViewTestHelper extends SpecBase {
 
-  def shouldContainCorrectServiceUrls(viewDoc: String): Assertion = {
-    viewDoc.contains(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url) mustBe true
+  def shouldContainCorrectServiceUrls(viewDoc: String, routes: String): Assertion = {
+    viewDoc.contains(routes) mustBe true
     viewDoc.contains("/accessibility-statement/manage-email-cds") mustBe true
   }
 
