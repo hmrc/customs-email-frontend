@@ -22,8 +22,8 @@ import org.scalatest.matchers.must.Matchers.mustBe
 
 trait ViewTestHelper extends SpecBase {
 
-  def shouldContainCorrectServiceUrls(viewDoc: String, routes: String): Assertion = {
-    viewDoc.contains(routes) mustBe true
+  def shouldContainCorrectServiceUrls(viewDoc: String, url: String): Assertion = {
+    viewDoc.contains(url) mustBe true
     viewDoc.contains("/accessibility-statement/manage-email-cds") mustBe true
   }
 
