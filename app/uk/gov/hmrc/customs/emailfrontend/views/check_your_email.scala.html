@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.customs.emailfrontend.model.YesNo
 @import uk.gov.hmrc.customs.emailfrontend.controllers.routes.CheckYourEmailController
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 
 @import views.html.helper._
 
@@ -34,7 +35,8 @@
 )
 @(confirmEmailForm: Form[YesNo], email: String)(implicit request: Request[_], messages: Messages)
 
-@layout(Some(messages("customs.emailfrontend.confirm-your-email.title-and-heading"))) {
+@layout(Some(messages("customs.emailfrontend.confirm-your-email.title-and-heading")),
+    backLinkUrl = Some(routes.WhatIsYourEmailController.whatIsEmailAddress.url)) {
 
     @errorSummary(confirmEmailForm)
 
