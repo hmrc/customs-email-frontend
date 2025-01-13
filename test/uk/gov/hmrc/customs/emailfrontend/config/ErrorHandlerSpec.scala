@@ -58,7 +58,7 @@ class ErrorHandlerSpec extends SpecBase {
       val result: Html = errorHandler.problemWithService()(request)
       val doc          = Jsoup.parse(contentAsString(result))
 
-      doc.title shouldBe "Sorry, there is a problem with the service"
+      doc.title shouldBe "Sorry, there is a problem with the service - Customs Declaration Service"
     }
 
     "have correct text error to show 'email has not been updated' page" in {

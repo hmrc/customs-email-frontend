@@ -28,7 +28,8 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
 @import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
-@this(appConfig: AppConfig,
+@this(
+    appConfig: AppConfig,
     hmrcStandardPage: HmrcStandardPage,
     govukBackLink: GovukBackLink,
     twoThirdsMainContent: TwoThirdsMainContent,
@@ -38,59 +39,64 @@
 )
 
 @(pageTitle: Option[String] = None,
-        backLinkUrl: Option[String] = None,
-        helpAndSupport: Boolean = true,
-        deskpro: Boolean = true,
-        startPage: Boolean = false,
-        welshToggle: Boolean = true,
-        sideBarContent: Option[Html] = None
+    backLinkUrl: Option[String] = None,
+    helpAndSupport: Boolean = true,
+    deskpro: Boolean = true,
+    startPage: Boolean = false,
+    welshToggle: Boolean = true,
+    sideBarContent: Option[Html] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
+@fullPageTitle = @{
+    Some(pageTitle.map(_ + s" - ${messages("service.name")}").getOrElse(messages("service.name")))
+}
+
 @phaseBannerContent = {
-        @messages("customs.emailfrontend.phase-banner1")
-            <a class='govuk-link' href='/contact/beta-feedback-unauthenticated?service=CDS-FIN'>@messages("customs.emailfrontend.phase-banner2")</a>
-        @messages("customs.emailfrontend.phase-banner3")
-    }
+    @messages("customs.emailfrontend.phase-banner1")
+        <a class='govuk-link' href='/contact/beta-feedback-unauthenticated?service=CDS-FIN'>@messages("customs.emailfrontend.phase-banner2")</a>
+    @messages("customs.emailfrontend.phase-banner3")
+}
 
-    @additionalHead = {
-        <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css"/>
-            @hmrcTimeoutDialog(TimeoutDialog(
-            title = Some(messages("customs.emailfrontend.timeout.title")),
-            timeout = Some(appConfig.timeout),
-            countdown = Some(appConfig.countdown),
-            keepAliveUrl = Some(request.uri),
+@additionalHead = {
+    <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css"/>
+        @hmrcTimeoutDialog(TimeoutDialog(
+        title = Some(messages("customs.emailfrontend.timeout.title")),
+        timeout = Some(appConfig.timeout),
+        countdown = Some(appConfig.countdown),
+        keepAliveUrl = Some(request.uri),
+        signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
+        timeoutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.logoutNoSurvey.url)
+    ))
+}
+
+@mainContent = {
+    @contentBlock
+    @if(deskpro) {
+        <div class="govuk-!-margin-top-9">
+            @hmrcReportTechnicalIssueHelper()
+        </div>
+    }
+}
+
+@hmrcStandardPage(
+    HmrcStandardPageParams(
+        pageTitle = fullPageTitle,
+        serviceURLs =  ServiceURLs(
+            serviceUrl =  None,
             signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
-            timeoutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.logoutNoSurvey.url)
-        ))
-    }
-
-    @mainContent = {
-        @contentBlock
-        @if(deskpro) {
-            <div class="govuk-!-margin-top-9">
-                @hmrcReportTechnicalIssueHelper()
-            </div>
-        }
-    }
-
-    @hmrcStandardPage(
-        HmrcStandardPageParams(
-            pageTitle = pageTitle,
-            serviceURLs =  ServiceURLs(
-                serviceUrl =  None,
-                signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
-                accessibilityStatementUrl = Some(appConfig.accessibilityLinkUrl)
-            ),
-            backLink = backLinkUrl.filter(_.nonEmpty).map(url => BackLink(href = url)),
-            templateOverrides = TemplateOverrides(
-                additionalHeadBlock = Some(additionalHead),
-                mainContentLayout = Some(sideBarContent match {
-                    case Some(value) => twoThirdsOneThirdMainContent(value)
-                    case None => twoThirdsMainContent(_)
-                })
-            ),
-            banners = Banners(
-                phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent)))
-            ),
-            isWelshTranslationAvailable = welshToggle
-        ))(mainContent)
+            accessibilityStatementUrl = Some(appConfig.accessibilityLinkUrl)
+        ),
+        backLink = backLinkUrl.filter(_.nonEmpty).map(url => BackLink(href = url)),
+        templateOverrides = TemplateOverrides(
+            additionalHeadBlock = Some(additionalHead),
+            mainContentLayout = Some(sideBarContent match {
+                case Some(value) => twoThirdsOneThirdMainContent(value)
+                case None => twoThirdsMainContent(_)
+            })
+        ),
+        banners = Banners(
+            phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent)))
+        ),
+        isWelshTranslationAvailable = welshToggle
+    )
+)(mainContent)
