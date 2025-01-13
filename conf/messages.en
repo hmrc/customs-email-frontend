@@ -1,7 +1,7 @@
 site.error=Error
 site.errorPrefix=Error:
 
-service.name=Manage your email address for CDS
+service.name=Customs Declaration Service
 
 customs.emailfrontend.service-name=Manage your email address for CDS
 customs.emailfrontend.continue-button=Continue

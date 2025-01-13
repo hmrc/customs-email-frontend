@@ -59,12 +59,14 @@ class LayoutSpec extends SpecBase {
     }
   }
 
-  private def shouldContainCorrectTitle(viewDoc: Document, title: String = emptyString) =
-    if (title.nonEmpty) {
-      viewDoc.title() mustBe title
+  private def shouldContainCorrectTitle(viewDoc: Document, title: String = emptyString)(implicit messages: Messages) = {
+    val expectedTitle = if (title.nonEmpty) {
+      s"$title - ${messages("service.name")}"
     } else {
-      viewDoc.title() mustBe "GOV.UK - The best place to find government services and information"
+      messages("service.name")
     }
+    viewDoc.title() mustBe expectedTitle
+  }
 
   private def shouldContainCorrectServiceUrls(viewDoc: String) = {
     viewDoc.contains(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url) mustBe true

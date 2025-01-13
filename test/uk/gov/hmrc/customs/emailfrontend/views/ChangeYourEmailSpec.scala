@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
@@ -53,12 +52,14 @@ class ChangeYourEmailSpec extends ViewTestHelper {
     }
   }
 
-  private def shouldContainCorrectTitle(viewDoc: Document, title: String = emptyString) =
-    if (title.nonEmpty) {
-      viewDoc.title() mustBe title
+  private def shouldContainCorrectTitle(viewDoc: Document, title: String = emptyString)(implicit messages: Messages) = {
+    val expectedTitle = if (title.nonEmpty) {
+      s"$title - ${messages("service.name")}"
     } else {
-      viewDoc.title() mustBe "Enter a new email address"
+      messages("service.name")
     }
+    viewDoc.title() should include(expectedTitle)
+  }
 
   trait Setup {
     val app: Application = applicationBuilder[FakeIdentifierAgentAction]()

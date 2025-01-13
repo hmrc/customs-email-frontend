@@ -390,7 +390,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
         val doc = Jsoup.parse(contentAsString(result))
         doc.title   should not be empty
         doc.title shouldBe
-          s"${messages(app)("site.errorPrefix")} ${messages(app)("customs.emailfrontend.verify-change-email.title-and-heading")}"
+          s"${messages(app)("site.errorPrefix")} ${messages(app)("customs.emailfrontend.verify-change-email.title-and-heading")} - ${messages(app)("service.name")}"
       }
     }
 
