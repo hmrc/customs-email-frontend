@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.customs
 
-import java.time.{Instant, LocalDateTime, ZoneOffset, ZonedDateTime}
-import play.api.libs.json._
-import uk.gov.hmrc.auth.core.retrieve.{~ => Retrieve}
+import play.api.libs.json.*
+import uk.gov.hmrc.auth.core.retrieve.~ as Retrieve
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, hyphen}
 
+import java.time.{Instant, LocalDateTime, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
 package object emailfrontend {

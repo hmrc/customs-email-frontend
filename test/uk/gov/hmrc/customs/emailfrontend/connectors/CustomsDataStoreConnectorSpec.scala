@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{doNothing, reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT}
 import play.api.libs.json.Json
@@ -24,13 +26,11 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.*
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
-import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpReads, HttpResponse, InternalServerException}
-import org.mockito.Mockito.{doNothing, reset, when}
-import org.mockito.ArgumentMatchers.any
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global

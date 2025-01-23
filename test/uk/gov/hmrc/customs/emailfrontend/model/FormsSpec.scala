@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.matchers.should.Matchers.*
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms
 

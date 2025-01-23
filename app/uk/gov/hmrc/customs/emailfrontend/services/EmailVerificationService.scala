@@ -16,14 +16,13 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.EmailVerificationRequestSuccess
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{
-  EmailNotVerified, EmailVerified
-}
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerified}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.http.HeaderCarrier
+
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

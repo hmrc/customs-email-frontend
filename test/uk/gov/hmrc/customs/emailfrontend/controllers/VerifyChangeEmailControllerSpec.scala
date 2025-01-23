@@ -17,7 +17,8 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers.{eq => meq}
+import org.mockito.ArgumentMatchers.{any, eq as meq}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -26,9 +27,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, *}
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{
-  EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestSent
-}
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestSent}
 import uk.gov.hmrc.customs.emailfrontend.connectors.{EmailVerificationConnector, SubscriptionDisplayConnector}
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
 import uk.gov.hmrc.customs.emailfrontend.model.*
@@ -37,9 +37,6 @@ import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.ArgumentMatchers.any
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
 
 import java.time.{LocalDateTime, Period}
 import scala.concurrent.Future
@@ -649,7 +646,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     protected val mockEmailVerificationService: EmailVerificationService         = mock[EmailVerificationService]
     protected val mockErrorHandler: ErrorHandler                                 = mock[ErrorHandler]
 
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+    protected val app: Application = applicationBuilder()
       .overrides(
         inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
         inject.bind[SubscriptionDisplayConnector].toInstance(mockSubscriptionDisplayConnector),

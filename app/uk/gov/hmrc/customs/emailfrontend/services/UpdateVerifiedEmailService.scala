@@ -19,8 +19,8 @@ package uk.gov.hmrc.customs.emailfrontend.services
 import play.api.Logging
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
-import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
-import uk.gov.hmrc.customs.emailfrontend.model._
+import uk.gov.hmrc.customs.emailfrontend.model.*
+import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam.*
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime

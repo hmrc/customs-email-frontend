@@ -17,14 +17,15 @@
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import play.api.Logging
-import play.mvc.Http.Status._
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import play.mvc.Http.Status.*
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{ForbiddenException, _}
-import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import uk.gov.hmrc.http.{ForbiddenException, *}
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal

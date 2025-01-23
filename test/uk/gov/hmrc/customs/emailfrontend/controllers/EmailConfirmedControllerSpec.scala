@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.{any, eq as meq}
 import org.mockito.Mockito.when
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, *}
@@ -290,7 +290,7 @@ class EmailConfirmedControllerSpec extends SpecBase {
     protected val mockDateTimeService: DateTimeService                       = mock[DateTimeService]
     protected val testDateTime: LocalDateTime                                = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
 
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+    protected val app: Application = applicationBuilder()
       .overrides(
         inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
         inject.bind[CustomsDataStoreService].toInstance(mockCustomsDataStoreService),

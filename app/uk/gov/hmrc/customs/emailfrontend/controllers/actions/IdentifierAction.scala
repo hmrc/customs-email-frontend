@@ -17,11 +17,11 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
-import play.api.mvc.Results._
-import play.api.mvc._
+import play.api.mvc.*
+import play.api.mvc.Results.*
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
@@ -29,6 +29,7 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, Ineligible, InternalId, LoggedInUser}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[AuthenticatedIdentifierAction])

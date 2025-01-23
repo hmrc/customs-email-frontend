@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import play.api.libs.json._
+import play.api.libs.json.*
+import play.api.libs.ws.BodyWritable
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils
 
 import java.time.{LocalDateTime, ZoneOffset}
-import play.api.libs.ws.BodyWritable
 
 case class UpdateEmail(eori: Eori, address: String, timestamp: LocalDateTime)
 

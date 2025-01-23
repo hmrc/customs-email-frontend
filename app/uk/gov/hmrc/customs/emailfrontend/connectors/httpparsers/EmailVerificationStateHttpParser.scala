@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers
 
 import play.api.Logging
-import play.api.http.Status._
+import play.api.http.Status.*
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object EmailVerificationStateHttpParser extends Logging {

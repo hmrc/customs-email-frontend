@@ -16,14 +16,15 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
@@ -75,7 +76,7 @@ class VerifyYourEmailControllerSpec extends SpecBase {
 
   trait Setup {
     protected val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
-    protected val app: Application                         = applicationBuilder[FakeIdentifierAgentAction]()
+    protected val app: Application                         = applicationBuilder()
       .overrides(inject.bind[Save4LaterService].toInstance(mockSave4LaterService))
       .build()
   }

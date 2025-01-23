@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
@@ -26,6 +25,7 @@ import uk.gov.hmrc.customs.emailfrontend.controllers.routes.AmendmentInProgressC
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, JourneyType, ReferrerName}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

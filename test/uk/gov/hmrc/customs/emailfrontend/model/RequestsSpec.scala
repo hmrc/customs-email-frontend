@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.POST
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import org.scalatest.matchers.must.Matchers.mustBe
 
 class RequestsSpec extends SpecBase {
   "user" should {

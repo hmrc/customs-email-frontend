@@ -17,15 +17,16 @@
 package uk.gov.hmrc.customs.emailfrontend.utils
 
 import com.codahale.metrics.MetricRegistry
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.AnyContentAsEmpty
-import play.api.test.CSRFTokenHelper._
+import play.api.test.CSRFTokenHelper.*
 import play.api.test.FakeRequest
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
@@ -45,15 +46,15 @@ trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with Opti
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
   @implicitNotFound("Pass a type for the identifier action")
-  def applicationBuilder[IA <: IdentifierAction](
+  def applicationBuilder(
     disableAuth: Boolean = false
-  )(implicit c: ClassTag[IA]): GuiceApplicationBuilder = {
+  ): GuiceApplicationBuilder = {
 
     val overrides: List[GuiceableModule]         = List(bind[Metrics].toInstance(new FakeMetrics))
     val optionalOverrides: List[GuiceableModule] = if (disableAuth) {
       Nil
     } else {
-      List(bind[IdentifierAction].to[IA])
+      List(bind[IdentifierAction].to[FakeIdentifierAgentAction])
     }
 
     new GuiceApplicationBuilder()
@@ -65,6 +66,8 @@ trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with Opti
         "metrics.enabled"                       -> "false"
       )
   }
+
+  lazy val application: Application = applicationBuilder().build()
 }
 
 class FakeMetrics extends Metrics {

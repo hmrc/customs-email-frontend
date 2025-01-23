@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import play.api.libs.json.Json
-import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter01
-import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import org.scalatest.matchers.must.Matchers.mustBe
+import play.api.libs.json.Json
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter01
 
 import java.time.LocalDateTime
 

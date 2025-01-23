@@ -16,25 +16,23 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import java.time.LocalDateTime
 import play.api.Logging
 import play.api.http.HeaderNames.CONTENT_TYPE
 import play.api.http.MimeTypes
+import play.api.http.Status.*
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.*
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
-import uk.gov.hmrc.http._
-
-import javax.inject.{Inject, Singleton}
-import play.api.http.Status._
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses._
-
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.control.NonFatal
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 
-import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import java.time.LocalDateTime
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.control.NonFatal
 
 @Singleton
 class CustomsDataStoreConnector @Inject() (appConfig: AppConfig, httpClient: HttpClientV2, audit: Auditable)(implicit

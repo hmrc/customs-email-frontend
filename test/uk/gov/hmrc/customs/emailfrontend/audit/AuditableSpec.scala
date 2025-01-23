@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.customs.emailfrontend.audit
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{doNothing, when}
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.{Application, inject}
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.{HeaderCarrier, RequestId}
 import uk.gov.hmrc.play.audit.AuditExtensions.AuditHeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.model.{Audit, DataEvent}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{doNothing, when}
-import org.scalatest.matchers.must.Matchers.mustBe
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,7 +54,7 @@ class AuditableSpec extends SpecBase {
     val mockConnector: AuditConnector = mock[AuditConnector]
     val mockAudit: Audit              = mock[Audit]
 
-    val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+    val app: Application = applicationBuilder()
       .overrides(
         inject.bind[AuditConnector].toInstance(mockConnector),
         inject.bind[Audit].toInstance(mockAudit)

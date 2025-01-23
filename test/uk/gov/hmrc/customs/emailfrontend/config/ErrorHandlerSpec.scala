@@ -19,17 +19,17 @@ package uk.gov.hmrc.customs.emailfrontend.config
 import org.jsoup.Jsoup
 import play.api.i18n.MessagesApi
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import play.twirl.api.Html
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
 import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
 
 import scala.concurrent.ExecutionContext
-import play.twirl.api.Html
 
 class ErrorHandlerSpec extends SpecBase {
 
-  private val app                      = applicationBuilder[FakeIdentifierAgentAction]().build()
+  private val app                      = applicationBuilder().build()
   private val view                     = app.injector.instanceOf[error_template]
   private val customView               = app.injector.instanceOf[problem_with_this_service]
   private val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]

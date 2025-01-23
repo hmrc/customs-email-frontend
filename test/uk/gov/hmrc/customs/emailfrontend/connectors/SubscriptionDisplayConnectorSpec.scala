@@ -16,18 +16,18 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{doNothing, reset, when}
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-import org.mockito.Mockito.{doNothing, reset, when}
-import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
-import org.mockito.ArgumentMatchers.any
 
 class SubscriptionDisplayConnectorSpec extends SpecBase with BeforeAndAfterEach {
 

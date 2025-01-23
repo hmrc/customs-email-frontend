@@ -16,21 +16,20 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import play.api.http.Status._
+import play.api.http.Status.*
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
-import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
-
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
 
 class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
 

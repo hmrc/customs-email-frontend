@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.customs.emailfrontend.audit
 
-import javax.inject.Inject
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.AuditExtensions._
+import uk.gov.hmrc.play.audit.AuditExtensions.*
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{Audit, DataEvent, ExtendedDataEvent}
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class Auditable @Inject() (auditConnector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) {

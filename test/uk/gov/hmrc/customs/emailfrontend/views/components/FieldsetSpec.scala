@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.customs.emailfrontend.views.components
 
-import play.api.Application
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.test.Helpers._
-import play.api.test.Helpers
-import play.twirl.api.{Html, HtmlFormat}
+import play.api.Application
 import play.api.i18n.Messages
+import play.api.test.Helpers
+import play.api.test.Helpers.*
+import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.components.fieldset
 
@@ -73,6 +73,6 @@ class FieldsetSpec extends SpecBase {
 
   trait Setup {
     implicit val messages: Messages = Helpers.stubMessages()
-    val app: Application            = applicationBuilder[FakeIdentifierAgentAction]().build()
+    val app: Application            = applicationBuilder().build()
   }
 }

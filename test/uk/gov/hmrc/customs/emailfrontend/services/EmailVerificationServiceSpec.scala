@@ -17,18 +17,17 @@
 package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.BAD_REQUEST
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser._
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser._
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.*
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.*
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-
-import org.mockito.Mockito.{reset, when}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

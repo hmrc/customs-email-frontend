@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{doNothing, reset, when}
 import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers.*
 import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
@@ -26,8 +28,6 @@ import uk.gov.hmrc.customs.emailfrontend.model.*
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, MethodNotAllowedException, *}
-import org.mockito.Mockito.{doNothing, reset, when}
-import org.mockito.ArgumentMatchers.any
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global

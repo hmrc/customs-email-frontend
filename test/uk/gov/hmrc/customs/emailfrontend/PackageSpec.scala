@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.customs.emailfrontend
 
+import org.scalatest.matchers.must.Matchers.mustBe
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, singleSpace}
-import org.scalatest.matchers.must.Matchers.mustBe
 
 class PackageSpec extends SpecBase {
   "Utils.replaceSpaceWithEmptyString" should {

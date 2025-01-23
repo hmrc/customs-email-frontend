@@ -17,22 +17,22 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
 import com.google.inject.Inject
-import play.api.{Application, Environment}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import play.api.{Application, Environment}
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -272,7 +272,7 @@ class IdentifierActionSpec extends SpecBase {
   }
 
   trait Setup {
-    protected val app: Application                 = applicationBuilder[FakeIdentifierAgentAction]().overrides().build()
+    protected val app: Application                 = applicationBuilder().overrides().build()
     protected val config: AppConfig                = app.injector.instanceOf[AppConfig]
     protected val bodyParsers: BodyParsers.Default = app.injector.instanceOf[BodyParsers.Default]
     protected val env: Environment                 = app.injector.instanceOf[Environment]

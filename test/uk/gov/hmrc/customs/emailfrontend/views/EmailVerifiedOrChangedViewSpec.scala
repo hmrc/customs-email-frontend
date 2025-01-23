@@ -68,7 +68,7 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application                   = applicationBuilder[FakeIdentifierAgentAction]().build()
+    val app: Application                   = applicationBuilder().build()
     protected val mockAppConfig: AppConfig = mock[AppConfig]
 
     val email: String               = testEmail

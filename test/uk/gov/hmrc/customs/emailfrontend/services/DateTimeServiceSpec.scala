@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import java.time.{Clock, Instant, LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+
+import java.time.*
 
 class DateTimeServiceSpec extends SpecBase {
 

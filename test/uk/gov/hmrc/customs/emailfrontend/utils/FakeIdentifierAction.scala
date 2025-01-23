@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.utils
 
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.{AffinityGroup, User}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
