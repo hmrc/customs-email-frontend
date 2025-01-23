@@ -642,7 +642,6 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
     protected val mockSubscriptionDisplayConnector: SubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
     protected val mockEmailVerificationConnector: EmailVerificationConnector     = mock[EmailVerificationConnector]
     protected val mockEmailVerificationService: EmailVerificationService         = mock[EmailVerificationService]
-    protected val mockErrorHandler: ErrorHandler                                 = mock[ErrorHandler]
 
     protected val app: Application = applicationBuilder()
       .overrides(

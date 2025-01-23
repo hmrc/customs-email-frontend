@@ -617,7 +617,6 @@ class WhatIsYourEmailControllerSpec extends SpecBase {
     protected val mockSave4LaterService: Save4LaterService                       = mock[Save4LaterService]
     protected val mockSubscriptionDisplayConnector: SubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
     protected val mockEmailVerificationService: EmailVerificationService         = mock[EmailVerificationService]
-    protected val mockErrorHandler: ErrorHandler                                 = mock[ErrorHandler]
 
     protected val app: Application = applicationBuilder()
       .overrides(

@@ -22,7 +22,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, *}
 import play.api.{Application, inject}
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
-import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, JourneyType, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.services.*
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
@@ -299,7 +298,5 @@ class EmailConfirmedControllerSpec extends SpecBase {
         inject.bind[DateTimeService].toInstance(mockDateTimeService)
       )
       .build()
-
-    protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
   }
 }

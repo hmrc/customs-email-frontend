@@ -27,7 +27,6 @@ import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
@@ -273,7 +272,6 @@ class IdentifierActionSpec extends SpecBase {
   trait Setup {
     protected val bodyParsers: BodyParsers.Default = app.injector.instanceOf[BodyParsers.Default]
     protected val env: Environment                 = app.injector.instanceOf[Environment]
-    protected val errorHandler: ErrorHandler       = app.injector.instanceOf[ErrorHandler]
   }
 }
 

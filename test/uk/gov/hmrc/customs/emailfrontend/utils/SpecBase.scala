@@ -30,7 +30,7 @@ import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.CSRFTokenHelper.*
 import play.api.test.FakeRequest
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.HeaderCarrier
@@ -78,6 +78,7 @@ trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with Opti
   lazy val mockAppConfig: AppConfig        = mock[AppConfig]
   lazy val appConfigInstance: AppConfig                = app.injector.instanceOf[AppConfig]
   implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
+  lazy val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
   
   override def beforeEach(): Unit = reset(mockAppConfig)
 }

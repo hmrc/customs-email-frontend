@@ -21,7 +21,6 @@ import org.mockito.Mockito.when
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import play.api.{Application, inject}
-import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.*
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
@@ -219,7 +218,5 @@ class ChangingYourEmailControllerSpec extends SpecBase {
         inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService)
       )
       .build()
-
-    protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
   }
 }
