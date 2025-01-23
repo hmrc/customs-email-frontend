@@ -96,7 +96,6 @@ class Save4LaterServiceSpec extends SpecBase {
   }
 
   trait Setup {
-    implicit val hc: HeaderCarrier           = mock[HeaderCarrier]
     protected val internalId: InternalId     = InternalId("internalId-123")
     protected val timestamp: LocalDateTime   = DateTimeUtil.dateTime
     protected val emailDetails: EmailDetails = EmailDetails(None, "test@test.com", Some(timestamp))

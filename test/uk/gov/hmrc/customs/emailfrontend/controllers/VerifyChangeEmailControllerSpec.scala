@@ -19,7 +19,6 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{any, eq as meq}
 import org.mockito.Mockito.{times, verify, when}
-import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.FakeRequest
@@ -380,15 +379,15 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
         contentAsString(result) shouldBe
           view(confirmVerifyChangeForm.bind(Map("isVerify" -> "None")), Some("test@email.com"))(
             requestWithForm,
-            messages(app)
+            messages
           ).toString()
 
         val doc = Jsoup.parse(contentAsString(result))
         doc.title   should not be empty
         doc.title shouldBe
-          s"${messages(app)("site.errorPrefix")} " +
-          s"${messages(app)("customs.emailfrontend.verify-change-email.title-and-heading")} - " +
-          s"${messages(app)("service.name")}"
+          s"${messages("site.errorPrefix")} " +
+          s"${messages("customs.emailfrontend.verify-change-email.title-and-heading")} - " +
+          s"${messages("service.name")}"
       }
     }
 
@@ -663,8 +662,5 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
       FakeRequest(method, path).withCSRFToken
         .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
         .withHeaders("X-Session-Id" -> "someSessionId")
-
-    protected def messages(app: Application): Messages =
-      app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
   }
 }

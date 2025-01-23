@@ -25,7 +25,7 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{BadRequestException, HttpResponse}
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
@@ -54,7 +54,6 @@ class CustomsDataStoreServiceSpec extends SpecBase {
 
   trait Setup {
     protected val mockConnector       = mock[CustomsDataStoreConnector]
-    implicit val hc: HeaderCarrier    = HeaderCarrier()
     protected val service             = new CustomsDataStoreService(mockConnector)
     protected val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
     protected val email               = "abc@def.com"

@@ -27,7 +27,7 @@ import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
+import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
@@ -49,7 +49,7 @@ class IdentifierActionSpec extends SpecBase {
       ).thenReturn(Future.successful(Enrolments(Set.empty) ~ Some("internalId") ~ Some(Organisation) ~ Some(User)))
 
       private val authAction =
-        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+        new AuthenticatedIdentifierAction(mockAuthConnector, appConfigInstance, env, errorHandler, bodyParsers)
 
       private val controller = new Harness(authAction)
 
@@ -69,7 +69,7 @@ class IdentifierActionSpec extends SpecBase {
       ).thenReturn(Future.successful(Enrolments(Set.empty) ~ None ~ None ~ None))
 
       private val authAction =
-        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+        new AuthenticatedIdentifierAction(mockAuthConnector, appConfigInstance, env, errorHandler, bodyParsers)
 
       private val controller = new Harness(authAction)
 
@@ -90,7 +90,7 @@ class IdentifierActionSpec extends SpecBase {
       ).thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ Some(User)))
 
       private val authAction =
-        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+        new AuthenticatedIdentifierAction(mockAuthConnector, appConfigInstance, env, errorHandler, bodyParsers)
 
       private val controller = new Harness(authAction)
 
@@ -112,7 +112,7 @@ class IdentifierActionSpec extends SpecBase {
       ).thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ None))
 
       private val authAction =
-        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+        new AuthenticatedIdentifierAction(mockAuthConnector, appConfigInstance, env, errorHandler, bodyParsers)
 
       private val controller = new Harness(authAction)
 
@@ -133,7 +133,7 @@ class IdentifierActionSpec extends SpecBase {
       ).thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Agent) ~ None))
 
       private val authAction =
-        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+        new AuthenticatedIdentifierAction(mockAuthConnector, appConfigInstance, env, errorHandler, bodyParsers)
       private val controller = new Harness(authAction)
 
       running(app) {
@@ -154,7 +154,7 @@ class IdentifierActionSpec extends SpecBase {
       ).thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ None ~ Some(User)))
 
       private val authAction =
-        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+        new AuthenticatedIdentifierAction(mockAuthConnector, appConfigInstance, env, errorHandler, bodyParsers)
       private val controller = new Harness(authAction)
 
       running(app) {
@@ -173,7 +173,7 @@ class IdentifierActionSpec extends SpecBase {
       ).thenReturn(Future.failed(new RuntimeException("something went wrong")))
 
       private val authAction =
-        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+        new AuthenticatedIdentifierAction(mockAuthConnector, appConfigInstance, env, errorHandler, bodyParsers)
       private val controller = new Harness(authAction)
 
       running(app) {
@@ -195,7 +195,7 @@ class IdentifierActionSpec extends SpecBase {
       ).thenReturn(Future.successful(Enrolments(enrolments) ~ Some("internalId") ~ Some(Organisation) ~ Some(User)))
 
       private val authAction =
-        new AuthenticatedIdentifierAction(mockAuthConnector, config, env, errorHandler, bodyParsers)
+        new AuthenticatedIdentifierAction(mockAuthConnector, appConfigInstance, env, errorHandler, bodyParsers)
       private val controller = new Harness(authAction)
 
       running(app) {
@@ -209,7 +209,7 @@ class IdentifierActionSpec extends SpecBase {
 
         private val authAction = new AuthenticatedIdentifierAction(
           new FakeFailingAuthConnector(new MissingBearerToken),
-          config,
+          appConfigInstance,
           env,
           errorHandler,
           bodyParsers
@@ -228,7 +228,7 @@ class IdentifierActionSpec extends SpecBase {
 
         private val authAction = new AuthenticatedIdentifierAction(
           new FakeFailingAuthConnector(new MissingBearerToken),
-          config,
+          appConfigInstance,
           env,
           errorHandler,
           bodyParsers
@@ -247,7 +247,7 @@ class IdentifierActionSpec extends SpecBase {
 
         private val authAction = new AuthenticatedIdentifierAction(
           new FakeFailingAuthConnector(new InsufficientEnrolments),
-          config,
+          appConfigInstance,
           env,
           errorHandler,
           bodyParsers
@@ -271,7 +271,6 @@ class IdentifierActionSpec extends SpecBase {
   }
 
   trait Setup {
-    protected val config: AppConfig                = app.injector.instanceOf[AppConfig]
     protected val bodyParsers: BodyParsers.Default = app.injector.instanceOf[BodyParsers.Default]
     protected val env: Environment                 = app.injector.instanceOf[Environment]
     protected val errorHandler: ErrorHandler       = app.injector.instanceOf[ErrorHandler]

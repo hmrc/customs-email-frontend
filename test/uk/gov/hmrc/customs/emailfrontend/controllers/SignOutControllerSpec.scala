@@ -19,14 +19,13 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 import play.api.mvc.Session
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 class SignOutControllerSpec extends SpecBase {
 
   "SignOut" should {
 
-    "redirect to feedback survey" in new Setup {
+    "redirect to feedback survey" in {
 
       running(app) {
         val request = FakeRequest(GET, routes.SignOutController.signOut.url)
@@ -37,7 +36,7 @@ class SignOutControllerSpec extends SpecBase {
       }
     }
 
-    "clear the session once the user signs out" in new Setup {
+    "clear the session once the user signs out" in {
 
       running(app) {
         val signOutRequest = FakeRequest(GET, routes.SignOutController.signOut.url)
@@ -54,20 +53,16 @@ class SignOutControllerSpec extends SpecBase {
   }
 
   "logoutNoSurvey" should {
-    "redirect to loginContinue page" in new Setup {
+    "redirect to loginContinue page" in {
 
       running(app) {
         val logOutNoSurveyRequest = FakeRequest(GET, routes.SignOutController.logoutNoSurvey.url)
         val result                = route(app, logOutNoSurveyRequest).value
 
         status(result)               shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe config.loginContinueUrl
+        redirectLocation(result).get shouldBe appConfigInstance.loginContinueUrl
       }
     }
   }
 
-  trait Setup {
-
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-  }
 }

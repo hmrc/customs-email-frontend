@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.i18n.Messages
 import play.api.test.Helpers
 import play.api.test.Helpers.*
 import play.twirl.api.{Html, HtmlFormat}
@@ -28,7 +27,7 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.components.fieldset
 class FieldsetSpec extends SpecBase {
 
   "FieldSet Component" should {
-    "render fieldset with legend as heading" in new Setup {
+    "render fieldset with legend as heading" in {
 
       running(app) {
         val fieldsetView = app.injector.instanceOf[fieldset]
@@ -48,7 +47,7 @@ class FieldsetSpec extends SpecBase {
       }
     }
 
-    "render fieldset with legend not as heading" in new Setup {
+    "render fieldset with legend not as heading" in {
 
       running(app) {
         val fieldsetView = app.injector.instanceOf[fieldset]
@@ -68,9 +67,5 @@ class FieldsetSpec extends SpecBase {
       }
 
     }
-  }
-
-  trait Setup {
-    implicit val messages: Messages = Helpers.stubMessages()
   }
 }

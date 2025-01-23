@@ -18,8 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.viewmodels
 
 import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.mustBe
-import play.api.i18n.Messages
-import play.api.test.Helpers
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
@@ -99,7 +97,6 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
   }
 
   trait Setup {
-    implicit val messages: Messages = Helpers.stubMessages()
 
     val tgpUrl            = "https://trader-goods.example.com"
     val customsFinanceUrl = "https://finance.example.com"

@@ -18,10 +18,9 @@ package uk.gov.hmrc.customs.emailfrontend.views
 
 import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.must
-import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, stubMessages}
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout}
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.viewmodels.EmailVerifiedOrChangedViewModel
@@ -71,7 +70,6 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
     val referrerUrl: Option[String] = Some("https://finance.example.com")
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "/some/resource/path")
-    implicit val messages: Messages                           = stubMessages()
 
     val view: email_verified_or_changed = app.injector.instanceOf[email_verified_or_changed]
 

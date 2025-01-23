@@ -24,6 +24,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.AnyContentAsEmpty
@@ -75,6 +76,8 @@ trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with Opti
   lazy implicit val hc: HeaderCarrier = HeaderCarrier()
   lazy implicit val ec: ExecutionContext    = ExecutionContext.global
   lazy val mockAppConfig: AppConfig        = mock[AppConfig]
+  lazy val appConfigInstance: AppConfig                = app.injector.instanceOf[AppConfig]
+  implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
   
   override def beforeEach(): Unit = reset(mockAppConfig)
 }
