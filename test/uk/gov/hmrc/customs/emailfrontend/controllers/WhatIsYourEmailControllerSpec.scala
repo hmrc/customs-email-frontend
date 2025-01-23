@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import org.mockito.ArgumentMatchers.{any, eq as meq}
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, *}

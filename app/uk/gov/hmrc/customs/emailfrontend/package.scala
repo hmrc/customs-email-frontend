@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs
 
 import play.api.libs.json.*
-import uk.gov.hmrc.auth.core.retrieve.~ as Retrieve
+import uk.gov.hmrc.auth.core.retrieve.{~ => Retrieve}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, hyphen}
 
 import java.time.{Instant, LocalDateTime, ZoneOffset, ZonedDateTime}

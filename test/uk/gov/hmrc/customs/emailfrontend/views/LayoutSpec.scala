@@ -95,9 +95,9 @@ class LayoutSpec extends SpecBase {
       .text() mustBe "BETA This is a new service – your feedback will help us to improve it."
 
   trait Setup {
-    val content: Html    = Html("test")
-    val pageTitle        = "test_title"
-    val linkUrl          = "test.com"
+    val content: Html = Html("test")
+    val pageTitle     = "test_title"
+    val linkUrl       = "test.com"
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "test_path")
   }

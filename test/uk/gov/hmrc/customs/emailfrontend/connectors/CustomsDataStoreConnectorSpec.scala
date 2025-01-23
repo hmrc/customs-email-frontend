@@ -40,12 +40,12 @@ class CustomsDataStoreConnectorSpec extends SpecBase {
   private val requestBuilder      = mock[RequestBuilder]
   private val mockAuditable       = mock[Auditable]
   private val mockDateTimeService = mock[DateTimeService]
-  
-  private val connector                  = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
-  private val postUrl                    = "http://localhost:9893/customs-data-store/update-email"
-  private val testEori: Eori             = Eori("GB1234556789")
-  private val testEmail                  = "email@test.com"
-  private val testDateTime               = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
+
+  private val connector      = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
+  private val postUrl        = "http://localhost:9893/customs-data-store/update-email"
+  private val testEori: Eori = Eori("GB1234556789")
+  private val testEmail      = "email@test.com"
+  private val testDateTime   = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
 
   override def beforeEach(): Unit = {
     reset(mockHttp, mockAuditable, mockAppConfig, requestBuilder)

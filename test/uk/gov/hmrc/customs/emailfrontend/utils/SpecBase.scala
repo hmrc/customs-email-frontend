@@ -40,7 +40,13 @@ import scala.annotation.implicitNotFound
 import scala.concurrent.ExecutionContext
 import scala.reflect.ClassTag
 
-trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with OptionValues with ScalaFutures with BeforeAndAfterEach {
+trait SpecBase
+    extends AnyWordSpecLike
+    with Matchers
+    with MockitoSugar
+    with OptionValues
+    with ScalaFutures
+    with BeforeAndAfterEach {
 
   def fakeRequest(method: String, path: String): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(method, path)
@@ -72,14 +78,15 @@ trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with Opti
       )
   }
 
-  def app: Application = applicationBuilder().build()
-  lazy implicit val hc: HeaderCarrier = HeaderCarrier()
-  lazy implicit val ec: ExecutionContext    = ExecutionContext.global
-  lazy val mockAppConfig: AppConfig        = mock[AppConfig]
-  lazy val appConfigInstance: AppConfig                = app.injector.instanceOf[AppConfig]
-  implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
-  lazy val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
-  
+  def app: Application                   = applicationBuilder().build()
+  lazy implicit val hc: HeaderCarrier    = HeaderCarrier()
+  lazy implicit val ec: ExecutionContext = ExecutionContext.global
+  lazy val mockAppConfig: AppConfig      = mock[AppConfig]
+  lazy val appConfigInstance: AppConfig  = app.injector.instanceOf[AppConfig]
+  implicit def messages: Messages        =
+    app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
+  lazy val errorHandler: ErrorHandler    = app.injector.instanceOf[ErrorHandler]
+
   override def beforeEach(): Unit = reset(mockAppConfig)
 }
 

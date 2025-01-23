@@ -69,7 +69,9 @@ class AppConfigSpec extends SpecBase {
     }
 
     "load specific referrer services correctly" in {
-      appConfigInstance.customsFinanceReferrer mustEqual Some(ReferrerName("customs-finance", "/customs/payment-records"))
+      appConfigInstance.customsFinanceReferrer mustEqual Some(
+        ReferrerName("customs-finance", "/customs/payment-records")
+      )
       appConfigInstance.traderGoodsProfilesReferrer mustEqual Some(
         ReferrerName("trader-goods-profiles", "/trader-goods-profiles/")
       )

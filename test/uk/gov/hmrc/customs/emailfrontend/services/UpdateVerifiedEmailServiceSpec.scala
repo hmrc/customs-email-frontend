@@ -19,7 +19,9 @@ package uk.gov.hmrc.customs.emailfrontend.services
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
-import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{HttpErrorResponse, ServiceUnavailable, VerifiedEmailRequest, VerifiedEmailResponse}
+import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{
+  HttpErrorResponse, ServiceUnavailable, VerifiedEmailRequest, VerifiedEmailResponse
+}
 import uk.gov.hmrc.customs.emailfrontend.model.*
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam.*
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
@@ -32,8 +34,8 @@ import scala.concurrent.Future
 class UpdateVerifiedEmailServiceSpec extends SpecBase {
 
   override implicit lazy val hc: HeaderCarrier = mock[HeaderCarrier]
-  private val mockConnector      = mock[UpdateVerifiedEmailConnector]
-  val service                    = new UpdateVerifiedEmailService(mockConnector)
+  private val mockConnector                    = mock[UpdateVerifiedEmailConnector]
+  val service                                  = new UpdateVerifiedEmailService(mockConnector)
 
   private val eoriNumber = "GBXXXXXXXXXXXX"
   private val email      = "test@email.com"

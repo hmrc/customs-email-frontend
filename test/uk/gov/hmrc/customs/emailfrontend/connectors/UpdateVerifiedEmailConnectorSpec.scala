@@ -55,8 +55,6 @@ class UpdateVerifiedEmailConnectorSpec extends SpecBase {
 
   private val verifiedEmailRequest = VerifiedEmailRequest(UpdateVerifiedEmailRequest(requestCommon, requestDetail))
 
-  
-
   val connector = new UpdateVerifiedEmailConnector(mockAppConfig, mockHttpClient, mockAuditable)
 
   override def beforeEach(): Unit = {

@@ -26,7 +26,7 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
 import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
 
 class ErrorHandlerSpec extends SpecBase {
-  
+
   private val view                     = app.injector.instanceOf[error_template]
   private val customView               = app.injector.instanceOf[problem_with_this_service]
   private val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]

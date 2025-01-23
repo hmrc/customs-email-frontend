@@ -46,7 +46,7 @@ class AuditableSpec extends SpecBase {
   trait Setup {
     implicit val hc: HeaderCarrier =
       HeaderCarrier(requestId = Some(RequestId("test_value")), sessionId = Some(uk.gov.hmrc.http.SessionId("test_id")))
-    
+
     implicit val auditHeaderCarrier: AuditHeaderCarrier = new AuditHeaderCarrier(hc)
 
     val dataEvent: DataEvent          = DataEvent("test_source", "test", "test")

@@ -49,6 +49,6 @@ class EmailLanguageControllerSpec extends SpecBase {
   }
 
   trait Setup {
-    val controller       = app.injector.instanceOf[EmailLanguageController]
+    val controller = app.injector.instanceOf[EmailLanguageController]
   }
 }

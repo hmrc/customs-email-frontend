@@ -39,8 +39,7 @@ class EmailVerificationConnectorSpec extends SpecBase {
 
   private val emailBaseUrl = "http://localhost:9744/email-verification"
 
-  val connector                  = new EmailVerificationConnector(mockHttpClient, mockAppConfig, mockAuditable)
-  
+  val connector = new EmailVerificationConnector(mockHttpClient, mockAppConfig, mockAuditable)
 
   override def beforeEach(): Unit = {
     reset(mockAuditable, mockAppConfig, mockHttpClient, requestBuilder)

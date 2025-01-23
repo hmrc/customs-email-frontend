@@ -35,10 +35,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class Save4LaterConnectorSpec extends SpecBase {
 
-  val mockHttpClient: HttpClientV2   = mock[HttpClientV2]
-  val requestBuilder: RequestBuilder = mock[RequestBuilder]
-  val sessionId: SessionId           = SessionId("session_1234")
-  implicit override lazy val hc: HeaderCarrier     = HeaderCarrier(sessionId = Some(sessionId))
+  val mockHttpClient: HttpClientV2             = mock[HttpClientV2]
+  val requestBuilder: RequestBuilder           = mock[RequestBuilder]
+  val sessionId: SessionId                     = SessionId("session_1234")
+  implicit override lazy val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
 
   "Save4LaterConnector" should {
 

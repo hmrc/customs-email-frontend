@@ -32,10 +32,10 @@ import scala.concurrent.Future
 
 class EmailVerificationServiceSpec extends SpecBase {
 
-  private val mockConnector            = mock[EmailVerificationConnector]
-  implicit override lazy val hc: HeaderCarrier       = mock[HeaderCarrier]
-  implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
-  val service                          = new EmailVerificationService(mockConnector)
+  private val mockConnector                    = mock[EmailVerificationConnector]
+  implicit override lazy val hc: HeaderCarrier = mock[HeaderCarrier]
+  implicit val rq: Request[AnyContent]         = mock[Request[AnyContent]]
+  val service                                  = new EmailVerificationService(mockConnector)
 
   private val email        = "test@test.com"
   private val emailDetails = EmailDetails(None, "test@test.com", None)
