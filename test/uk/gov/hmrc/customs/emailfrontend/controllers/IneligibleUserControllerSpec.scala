@@ -28,7 +28,6 @@ class IneligibleUserControllerSpec extends SpecBase {
 
   "IneligibleUserController" should {
     "have a status of Unauthorised (401)" in {
-      val app: Application = applicationBuilder().build()
 
       val view       = app.injector.instanceOf[ineligible_user]
       val controller = app.injector.instanceOf[IneligibleUserController]

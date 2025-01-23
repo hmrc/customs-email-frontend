@@ -73,6 +73,5 @@ class FieldsetSpec extends SpecBase {
 
   trait Setup {
     implicit val messages: Messages = Helpers.stubMessages()
-    val app: Application            = applicationBuilder().build()
   }
 }

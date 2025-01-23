@@ -68,7 +68,6 @@ class SignOutControllerSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = applicationBuilder().build()
 
     implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
   }

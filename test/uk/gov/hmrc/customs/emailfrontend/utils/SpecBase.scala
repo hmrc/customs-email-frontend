@@ -67,7 +67,7 @@ trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with Opti
       )
   }
 
-  lazy val application: Application = applicationBuilder().build()
+  lazy val app: Application = applicationBuilder().build()
 }
 
 class FakeMetrics extends Metrics {

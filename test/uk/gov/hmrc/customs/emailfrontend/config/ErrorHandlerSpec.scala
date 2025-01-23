@@ -28,8 +28,7 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
 import scala.concurrent.ExecutionContext
 
 class ErrorHandlerSpec extends SpecBase {
-
-  private val app                      = applicationBuilder().build()
+  
   private val view                     = app.injector.instanceOf[error_template]
   private val customView               = app.injector.instanceOf[problem_with_this_service]
   private val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]

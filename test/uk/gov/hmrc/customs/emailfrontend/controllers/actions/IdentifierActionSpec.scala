@@ -272,7 +272,6 @@ class IdentifierActionSpec extends SpecBase {
   }
 
   trait Setup {
-    protected val app: Application                 = applicationBuilder().overrides().build()
     protected val config: AppConfig                = app.injector.instanceOf[AppConfig]
     protected val bodyParsers: BodyParsers.Default = app.injector.instanceOf[BodyParsers.Default]
     protected val env: Environment                 = app.injector.instanceOf[Environment]

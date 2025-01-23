@@ -97,7 +97,6 @@ class LayoutSpec extends SpecBase {
       .text() mustBe "BETA This is a new service – your feedback will help us to improve it."
 
   trait Setup {
-    val app: Application = applicationBuilder().build()
     val content: Html    = Html("test")
     val pageTitle        = "test_title"
     val linkUrl          = "test.com"

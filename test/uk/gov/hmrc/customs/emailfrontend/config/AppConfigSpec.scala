@@ -23,8 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 class AppConfigSpec extends SpecBase {
-
-  lazy val app: Application     = new GuiceApplicationBuilder().build()
+  
   lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   "AppConfig" should {
