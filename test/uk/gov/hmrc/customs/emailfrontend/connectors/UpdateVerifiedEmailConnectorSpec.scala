@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{doNothing, reset, when}
-import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers.*
 import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
@@ -30,13 +29,11 @@ import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, MethodNotAllowedException, *}
 
 import java.time.LocalDateTime
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class UpdateVerifiedEmailConnectorSpec extends SpecBase with BeforeAndAfter {
+class UpdateVerifiedEmailConnectorSpec extends SpecBase {
 
   private val mockAuditable           = mock[Auditable]
-  private val mockAppConfig           = mock[AppConfig]
   private val mockHttpClient          = mock[HttpClientV2]
   private val requestBuilder          = mock[RequestBuilder]
   private val forbiddenException      = new ForbiddenException("testMessage")
@@ -58,11 +55,11 @@ class UpdateVerifiedEmailConnectorSpec extends SpecBase with BeforeAndAfter {
 
   private val verifiedEmailRequest = VerifiedEmailRequest(UpdateVerifiedEmailRequest(requestCommon, requestDetail))
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  
 
   val connector = new UpdateVerifiedEmailConnector(mockAppConfig, mockHttpClient, mockAuditable)
 
-  before {
+  override def beforeEach(): Unit = {
     reset(mockAuditable, mockAppConfig, mockHttpClient, requestBuilder)
     doNothing
       .when(mockAuditable)

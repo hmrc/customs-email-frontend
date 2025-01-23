@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import play.api.Application
 import play.api.i18n.Lang
 import play.api.test.Helpers.running
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 class EmailLanguageControllerSpec extends SpecBase {
 

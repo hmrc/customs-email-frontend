@@ -18,12 +18,11 @@ package uk.gov.hmrc.customs.emailfrontend.views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import play.api.test.Helpers.*
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.views.html.components.fieldset
 
 class FieldsetSpec extends SpecBase {

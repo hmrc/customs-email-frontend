@@ -19,10 +19,10 @@ package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 import com.google.inject.Inject
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import play.api.Environment
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import play.api.{Application, Environment}
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
 import uk.gov.hmrc.auth.core.authorise.Predicate
@@ -30,11 +30,10 @@ import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class IdentifierActionSpec extends SpecBase {

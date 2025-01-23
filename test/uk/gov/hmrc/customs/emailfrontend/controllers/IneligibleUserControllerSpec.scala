@@ -16,12 +16,11 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import play.api.Application
 import play.api.i18n.MessagesApi
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
 
 class IneligibleUserControllerSpec extends SpecBase {

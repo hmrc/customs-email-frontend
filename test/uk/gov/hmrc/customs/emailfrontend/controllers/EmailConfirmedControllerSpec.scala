@@ -25,9 +25,9 @@ import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, JourneyType, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.services.*
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 
 import java.time.LocalDateTime

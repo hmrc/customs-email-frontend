@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{HttpErrorResponse, ServiceUnavailable, VerifiedEmailRequest, VerifiedEmailResponse}
 import uk.gov.hmrc.customs.emailfrontend.model.*
@@ -28,12 +27,11 @@ import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
+class UpdateVerifiedEmailServiceSpec extends SpecBase {
 
-  implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+  override implicit lazy val hc: HeaderCarrier = mock[HeaderCarrier]
   private val mockConnector      = mock[UpdateVerifiedEmailConnector]
   val service                    = new UpdateVerifiedEmailService(mockConnector)
 
@@ -60,7 +58,7 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val serviceUnavailableResponse = ServiceUnavailable
 
-  override protected def beforeEach(): Unit = reset(mockConnector)
+  override def beforeEach(): Unit = reset(mockConnector)
 
   def mockGetEmailVerificationState(response: Either[HttpErrorResponse, VerifiedEmailResponse]): Unit =
     when(

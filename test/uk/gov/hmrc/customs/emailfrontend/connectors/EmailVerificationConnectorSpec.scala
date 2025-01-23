@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{doNothing, reset, when}
-import org.scalatest.BeforeAndAfter
 import play.api.http.Status
 import play.api.http.Status.*
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
@@ -30,22 +29,20 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmailVerificationConnectorSpec extends SpecBase with BeforeAndAfter {
+class EmailVerificationConnectorSpec extends SpecBase {
 
   private val mockAuditable  = mock[Auditable]
   private val requestBuilder = mock[RequestBuilder]
-  private val mockAppConfig  = mock[AppConfig]
   private val mockHttpClient = mock[HttpClientV2]
 
   private val emailBaseUrl = "http://localhost:9744/email-verification"
 
   val connector                  = new EmailVerificationConnector(mockHttpClient, mockAppConfig, mockAuditable)
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  
 
-  before {
+  override def beforeEach(): Unit = {
     reset(mockAuditable, mockAppConfig, mockHttpClient, requestBuilder)
 
     doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])

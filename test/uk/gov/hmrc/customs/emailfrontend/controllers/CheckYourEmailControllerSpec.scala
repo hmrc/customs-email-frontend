@@ -24,8 +24,8 @@ import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 
 import java.time.LocalDateTime
 import scala.concurrent.Future

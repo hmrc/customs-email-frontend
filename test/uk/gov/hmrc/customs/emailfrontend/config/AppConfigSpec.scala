@@ -17,8 +17,6 @@
 package uk.gov.hmrc.customs.emailfrontend.config
 
 import org.scalatest.matchers.must.Matchers.mustEqual
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 

@@ -26,7 +26,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, ViewTestHelper}
+import uk.gov.hmrc.customs.emailfrontend.utils.ViewTestHelper
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 
 class CheckYourEmailSpec extends ViewTestHelper {

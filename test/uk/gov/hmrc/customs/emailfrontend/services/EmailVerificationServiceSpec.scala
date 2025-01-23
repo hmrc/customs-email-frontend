@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.BAD_REQUEST
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.customs.emailfrontend.connectors.EmailVerificationConnector
@@ -29,13 +28,12 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EmailVerificationServiceSpec extends SpecBase with BeforeAndAfterEach {
+class EmailVerificationServiceSpec extends SpecBase {
 
   private val mockConnector            = mock[EmailVerificationConnector]
-  implicit val hc: HeaderCarrier       = mock[HeaderCarrier]
+  implicit override lazy val hc: HeaderCarrier       = mock[HeaderCarrier]
   implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
   val service                          = new EmailVerificationService(mockConnector)
 
@@ -44,7 +42,7 @@ class EmailVerificationServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val continueUrl  = "/customs/test-continue-url"
   private val eoriNumber   = "EORINumber"
 
-  override protected def beforeEach(): Unit = reset(mockConnector)
+  override def beforeEach(): Unit = reset(mockConnector)
 
   def mockGetEmailVerificationState(emailAddress: String)(response: Future[EmailVerificationStateResponse]): Unit =
     when(

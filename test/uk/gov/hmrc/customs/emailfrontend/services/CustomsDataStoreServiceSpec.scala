@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.*
 import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
@@ -31,7 +30,7 @@ import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
-class CustomsDataStoreServiceSpec extends SpecBase with BeforeAndAfterEach {
+class CustomsDataStoreServiceSpec extends SpecBase {
 
   "Customs Data Store Service" should {
     "return a status NO_CONTENT when data store request is successful" in new Setup {

@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{doNothing, reset, when}
-import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT}
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
@@ -33,18 +32,15 @@ import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpReads, HttpResponse, InternalServerException}
 
 import java.time.LocalDateTime
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CustomsDataStoreConnectorSpec extends SpecBase with BeforeAndAfterEach {
+class CustomsDataStoreConnectorSpec extends SpecBase {
 
   private val mockHttp            = mock[HttpClientV2]
   private val requestBuilder      = mock[RequestBuilder]
   private val mockAuditable       = mock[Auditable]
-  private val mockAppConfig       = mock[AppConfig]
   private val mockDateTimeService = mock[DateTimeService]
-
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
+  
   private val connector                  = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
   private val postUrl                    = "http://localhost:9893/customs-data-store/update-email"
   private val testEori: Eori             = Eori("GB1234556789")

@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{doNothing, reset, when}
-import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
@@ -26,16 +25,13 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubscriptionDisplayConnectorSpec extends SpecBase with BeforeAndAfterEach {
+class SubscriptionDisplayConnectorSpec extends SpecBase {
 
   private val mockHttp                   = mock[HttpClientV2]
   private val requestBuilder             = mock[RequestBuilder]
   private val mockAuditable              = mock[Auditable]
-  private val mockAppConfig              = mock[AppConfig]
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
   private val url                        = "http://localhost:8989/customs-email-proxy/subscription-display"
   private val testEori                   = "GB1234556789"
   val emailVerificationTimeStamp         = "2016-3-17T9:30:47.114"

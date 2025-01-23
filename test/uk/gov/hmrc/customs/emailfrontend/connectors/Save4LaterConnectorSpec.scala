@@ -26,8 +26,8 @@ import play.api.test.Helpers.running
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, UnhandledException}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, JourneyType, ReferrerName}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpReads, HttpResponse, SessionId}
 
@@ -38,7 +38,7 @@ class Save4LaterConnectorSpec extends SpecBase {
   val mockHttpClient: HttpClientV2   = mock[HttpClientV2]
   val requestBuilder: RequestBuilder = mock[RequestBuilder]
   val sessionId: SessionId           = SessionId("session_1234")
-  implicit val hc: HeaderCarrier     = HeaderCarrier(sessionId = Some(sessionId))
+  implicit override lazy val hc: HeaderCarrier     = HeaderCarrier(sessionId = Some(sessionId))
 
   "Save4LaterConnector" should {
 

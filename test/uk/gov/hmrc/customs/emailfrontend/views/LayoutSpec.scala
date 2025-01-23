@@ -19,14 +19,13 @@ package uk.gov.hmrc.customs.emailfrontend.views
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.mustBe
-import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
 
 class LayoutSpec extends SpecBase {

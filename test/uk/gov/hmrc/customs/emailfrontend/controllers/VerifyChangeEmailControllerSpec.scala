@@ -19,7 +19,6 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{any, eq as meq}
 import org.mockito.Mockito.{times, verify, when}
-import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
@@ -33,15 +32,15 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.{EmailVerificationConnector,
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
 import uk.gov.hmrc.customs.emailfrontend.model.*
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 
 import java.time.{LocalDateTime, Period}
 import scala.concurrent.Future
 
-class VerifyChangeEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
+class VerifyChangeEmailControllerSpec extends SpecBase {
 
   "VerifyChangeEmailController" should {
 

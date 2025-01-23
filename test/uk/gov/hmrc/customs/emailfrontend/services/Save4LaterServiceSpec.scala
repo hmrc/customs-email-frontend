@@ -18,7 +18,6 @@ package uk.gov.hmrc.customs.emailfrontend.services
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Reads
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
@@ -29,7 +28,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
-class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
+class Save4LaterServiceSpec extends SpecBase {
 
   "Save4LaterService" should {
     "save the emailDetails against the users InternalId" in new Setup {

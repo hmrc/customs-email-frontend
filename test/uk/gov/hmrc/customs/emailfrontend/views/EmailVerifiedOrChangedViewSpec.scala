@@ -18,14 +18,12 @@ package uk.gov.hmrc.customs.emailfrontend.views
 
 import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.must
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, stubMessages}
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.viewmodels.EmailVerifiedOrChangedViewModel
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_verified_or_changed
 
@@ -68,7 +66,6 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
   }
 
   trait Setup {
-    protected val mockAppConfig: AppConfig = mock[AppConfig]
 
     val email: String               = testEmail
     val referrerUrl: Option[String] = Some("https://finance.example.com")

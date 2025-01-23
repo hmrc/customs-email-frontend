@@ -22,7 +22,7 @@ import play.api.test.Helpers.{status, *}
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.model.{InternalId, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
