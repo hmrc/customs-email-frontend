@@ -17,42 +17,37 @@
 package uk.gov.hmrc.customs.emailfrontend.config
 
 import org.scalatest.matchers.must.Matchers.mustEqual
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 class AppConfigSpec extends SpecBase {
 
-  lazy val app: Application     = new GuiceApplicationBuilder().build()
-  lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-
   "AppConfig" should {
 
     "load external URLs correctly" in {
-      appConfig.accessibilityLinkUrl mustEqual "http://localhost:12346/accessibility-statement/manage-email-cds"
-      appConfig.ggSignInRedirectUrl mustEqual "http://localhost:9898/manage-email-cds/change-email-address"
-      appConfig.feedbackUrl mustEqual "http://localhost:9514/feedback/manage-email-cds"
-      appConfig.loginContinueUrl mustEqual "http://localhost:9898/manage-email-cds/start"
+      appConfigInstance.accessibilityLinkUrl mustEqual "http://localhost:12346/accessibility-statement/manage-email-cds"
+      appConfigInstance.ggSignInRedirectUrl mustEqual "http://localhost:9898/manage-email-cds/change-email-address"
+      appConfigInstance.feedbackUrl mustEqual "http://localhost:9514/feedback/manage-email-cds"
+      appConfigInstance.loginContinueUrl mustEqual "http://localhost:9898/manage-email-cds/start"
     }
 
     "load email verification settings correctly" in {
-      appConfig.emailVerificationTemplateId mustEqual "verifyEmailAddress"
-      appConfig.emailVerificationLinkExpiryDuration mustEqual "P3D"
-      appConfig.checkVerifiedEmailUrl mustEqual "http://localhost:9744/email-verification/verified-email-check"
-      appConfig.createEmailVerificationRequestUrl mustEqual "http://localhost:9744/email-verification/verification-requests"
+      appConfigInstance.emailVerificationTemplateId mustEqual "verifyEmailAddress"
+      appConfigInstance.emailVerificationLinkExpiryDuration mustEqual "P3D"
+      appConfigInstance.checkVerifiedEmailUrl mustEqual "http://localhost:9744/email-verification/verified-email-check"
+      appConfigInstance.createEmailVerificationRequestUrl mustEqual "http://localhost:9744/email-verification/verification-requests"
     }
 
     "load service URLs correctly" in {
-      appConfig.customsDataStoreUrl mustEqual "http://localhost:9893/customs-data-store/update-email"
-      appConfig.subscriptionDisplayUrl mustEqual "http://localhost:8989/subscription-display"
-      appConfig.updateVerifiedEmailUrl mustEqual "http://localhost:8989/update-verified-email"
-      appConfig.save4LaterUrl mustEqual "http://localhost:8989/save4later"
+      appConfigInstance.customsDataStoreUrl mustEqual "http://localhost:9893/customs-data-store/update-email"
+      appConfigInstance.subscriptionDisplayUrl mustEqual "http://localhost:8989/subscription-display"
+      appConfigInstance.updateVerifiedEmailUrl mustEqual "http://localhost:8989/update-verified-email"
+      appConfigInstance.save4LaterUrl mustEqual "http://localhost:8989/save4later"
     }
 
     "load timeout and countdown values correctly" in {
-      appConfig.timeout mustEqual 900
-      appConfig.countdown mustEqual 120
+      appConfigInstance.timeout mustEqual 900
+      appConfigInstance.countdown mustEqual 120
     }
 
     "load referrer services correctly" in {
@@ -70,12 +65,14 @@ class AppConfigSpec extends SpecBase {
         ),
         ReferrerName("trader-goods-profiles", "/trader-goods-profiles/")
       )
-      appConfig.referrerName mustEqual expectedReferrers
+      appConfigInstance.referrerName mustEqual expectedReferrers
     }
 
     "load specific referrer services correctly" in {
-      appConfig.customsFinanceReferrer mustEqual Some(ReferrerName("customs-finance", "/customs/payment-records"))
-      appConfig.traderGoodsProfilesReferrer mustEqual Some(
+      appConfigInstance.customsFinanceReferrer mustEqual Some(
+        ReferrerName("customs-finance", "/customs/payment-records")
+      )
+      appConfigInstance.traderGoodsProfilesReferrer mustEqual Some(
         ReferrerName("trader-goods-profiles", "/trader-goods-profiles/")
       )
     }

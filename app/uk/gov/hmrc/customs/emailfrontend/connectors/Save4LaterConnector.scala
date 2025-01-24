@@ -16,20 +16,19 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logging
-import play.api.libs.json._
-import play.mvc.Http.Status._
+import play.api.libs.json.*
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import play.mvc.Http.Status.*
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, HttpErrorResponse, UnhandledException}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, JourneyType, ReferrerName}
-import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 
-import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
-
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

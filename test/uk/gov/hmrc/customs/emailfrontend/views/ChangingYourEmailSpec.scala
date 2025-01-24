@@ -19,15 +19,14 @@ package uk.gov.hmrc.customs.emailfrontend.views
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, ViewTestHelper}
+import uk.gov.hmrc.customs.emailfrontend.utils.ViewTestHelper
 import uk.gov.hmrc.customs.emailfrontend.views.html.changing_your_email
-import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 
 class ChangingYourEmailSpec extends ViewTestHelper {
 
@@ -62,22 +61,18 @@ class ChangingYourEmailSpec extends ViewTestHelper {
   }
 
   trait Setup {
-    val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+    val app: Application = applicationBuilder()
       .configure("play.filters.csrf.enabled" -> "false")
       .build()
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] =
       fakeRequestWithCsrf("GET", "/some/resource/path")
 
-    implicit val msgs: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
-
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-
     val view: Document =
       Jsoup.parse(
         app.injector
           .instanceOf[changing_your_email]
-          .apply(emailForm)(request = request, messages = msgs)
+          .apply(emailForm)(request = request, messages = messages)
           .body
       )
   }

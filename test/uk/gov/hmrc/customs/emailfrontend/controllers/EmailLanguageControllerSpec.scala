@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import play.api.Application
 import play.api.i18n.Lang
 import play.api.test.Helpers.running
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 
 class EmailLanguageControllerSpec extends SpecBase {
 
@@ -50,7 +49,6 @@ class EmailLanguageControllerSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
-    val controller       = app.injector.instanceOf[EmailLanguageController]
+    val controller = app.injector.instanceOf[EmailLanguageController]
   }
 }

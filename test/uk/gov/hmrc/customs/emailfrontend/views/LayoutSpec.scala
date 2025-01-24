@@ -18,16 +18,14 @@ package uk.gov.hmrc.customs.emailfrontend.views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
+import org.scalatest.matchers.must.Matchers.mustBe
+import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.views.html.Layout
-import org.scalatest.matchers.must.Matchers.mustBe
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 
 class LayoutSpec extends SpecBase {
 
@@ -97,13 +95,10 @@ class LayoutSpec extends SpecBase {
       .text() mustBe "BETA This is a new service – your feedback will help us to improve it."
 
   trait Setup {
-    val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
-    val content: Html    = Html("test")
-    val pageTitle        = "test_title"
-    val linkUrl          = "test.com"
+    val content: Html = Html("test")
+    val pageTitle     = "test_title"
+    val linkUrl       = "test.com"
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "test_path")
-    implicit val msgs: Messages                               = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
-    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
   }
 }

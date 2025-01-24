@@ -17,8 +17,8 @@
 package uk.gov.hmrc.customs.emailfrontend.model
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter01
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{dateFormatter01, testEmail, testEori, testUtcTimestamp}
 
 import java.time.LocalDateTime
 
@@ -47,24 +47,21 @@ class RequestDetailSpec extends SpecBase {
   trait Setup {
 
     val idType                            = "EORI"
-    val IdNumber                          = "GBXXXXXXXXXXXX"
-    val emailId                           = "sample@example.com"
-    val validDateTime                     = "2024-03-11T14:30:00Z"
-    val validLocalDateTime: LocalDateTime = LocalDateTime.parse(validDateTime, dateFormatter01)
+    val validLocalDateTime: LocalDateTime = LocalDateTime.parse(testUtcTimestamp, dateFormatter01)
     val incorrectDateTime                 = "2024-03-11T14:30:00.123456789Z"
-    val requestDtl01                      = RequestDetail(idType, IdNumber, emailId, validLocalDateTime)
+    val requestDtl01                      = RequestDetail(idType, testEori, testEmail, validLocalDateTime)
 
     val correctEmailDetailsJson = Json.obj(
       "IDType"                     -> idType,
-      "IDNumber"                   -> IdNumber,
-      "emailAddress"               -> emailId,
-      "emailVerificationTimestamp" -> validDateTime
+      "IDNumber"                   -> testEori,
+      "emailAddress"               -> testEmail,
+      "emailVerificationTimestamp" -> testUtcTimestamp
     )
 
     val inCorrectEmailDetailsJson = Json.obj(
       "IDType"                     -> idType,
-      "IDNumber"                   -> IdNumber,
-      "emailAddress"               -> emailId,
+      "IDNumber"                   -> testEori,
+      "emailAddress"               -> testEmail,
       "emailVerificationTimestamp" -> incorrectDateTime
     )
   }

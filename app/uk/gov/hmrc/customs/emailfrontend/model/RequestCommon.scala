@@ -16,16 +16,17 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import java.time.LocalDateTime
-import play.api.libs.json.{Format, JsResult, JsValue, Json, OFormat}
+import play.api.libs.json.*
 import uk.gov.hmrc.customs.emailfrontend.RandomUUIDGenerator
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils
+
+import java.time.LocalDateTime
 
 case class RequestCommon(regime: String, receiptDate: LocalDateTime, acknowledgementReference: String)
 
 object RequestCommon {
 
-  import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil._
+  import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil.*
 
   implicit val localDateTimeFormat: Format[LocalDateTime] = new Format[LocalDateTime] {
 

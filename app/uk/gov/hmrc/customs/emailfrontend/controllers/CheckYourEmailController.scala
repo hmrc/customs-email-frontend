@@ -18,11 +18,11 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmEmailForm
-import uk.gov.hmrc.customs.emailfrontend.model._
+import uk.gov.hmrc.customs.emailfrontend.model.*
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.views.html.check_your_email
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController

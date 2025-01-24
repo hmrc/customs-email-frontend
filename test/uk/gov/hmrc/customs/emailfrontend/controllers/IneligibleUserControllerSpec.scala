@@ -16,19 +16,17 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import play.api.Application
 import play.api.i18n.MessagesApi
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.views.html.ineligible_user
 
 class IneligibleUserControllerSpec extends SpecBase {
 
   "IneligibleUserController" should {
     "have a status of Unauthorised (401)" in {
-      val app: Application = applicationBuilder[FakeIdentifierAgentAction]().build()
 
       val view       = app.injector.instanceOf[ineligible_user]
       val controller = app.injector.instanceOf[IneligibleUserController]

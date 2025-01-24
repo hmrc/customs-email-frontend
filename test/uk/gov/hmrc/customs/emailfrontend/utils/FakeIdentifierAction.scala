@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.customs.emailfrontend.utils
 
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.{AffinityGroup, User}
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.model.{AuthenticatedRequest, InternalId, LoggedInUser}
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEori
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +35,7 @@ trait FakeIdentifierAction extends IdentifierAction {
     block(
       AuthenticatedRequest(
         request,
-        LoggedInUser(InternalId("fakeInternalId"), Some(affinityGroup), Some(User), "fakeEori")
+        LoggedInUser(InternalId("fakeInternalId"), Some(affinityGroup), Some(User), testEori)
       )
     )
 

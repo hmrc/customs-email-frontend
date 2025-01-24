@@ -17,9 +17,9 @@
 package uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers
 
 import play.api.http.Status
-import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
+import uk.gov.hmrc.http.HttpResponse
 
 class EmailVerificationRequestHttpParserSpec extends SpecBase {
 

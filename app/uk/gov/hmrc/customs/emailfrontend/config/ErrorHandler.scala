@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.customs.emailfrontend.config
 
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
@@ -24,6 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.views.html.partials.error_template
 import uk.gov.hmrc.customs.emailfrontend.views.html.problem_with_this_service
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

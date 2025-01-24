@@ -17,8 +17,6 @@
 package uk.gov.hmrc.customs.emailfrontend.views
 
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.test.Helpers
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
 import uk.gov.hmrc.customs.emailfrontend.model.VerifyChange
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
@@ -60,6 +58,4 @@ trait SetUp {
 
   val formWithNoError: Form[VerifyChange] = confirmVerifyChangeForm.bind(mapValues_1)
   val formWithError: Form[VerifyChange]   = confirmVerifyChangeForm.bind(mapValues_2)
-
-  implicit val messages: Messages = Helpers.stubMessages()
 }

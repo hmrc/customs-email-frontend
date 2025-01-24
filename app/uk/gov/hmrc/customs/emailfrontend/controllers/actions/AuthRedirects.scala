@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.emailfrontend.controllers.actions
 
 import play.api.mvc.Result
-import play.api.mvc.Results._
+import play.api.mvc.Results.*
 import play.api.{Configuration, Environment, Mode}
 import uk.gov.hmrc.http.SessionKeys
 

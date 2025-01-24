@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import play.api.libs.json.{Format, JsResult, JsValue, Json, OFormat}
+import play.api.libs.json.*
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils
+
 import java.time.{LocalDateTime, ZoneOffset}
 
 case class EmailDetails(currentEmail: Option[String], newEmail: String, timestamp: Option[LocalDateTime]) {

@@ -18,19 +18,20 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
-import uk.gov.hmrc.customs.emailfrontend.model._
+import uk.gov.hmrc.customs.emailfrontend.model.*
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
-import uk.gov.hmrc.customs.emailfrontend.views.html._
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
+import uk.gov.hmrc.customs.emailfrontend.views.html.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
-import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 @Singleton
 class WhatIsYourEmailController @Inject() (

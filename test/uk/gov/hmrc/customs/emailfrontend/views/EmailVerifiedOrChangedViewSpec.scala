@@ -18,14 +18,12 @@ package uk.gov.hmrc.customs.emailfrontend.views
 
 import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.must
-import play.api.Application
-import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, stubMessages}
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout}
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 import uk.gov.hmrc.customs.emailfrontend.viewmodels.EmailVerifiedOrChangedViewModel
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_verified_or_changed
 
@@ -68,20 +66,15 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application                   = applicationBuilder[FakeIdentifierAgentAction]().build()
-    protected val mockAppConfig: AppConfig = mock[AppConfig]
 
-    val email: String               = testEmail
     val referrerUrl: Option[String] = Some("https://finance.example.com")
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "/some/resource/path")
-    implicit val messages: Messages                           = stubMessages()
 
     val view: email_verified_or_changed = app.injector.instanceOf[email_verified_or_changed]
 
     val tgpUrl            = "https://trader-goods.example.com"
     val customsFinanceUrl = "https://finance.example.com"
-    val testEmail         = "test@example.com"
 
     when(mockAppConfig.customsFinanceReferrer).thenReturn(Some(ReferrerName("Customs Finance", customsFinanceUrl)))
     when(mockAppConfig.traderGoodsProfilesReferrer).thenReturn(Some(ReferrerName("Trader Goods Profiles", tgpUrl)))

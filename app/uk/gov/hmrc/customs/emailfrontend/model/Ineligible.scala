@@ -16,8 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import play.api.libs.json.{Reads, Writes}
-import play.api.libs.json._
+import play.api.libs.json.*
 import play.api.mvc.{PathBindable, QueryStringBindable}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 

@@ -16,8 +16,10 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import java.time.{Clock, Instant, LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testUtcTimestamp
+
+import java.time.*
 
 class DateTimeServiceSpec extends SpecBase {
 
@@ -56,10 +58,10 @@ class DateTimeServiceSpec extends SpecBase {
 
       val currentTime: ZonedDateTime = dateTimeService.zonedDateTimeUtc
 
-      currentTime.getYear       shouldBe 2023
-      currentTime.getMonthValue shouldBe 10
-      currentTime.getDayOfMonth shouldBe 31
-      currentTime.getHour       shouldBe 12
+      currentTime.getYear       shouldBe 2021
+      currentTime.getMonthValue shouldBe 1
+      currentTime.getDayOfMonth shouldBe 1
+      currentTime.getHour       shouldBe 11
     }
 
     "return correct ZoneId" in new Setup {
@@ -69,7 +71,7 @@ class DateTimeServiceSpec extends SpecBase {
   }
 
   trait Setup {
-    val fixedInstant: Instant = Instant.parse("2023-10-31T12:00:00Z")
+    val fixedInstant: Instant = Instant.parse(testUtcTimestamp)
     val fixedClock: Clock     = Clock.fixed(fixedInstant, ZoneId.of("UTC"))
   }
 }

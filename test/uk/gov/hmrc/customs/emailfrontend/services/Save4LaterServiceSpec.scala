@@ -16,21 +16,20 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.libs.json.Reads
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, JourneyType, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 import uk.gov.hmrc.http.HeaderCarrier
-
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
 
-class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
+class Save4LaterServiceSpec extends SpecBase {
 
   "Save4LaterService" should {
     "save the emailDetails against the users InternalId" in new Setup {
@@ -98,10 +97,9 @@ class Save4LaterServiceSpec extends SpecBase with BeforeAndAfterEach {
   }
 
   trait Setup {
-    implicit val hc: HeaderCarrier           = mock[HeaderCarrier]
     protected val internalId: InternalId     = InternalId("internalId-123")
     protected val timestamp: LocalDateTime   = DateTimeUtil.dateTime
-    protected val emailDetails: EmailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
+    protected val emailDetails: EmailDetails = EmailDetails(None, testEmail, Some(timestamp))
     protected val journeyType: JourneyType   = JourneyType(true)
     protected val referrerName: ReferrerName = ReferrerName("customs-finance", "/xyz")
     protected val mockSave4LaterConnector    = mock[Save4LaterConnector]

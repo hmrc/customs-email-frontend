@@ -18,7 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{
@@ -26,11 +26,11 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificatio
 }
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
-import uk.gov.hmrc.customs.emailfrontend.model._
+import uk.gov.hmrc.customs.emailfrontend.model.*
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

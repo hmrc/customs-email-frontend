@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import org.scalatest.BeforeAndAfter
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{doNothing, reset, when}
 import play.api.test.Helpers.*
 import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
@@ -24,19 +25,16 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.*
 import uk.gov.hmrc.customs.emailfrontend.model.*
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, MethodNotAllowedException, *}
-import org.mockito.Mockito.{doNothing, reset, when}
-import org.mockito.ArgumentMatchers.any
 
 import java.time.LocalDateTime
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class UpdateVerifiedEmailConnectorSpec extends SpecBase with BeforeAndAfter {
+class UpdateVerifiedEmailConnectorSpec extends SpecBase {
 
   private val mockAuditable           = mock[Auditable]
-  private val mockAppConfig           = mock[AppConfig]
   private val mockHttpClient          = mock[HttpClientV2]
   private val requestBuilder          = mock[RequestBuilder]
   private val forbiddenException      = new ForbiddenException("testMessage")
@@ -49,7 +47,7 @@ class UpdateVerifiedEmailConnectorSpec extends SpecBase with BeforeAndAfter {
   private val internalServerError = UpstreamErrorResponse("testMessage", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)
 
   private val dateTime: LocalDateTime = LocalDateTime.now()
-  private val requestDetail           = RequestDetail("idType", "idNumber", "test@email.com", dateTime)
+  private val requestDetail           = RequestDetail("idType", "idNumber", testEmail, dateTime)
   private val requestCommon           = RequestCommon()
 
   private val verifiedEmailResponse = VerifiedEmailResponse(
@@ -58,11 +56,9 @@ class UpdateVerifiedEmailConnectorSpec extends SpecBase with BeforeAndAfter {
 
   private val verifiedEmailRequest = VerifiedEmailRequest(UpdateVerifiedEmailRequest(requestCommon, requestDetail))
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
   val connector = new UpdateVerifiedEmailConnector(mockAppConfig, mockHttpClient, mockAuditable)
 
-  before {
+  override def beforeEach(): Unit = {
     reset(mockAuditable, mockAppConfig, mockHttpClient, requestBuilder)
     doNothing
       .when(mockAuditable)

@@ -16,34 +16,30 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import org.mockito.ArgumentMatchers.{eq => meq}
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.Mockito.when
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{redirectLocation, _}
+import play.api.test.Helpers.{redirectLocation, *}
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
-import uk.gov.hmrc.customs.emailfrontend.model._
+import uk.gov.hmrc.customs.emailfrontend.model.*
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{testEmail, testEmail2, testLocalTimestamp}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 
 import java.time.{LocalDateTime, Period}
 import scala.concurrent.Future
 
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
-
-class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
-
-  private val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
+class WhatIsYourEmailControllerSpec extends SpecBase {
 
   private val someSubscriptionDisplayResponse =
-    SubscriptionDisplayResponse(Some("test@test.com"), Some(emailVerificationTimeStamp), None, None)
+    SubscriptionDisplayResponse(Some(testEmail), Some(testLocalTimestamp), None, None)
 
   private val someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp =
-    SubscriptionDisplayResponse(Some("test@test.com"), None, None, None)
+    SubscriptionDisplayResponse(Some(testEmail), None, None, None)
 
   private val someSubscriptionDisplayResponseWithStatus =
     SubscriptionDisplayResponse(None, None, Some("statusText"), Some("FAIL"))
@@ -59,7 +55,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
         .thenReturn(
-          Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now().minus(Period.ofDays(2))))))
+          Future.successful(Some(EmailDetails(None, testEmail, Some(LocalDateTime.now().minus(Period.ofDays(2))))))
         )
 
       when(mockSave4LaterService.remove(any)(any))
@@ -146,9 +142,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       "cache with no timestamp and email is verified" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, None))))
 
-        when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
+        when(mockEmailVerificationService.isEmailVerified(meq(testEmail))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
 
         running(app) {
@@ -164,9 +160,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       "when email verification service returns none" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, None))))
 
-        when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
+        when(mockEmailVerificationService.isEmailVerified(meq(testEmail))(any[HeaderCarrier]))
           .thenReturn(Future.successful(None))
 
         running(app) {
@@ -181,9 +177,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       "cache with no timestamp and email is not verified" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, None))))
 
-        when(mockEmailVerificationService.isEmailVerified(meq("test@email"))(any[HeaderCarrier]))
+        when(mockEmailVerificationService.isEmailVerified(meq(testEmail))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(false)))
 
         running(app) {
@@ -199,7 +195,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       "cache with timestamp for AmendmentInProgress" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now())))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, Some(LocalDateTime.now())))))
 
         running(app) {
           val request = FakeRequest(GET, routes.WhatIsYourEmailController.show.url)
@@ -291,7 +287,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "have a status of OK for create method when email found in cache with no timestamp" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(Some("old@email"), "test@email", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(Some(testEmail), testEmail2, None))))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -308,7 +304,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       " email not found in cache with no timestamp" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, None))))
 
         when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
           .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -325,7 +321,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       "used and user already completed success amend email journey" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now())))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, Some(LocalDateTime.now())))))
 
         when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
           .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -407,7 +403,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "have a status of OK for verify method when email found in cache with no timestamp" in new Setup {
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, None))))
 
       when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
         .thenReturn(Future.successful(Right(())))
@@ -440,7 +436,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       " and user already complete success amend email journey " in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email", Some(LocalDateTime.now())))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, Some(LocalDateTime.now())))))
 
         when(mockSave4LaterService.saveJourneyType(meq(InternalId("fakeInternalId")), any)(any))
           .thenReturn(Future.successful(Right(())))
@@ -502,15 +498,15 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "have a status of SEE_OTHER when the email is valid" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(Some("test@test.com"), emptyString, None))))
+        .thenReturn(Future.successful(Some(EmailDetails(Some(testEmail), emptyString, None))))
 
-      when(mockSave4LaterService.saveEmail(any, meq(EmailDetails(Some("test@test.com"), "valid@email.com", None)))(any))
+      when(mockSave4LaterService.saveEmail(any, meq(EmailDetails(Some(testEmail), testEmail2, None)))(any))
         .thenReturn(Future.successful(Right(())))
 
       running(app) {
 
         val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
-          .withFormUrlEncodedBody("email" -> "valid@email.com")
+          .withFormUrlEncodedBody("email" -> testEmail2)
 
         val result = route(app, request).value
 
@@ -539,7 +535,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     "have a status SEE_OTHER when there is no current email fetched" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(LocalDateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, Some(LocalDateTime.now())))))
 
       when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
         .thenReturn(Future.successful(Right(())))
@@ -547,7 +543,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       running(app) {
 
         val request = FakeRequest(POST, routes.WhatIsYourEmailController.submit.url)
-          .withFormUrlEncodedBody("email" -> "valid@email.com")
+          .withFormUrlEncodedBody("email" -> testEmail)
 
         val result = route(app, request).value
 
@@ -590,7 +586,7 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
       running(app) {
 
         val request = FakeRequest(POST, routes.WhatIsYourEmailController.verifySubmit.url)
-          .withFormUrlEncodedBody("email" -> "valid@email.com")
+          .withFormUrlEncodedBody("email" -> testEmail)
 
         val result = route(app, request).value
 
@@ -620,9 +616,8 @@ class WhatIsYourEmailControllerSpec extends SpecBase with BeforeAndAfterEach {
     protected val mockSave4LaterService: Save4LaterService                       = mock[Save4LaterService]
     protected val mockSubscriptionDisplayConnector: SubscriptionDisplayConnector = mock[SubscriptionDisplayConnector]
     protected val mockEmailVerificationService: EmailVerificationService         = mock[EmailVerificationService]
-    protected val mockErrorHandler: ErrorHandler                                 = mock[ErrorHandler]
 
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+    protected val app: Application = applicationBuilder()
       .overrides(
         inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
         inject.bind[SubscriptionDisplayConnector].toInstance(mockSubscriptionDisplayConnector),

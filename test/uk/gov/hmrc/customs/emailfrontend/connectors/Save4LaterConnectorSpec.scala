@@ -16,35 +16,36 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status.*
 import play.api.libs.json.Format.GenericFormat
-import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.Json
+import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.test.Helpers.running
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, UnhandledException}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, JourneyType, ReferrerName}
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpReads, HttpResponse, SessionId}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
-import org.mockito.ArgumentMatchers.any
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpReads, HttpResponse, SessionId}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class Save4LaterConnectorSpec extends SpecBase {
 
-  val mockHttpClient: HttpClientV2   = mock[HttpClientV2]
-  val requestBuilder: RequestBuilder = mock[RequestBuilder]
-  val sessionId: SessionId           = SessionId("session_1234")
-  implicit val hc: HeaderCarrier     = HeaderCarrier(sessionId = Some(sessionId))
+  val mockHttpClient: HttpClientV2             = mock[HttpClientV2]
+  val requestBuilder: RequestBuilder           = mock[RequestBuilder]
+  val sessionId: SessionId                     = SessionId("session_1234")
+  implicit override lazy val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
 
   "Save4LaterConnector" should {
 
     "GET email returns a response with body when OK response received" in new Setup {
 
-      private val emailDetails = EmailDetails(None, "test@test.com", None)
+      private val emailDetails = EmailDetails(None, testEmail, None)
 
       when(requestBuilder.execute(any[HttpReads[EmailDetails]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailDetails))
@@ -258,7 +259,7 @@ class Save4LaterConnectorSpec extends SpecBase {
   }
 
   trait Setup {
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+    protected val app: Application = applicationBuilder()
       .overrides(
         inject.bind[HttpClientV2].toInstance(mockHttpClient),
         inject.bind[RequestBuilder].toInstance(requestBuilder)

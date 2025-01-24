@@ -17,8 +17,8 @@
 package utils
 
 import play.api.libs.json.{JsError, JsValue, Json}
-import uk.gov.hmrc.customs.emailfrontend.utils.Utils._
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.*
 
 import java.time.LocalDateTime
 

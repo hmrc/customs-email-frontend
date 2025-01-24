@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.utils
 
-import play.api.libs.json.{JsError, JsResult, JsSuccess, JsValue, Json}
+import play.api.libs.json.*
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

@@ -17,9 +17,9 @@
 package uk.gov.hmrc.customs.emailfrontend.forms
 
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import uk.gov.hmrc.customs.emailfrontend.Utils.stripWhiteSpaces
-import uk.gov.hmrc.customs.emailfrontend.forms.Validation._
+import uk.gov.hmrc.customs.emailfrontend.forms.Validation.*
 import uk.gov.hmrc.customs.emailfrontend.model.{Email, VerifyChange, YesNo}
 
 object Forms {

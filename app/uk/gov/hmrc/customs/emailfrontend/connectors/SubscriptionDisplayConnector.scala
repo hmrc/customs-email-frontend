@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import java.util.UUID
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http._
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, hyphen}
+import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 
+import java.util.UUID
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

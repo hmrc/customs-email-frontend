@@ -16,33 +16,28 @@
 
 package uk.gov.hmrc.customs.emailfrontend.services
 
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import uk.gov.hmrc.customs.emailfrontend.connectors.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{
   HttpErrorResponse, ServiceUnavailable, VerifiedEmailRequest, VerifiedEmailResponse
 }
-import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam._
-import uk.gov.hmrc.customs.emailfrontend.model._
-import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
+import uk.gov.hmrc.customs.emailfrontend.model.*
+import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam.*
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{dateFormatter02, testEmail, testEori, testUtcTimestampMillis}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-import org.mockito.Mockito.{reset, when}
-import org.mockito.ArgumentMatchers.any
+class UpdateVerifiedEmailServiceSpec extends SpecBase {
 
-class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
+  override implicit lazy val hc: HeaderCarrier = mock[HeaderCarrier]
+  private val mockConnector                    = mock[UpdateVerifiedEmailConnector]
+  val service                                  = new UpdateVerifiedEmailService(mockConnector)
 
-  implicit val hc: HeaderCarrier = mock[HeaderCarrier]
-  private val mockConnector      = mock[UpdateVerifiedEmailConnector]
-  val service                    = new UpdateVerifiedEmailService(mockConnector)
-
-  private val eoriNumber = "GBXXXXXXXXXXXX"
-  private val email      = "test@email.com"
-  private val dateTime   = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
+  private val dateTime = LocalDateTime.parse(testUtcTimestampMillis, dateFormatter02)
 
   private val bundleIdUpdateVerifiedEmailResponse = VerifiedEmailResponse(
     UpdateVerifiedEmailResponse(
@@ -63,7 +58,7 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val serviceUnavailableResponse = ServiceUnavailable
 
-  override protected def beforeEach(): Unit = reset(mockConnector)
+  override def beforeEach(): Unit = reset(mockConnector)
 
   def mockGetEmailVerificationState(response: Either[HttpErrorResponse, VerifiedEmailResponse]): Unit =
     when(
@@ -77,7 +72,7 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
       mockGetEmailVerificationState(Right(bundleIdUpdateVerifiedEmailResponse))
 
       service
-        .updateVerifiedEmail(None, email, eoriNumber, dateTime)
+        .updateVerifiedEmail(None, testEmail, testEori, dateTime)
         .futureValue shouldBe Some(true)
     }
 
@@ -86,7 +81,7 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
       mockGetEmailVerificationState(Right(businessErrorUpdateVerifiedEmailResponse))
 
       service
-        .updateVerifiedEmail(None, email, eoriNumber, dateTime)
+        .updateVerifiedEmail(None, testEmail, testEori, dateTime)
         .futureValue shouldBe Some(false)
     }
 
@@ -95,7 +90,7 @@ class UpdateVerifiedEmailServiceSpec extends SpecBase with BeforeAndAfterEach {
       mockGetEmailVerificationState(Left(serviceUnavailableResponse))
 
       service
-        .updateVerifiedEmail(None, email, eoriNumber, dateTime)
+        .updateVerifiedEmail(None, testEmail, testEori, dateTime)
         .futureValue shouldBe None
     }
   }

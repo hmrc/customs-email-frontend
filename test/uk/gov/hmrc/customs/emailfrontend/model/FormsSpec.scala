@@ -16,19 +16,20 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.matchers.should.Matchers.*
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 
 class FormsSpec extends PlaySpec {
 
   "Forms" should {
     "bind/unbind the emailForm data correctly" in {
-      val bind = Forms.emailForm.mapping.bind(Map("email" -> "test@email.com"))
-      bind shouldBe Right(Email("test@email.com"))
+      val bind = Forms.emailForm.mapping.bind(Map("email" -> testEmail))
+      bind shouldBe Right(Email(testEmail))
 
-      val unbind = Forms.emailForm.mapping.unbind(Email("test@email.com"))
-      unbind shouldBe Map("email" -> "test@email.com")
+      val unbind = Forms.emailForm.mapping.unbind(Email(testEmail))
+      unbind shouldBe Map("email" -> testEmail)
     }
 
     "bind/unbind the confirmEmailForm data correctly" in {

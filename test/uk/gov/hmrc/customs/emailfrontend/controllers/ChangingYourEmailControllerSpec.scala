@@ -16,21 +16,20 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.{Application, inject}
-import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
-import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser._
+import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.*
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
+import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{testEmail, testEmail2}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{FakeIdentifierAgentAction, SpecBase}
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
-
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
 
 class ChangingYourEmailControllerSpec extends SpecBase {
 
@@ -206,23 +205,19 @@ class ChangingYourEmailControllerSpec extends SpecBase {
   trait Setup {
 
     val emailDetails: EmailDetails = EmailDetails(
-      currentEmail = Some("test@test.com"),
-      newEmail = "test_new@test.com",
+      currentEmail = Some(testEmail),
+      newEmail = testEmail2,
       timestamp = Some(LocalDateTime.now())
     )
 
     protected val mockSave4LaterService: Save4LaterService               = mock[Save4LaterService]
     protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
 
-    protected val app: Application = applicationBuilder[FakeIdentifierAgentAction]()
+    protected val app: Application = applicationBuilder()
       .overrides(
         inject.bind[Save4LaterService].toInstance(mockSave4LaterService),
         inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService)
       )
       .build()
-
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-
-    protected val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
   }
 }

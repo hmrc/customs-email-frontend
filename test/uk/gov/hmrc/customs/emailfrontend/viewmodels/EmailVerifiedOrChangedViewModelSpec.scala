@@ -18,11 +18,9 @@ package uk.gov.hmrc.customs.emailfrontend.viewmodels
 
 import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.mustBe
-import play.api.i18n.Messages
-import play.api.test.Helpers
-import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 
 class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
 
@@ -33,7 +31,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
         email = testEmail,
         referrerUrl = None,
         isVerifyJourney = true,
-        appConfig = appConfig
+        appConfig = mockAppConfig
       )
 
       viewModel.titleKey mustBe "customs.emailfrontend.email-verified.title-and-heading"
@@ -44,7 +42,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
         email = testEmail,
         referrerUrl = None,
         isVerifyJourney = false,
-        appConfig = appConfig
+        appConfig = mockAppConfig
       )
 
       viewModel.titleKey mustBe "customs.emailfrontend.email-changed.title-and-heading"
@@ -55,7 +53,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
         email = testEmail,
         referrerUrl = Some(customsFinanceUrl),
         isVerifyJourney = true,
-        appConfig = appConfig
+        appConfig = mockAppConfig
       )
 
       viewModel.messageKey mustBe None
@@ -67,7 +65,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
         email = testEmail,
         referrerUrl = Some(tgpUrl),
         isVerifyJourney = false,
-        appConfig = appConfig
+        appConfig = mockAppConfig
       )
 
       viewModel.messageKey mustBe None
@@ -79,7 +77,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
         email = testEmail,
         referrerUrl = Some("https://unknown.example.com"),
         isVerifyJourney = true,
-        appConfig = appConfig
+        appConfig = mockAppConfig
       )
 
       viewModel.messageKey mustBe Some("customs.emailfrontend.email-verified.info")
@@ -91,7 +89,7 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
         email = testEmail,
         referrerUrl = Some("https://unknown.example.com"),
         isVerifyJourney = false,
-        appConfig = appConfig
+        appConfig = mockAppConfig
       )
 
       viewModel.messageKey mustBe Some("customs.emailfrontend.email-confirmed.info")
@@ -100,14 +98,11 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
   }
 
   trait Setup {
-    implicit val messages: Messages = Helpers.stubMessages()
-    val appConfig: AppConfig        = mock[AppConfig]
 
     val tgpUrl            = "https://trader-goods.example.com"
     val customsFinanceUrl = "https://finance.example.com"
-    val testEmail         = "test@example.com"
 
-    when(appConfig.customsFinanceReferrer).thenReturn(Some(ReferrerName("Customs Finance", customsFinanceUrl)))
-    when(appConfig.traderGoodsProfilesReferrer).thenReturn(Some(ReferrerName("Trader Goods Profiles", tgpUrl)))
+    when(mockAppConfig.customsFinanceReferrer).thenReturn(Some(ReferrerName("Customs Finance", customsFinanceUrl)))
+    when(mockAppConfig.traderGoodsProfilesReferrer).thenReturn(Some(ReferrerName("Trader Goods Profiles", tgpUrl)))
   }
 }
