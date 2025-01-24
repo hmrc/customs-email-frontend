@@ -83,7 +83,7 @@ trait SpecBase
   lazy implicit val ec: ExecutionContext = ExecutionContext.global
   lazy val mockAppConfig: AppConfig      = mock[AppConfig]
   lazy val appConfigInstance: AppConfig  = app.injector.instanceOf[AppConfig]
-  implicit def messages: Messages        =
+  implicit lazy val messages: Messages        =
     app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
   lazy val errorHandler: ErrorHandler    = app.injector.instanceOf[ErrorHandler]
 
