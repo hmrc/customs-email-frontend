@@ -19,17 +19,18 @@ package uk.gov.hmrc.customs.emailfrontend.model
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{testEmail, testUtcTimestamp}
 
 class SubscriptionDisplayResponseSpec extends PlaySpec {
 
   private val subscriptionDisplayResponse =
     Json
-      .parse("""{
+      .parse(s"""{
         |  "subscriptionDisplayResponse": {
         |    "responseDetail": {
         |      "contactInformation": {
-        |        "emailAddress": "test@email.com",
-        |        "emailVerificationTimestamp": "2019-09-06T12:30:59Z"
+        |        "emailAddress": "$testEmail",
+        |        "emailVerificationTimestamp": "$testUtcTimestamp"
         |      }
         |    }
         |  }
@@ -38,12 +39,12 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
 
   private val noFormBundleSubscriptionDisplayResponse =
     Json
-      .parse("""{
+      .parse(s"""{
         |  "subscriptionDisplayResponse": {
         |    "responseCommon": {
         |      "status": "OK",
         |      "statusText": "005 - No form bundle found",
-        |      "processingDate": "2016-08-17T19:33:47Z",
+        |      "processingDate": "$testUtcTimestamp",
         |      "returnParameters": [{
         |          "paramName": "POSITION",
         |          "paramValue": "FAIL"
@@ -55,11 +56,11 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
 
   private val noEmailSubscriptionDisplayResponse =
     Json
-      .parse("""{
+      .parse(s"""{
         |  "subscriptionDisplayResponse": {
         |    "responseDetail": {
         |      "contactInformation": {
-        |        "emailVerificationTimestamp": "2019-09-06T12:30:59Z"
+        |        "emailVerificationTimestamp": "$testUtcTimestamp"
         |      }
         |    }
         |  }
@@ -69,8 +70,8 @@ class SubscriptionDisplayResponseSpec extends PlaySpec {
   "SubscriptionDisplayResponse Object" should {
 
     "contain email when present in response" in {
-      subscriptionDisplayResponse.email                      shouldBe Some("test@email.com")
-      subscriptionDisplayResponse.emailVerificationTimestamp shouldBe Some("2019-09-06T12:30:59Z")
+      subscriptionDisplayResponse.email                      shouldBe Some(testEmail)
+      subscriptionDisplayResponse.emailVerificationTimestamp shouldBe Some(testUtcTimestamp)
     }
 
     "contain status when present in response" in {

@@ -21,14 +21,15 @@ import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.*
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{testEmail, testEori}
 
 class UpdateVerifiedEmailRequestSpec extends PlaySpec {
 
   private val requestCommon = RequestCommon()
   private val requestDetail = RequestDetail(
     IDType = "EORI",
-    IDNumber = "GBXXXXXXXXXXXX",
-    emailAddress = "test@email.com",
+    IDNumber = testEori,
+    emailAddress = testEmail,
     emailVerificationTimestamp = DateTimeUtil.dateTime
   )
 
@@ -39,10 +40,10 @@ class UpdateVerifiedEmailRequestSpec extends PlaySpec {
     "parse the model to correct json format" in {
       val requestJosn = Json.toJson[VerifiedEmailRequest](verifiedEmailRequest)
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress" shouldBe JsDefined(
-        JsString("test@email.com")
+        JsString(testEmail)
       )
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDNumber"     shouldBe JsDefined(
-        JsString("GBXXXXXXXXXXXX")
+        JsString(testEori)
       )
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDType"       shouldBe JsDefined(JsString("EORI"))
     }

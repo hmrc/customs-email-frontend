@@ -23,6 +23,7 @@ import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.Save4LaterConnector
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId, JourneyType, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
@@ -98,7 +99,7 @@ class Save4LaterServiceSpec extends SpecBase {
   trait Setup {
     protected val internalId: InternalId     = InternalId("internalId-123")
     protected val timestamp: LocalDateTime   = DateTimeUtil.dateTime
-    protected val emailDetails: EmailDetails = EmailDetails(None, "test@test.com", Some(timestamp))
+    protected val emailDetails: EmailDetails = EmailDetails(None, testEmail, Some(timestamp))
     protected val journeyType: JourneyType   = JourneyType(true)
     protected val referrerName: ReferrerName = ReferrerName("customs-finance", "/xyz")
     protected val mockSave4LaterConnector    = mock[Save4LaterConnector]

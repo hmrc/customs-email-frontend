@@ -27,6 +27,7 @@ import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.{BadRequest, UnhandledException}
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, JourneyType, ReferrerName}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpReads, HttpResponse, SessionId}
@@ -44,7 +45,7 @@ class Save4LaterConnectorSpec extends SpecBase {
 
     "GET email returns a response with body when OK response received" in new Setup {
 
-      private val emailDetails = EmailDetails(None, "test@test.com", None)
+      private val emailDetails = EmailDetails(None, testEmail, None)
 
       when(requestBuilder.execute(any[HttpReads[EmailDetails]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailDetails))

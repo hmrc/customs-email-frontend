@@ -22,6 +22,7 @@ import uk.gov.hmrc.customs.emailfrontend.audit.Auditable
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.SubscriptionDisplayResponse
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{testEmail, testEori, testLocalTimestamp}
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 
@@ -29,16 +30,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SubscriptionDisplayConnectorSpec extends SpecBase {
 
-  private val mockHttp           = mock[HttpClientV2]
-  private val requestBuilder     = mock[RequestBuilder]
-  private val mockAuditable      = mock[Auditable]
-  private val url                = "http://localhost:8989/customs-email-proxy/subscription-display"
-  private val testEori           = "GB1234556789"
-  val emailVerificationTimeStamp = "2016-3-17T9:30:47.114"
+  private val mockHttp       = mock[HttpClientV2]
+  private val requestBuilder = mock[RequestBuilder]
+  private val mockAuditable  = mock[Auditable]
+  private val url            = "http://localhost:8989/customs-email-proxy/subscription-display"
 
   private val someSubscriptionDisplayResponse = SubscriptionDisplayResponse(
-    Some("test@test.com"),
-    Some(emailVerificationTimeStamp),
+    Some(testEmail),
+    Some(testLocalTimestamp),
     Some("statusCode"),
     Some("FAIL")
   )

@@ -20,6 +20,7 @@ import org.scalatest.matchers.should.Matchers.*
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailResponse
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testUtcTimestamp
 
 class UpdateVerifiedEmailResponseSpec extends PlaySpec {
 
@@ -27,11 +28,11 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
 
     "parse the json to model VerifiedEmailResponse" in {
       Json
-        .parse("""{
+        .parse(s"""{
           |  "updateVerifiedEmailResponse": {
           |    "responseCommon": {
           |      "status": "OK",
-          |      "processingDate": "2019-08-22T13:55:53Z",
+          |      "processingDate": "$testUtcTimestamp",
           |      "returnParameters": [
           |        {
           |          "paramName": "ETMPFORMBUNDLENUMBER",
@@ -47,12 +48,12 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
     "parse the json to model VerifiedEmailResponse when status text is available" in {
 
       Json
-        .parse("""{
+        .parse(s"""{
             |  "updateVerifiedEmailResponse": {
             |    "responseCommon": {
             |      "status": "OK",
             |      "statusText": "004 - Duplicate Acknowledgement Reference",
-            |      "processingDate": "2016-08-17T19:33:47Z",
+            |      "processingDate": "$testUtcTimestamp",
             |      "returnParameters": [
             |        {
             |          "paramName": "POSITION",
@@ -69,12 +70,12 @@ class UpdateVerifiedEmailResponseSpec extends PlaySpec {
 
       intercept[IllegalArgumentException] {
         Json
-          .parse("""{
+          .parse(s"""{
               |  "updateVerifiedEmailResponse": {
               |    "responseCommon": {
               |      "status": "OK",
               |      "statusText": "004 - Duplicate Acknowledgement Reference",
-              |      "processingDate": "2016-08-17T19:33:47Z",
+              |      "processingDate": "$testUtcTimestamp",
               |      "returnParameters": []
               |    }
               |  }

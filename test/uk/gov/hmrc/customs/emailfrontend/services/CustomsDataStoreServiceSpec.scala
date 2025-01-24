@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.EnrolmentIdentifier
 import uk.gov.hmrc.customs.emailfrontend.connectors.CustomsDataStoreConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{dateFormatter02, testEmail, testEori, testUtcTimestampMillis}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.{BadRequestException, HttpResponse}
 
@@ -38,7 +38,7 @@ class CustomsDataStoreServiceSpec extends SpecBase {
       when(mockConnector.storeEmailAddress(any, any, any)(any))
         .thenReturn(Future.successful(Right(HttpResponse(NO_CONTENT, emptyString))))
 
-      val result = service.storeEmail(enrolmentIdentifier, email, dateTime).futureValue
+      val result = service.storeEmail(enrolmentIdentifier, testEmail, dateTime).futureValue
       result.toOption.get.status shouldBe NO_CONTENT
     }
   }
@@ -48,16 +48,15 @@ class CustomsDataStoreServiceSpec extends SpecBase {
     when(mockConnector.storeEmailAddress(any, any, any)(any))
       .thenReturn(Future.successful(Left(BadRequest)))
 
-    val result = service.storeEmail(enrolmentIdentifier, email, dateTime).futureValue
+    val result = service.storeEmail(enrolmentIdentifier, testEmail, dateTime).futureValue
     result.swap.getOrElse(BadRequest) shouldBe BadRequest
   }
 
   trait Setup {
     protected val mockConnector       = mock[CustomsDataStoreConnector]
     protected val service             = new CustomsDataStoreService(mockConnector)
-    protected val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "GB123456789")
-    protected val email               = "abc@def.com"
-    protected val dateTime            = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
+    protected val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", testEori)
+    protected val dateTime            = LocalDateTime.parse(testUtcTimestampMillis, dateFormatter02)
     protected val badRequestException = new BadRequestException("testMessage")
   }
 }

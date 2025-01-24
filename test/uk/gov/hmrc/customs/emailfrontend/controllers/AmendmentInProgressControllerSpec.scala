@@ -24,6 +24,7 @@ import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
@@ -58,7 +59,7 @@ class AmendmentInProgressControllerSpec extends SpecBase {
     "have a status of OK when email found in cache and verification in progress" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(LocalDateTime.now())))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, Some(LocalDateTime.now())))))
 
       running(app) {
         val request = FakeRequest(GET, routes.AmendmentInProgressController.show.url)

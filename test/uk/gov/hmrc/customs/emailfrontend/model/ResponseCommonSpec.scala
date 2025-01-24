@@ -19,7 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.model
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.model.MessagingServiceParam.formBundleIdParamName
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter01
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{dateFormatter01, testUtcTimestamp}
 
 import java.time.LocalDateTime
 
@@ -46,7 +46,7 @@ class ResponseCommonSpec extends SpecBase {
 
     val status                          = "OK"
     val statusText                      = Some("200 - OK")
-    val validDateTime                   = "2024-03-11T14:30:00Z"
+    val validDateTime                   = testUtcTimestamp
     val invalidDateTime                 = "2024-03-11T14:30:00.123456789Z"
     val validDateTimeObj: LocalDateTime = LocalDateTime.parse(validDateTime, dateFormatter01)
     val returnParams                    = List(MessagingServiceParam(formBundleIdParamName, "testValue"))

@@ -24,6 +24,7 @@ import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.Save4LaterService
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
@@ -47,14 +48,14 @@ class VerifyYourEmailControllerSpec extends SpecBase {
     "return status OK when email found in cache" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, None))))
 
       running(app) {
         val request = FakeRequest(GET, routes.VerifyYourEmailController.show.url)
         val result  = route(app, request).value
 
         status(result)        shouldBe OK
-        contentAsString(result) should include("abc@def.com")
+        contentAsString(result) should include(testEmail)
       }
     }
 
@@ -62,7 +63,7 @@ class VerifyYourEmailControllerSpec extends SpecBase {
       "or uses already complete bookmarked request within 2 hours" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "abc@def.com", Some(LocalDateTime.now())))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, Some(LocalDateTime.now())))))
 
         running(app) {
           val request = FakeRequest(GET, routes.VerifyYourEmailController.show.url)

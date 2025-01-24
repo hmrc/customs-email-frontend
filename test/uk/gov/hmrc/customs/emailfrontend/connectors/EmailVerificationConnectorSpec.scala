@@ -26,6 +26,7 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificatio
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationStateHttpParser.*
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{testEmail, testEmail2, testEori}
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
 
@@ -62,7 +63,7 @@ class EmailVerificationConnectorSpec extends SpecBase {
         when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result =
-          connector.getEmailVerificationState("email-address").futureValue
+          connector.getEmailVerificationState(testEmail).futureValue
 
         result shouldBe Right(EmailVerified)
       }
@@ -76,7 +77,7 @@ class EmailVerificationConnectorSpec extends SpecBase {
           .thenReturn(Future.successful(Right(EmailNotVerified)))
         when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
-        val result = connector.getEmailVerificationState("email-address").futureValue
+        val result = connector.getEmailVerificationState(testEmail).futureValue
 
         result shouldBe Right(EmailNotVerified)
       }
@@ -92,7 +93,7 @@ class EmailVerificationConnectorSpec extends SpecBase {
           )
         when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
-        val result = connector.getEmailVerificationState("email-address").futureValue
+        val result = connector.getEmailVerificationState(testEmail).futureValue
 
         result shouldBe Left(EmailVerificationStateErrorResponse(INTERNAL_SERVER_ERROR, "Internal Server Error"))
       }
@@ -110,9 +111,9 @@ class EmailVerificationConnectorSpec extends SpecBase {
 
         val result = connector
           .createEmailVerificationRequest(
-            EmailDetails(Some("old-email-address"), "email-address", None),
+            EmailDetails(Some(testEmail), testEmail2, None),
             "test-continue-url",
-            "EORINumber"
+            testEori
           )
           .futureValue
 
@@ -129,7 +130,7 @@ class EmailVerificationConnectorSpec extends SpecBase {
         when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector
-          .createEmailVerificationRequest(EmailDetails(None, "email-address", None), "test-continue-url", "EORINumber")
+          .createEmailVerificationRequest(EmailDetails(None, testEmail, None), "test-continue-url", testEori)
           .futureValue
 
         result shouldBe Right(EmailAlreadyVerified)
@@ -148,7 +149,7 @@ class EmailVerificationConnectorSpec extends SpecBase {
         when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
         val result = connector
-          .createEmailVerificationRequest(EmailDetails(None, "email-address", None), "test-continue-url", "EORINumber")
+          .createEmailVerificationRequest(EmailDetails(None, testEmail, None), "test-continue-url", testEori)
           .futureValue
 
         result shouldBe Left(EmailVerificationRequestFailure(Status.INTERNAL_SERVER_ERROR, "Internal server error"))

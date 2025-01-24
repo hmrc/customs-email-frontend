@@ -25,6 +25,7 @@ import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.*
 import uk.gov.hmrc.customs.emailfrontend.model.*
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, MethodNotAllowedException, *}
 
@@ -46,7 +47,7 @@ class UpdateVerifiedEmailConnectorSpec extends SpecBase {
   private val internalServerError = UpstreamErrorResponse("testMessage", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)
 
   private val dateTime: LocalDateTime = LocalDateTime.now()
-  private val requestDetail           = RequestDetail("idType", "idNumber", "test@email.com", dateTime)
+  private val requestDetail           = RequestDetail("idType", "idNumber", testEmail, dateTime)
   private val requestCommon           = RequestCommon()
 
   private val verifiedEmailResponse = VerifiedEmailResponse(

@@ -26,7 +26,9 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.*
 import uk.gov.hmrc.customs.emailfrontend.model.{Eori, UpdateEmail}
 import uk.gov.hmrc.customs.emailfrontend.services.DateTimeService
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter02
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{
+  dateFormatter02, testEmail, testEori, testUtcTimestamp, testUtcTimestampMillis
+}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpReads, HttpResponse, InternalServerException}
@@ -41,11 +43,9 @@ class CustomsDataStoreConnectorSpec extends SpecBase {
   private val mockAuditable       = mock[Auditable]
   private val mockDateTimeService = mock[DateTimeService]
 
-  private val connector      = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
-  private val postUrl        = "http://localhost:9893/customs-data-store/update-email"
-  private val testEori: Eori = Eori("GB1234556789")
-  private val testEmail      = "email@test.com"
-  private val testDateTime   = LocalDateTime.parse("2021-01-01T11:11:11.111Z", dateFormatter02)
+  private val connector    = new CustomsDataStoreConnector(mockAppConfig, mockHttp, mockAuditable)
+  private val postUrl      = "http://localhost:9893/customs-data-store/update-email"
+  private val testDateTime = LocalDateTime.parse(testUtcTimestampMillis, dateFormatter02)
 
   override def beforeEach(): Unit = {
     reset(mockHttp, mockAuditable, mockAppConfig, requestBuilder)
@@ -66,7 +66,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase {
 
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
-      val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
+      val result = connector.storeEmailAddress(Eori(testEori), testEmail, testDateTime).futureValue
       result.toOption.get.status shouldBe NO_CONTENT
     }
 
@@ -80,7 +80,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase {
 
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
-      val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
+      val result = connector.storeEmailAddress(Eori(testEori), testEmail, testDateTime).futureValue
       result.swap.getOrElse(BadRequest) shouldBe BadRequest
     }
 
@@ -96,7 +96,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase {
 
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
-      val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
+      val result = connector.storeEmailAddress(Eori(testEori), testEmail, testDateTime).futureValue
       result.swap.getOrElse(BadRequest) shouldBe BadRequest
     }
 
@@ -112,7 +112,7 @@ class CustomsDataStoreConnectorSpec extends SpecBase {
 
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
-      val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
+      val result = connector.storeEmailAddress(Eori(testEori), testEmail, testDateTime).futureValue
       result.swap.getOrElse(ServiceUnavailable) shouldBe ServiceUnavailable
     }
 
@@ -128,15 +128,15 @@ class CustomsDataStoreConnectorSpec extends SpecBase {
 
       doNothing.when(mockAuditable).sendDataEvent(any, any, any, any)(any[HeaderCarrier])
 
-      val result = connector.storeEmailAddress(testEori, testEmail, testDateTime).futureValue
+      val result = connector.storeEmailAddress(Eori(testEori), testEmail, testDateTime).futureValue
       result.swap.getOrElse(UnhandledException) shouldBe UnhandledException
     }
 
     "UpdateEmail model object serializes correctly" in {
-      val updateEmail = UpdateEmail(testEori, testEmail, testDateTime)
+      val updateEmail = UpdateEmail(Eori(testEori), testEmail, testDateTime)
       val result      = Json.toJson(updateEmail).toString()
 
-      result shouldBe """{"eori":"GB1234556789","address":"email@test.com","timestamp":"2021-01-01T11:11:11Z"}"""
+      result shouldBe s"""{"eori":"$testEori","address":"$testEmail","timestamp":"$testUtcTimestamp"}"""
     }
   }
 }

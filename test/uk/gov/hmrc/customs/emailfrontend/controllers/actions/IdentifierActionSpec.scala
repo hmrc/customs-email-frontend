@@ -30,6 +30,7 @@ import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.customs.emailfrontend.controllers.routes
 import uk.gov.hmrc.customs.emailfrontend.model.Ineligible
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEori
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -79,7 +80,7 @@ class IdentifierActionSpec extends SpecBase {
       }
     }
 
-    "redirect the user to ineligible (no-enrolment) when has no eori enrolment" in new Setup {
+    "redirect the user to ineligible (no-enrolment) when has no testEori enrolment" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
       private val enrolments        = Set(Enrolment("someKey", Seq(EnrolmentIdentifier("someKey", "someValue")), "ACTIVE"))
 
@@ -103,7 +104,8 @@ class IdentifierActionSpec extends SpecBase {
     "redirect the user (Organisation affinity group) to ineligible (not-admin) when has no credential role" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
 
-      private val enrolments = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
+      private val enrolments =
+        Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", testEori)), "Active"))
 
       when(
         mockAuthConnector
@@ -124,7 +126,8 @@ class IdentifierActionSpec extends SpecBase {
 
     "redirect the user (Agent affinity group) to ineligible (is-agent) when has no credential role" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
-      private val enrolments        = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
+      private val enrolments        =
+        Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", testEori)), "Active"))
 
       when(
         mockAuthConnector
@@ -145,7 +148,8 @@ class IdentifierActionSpec extends SpecBase {
     "redirect the user to ineligible (no-enrolment) when has no affinity group" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
 
-      private val enrolments = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
+      private val enrolments =
+        Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", testEori)), "Active"))
 
       when(
         mockAuthConnector
@@ -186,7 +190,8 @@ class IdentifierActionSpec extends SpecBase {
     "continue journey on successful response from auth" in new Setup {
       private val mockAuthConnector = mock[AuthConnector]
 
-      private val enrolments = Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", "test")), "Active"))
+      private val enrolments =
+        Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", testEori)), "Active"))
 
       when(
         mockAuthConnector

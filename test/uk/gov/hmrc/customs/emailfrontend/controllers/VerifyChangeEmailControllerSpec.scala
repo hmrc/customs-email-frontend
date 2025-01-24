@@ -22,7 +22,7 @@ import org.mockito.Mockito.{times, verify, when}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{redirectLocation, *}
+import play.api.test.Helpers.*
 import play.api.{Application, inject}
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.BadRequest
@@ -34,6 +34,7 @@ import uk.gov.hmrc.customs.emailfrontend.forms.Forms.confirmVerifyChangeForm
 import uk.gov.hmrc.customs.emailfrontend.model.*
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{testEmail, testEmail2, testLocalTimestamp}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.views.html.verify_change_email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
@@ -51,7 +52,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
         when(mockSave4LaterService.fetchEmail(any)(any))
           .thenReturn(
             Future.successful(
-              Some(EmailDetails(None, "test@email.com", Some(LocalDateTime.now().minus(Period.ofDays(2)))))
+              Some(EmailDetails(None, testEmail, Some(LocalDateTime.now().minus(Period.ofDays(2)))))
             )
           )
 
@@ -87,9 +88,9 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
       "email is verified" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", None))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, None))))
 
-        when(mockEmailVerificationService.isEmailVerified(meq("test@email.com"))(any[HeaderCarrier]))
+        when(mockEmailVerificationService.isEmailVerified(meq(testEmail))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(true)))
 
         running(app) {
@@ -106,9 +107,9 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
       "email is not verified" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", None))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, None))))
 
-        when(mockEmailVerificationService.isEmailVerified(meq("test@email.com"))(any[HeaderCarrier]))
+        when(mockEmailVerificationService.isEmailVerified(meq(testEmail))(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(false)))
 
         running(app) {
@@ -125,7 +126,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
       "for AmendmentInProgress" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(LocalDateTime.now())))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, Some(LocalDateTime.now())))))
 
         running(app) {
 
@@ -200,7 +201,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
     "have a status of OK for create method when email found in cache with no timestamp" in new Setup {
 
       when(mockSave4LaterService.fetchEmail(any)(any))
-        .thenReturn(Future.successful(Some(EmailDetails(Some("old@email"), "test@email.com", None))))
+        .thenReturn(Future.successful(Some(EmailDetails(Some(testEmail), testEmail2, None))))
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -217,7 +218,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
       "cache with no timestamp" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", None))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, None))))
 
         when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
           .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -234,7 +235,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
       "user already completed success amend email journey" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(LocalDateTime.now())))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, Some(LocalDateTime.now())))))
 
         when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
           .thenReturn(Future.successful(someSubscriptionDisplayResponse))
@@ -339,7 +340,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
       "and user already complete success amend email journey " in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
-          .thenReturn(Future.successful(Some(EmailDetails(None, "test@email.com", Some(LocalDateTime.now())))))
+          .thenReturn(Future.successful(Some(EmailDetails(None, testEmail, Some(LocalDateTime.now())))))
 
         running(app) {
           val request = fakeRequest(GET, routes.VerifyChangeEmailController.verifyChangeEmail.url)
@@ -379,7 +380,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
         status(result) shouldBe BAD_REQUEST
 
         contentAsString(result) shouldBe
-          view(confirmVerifyChangeForm.bind(Map("isVerify" -> "None")), Some("test@email.com"))(
+          view(confirmVerifyChangeForm.bind(Map("isVerify" -> "None")), Some(testEmail))(
             requestWithForm,
             messages
           ).toString()
@@ -429,7 +430,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
 
       running(app) {
         val request = fakeRequestWithCsrf(POST, routes.VerifyChangeEmailController.verifyChangeEmail.url)
-          .withFormUrlEncodedBody("email" -> "valid@email.com")
+          .withFormUrlEncodedBody("email" -> testEmail)
 
         val result = route(app, request).value
 
@@ -622,15 +623,14 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
   }
 
   trait Setup {
-    val emailVerificationTimeStamp      = "2023-2-17T9:30:47.114"
     val someSubscriptionDisplayResponse =
-      SubscriptionDisplayResponse(Some("test@email.com"), Some(emailVerificationTimeStamp), None, None)
+      SubscriptionDisplayResponse(Some(testEmail), Some(testLocalTimestamp), None, None)
 
     val subscriptionDisplayResponseWithNoEmail =
-      SubscriptionDisplayResponse(None, Some(emailVerificationTimeStamp), None, None)
+      SubscriptionDisplayResponse(None, Some(testLocalTimestamp), None, None)
 
     val someSubscriptionDisplayResponseWithNoEmailVerificationTimeStamp =
-      SubscriptionDisplayResponse(Some("test@email.com"), None, None, None)
+      SubscriptionDisplayResponse(Some(testEmail), None, None, None)
 
     val someSubscriptionDisplayResponseWithStatus =
       SubscriptionDisplayResponse(None, None, Some("statusText"), Some("FAIL"))

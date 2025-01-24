@@ -19,7 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.model
 import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.libs.json.Json
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.customs.emailfrontend.utils.TestData.dateFormatter01
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{dateFormatter01, testEmail, testEori}
 
 import java.time.LocalDateTime
 
@@ -28,11 +28,10 @@ class UpdateEmailSpec extends SpecBase {
   "UpdateEmail" should {
 
     "serialize timestamp correctly" in new Setup {
-      val eori      = Eori("testEori")
-      val address   = "test@example.com"
+      val eori      = Eori(testEori)
       val timestamp = LocalDateTime.parse(testDateTime01.format(dateFormatter01), dateFormatter01)
 
-      val updateEmail       = UpdateEmail(eori, address, timestamp)
+      val updateEmail       = UpdateEmail(eori, testEmail, timestamp)
       val json              = Json.toJson(updateEmail)
       val parsedUpdateEmail = json.as[UpdateEmail]
 
@@ -48,7 +47,7 @@ class UpdateEmailSpec extends SpecBase {
 
     "handle different date formats correctly" in new Setup {
       val timestamp: String = LocalDateTime.now.format(dateFormatter01)
-      val timestampJson     = Json.obj("eori" -> "testEori", "address" -> "test@example.com", "timestamp" -> timestamp)
+      val timestampJson     = Json.obj("eori" -> testEori, "address" -> testEmail, "timestamp" -> timestamp)
       val parsedUpdateEmail = timestampJson.as[UpdateEmail]
 
       parsedUpdateEmail.timestamp mustBe a[LocalDateTime]

@@ -25,6 +25,7 @@ import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificatio
 import uk.gov.hmrc.customs.emailfrontend.model.EmailDetails
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{testEmail, testEmail2}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 import java.time.LocalDateTime
@@ -204,8 +205,8 @@ class ChangingYourEmailControllerSpec extends SpecBase {
   trait Setup {
 
     val emailDetails: EmailDetails = EmailDetails(
-      currentEmail = Some("test@test.com"),
-      newEmail = "test_new@test.com",
+      currentEmail = Some(testEmail),
+      newEmail = testEmail2,
       timestamp = Some(LocalDateTime.now())
     )
 

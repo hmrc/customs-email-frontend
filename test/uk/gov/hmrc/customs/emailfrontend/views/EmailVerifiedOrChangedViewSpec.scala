@@ -23,6 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout}
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 import uk.gov.hmrc.customs.emailfrontend.viewmodels.EmailVerifiedOrChangedViewModel
 import uk.gov.hmrc.customs.emailfrontend.views.html.email_verified_or_changed
 
@@ -66,7 +67,6 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
 
   trait Setup {
 
-    val email: String               = testEmail
     val referrerUrl: Option[String] = Some("https://finance.example.com")
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "/some/resource/path")
@@ -75,7 +75,6 @@ class EmailVerifiedOrChangedViewSpec extends SpecBase {
 
     val tgpUrl            = "https://trader-goods.example.com"
     val customsFinanceUrl = "https://finance.example.com"
-    val testEmail         = "test@example.com"
 
     when(mockAppConfig.customsFinanceReferrer).thenReturn(Some(ReferrerName("Customs Finance", customsFinanceUrl)))
     when(mockAppConfig.traderGoodsProfilesReferrer).thenReturn(Some(ReferrerName("Trader Goods Profiles", tgpUrl)))

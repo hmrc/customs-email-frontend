@@ -20,6 +20,7 @@ import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.mustBe
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
 
 class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
 
@@ -100,7 +101,6 @@ class EmailVerifiedOrChangedViewModelSpec extends SpecBase {
 
     val tgpUrl            = "https://trader-goods.example.com"
     val customsFinanceUrl = "https://finance.example.com"
-    val testEmail         = "test@example.com"
 
     when(mockAppConfig.customsFinanceReferrer).thenReturn(Some(ReferrerName("Customs Finance", customsFinanceUrl)))
     when(mockAppConfig.traderGoodsProfilesReferrer).thenReturn(Some(ReferrerName("Trader Goods Profiles", tgpUrl)))
