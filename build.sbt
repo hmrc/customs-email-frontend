@@ -58,7 +58,7 @@ lazy val microservice = Project(appName, file("."))
     ),
     scalafmtDetailedError := true,
     scalafmtPrintDiff := true,
-    scalafmtFailOnErrors := true
+    scalafmtFailOnErrors := true,
   )
   .settings(PlayKeys.playDefaultPort := 9898)
   .settings(resolvers += Resolver.jcenterRepo)
