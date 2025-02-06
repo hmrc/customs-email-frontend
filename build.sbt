@@ -1,11 +1,11 @@
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.itSettings
+import AppDependencies.bootstrapVersion
 
 val appName = "customs-email-frontend"
 
 val silencerVersion = "1.7.16"
 val scala3_3_4 = "3.3.4"
-val bootstrap = "9.1.0"
 
 val scalaStyleConfigFile = "scalastyle-config.xml"
 val testScalaStyleConfigFile = "test-scalastyle-config.xml"
@@ -21,7 +21,7 @@ lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
   .settings(itSettings())
-  .settings(libraryDependencies ++= Seq("uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrap % Test))
+  .settings(libraryDependencies ++= Seq("uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrapVersion % Test))
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
@@ -58,7 +58,7 @@ lazy val microservice = Project(appName, file("."))
     ),
     scalafmtDetailedError := true,
     scalafmtPrintDiff := true,
-    scalafmtFailOnErrors := true,
+    scalafmtFailOnErrors := true
   )
   .settings(PlayKeys.playDefaultPort := 9898)
   .settings(resolvers += Resolver.jcenterRepo)
