@@ -20,11 +20,13 @@ import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
+import uk.gov.hmrc.customs.emailfrontend.connectors.EmailConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.*
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailDetails, InternalId}
 import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Save4LaterService}
+import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.views.html.changing_your_email
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -38,6 +40,7 @@ class ChangingYourEmailController @Inject() (
   mcc: MessagesControllerComponents,
   emailVerificationService: EmailVerificationService,
   save4LaterService: Save4LaterService,
+  emailConnector: EmailConnector,
   errorHandler: ErrorHandler
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends FrontendController(mcc)
@@ -70,6 +73,8 @@ class ChangingYourEmailController @Inject() (
           Future.successful(Redirect(routes.VerifyYourEmailController.show))
 
         case Some(EmailAlreadyVerified) =>
+          sendEmailToCurrentAndNewEmailAddress(details)
+
           save4LaterService.saveEmail(internalId, details.copy(timestamp = None)).map { _ =>
             Redirect(routes.EmailConfirmedController.show)
           }
@@ -77,6 +82,27 @@ class ChangingYourEmailController @Inject() (
         case _ =>
           Future.successful(Redirect(routes.CheckYourEmailController.problemWithService()))
       }
+
+  private def sendEmailToCurrentAndNewEmailAddress(details: EmailDetails)(implicit
+    request: Request[AnyContent]
+  ) =
+    List(details.currentEmail.getOrElse(emptyString), details.newEmail).map { emailAddress =>
+      logger.info(s"Email is being sent to $emailAddress")
+
+      emailConnector
+        .sendEmail(
+          emailAddress,
+          "customs_financials_change_email",
+          Map("emailAddress" -> details.currentEmail.getOrElse(emptyString))
+        )
+        .map {
+          case httpResponse if httpResponse.status == 200 =>
+            logger.info(s"Email has been sent to $emailAddress")
+
+          case httpResponse =>
+            logger.warn(s"Error occurred while sending email to $emailAddress")
+        }
+    }
 
   def problemWithService(): Action[AnyContent] = identify.async { implicit request =>
     Future.successful(BadRequest(errorHandler.problemWithService()))

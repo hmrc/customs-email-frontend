@@ -16,10 +16,16 @@
 
 package uk.gov.hmrc.customs.emailfrontend.model
 
-import play.api.libs.json.{Json, OFormat, OWrites}
+import play.api.libs.json.{JsValue, Json, OFormat, OWrites, Writes}
+import play.api.libs.ws.BodyWritable
 
 case class SendEmailRequest(to: Seq[String], templateId: String, parameters: Map[String, String])
 
 object SendEmailRequest {
   implicit val emailRequestFormat: OFormat[SendEmailRequest] = Json.format[SendEmailRequest]
+
+  implicit def jsonBodyWritable[T](implicit
+    writes: Writes[T],
+    jsValueBodyWritable: BodyWritable[JsValue]
+  ): BodyWritable[T] = jsValueBodyWritable.map(writes.writes)
 }

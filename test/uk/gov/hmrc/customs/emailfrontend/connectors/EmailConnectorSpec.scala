@@ -17,12 +17,15 @@
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.mustBe
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse, UpstreamErrorResponse}
-import play.api.http.Status.OK
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
+import play.api.test.Helpers.running
+import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
+import uk.gov.hmrc.customs.emailfrontend.model.SendEmailRequest
 
 import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,18 +35,46 @@ class EmailConnectorSpec extends SpecBase {
   "sendEmail" should {
 
     "return 200 response when email is sent successfully" in new Setup {
-      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
-      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
-      when(requestBuilder.execute(any[HttpReads[Either[UpstreamErrorResponse, HttpResponse]]], any[ExecutionContext]))
-        .thenReturn(Future.successful(HttpResponse(OK)))
+      running(app) {
+        when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+        when(requestBuilder.withBody(any[SendEmailRequest]())(any(), any(), any())).thenReturn(requestBuilder)
+        when(requestBuilder.execute(any[HttpReads[Either[UpstreamErrorResponse, HttpResponse]]], any[ExecutionContext]))
+          .thenReturn(Future.successful(Right(HttpResponse.apply(OK))))
 
-      val result: HttpResponse =
-        connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")).futureValue
+        val result: HttpResponse =
+          connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")).futureValue
 
-      result.status mustBe OK
+        result.status mustBe OK
+      }
     }
 
-    "return UpstreamErrorResponse when error occurs while sending email" in new Setup {}
+    "return UpstreamErrorResponse when error occurs while sending email" in new Setup {
+      running(app) {
+        when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+        when(requestBuilder.withBody(any[SendEmailRequest]())(any(), any(), any())).thenReturn(requestBuilder)
+        when(requestBuilder.execute(any[HttpReads[Either[UpstreamErrorResponse, HttpResponse]]], any[ExecutionContext]))
+          .thenReturn(Future.successful(Left(UpstreamErrorResponse("error occurred", BAD_REQUEST))))
+
+        val result: HttpResponse =
+          connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")).futureValue
+
+        result.status mustBe BAD_REQUEST
+      }
+    }
+
+    "return INTERNAL_SERVER_ERROR when exception occurs while sending email" in new Setup {
+      running(app) {
+        when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+        when(requestBuilder.withBody(any[SendEmailRequest]())(any(), any(), any())).thenReturn(requestBuilder)
+        when(requestBuilder.execute(any[HttpReads[Either[UpstreamErrorResponse, HttpResponse]]], any[ExecutionContext]))
+          .thenReturn(Future.failed(new RuntimeException("error occurred")))
+
+        val result: HttpResponse =
+          connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")).futureValue
+
+        result.status mustBe INTERNAL_SERVER_ERROR
+      }
+    }
   }
 
   trait Setup {
@@ -51,5 +82,6 @@ class EmailConnectorSpec extends SpecBase {
     val requestBuilder: RequestBuilder = mock[RequestBuilder]
 
     val connector: EmailConnector = app.injector.instanceOf[EmailConnector]
+    val mockAppConfig: AppConfig  = mock[AppConfig]
   }
 }
