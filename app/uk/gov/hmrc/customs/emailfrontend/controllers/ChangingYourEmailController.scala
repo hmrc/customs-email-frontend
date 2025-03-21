@@ -92,7 +92,7 @@ class ChangingYourEmailController @Inject() (
       emailConnector
         .sendEmail(
           emailAddress,
-          "customs_financials_change_email",
+          "customs_financials_change_email_address",
           Map("emailAddress" -> details.currentEmail.getOrElse(emptyString))
         )
         .map {
