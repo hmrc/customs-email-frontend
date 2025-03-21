@@ -49,9 +49,7 @@ class EmailConnector @Inject() (
         case Right(value) => value
       }
       .recover { case e =>
-        logger.error(
-          s"Call to email service failed url=${appConfig.emailServiceUrl}, exception=$e"
-        )
+        logger.error(s"Call to email service failed url=${appConfig.emailServiceUrl}, exception=$e")
         HttpResponse(INTERNAL_SERVER_ERROR)
       }
   }

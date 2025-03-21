@@ -22,7 +22,7 @@ import org.scalatest.matchers.must.Matchers.mustBe
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse, UpstreamErrorResponse}
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
+import play.api.http.Status.{BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, OK}
 import play.api.test.Helpers.running
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.SendEmailRequest
@@ -39,7 +39,7 @@ class EmailConnectorSpec extends SpecBase {
         when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
         when(requestBuilder.withBody(any[SendEmailRequest]())(any(), any(), any())).thenReturn(requestBuilder)
         when(requestBuilder.execute(any[HttpReads[Either[UpstreamErrorResponse, HttpResponse]]], any[ExecutionContext]))
-          .thenReturn(Future.successful(Right(HttpResponse.apply(OK))))
+          .thenReturn(Future.successful(Right(HttpResponse.apply(CREATED))))
 
         val result: HttpResponse =
           connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")).futureValue
