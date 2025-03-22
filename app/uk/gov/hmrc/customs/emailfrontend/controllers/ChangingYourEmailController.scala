@@ -96,7 +96,8 @@ class ChangingYourEmailController @Inject() (
           Map("emailAddress" -> details.currentEmail.getOrElse(emptyString))
         )
         .map {
-          case httpResponse if (httpResponse.status == CREATED) || (httpResponse.status == ACCEPTED) =>
+          case httpResponse
+              if (httpResponse.status == CREATED) || (httpResponse.status == ACCEPTED) || (httpResponse.status == OK) =>
             logger.info(s"Email has been sent to $emailAddress")
 
           case httpResponse =>

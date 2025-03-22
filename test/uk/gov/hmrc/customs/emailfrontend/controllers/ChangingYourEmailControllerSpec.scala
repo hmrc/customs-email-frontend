@@ -16,8 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.controllers
 
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{times, verify, when}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import play.api.{Application, inject}
@@ -29,6 +28,8 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{testEmail, testEmail2}
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.http.HttpResponse
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
@@ -161,6 +162,9 @@ class ChangingYourEmailControllerSpec extends SpecBase {
 
         status(result)           shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(routes.EmailConfirmedController.show.url)
+
+        val emailConnectorCaptor = ArgumentCaptor.forClass(classOf[EmailConnector])
+        verify(mockEmailConnector, times(2)).sendEmail(any(), any(), any())(any(), any())
       }
     }
 
