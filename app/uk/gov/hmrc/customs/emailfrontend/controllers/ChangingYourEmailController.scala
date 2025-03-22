@@ -96,8 +96,7 @@ class ChangingYourEmailController @Inject() (
           Map("emailAddress" -> details.currentEmail.getOrElse(emptyString))
         )
         .map {
-          case httpResponse
-              if (httpResponse.status == CREATED) || (httpResponse.status == ACCEPTED) || (httpResponse.status == OK) =>
+          case httpResponse if isSuccessfulResponse(httpResponse.status) =>
             logger.info(s"Email has been sent to $emailAddress")
 
           case httpResponse =>
@@ -109,4 +108,5 @@ class ChangingYourEmailController @Inject() (
     Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 
+  private def isSuccessfulResponse(status: Int) = List(CREATED, ACCEPTED, OK).contains(status)
 }
