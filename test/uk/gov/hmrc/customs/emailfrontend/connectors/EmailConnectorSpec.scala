@@ -35,6 +35,7 @@ import play.api.{Application, Configuration}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import com.github.tomakehurst.wiremock.http.Fault.CONNECTION_RESET_BY_PEER
+import com.github.tomakehurst.wiremock.http.RequestMethod.POST
 
 import scala.concurrent.ExecutionContext
 import play.api.test.Helpers.defaultAwaitTimeout
@@ -50,10 +51,8 @@ class EmailConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar
 
       val emailRequestJsString: String = Json.toJson(sendEmailRequest).toString
 
-      when(mockConfig.emailServiceUrl).thenReturn(s"http://localhost:$wireMockPort/hmrc/email")
-
       wireMockServer.stubFor(
-        post(urlEqualTo("/hmrc/email"))
+        post(urlEqualTo(emailServicePath))
           .withRequestBody(equalToJson(emailRequestJsString))
           .willReturn(
             aResponse()
@@ -65,6 +64,8 @@ class EmailConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar
         await(connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")))
 
       result.status mustBe CREATED
+
+      verifyEndPointUrlHit(emailServicePath, POST)
     }
 
     "return 200 response when email is sent successfully" in new Setup {
@@ -74,10 +75,8 @@ class EmailConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar
 
       val emailRequestJsString: String = Json.toJson(sendEmailRequest).toString
 
-      when(mockConfig.emailServiceUrl).thenReturn(s"http://localhost:$wireMockPort/hmrc/email")
-
       wireMockServer.stubFor(
-        post(urlEqualTo("/hmrc/email"))
+        post(urlEqualTo(emailServicePath))
           .withRequestBody(equalToJson(emailRequestJsString))
           .willReturn(
             aResponse()
@@ -89,6 +88,8 @@ class EmailConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar
         await(connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")))
 
       result.status mustBe OK
+
+      verifyEndPointUrlHit(emailServicePath, POST)
     }
 
     "return HttpResponse with correct error code when error occurs while sending email" in new Setup {
@@ -97,10 +98,8 @@ class EmailConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar
 
       val emailRequestJsString: String = Json.toJson(sendEmailRequest).toString
 
-      when(mockConfig.emailServiceUrl).thenReturn(s"http://localhost:$wireMockPort/hmrc/email")
-
       wireMockServer.stubFor(
-        post(urlEqualTo("/hmrc/email"))
+        post(urlEqualTo(emailServicePath))
           .withRequestBody(equalToJson(emailRequestJsString))
           .willReturn(
             aResponse()
@@ -112,6 +111,8 @@ class EmailConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar
         await(connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")))
 
       result.status mustBe BAD_REQUEST
+
+      verifyEndPointUrlHit(emailServicePath, POST)
     }
 
     "return SERVICE_UNAVAILABLE when connection gets reset while sending email" in new Setup {
@@ -120,10 +121,8 @@ class EmailConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar
 
       val emailRequestJsString: String = Json.toJson(sendEmailRequest).toString
 
-      when(mockConfig.emailServiceUrl).thenReturn(s"http://localhost:$wireMockPort/hmrc/email")
-
       wireMockServer.stubFor(
-        post(urlEqualTo("/hmrc/email"))
+        post(urlEqualTo(emailServicePath))
           .withRequestBody(equalToJson(emailRequestJsString))
           .willReturn(
             aResponse()
@@ -135,6 +134,8 @@ class EmailConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar
         await(connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")))
 
       result.status mustBe SERVICE_UNAVAILABLE
+
+      verifyEndPointUrlHit(emailServicePath, POST)
     }
   }
 
@@ -158,6 +159,7 @@ class EmailConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar
     lazy implicit val ec: ExecutionContext = ExecutionContext.global
 
     val mockConfig: AppConfig = mock[AppConfig]
+    val emailServicePath      = "/hmrc/email"
 
     val app: Application = new GuiceApplicationBuilder()
       .configure(
@@ -170,5 +172,7 @@ class EmailConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar
 
     val httpClient: HttpClientV2  = app.injector.instanceOf[HttpClientV2]
     val connector: EmailConnector = new EmailConnector(mockConfig, httpClient)
+
+    when(mockConfig.emailServiceUrl).thenReturn(s"http://localhost:$wireMockPort$emailServicePath")
   }
 }
