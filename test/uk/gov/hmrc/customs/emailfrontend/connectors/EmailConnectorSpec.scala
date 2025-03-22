@@ -16,72 +16,159 @@
 
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
-import org.mockito.ArgumentMatchers.any
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalToJson, post, urlEqualTo}
+import com.typesafe.config.ConfigFactory
 import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.mustBe
-import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
-import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
-import uk.gov.hmrc.http.{HttpReads, HttpResponse, UpstreamErrorResponse}
-import play.api.http.Status.{BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, OK}
-import play.api.test.Helpers.running
+import play.api.http.Status.{BAD_REQUEST, CREATED, OK, SERVICE_UNAVAILABLE}
+import play.api.test.Helpers.await
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.SendEmailRequest
+import uk.gov.hmrc.customs.emailfrontend.utils.WireMockSupportProvider
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.{Application, Configuration}
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
+import com.github.tomakehurst.wiremock.http.Fault.CONNECTION_RESET_BY_PEER
 
-import java.net.URL
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import play.api.test.Helpers.defaultAwaitTimeout
 
-class EmailConnectorSpec extends SpecBase {
+class EmailConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar with WireMockSupportProvider {
 
   "sendEmail" should {
 
+    "return 201 response when email is sent successfully" in new Setup {
+
+      val sendEmailRequest: SendEmailRequest =
+        SendEmailRequest(Seq("test@test.com"), "test_template", Map("emailAddress" -> "test@test.com"))
+
+      val emailRequestJsString: String = Json.toJson(sendEmailRequest).toString
+
+      when(mockConfig.emailServiceUrl).thenReturn(s"http://localhost:$wireMockPort/hmrc/email")
+
+      wireMockServer.stubFor(
+        post(urlEqualTo("/hmrc/email"))
+          .withRequestBody(equalToJson(emailRequestJsString))
+          .willReturn(
+            aResponse()
+              .withStatus(CREATED)
+          )
+      )
+
+      val result: HttpResponse =
+        await(connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")))
+
+      result.status mustBe CREATED
+    }
+
     "return 200 response when email is sent successfully" in new Setup {
-      running(app) {
-        when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
-        when(requestBuilder.withBody(any[SendEmailRequest]())(any(), any(), any())).thenReturn(requestBuilder)
-        when(requestBuilder.execute(any[HttpReads[Either[UpstreamErrorResponse, HttpResponse]]], any[ExecutionContext]))
-          .thenReturn(Future.successful(Right(HttpResponse.apply(CREATED))))
 
-        val result: HttpResponse =
-          connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")).futureValue
+      val sendEmailRequest: SendEmailRequest =
+        SendEmailRequest(Seq("test@test.com"), "test_template", Map("emailAddress" -> "test@test.com"))
 
-        result.status mustBe OK
-      }
+      val emailRequestJsString: String = Json.toJson(sendEmailRequest).toString
+
+      when(mockConfig.emailServiceUrl).thenReturn(s"http://localhost:$wireMockPort/hmrc/email")
+
+      wireMockServer.stubFor(
+        post(urlEqualTo("/hmrc/email"))
+          .withRequestBody(equalToJson(emailRequestJsString))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+          )
+      )
+
+      val result: HttpResponse =
+        await(connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")))
+
+      result.status mustBe OK
     }
 
-    "return UpstreamErrorResponse when error occurs while sending email" in new Setup {
-      running(app) {
-        when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
-        when(requestBuilder.withBody(any[SendEmailRequest]())(any(), any(), any())).thenReturn(requestBuilder)
-        when(requestBuilder.execute(any[HttpReads[Either[UpstreamErrorResponse, HttpResponse]]], any[ExecutionContext]))
-          .thenReturn(Future.successful(Left(UpstreamErrorResponse("error occurred", BAD_REQUEST))))
+    "return HttpResponse with correct error code when error occurs while sending email" in new Setup {
+      val sendEmailRequest: SendEmailRequest =
+        SendEmailRequest(Seq("test@test.com"), "test_template", Map("emailAddress" -> "test@test.com"))
 
-        val result: HttpResponse =
-          connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")).futureValue
+      val emailRequestJsString: String = Json.toJson(sendEmailRequest).toString
 
-        result.status mustBe BAD_REQUEST
-      }
+      when(mockConfig.emailServiceUrl).thenReturn(s"http://localhost:$wireMockPort/hmrc/email")
+
+      wireMockServer.stubFor(
+        post(urlEqualTo("/hmrc/email"))
+          .withRequestBody(equalToJson(emailRequestJsString))
+          .willReturn(
+            aResponse()
+              .withStatus(BAD_REQUEST)
+          )
+      )
+
+      val result: HttpResponse =
+        await(connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")))
+
+      result.status mustBe BAD_REQUEST
     }
 
-    "return INTERNAL_SERVER_ERROR when exception occurs while sending email" in new Setup {
-      running(app) {
-        when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
-        when(requestBuilder.withBody(any[SendEmailRequest]())(any(), any(), any())).thenReturn(requestBuilder)
-        when(requestBuilder.execute(any[HttpReads[Either[UpstreamErrorResponse, HttpResponse]]], any[ExecutionContext]))
-          .thenReturn(Future.failed(new RuntimeException("error occurred")))
+    "return SERVICE_UNAVAILABLE when connection gets reset while sending email" in new Setup {
+      val sendEmailRequest: SendEmailRequest =
+        SendEmailRequest(Seq("test@test.com"), "test_template", Map("emailAddress" -> "test@test.com"))
 
-        val result: HttpResponse =
-          connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")).futureValue
+      val emailRequestJsString: String = Json.toJson(sendEmailRequest).toString
 
-        result.status mustBe INTERNAL_SERVER_ERROR
-      }
+      when(mockConfig.emailServiceUrl).thenReturn(s"http://localhost:$wireMockPort/hmrc/email")
+
+      wireMockServer.stubFor(
+        post(urlEqualTo("/hmrc/email"))
+          .withRequestBody(equalToJson(emailRequestJsString))
+          .willReturn(
+            aResponse()
+              .withFault(CONNECTION_RESET_BY_PEER)
+          )
+      )
+
+      val result: HttpResponse =
+        await(connector.sendEmail("test@test.com", "test_template", Map("emailAddress" -> "test@test.com")))
+
+      result.status mustBe SERVICE_UNAVAILABLE
     }
   }
 
-  trait Setup {
-    val mockHttpClient: HttpClientV2   = mock[HttpClientV2]
-    val requestBuilder: RequestBuilder = mock[RequestBuilder]
+  override def config: Configuration = Configuration(
+    ConfigFactory.parseString(
+      s"""
+         |microservice {
+         |  services {
+         |    email {
+         |       host = $wireMockHost
+         |       port = $wireMockPort
+         |    }
+         |  }
+         |}
+         |""".stripMargin
+    )
+  )
 
-    val connector: EmailConnector = app.injector.instanceOf[EmailConnector]
-    val mockAppConfig: AppConfig  = mock[AppConfig]
+  trait Setup {
+    lazy implicit val hc: HeaderCarrier    = HeaderCarrier()
+    lazy implicit val ec: ExecutionContext = ExecutionContext.global
+
+    val mockConfig: AppConfig = mock[AppConfig]
+
+    val app: Application = new GuiceApplicationBuilder()
+      .configure(
+        "play.filters.csp.nonce.enabled"        -> false,
+        "auditing.enabled"                      -> "false",
+        "microservice.metrics.graphite.enabled" -> "false",
+        "metrics.enabled"                       -> "false"
+      )
+      .build()
+
+    val httpClient: HttpClientV2  = app.injector.instanceOf[HttpClientV2]
+    val connector: EmailConnector = new EmailConnector(mockConfig, httpClient)
   }
 }

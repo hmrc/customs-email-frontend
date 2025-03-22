@@ -17,13 +17,12 @@
 package uk.gov.hmrc.customs.emailfrontend.connectors
 
 import play.api.Logging
-import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.http.Status.SERVICE_UNAVAILABLE
 import uk.gov.hmrc.customs.emailfrontend.config.AppConfig
 import uk.gov.hmrc.customs.emailfrontend.model.SendEmailRequest
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,8 +30,7 @@ import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
 class EmailConnector @Inject() (
   appConfig: AppConfig,
-  httpClient: HttpClientV2,
-  servicesConfig: ServicesConfig
+  httpClient: HttpClientV2
 ) extends Logging {
   def sendEmail(to: String, templateId: String, params: Map[String, String])(implicit
     hc: HeaderCarrier,
@@ -45,12 +43,12 @@ class EmailConnector @Inject() (
       .withBody[SendEmailRequest](request)
       .execute[Either[UpstreamErrorResponse, HttpResponse]]
       .map {
-        case Left(err)    => throw err
-        case Right(value) => value
+        case Left(errResponse) => HttpResponse(errResponse.statusCode)
+        case Right(value)      => value
       }
       .recover { case e =>
         logger.error(s"Call to email service failed url=${appConfig.emailServiceUrl}, exception=$e")
-        HttpResponse(INTERNAL_SERVER_ERROR)
+        HttpResponse(SERVICE_UNAVAILABLE)
       }
   }
 }
