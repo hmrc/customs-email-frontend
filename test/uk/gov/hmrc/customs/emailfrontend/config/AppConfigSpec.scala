@@ -19,6 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.config
 import org.scalatest.matchers.must.Matchers.mustEqual
 import uk.gov.hmrc.customs.emailfrontend.model.ReferrerName
 import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
+import org.scalatest.matchers.must.Matchers.mustBe
 
 class AppConfigSpec extends SpecBase {
 
@@ -69,12 +70,14 @@ class AppConfigSpec extends SpecBase {
     }
 
     "load specific referrer services correctly" in {
-      appConfigInstance.customsFinanceReferrer mustEqual Some(
-        ReferrerName("customs-finance", "/customs/payment-records")
-      )
-      appConfigInstance.traderGoodsProfilesReferrer mustEqual Some(
+      appConfigInstance.customsFinanceReferrer mustBe Some(ReferrerName("customs-finance", "/customs/payment-records"))
+      appConfigInstance.traderGoodsProfilesReferrer mustBe Some(
         ReferrerName("trader-goods-profiles", "/trader-goods-profiles/")
       )
+    }
+
+    "load correct emailServiceUrl" in {
+      appConfigInstance.emailServiceUrl mustBe "http://localhost:8300/hmrc/email"
     }
   }
 }
