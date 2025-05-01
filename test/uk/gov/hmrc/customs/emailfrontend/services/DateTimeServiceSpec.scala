@@ -32,7 +32,7 @@ class DateTimeServiceSpec extends SpecBase {
         override def nowUtc(): LocalDateTime = ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime
       }
 
-      val currentTime = dateTimeService.nowUtc()
+      val currentTime: LocalDateTime = dateTimeService.nowUtc()
 
       currentTime.getYear       should be >= 2023
       currentTime.getMonthValue should (be >= 1 and be <= 12)
@@ -67,6 +67,14 @@ class DateTimeServiceSpec extends SpecBase {
     "return correct ZoneId" in new Setup {
       val dateTimeServiceOb = new DateTimeService()
       dateTimeServiceOb.zonedDateTimeUtc.getZone shouldBe ZoneId.of("UTC")
+    }
+  }
+
+  "timeStamp" should {
+    "return correct Long value of current timestamp" in {
+      val dateTimeServiceOb = new DateTimeService()
+
+      dateTimeServiceOb.timeStamp() shouldBe a[Long]
     }
   }
 

@@ -78,14 +78,17 @@ trait SpecBase
       )
   }
 
-  def app: Application                   = applicationBuilder().build()
+  def app: Application = applicationBuilder().build()
+
   lazy implicit val hc: HeaderCarrier    = HeaderCarrier()
   lazy implicit val ec: ExecutionContext = ExecutionContext.global
   lazy val mockAppConfig: AppConfig      = mock[AppConfig]
   lazy val appConfigInstance: AppConfig  = app.injector.instanceOf[AppConfig]
-  implicit lazy val messages: Messages   =
+
+  implicit lazy val messages: Messages =
     app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
-  lazy val errorHandler: ErrorHandler    = app.injector.instanceOf[ErrorHandler]
+
+  lazy val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
 
   override def beforeEach(): Unit = reset(mockAppConfig)
 }

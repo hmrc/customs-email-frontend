@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.emailfrontend.services
+package uk.gov.hmrc.customs.emailfrontend.model
 
-import java.time.{Instant, LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
+import play.api.libs.json.Format
+import uk.gov.hmrc.customs.emailfrontend.utils.JsonFormatUtils
 
-class DateTimeService {
-  val UtcZoneId: ZoneId = ZoneId.of("UTC")
+final case class EmailAddress(value: String)
 
-  def nowUtc(): LocalDateTime = ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime
-
-  def zonedDateTimeUtc: ZonedDateTime = ZonedDateTime.now(UtcZoneId)
-
-  def timeStamp(): Long = Instant.now.toEpochMilli
+object EmailAddress {
+  implicit val format: Format[EmailAddress] = JsonFormatUtils.stringFormat(EmailAddress.apply)(_.value)
 }

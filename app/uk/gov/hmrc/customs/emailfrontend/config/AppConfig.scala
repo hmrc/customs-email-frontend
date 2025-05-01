@@ -69,6 +69,10 @@ class AppConfig @Inject() (val config: Configuration, servicesConfig: ServicesCo
   private val emailServiceBaseUrl: String = servicesConfig.baseUrl("email")
   lazy val emailServiceUrl: String        = s"$emailServiceBaseUrl/hmrc/email"
 
+  lazy val sendEmailEndpoint: String =
+    servicesConfig.baseUrl("customs-financials-email-throttler") +
+      config.get[String]("microservice.services.customs-financials-email-throttler.context-base") + "/enqueue-email"
+
   lazy val referrerName: Seq[ReferrerName] = config.get[Seq[ReferrerName]]("referrer-services")
 
   lazy val customsFinanceReferrer: Option[ReferrerName] = referrerName.find(_.name == "customs-finance")
