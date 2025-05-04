@@ -45,7 +45,7 @@ class EmailThrottlerConnector @Inject() (http: HttpClientV2, metricsReporter: Me
         .execute[HttpResponse]
         .collect {
           case response if response.status == Status.ACCEPTED =>
-            log.info(s"successfuly sent email notification for ${request.templateId}")
+            log.info(s"successfully sent email notification for ${request.templateId}")
             true
 
           case response =>

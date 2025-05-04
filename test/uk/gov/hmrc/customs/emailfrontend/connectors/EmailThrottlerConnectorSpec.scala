@@ -29,49 +29,51 @@ import play.api.test.Helpers.*
 import play.api.{Application, Configuration}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailRequest
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.{SpecBase, WireMockSupportProvider}
+import uk.gov.hmrc.customs.emailfrontend.utils.WireMockSupportProvider
 import uk.gov.hmrc.http.HeaderCarrier
 
 class EmailThrottlerConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar with WireMockSupportProvider {
 
-  "return true when the api responds with 202" in new Setup {
-    wireMockServer.stubFor(
-      post(urlPathMatching(sendEmailEndpointUrl))
-        .withRequestBody(equalToJson(Json.toJson(request).toString))
-        .willReturn(aResponse().withStatus(ACCEPTED).withBody(emptyString))
-    )
+  "sendEmail" should {
+    "return true when the api responds with 202" in new Setup {
+      wireMockServer.stubFor(
+        post(urlPathMatching(sendEmailEndpointUrl))
+          .withRequestBody(equalToJson(Json.toJson(request).toString))
+          .willReturn(aResponse().withStatus(ACCEPTED).withBody(emptyString))
+      )
 
-    val result: Boolean = await(connector.sendEmail(request))
-    result shouldBe true
+      val result: Boolean = await(connector.sendEmail(request))
+      result shouldBe true
 
-    verifyExactlyOneEndPointUrlHit(sendEmailEndpointUrl, POST)
-  }
+      verifyExactlyOneEndPointUrlHit(sendEmailEndpointUrl, POST)
+    }
 
-  "return false when the api responds with a successful response that isn't 204" in new Setup {
+    "return false when the api responds with a successful response that isn't 202" in new Setup {
 
-    wireMockServer.stubFor(
-      post(urlPathMatching(sendEmailEndpointUrl))
-        .withRequestBody(equalToJson(Json.toJson(request).toString))
-        .willReturn(ok(emptyString))
-    )
+      wireMockServer.stubFor(
+        post(urlPathMatching(sendEmailEndpointUrl))
+          .withRequestBody(equalToJson(Json.toJson(request).toString))
+          .willReturn(ok(emptyString))
+      )
 
-    val result: Boolean = await(connector.sendEmail(request))
-    result shouldBe false
+      val result: Boolean = await(connector.sendEmail(request))
+      result shouldBe false
 
-    verifyExactlyOneEndPointUrlHit(sendEmailEndpointUrl, POST)
-  }
+      verifyExactlyOneEndPointUrlHit(sendEmailEndpointUrl, POST)
+    }
 
-  "return false when the api fails due to connection reset" in new Setup {
-    wireMockServer.stubFor(
-      post(urlPathMatching(sendEmailEndpointUrl))
-        .withRequestBody(equalToJson(Json.toJson(request).toString))
-        .willReturn(aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER))
-    )
+    "return false when the api fails due to connection reset" in new Setup {
+      wireMockServer.stubFor(
+        post(urlPathMatching(sendEmailEndpointUrl))
+          .withRequestBody(equalToJson(Json.toJson(request).toString))
+          .willReturn(aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER))
+      )
 
-    val result: Boolean = await(connector.sendEmail(request))
-    result shouldBe false
+      val result: Boolean = await(connector.sendEmail(request))
+      result shouldBe false
 
-    verifyEndPointUrlHit(sendEmailEndpointUrl, POST)
+      verifyEndPointUrlHit(sendEmailEndpointUrl, POST)
+    }
   }
 
   override def config: Configuration = Configuration(
@@ -97,6 +99,12 @@ class EmailThrottlerConnectorSpec extends AnyWordSpecLike with Matchers with Moc
 
     val app: Application = new GuiceApplicationBuilder()
       .configure(config)
+      .configure(
+        "play.filters.csp.nonce.enabled"        -> false,
+        "auditing.enabled"                      -> "false",
+        "microservice.metrics.graphite.enabled" -> "false",
+        "metrics.enabled"                       -> "false"
+      )
       .build()
 
     val connector: EmailThrottlerConnector = app.injector.instanceOf[EmailThrottlerConnector]
