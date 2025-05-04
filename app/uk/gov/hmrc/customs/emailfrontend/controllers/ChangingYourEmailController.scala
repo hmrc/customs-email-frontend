@@ -20,7 +20,7 @@ import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
-import uk.gov.hmrc.customs.emailfrontend.connectors.{EmailConnector, EmailThrottlerConnector}
+import uk.gov.hmrc.customs.emailfrontend.connectors.EmailThrottlerConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.*
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
 import uk.gov.hmrc.customs.emailfrontend.forms.Forms.emailForm
