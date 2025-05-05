@@ -26,7 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class MetricsReporterService @Inject()(val metrics: MetricRegistry, dateTimeService: DateTimeService) {
+class MetricsReporterService @Inject() (val metrics: MetricRegistry, dateTimeService: DateTimeService) {
 
   def withResponseTimeLogging[T](resourceName: String)(future: Future[T])(implicit ec: ExecutionContext): Future[T] = {
     val startTimeStamp = dateTimeService.timeStamp()

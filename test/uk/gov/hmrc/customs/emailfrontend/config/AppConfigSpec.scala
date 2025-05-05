@@ -76,10 +76,6 @@ class AppConfigSpec extends SpecBase {
       )
     }
 
-    "load correct emailServiceUrl" in {
-      appConfigInstance.emailServiceUrl mustBe "http://localhost:8300/hmrc/email"
-    }
-
     "load sendEmailEndpoint URL correctly" in {
       appConfigInstance.sendEmailEndpoint mustBe "http://localhost:9872/customs-financials-email-throttler/enqueue-email"
     }

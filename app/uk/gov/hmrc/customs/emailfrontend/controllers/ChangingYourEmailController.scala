@@ -100,9 +100,9 @@ class ChangingYourEmailController @Inject() (
       .sendEmail(emailRequest)
       .map { response =>
         if (response) {
-          logger.info(s"Email has been sent")
+          logger.info("Email has been sent")
         } else {
-          logger.warn(s"Error occurred while sending email")
+          logger.warn("Error occurred while sending email")
         }
       }
   }

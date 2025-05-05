@@ -37,7 +37,7 @@ class DateTimeServiceSpec extends SpecBase {
       currentTime.getYear       should be >= 2023
       currentTime.getMonthValue should (be >= 1 and be <= 12)
       currentTime.getDayOfMonth should (be >= 1 and be <= 31)
-      currentTime.getHour       should (be >= 1 and be <= 24)
+      currentTime.getHour       should (be >= 0 and be <= 24)
 
     }
 

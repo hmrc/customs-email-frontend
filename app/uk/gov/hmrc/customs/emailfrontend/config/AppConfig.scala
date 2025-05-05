@@ -66,12 +66,12 @@ class AppConfig @Inject() (val config: Configuration, servicesConfig: ServicesCo
 
   lazy val save4LaterUrl: String = s"$customsHodsProxyBaseUrl/$save4LaterContext"
 
-  private val emailServiceBaseUrl: String = servicesConfig.baseUrl("email")
-  lazy val emailServiceUrl: String        = s"$emailServiceBaseUrl/hmrc/email"
+  private val emailThrottlerUrlWithContext =
+    s"${servicesConfig.baseUrl(
+        "customs-financials-email-throttler"
+      )}${config.get[String]("microservice.services.customs-financials-email-throttler.context-base")}"
 
-  lazy val sendEmailEndpoint: String =
-    servicesConfig.baseUrl("customs-financials-email-throttler") +
-      config.get[String]("microservice.services.customs-financials-email-throttler.context-base") + "/enqueue-email"
+  lazy val sendEmailEndpoint: String = s"$emailThrottlerUrlWithContext/enqueue-email"
 
   lazy val referrerName: Seq[ReferrerName] = config.get[Seq[ReferrerName]]("referrer-services")
 
