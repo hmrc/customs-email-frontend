@@ -20,19 +20,16 @@ import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.http.Fault
 import com.github.tomakehurst.wiremock.http.RequestMethod.POST
 import com.typesafe.config.ConfigFactory
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers.*
 import play.api.{Application, Configuration}
 import uk.gov.hmrc.customs.emailfrontend.model.EmailRequest
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
-import uk.gov.hmrc.customs.emailfrontend.utils.WireMockSupportProvider
+import uk.gov.hmrc.customs.emailfrontend.utils.{SpecBaseWithNoBeforeAndAfterEach, WireMockSupportProvider}
 import uk.gov.hmrc.http.HeaderCarrier
 
-class EmailThrottlerConnectorSpec extends AnyWordSpecLike with Matchers with MockitoSugar with WireMockSupportProvider {
+class EmailThrottlerConnectorSpec extends SpecBaseWithNoBeforeAndAfterEach with WireMockSupportProvider {
 
   "sendEmail" should {
     "return true when the api responds with 202" in new Setup {

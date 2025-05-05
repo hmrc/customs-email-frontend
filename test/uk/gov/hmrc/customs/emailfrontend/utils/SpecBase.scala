@@ -105,3 +105,5 @@ object TestImplicits {
     }
   }
 }
+
+trait SpecBaseWithNoBeforeAndAfterEach extends AnyWordSpecLike with Matchers with MockitoSugar
