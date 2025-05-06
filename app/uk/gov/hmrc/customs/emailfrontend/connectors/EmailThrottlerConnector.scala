@@ -29,17 +29,17 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmailThrottlerConnector @Inject() (http: HttpClientV2, metricsReporter: MetricsReporterService)(implicit
+class EmailThrottlerConnector @Inject() (httpClient: HttpClientV2, metricsReporter: MetricsReporterService)(implicit
   appConfig: AppConfig,
   ec: ExecutionContext
 ) {
 
-  val log: LoggerLike = Logger(this.getClass)
+  private val log: LoggerLike = Logger(this.getClass)
 
   def sendEmail(request: EmailRequest)(implicit hc: HeaderCarrier): Future[Boolean] =
     metricsReporter.withResponseTimeLogging(s"email.post.${request.templateId}") {
 
-      http
+      httpClient
         .post(url"${appConfig.sendEmailEndpoint}")
         .withBody[EmailRequest](request)
         .execute[HttpResponse]
