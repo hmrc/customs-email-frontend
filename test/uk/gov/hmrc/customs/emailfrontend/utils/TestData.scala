@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.customs.emailfrontend.utils
 
-import uk.gov.hmrc.customs.emailfrontend.model.{InternalId, LoggedInUser}
+import uk.gov.hmrc.customs.emailfrontend.model.{EmailAddress, InternalId, LoggedInUser}
 
 import java.time.format.DateTimeFormatter
 
@@ -24,9 +24,10 @@ object TestData {
   val dateFormatter01: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
   val dateFormatter02: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
 
-  val testEori   = "test_eori"
-  val testEmail  = "test@example.com"
-  val testEmail2 = "test_new_mail@test.com"
+  val testEori                       = "test_eori"
+  val testEmail                      = "test@example.com"
+  val testEmail2                     = "test_new_mail@test.com"
+  val testEmailAddress: EmailAddress = EmailAddress(testEmail)
 
   val testLocalTimestamp     = "2016-3-17T9:30:47.114"
   val testUtcTimestamp       = "2021-01-01T11:11:11Z"

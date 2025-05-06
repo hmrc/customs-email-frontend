@@ -1,0 +1,42 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package uk.gov.hmrc.customs.emailfrontend.utils
+
+import play.api.libs.json.{Format, JsString, JsSuccess, Json}
+import uk.gov.hmrc.customs.emailfrontend.model.EmailAddress
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.testEmail
+
+class JsonFormatUtilsSpec extends SpecBase {
+  "stringFormat" should {
+
+    "read correct value" in new Setup {
+      Json.fromJson(JsString(testEmail)) shouldBe JsSuccess(emailAddress)
+    }
+
+    "write correct value" in new Setup {
+      jsonFormatUtils.writes(emailAddress) shouldBe Json.parse(emailJsonString)
+    }
+  }
+
+  trait Setup {
+    val emailJsonString: String    = """"test@example.com"""".stripMargin
+    val emailAddress: EmailAddress = EmailAddress(testEmail)
+
+    implicit val jsonFormatUtils: Format[EmailAddress] =
+      JsonFormatUtils.stringFormat[EmailAddress](EmailAddress.apply)(_.value)
+  }
+}
