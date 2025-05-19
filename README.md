@@ -38,13 +38,13 @@ Default service port on local - 9898
 
 The easiest way to get started with these is via the service manager CLI - you can find the installation guide [here](https://docs.tax.service.gov.uk/mdtp-handbook/documentation/developer-set-up/set-up-service-manager.html)
 
-| Command                                  | Description                                      |
-|------------------------------------------|--------------------------------------------------|
-| `sm2 --start CUSTOMS_EMAIL_FRONTEND_ALL` | Runs all dependencies                            |
-| `sm2 -s`                                 | Shows running services                           |
-| `sm2 --stop CUSTOMS_EMAIL_FRONTEND`      | Stop the micro service                           |
-| `sbt run` or `sbt "run 9898"`            | (from root dir) starts the service on port  9898 |
-| `sbt "start -Dhttp.port=9898"`           | Run service in 'PROD mode'                       |
+| Command                                     | Description                                      |
+|---------------------------------------------|--------------------------------------------------|
+| `sm2 --start CUSTOMS_EMAIL_FRONTEND_ALL -f` | Runs all dependencies                            |
+| `sm2 -s`                                    | Shows running services                           |
+| `sm2 --stop CUSTOMS_EMAIL_FRONTEND`         | Stop the micro service                           |
+| `sbt run` or `sbt "run 9898"`               | (from root dir) starts the service on port  9898 |
+| `sbt "start -Dhttp.port=9898"`              | Run service in 'PROD mode'                       |
 
 ### Login enrolments
 
