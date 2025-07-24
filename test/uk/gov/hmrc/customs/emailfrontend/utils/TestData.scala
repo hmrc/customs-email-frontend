@@ -18,6 +18,7 @@ package uk.gov.hmrc.customs.emailfrontend.utils
 
 import uk.gov.hmrc.customs.emailfrontend.model.{EmailAddress, InternalId, LoggedInUser}
 
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object TestData {
@@ -34,4 +35,15 @@ object TestData {
   val testUtcTimestampMillis = "2021-01-01T11:11:11.111Z"
 
   val loggedInUser: LoggedInUser = LoggedInUser(InternalId("some_id"), None, None, testEori)
+
+  val YEAR    = 2024
+  val MONTH   = 12
+  val DAY     = 15
+  val HOUR    = 14
+  val MINUTES = 30
+  val SECONDS = 28
+
+  val TEST_LOCAL_DATE_TIME: LocalDateTime = LocalDateTime.of(YEAR, MONTH, DAY, HOUR, MINUTES, SECONDS)
+
+  val TEST_REF = "12345acnd677"
 }

@@ -21,8 +21,10 @@ import uk.gov.hmrc.customs.emailfrontend.utils.SpecBase
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.{emptyString, singleSpace}
 
 class PackageSpec extends SpecBase {
+
   "Utils.replaceSpaceWithEmptyString" should {
     "replace the spaces with empty string" in new SetUp {
+
       Utils.stripWhiteSpaces(stringWithOnlySpaces) mustBe emptyString
       Utils.stripWhiteSpaces(stringWithLeadingSpaces) mustBe "abc13456"
       Utils.stripWhiteSpaces(stringWithTrailingSpaces) mustBe "abc13456"
@@ -35,11 +37,11 @@ class PackageSpec extends SpecBase {
 }
 
 trait SetUp {
-  val stringWithOnlySpaces     = singleSpace * 6
-  val stringWithLeadingSpaces  = "  abc13456"
-  val stringWithTrailingSpaces = "abc13456   "
-  val stringWithSpacesWithIn_1 = "abt@ test.com"
-  val stringWithSpacesWithIn_2 = "a b t@ test.com"
-  val stringWithSpacesWithIn_3 = "abt@test. com"
-  val stringWithSpacesWithIn_4 = "ab   t@   test. com"
+  val stringWithOnlySpaces: String = singleSpace * 6
+  val stringWithLeadingSpaces      = "  abc13456"
+  val stringWithTrailingSpaces     = "abc13456   "
+  val stringWithSpacesWithIn_1     = "abt@ test.com"
+  val stringWithSpacesWithIn_2     = "a b t@ test.com"
+  val stringWithSpacesWithIn_3     = "abt@test. com"
+  val stringWithSpacesWithIn_4     = "ab   t@   test. com"
 }

@@ -2,7 +2,7 @@ import sbt.*
 
 object AppDependencies {
 
-  val bootstrapVersion = "9.11.0"
+  val bootstrapVersion = "9.14.0"
 
   private val excludeHttpVerbs = ExclusionRule(organization = "uk.gov.hmrc", name = "http-verbs-play-30")
 
