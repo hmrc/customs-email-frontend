@@ -63,7 +63,6 @@ lazy val microservice = Project(appName, file("."))
     scalafmtFailOnErrors := true
   )
   .settings(PlayKeys.playDefaultPort := 9898)
-  .settings(resolvers += Resolver.jcenterRepo)
   .settings(scalastyleSettings)
 
 addCommandAlias(

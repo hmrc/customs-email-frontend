@@ -32,7 +32,7 @@ import scala.concurrent.Future
 class AuditableSpec extends SpecBase {
 
   "sendDataEvent" should {
-    "send a data event" ignore new Setup {
+    "send a data event" in new Setup {
 
       doNothing().when(mockAudit).sendDataEvent(any)(any)
       when(mockConnector.sendEvent(dataEvent)(hc, ec)).thenReturn(Future.successful(Success))
