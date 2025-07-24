@@ -5,17 +5,19 @@ import AppDependencies.bootstrapVersion
 val appName = "customs-email-frontend"
 
 val silencerVersion = "1.7.16"
-val scala3_3_4 = "3.3.4"
+val scala3_3_4      = "3.3.4"
 
-val scalaStyleConfigFile = "scalastyle-config.xml"
+val scalaStyleConfigFile     = "scalastyle-config.xml"
 val testScalaStyleConfigFile = "test-scalastyle-config.xml"
-val testDirectory = "test"
+val testDirectory            = "test"
 
 ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := scala3_3_4
 
-lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
-  (Test / scalastyleConfig) := baseDirectory.value / testDirectory / testScalaStyleConfigFile)
+lazy val scalastyleSettings = Seq(
+  scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
+  (Test / scalastyleConfig) := baseDirectory.value / testDirectory / testScalaStyleConfigFile
+)
 
 lazy val it = project
   .enablePlugins(PlayScala)
@@ -28,28 +30,28 @@ lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;" +
       ".*javascript.*;.*Routes.*;.*GuiceInjector;" +
       ".*FeatureSwitchController;" +
       ".*views.*;" +
       ".*ControllerConfiguration;.*LanguageSwitchController",
-    ScoverageKeys.coverageMinimumStmtTotal := 85,
-    ScoverageKeys.coverageFailOnMinimum := false,
+    ScoverageKeys.coverageMinimumStmtTotal := 90,
+    ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
-
     scalacOptions := scalacOptions.value.diff(Seq("-Wunused:all")) ++ Seq("-Wconf:msg=Flag.*repeatedly:s"),
     Test / scalacOptions ++= Seq(
       "-Wunused:imports",
       "-Wunused:params",
       "-Wunused:implicits",
       "-Wunused:explicits",
-      "-Wunused:privates"),
-
+      "-Wunused:privates"
+    ),
     libraryDependencies ++= Seq(
-      compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.for3Use2_13With("", ".12")),
-      "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.for3Use2_13With("", ".12")),
-
+      compilerPlugin(
+        "com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.for3Use2_13With("", ".12")
+      ),
+      "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.for3Use2_13With("", ".12")
+    ),
     routesImport ++= Seq("uk.gov.hmrc.customs.emailfrontend.model.Ineligible"),
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
@@ -61,8 +63,9 @@ lazy val microservice = Project(appName, file("."))
     scalafmtFailOnErrors := true
   )
   .settings(PlayKeys.playDefaultPort := 9898)
-  .settings(resolvers += Resolver.jcenterRepo)
   .settings(scalastyleSettings)
 
-addCommandAlias("runAllChecks",
-  ";clean;compile;coverage;test;it/test;scalafmtCheckAll;scalastyle;Test/scalastyle;coverageReport")
+addCommandAlias(
+  "runAllChecks",
+  ";clean;compile;coverage;test;it/test;scalafmtCheckAll;scalastyle;Test/scalastyle;coverageReport"
+)

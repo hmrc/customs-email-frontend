@@ -18,27 +18,17 @@ package uk.gov.hmrc.customs.emailfrontend.model
 
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.*
 import uk.gov.hmrc.customs.emailfrontend.DateTimeUtil
 import uk.gov.hmrc.customs.emailfrontend.connectors.http.responses.VerifiedEmailRequest
-import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{testEmail, testEori}
+import uk.gov.hmrc.customs.emailfrontend.utils.TestData.{TEST_LOCAL_DATE_TIME, TEST_REF, testEmail, testEori}
+import play.api.libs.json.{JsDefined, JsResultException, JsString, JsSuccess, JsValue, Json}
 
 class UpdateVerifiedEmailRequestSpec extends PlaySpec {
 
-  private val requestCommon = RequestCommon()
-  private val requestDetail = RequestDetail(
-    IDType = "EORI",
-    IDNumber = testEori,
-    emailAddress = testEmail,
-    emailVerificationTimestamp = DateTimeUtil.dateTime
-  )
-
-  private val updateVerifiedEmailRequest = UpdateVerifiedEmailRequest(requestCommon, requestDetail)
-  private val verifiedEmailRequest       = VerifiedEmailRequest(updateVerifiedEmailRequest = updateVerifiedEmailRequest)
-
   "UpdateVerifiedEmailRequest" should {
-    "parse the model to correct json format" in {
-      val requestJosn = Json.toJson[VerifiedEmailRequest](verifiedEmailRequest)
+    "parse the model to correct json format" in new Setup {
+      val requestJosn: JsValue = Json.toJson[VerifiedEmailRequest](verifiedEmailRequest)
+
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "emailAddress" shouldBe JsDefined(
         JsString(testEmail)
       )
@@ -47,5 +37,64 @@ class UpdateVerifiedEmailRequestSpec extends PlaySpec {
       )
       requestJosn \ "updateVerifiedEmailRequest" \ "requestDetail" \ "IDType"       shouldBe JsDefined(JsString("EORI"))
     }
+  }
+
+  "UpdateVerifiedEmailRequest.formats" should {
+
+    "generate correct output for Json Reads" in new Setup {
+      import UpdateVerifiedEmailRequest.formats
+
+      Json.fromJson(Json.parse(updateVerifiedEmailRequestJsString)) shouldBe JsSuccess(
+        updateVerifiedEmailRequestWithResCommonOb
+      )
+    }
+
+    "throw exception for invalid Json" in {
+      val invalidJson = "{ \"verResponse\": \"pending\" }"
+
+      intercept[JsResultException] {
+        Json.parse(invalidJson).as[UpdateVerifiedEmailRequest]
+      }
+    }
+
+    "generate correct output for Json Writes" in new Setup {
+      Json.toJson(updateVerifiedEmailRequestWithResCommonOb) shouldBe Json.parse(updateVerifiedEmailRequestJsString)
+    }
+  }
+
+  trait Setup {
+    val requestCommon: RequestCommon              = RequestCommon()
+    val requestCommonWithDetailsOb: RequestCommon = RequestCommon("CDS", TEST_LOCAL_DATE_TIME, TEST_REF)
+
+    val requestDetail: RequestDetail = RequestDetail(
+      IDType = "EORI",
+      IDNumber = testEori,
+      emailAddress = testEmail,
+      emailVerificationTimestamp = DateTimeUtil.dateTime
+    )
+
+    val updateVerifiedEmailRequest: UpdateVerifiedEmailRequest =
+      UpdateVerifiedEmailRequest(requestCommon, requestDetail)
+
+    val updateVerifiedEmailRequestWithResCommonOb: UpdateVerifiedEmailRequest =
+      UpdateVerifiedEmailRequest(
+        requestCommonWithDetailsOb,
+        requestDetail.copy(emailVerificationTimestamp = TEST_LOCAL_DATE_TIME)
+      )
+
+    val verifiedEmailRequest: VerifiedEmailRequest =
+      VerifiedEmailRequest(updateVerifiedEmailRequest = updateVerifiedEmailRequest)
+
+    val updateVerifiedEmailRequestJsString: String =
+      """{"requestCommon":{
+        |"regime":"CDS",
+        |"receiptDate":"2024-12-15T14:30:28Z",
+        |"acknowledgementReference":"12345acnd677"},
+        |"requestDetail":
+        |{"IDType":"EORI",
+        |"IDNumber":"test_eori",
+        |"emailAddress":"test@example.com",
+        |"emailVerificationTimestamp":"2024-12-15T14:30:28Z"
+        |}}""".stripMargin
   }
 }
