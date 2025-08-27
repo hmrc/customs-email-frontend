@@ -2,15 +2,15 @@ import sbt.*
 
 object AppDependencies {
 
-  val bootstrapVersion = "9.14.0"
+  val bootstrapVersion = "10.1.0"
 
   private val excludeHttpVerbs = ExclusionRule(organization = "uk.gov.hmrc", name = "http-verbs-play-30")
 
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"                  %% "bootstrap-frontend-play-30" % bootstrapVersion excludeAll excludeHttpVerbs,
-    "uk.gov.hmrc"                  %% "play-frontend-hmrc-play-30" % "11.13.0",
-    "uk.gov.hmrc.mongo"            %% "hmrc-mongo-play-30"         % "2.6.0",
+    "uk.gov.hmrc"                  %% "play-frontend-hmrc-play-30" % "12.8.0",
+    "uk.gov.hmrc.mongo"            %% "hmrc-mongo-play-30"         % "2.7.0",
     "com.fasterxml.jackson.module" %% "jackson-module-scala"       % "2.17.0",
     "org.typelevel"                %% "cats-core"                  % "2.10.0"
   )
