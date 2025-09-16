@@ -47,6 +47,7 @@ class SubscriptionDisplayConnector @Inject() (appConfig: AppConfig, http: HttpCl
           response = displayResponse,
           url = appConfig.subscriptionDisplayUrl
         )
+        println("////////DISPLAY RESPONSE:///////"+ displayResponse)
         displayResponse
       }
   }

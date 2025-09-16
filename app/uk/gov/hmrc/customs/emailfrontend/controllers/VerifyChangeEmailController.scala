@@ -67,6 +67,7 @@ class VerifyChangeEmailController @Inject() (
   def create: Action[AnyContent] = identify.async { implicit request =>
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
       details =>
+        println("////DETAILS::://////" + details )
         (details.currentEmail, details.newEmail) match {
           case (Some(currentEmail), _) =>
             Future.successful(Ok(view(confirmVerifyChangeForm, Some(currentEmail))))
