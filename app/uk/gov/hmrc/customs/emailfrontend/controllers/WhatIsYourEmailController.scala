@@ -124,7 +124,6 @@ class WhatIsYourEmailController @Inject() (
   def verify: Action[AnyContent] = identify.async { implicit request =>
 
     save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
-
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
       _ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
       Future.successful(Ok(whatIsYourEmailView(emailForm)))
