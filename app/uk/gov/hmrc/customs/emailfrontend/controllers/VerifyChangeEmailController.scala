@@ -69,10 +69,16 @@ class VerifyChangeEmailController @Inject() (
       details =>
         (details.currentEmail, details.newEmail) match {
           case (Some(currentEmail), _) =>
+            logger.info(s"Current email available in save4LaterService for EORI: " + request.user.eori)
             Future.successful(Ok(view(confirmVerifyChangeForm, Some(currentEmail))))
-          case _                       => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
-        },
-      subscriptionDisplay()
+          case _                       =>
+            logger.info(s"No current email available in save4LaterService for EORI: " + request.user.eori)
+            Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
+
+        }, {
+        logger.info(s"SUB09 call made for EORI: " + request.user.eori)
+        subscriptionDisplay()
+      }
     )
   }
 
@@ -84,9 +90,11 @@ class VerifyChangeEmailController @Inject() (
           Future.successful(Ok(view(confirmVerifyChangeForm, Some(email))))
 
         case SubscriptionDisplayResponse(_, _, Some("Processed Successfully"), _) =>
+          logger.info(s"ETMP returning Some(Processed Successfully) for EORI: " + request.user.eori)
           Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
 
         case SubscriptionDisplayResponse(None, _, Some(_), Some("FAIL")) =>
+          logger.info(s"ETMP returning Some(FAIL) for EORI: " + request.user.eori)
           Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService()))
 
         case SubscriptionDisplayResponse(None, _, None, None) =>
@@ -95,7 +103,10 @@ class VerifyChangeEmailController @Inject() (
         case SubscriptionDisplayResponse(None, None, _, _) =>
           Future.successful(Redirect(routes.WhatIsYourEmailController.verify))
 
-        case _ => Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService()))
+        case _ =>
+          logger.info(s"ETMP returning _ for EORI: " + request.user.eori)
+          Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService()))
+
       }
       .recover {
         handleNonFatalException()
