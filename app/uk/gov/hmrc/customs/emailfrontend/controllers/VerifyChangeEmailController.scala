@@ -75,11 +75,10 @@ class VerifyChangeEmailController @Inject() (
             logger.info(s"No current email available in save4LaterService for EORI: " + request.user.eori)
             Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
 
-        },
-       {
-      logger.info(s"SUB09 call made for EORI: " + request.user.eori)
-      subscriptionDisplay()
-       }
+        }, {
+        logger.info(s"SUB09 call made for EORI: " + request.user.eori)
+        subscriptionDisplay()
+      }
     )
   }
 
@@ -107,7 +106,7 @@ class VerifyChangeEmailController @Inject() (
         case _ =>
           logger.info(s"ETMP returning _ for EORI: " + request.user.eori)
           Future.successful(Redirect(routes.VerifyChangeEmailController.problemWithService()))
-          
+
       }
       .recover {
         handleNonFatalException()
