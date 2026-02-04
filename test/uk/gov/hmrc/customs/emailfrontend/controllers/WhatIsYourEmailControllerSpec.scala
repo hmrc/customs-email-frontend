@@ -81,6 +81,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase {
       when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
         .thenReturn(Future.successful(Right(())))
 
+      when(mockSave4LaterService.fetchEmail(any)(any))
+        .thenReturn(Future.successful(None))
+
       running(app) {
         val request = FakeRequest(GET, routes.WhatIsYourEmailController.whatIsEmailAddress.url)
         val result  = route(app, request).value
@@ -99,6 +102,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase {
       when(mockSave4LaterService.saveEmail(meq(InternalId("fakeInternalId")), any)(any))
         .thenReturn(Future.successful(Right(())))
 
+      when(mockSave4LaterService.fetchEmail(any)(any))
+        .thenReturn(Future.successful(None))
+
       running(app) {
         val request = FakeRequest(GET, routes.WhatIsYourEmailController.whatIsEmailAddress.url)
         val result  = route(app, request).value
@@ -114,6 +120,9 @@ class WhatIsYourEmailControllerSpec extends SpecBase {
 
       when(mockSubscriptionDisplayConnector.subscriptionDisplay(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(someSubscriptionDisplayResponseWithStatus))
+
+      when(mockSave4LaterService.fetchEmail(any)(any))
+        .thenReturn(Future.successful(None))
 
       running(app) {
         val request = FakeRequest(GET, routes.WhatIsYourEmailController.whatIsEmailAddress.url)
