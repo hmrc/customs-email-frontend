@@ -36,7 +36,7 @@
 @(confirmEmailForm: Form[YesNo], email: String)(implicit request: Request[_], messages: Messages)
 
 @layout(Some(messages("customs.emailfrontend.confirm-your-email.title-and-heading")),
-    backLinkUrl = Some(routes.WhatIsYourEmailController.whatIsEmailAddress.url)) {
+    backLinkUrl = Some(s"${routes.WhatIsYourEmailController.whatIsEmailAddress.url}?email=$email")) {
 
     @errorSummary(confirmEmailForm)
 
