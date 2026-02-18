@@ -29,6 +29,7 @@ import uk.gov.hmrc.customs.emailfrontend.services.{EmailVerificationService, Sav
 import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 import uk.gov.hmrc.customs.emailfrontend.views.html.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import play.api.data.Form
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -139,11 +140,16 @@ class WhatIsYourEmailController @Inject() (
       }
 
   def verify: Action[AnyContent] = identify.async { implicit request =>
-
     save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
+
     save4LaterService.routeBasedOnAmendment(request.user.internalId)(
-      _ => Future.successful(Ok(whatIsYourEmailView(emailForm))),
-      Future.successful(Ok(whatIsYourEmailView(emailForm)))
+      _ =>
+        save4LaterService.fetchEmail(request.user.internalId).map { emailDetails =>
+          Ok(whatIsYourEmailView(formWithSavedEmail(emailDetails)))
+        },
+      save4LaterService.fetchEmail(request.user.internalId).map { emailDetails =>
+        Ok(whatIsYourEmailView(formWithSavedEmail(emailDetails)))
+      }
     )
   }
 
