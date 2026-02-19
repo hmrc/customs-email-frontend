@@ -19,6 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
+import play.api.data.Form
 import uk.gov.hmrc.customs.emailfrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.controllers.actions.IdentifierAction
@@ -66,47 +67,50 @@ class WhatIsYourEmailController @Inject() (
     }
 
   def create: Action[AnyContent] = identify.async { implicit request =>
-    save4LaterService.routeBasedOnAmendment(request.user.internalId)(
-      details =>
-        (details.currentEmail, details.newEmail) match {
-          case (Some(_), _) =>
-            save4LaterService.fetchEmail(request.user.internalId).map { emailDetails =>
-              Ok(view(formWithSavedEmail(emailDetails), appConfig))
-            }
-
-          case (None, _) =>
-            save4LaterService.fetchEmail(request.user.internalId).map { emailDetails =>
-              Ok(whatIsYourEmailView(formWithSavedEmail(emailDetails)))
-            }
-          case _         => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
-        },
-      subscriptionDisplay()
-    )
+    save4LaterService.fetchEmail(request.user.internalId).flatMap { emailDetails =>
+      save4LaterService.routeBasedOnAmendment(request.user.internalId)(
+        details =>
+          details.currentEmail match {
+            case Some(_) =>
+              Future.successful(
+                Ok(view(formWithSavedEmail(emailDetails), appConfig))
+              )
+            case None    =>
+              Future.successful(
+                Ok(whatIsYourEmailView(formWithSavedEmail(emailDetails)))
+              )
+          },
+        subscriptionDisplay()
+      )
+    }
   }
 
   def whatIsEmailAddress: Action[AnyContent] = identify.async { implicit request =>
-    subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
-      case SubscriptionDisplayResponse(Some(email), Some(_), _, _) =>
-        save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), emptyString, None))
-        save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
-        save4LaterService.fetchEmail(request.user.internalId).map { emailDetails =>
-          Ok(view(formWithSavedEmail(emailDetails), appConfig))
-        }
+    save4LaterService.fetchEmail(request.user.internalId).flatMap { emailDetails =>
+      val filledForm = emailDetails match {
+        case Some(details) if details.newEmail.nonEmpty =>
+          emailForm.fill(Email(details.newEmail))
+        case _                                          =>
+          emailForm
+      }
+      subscriptionDisplayConnector.subscriptionDisplay(request.user.eori).flatMap {
+        case SubscriptionDisplayResponse(Some(email), Some(_), _, _) =>
+          save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), emptyString, None))
+          save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
+          Future.successful(Ok(view(filledForm, appConfig)))
 
-      case SubscriptionDisplayResponse(Some(email), None, _, _) =>
-        save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), emptyString, None))
-        save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
-        save4LaterService.fetchEmail(request.user.internalId).map { emailDetails =>
-          Ok(view(formWithSavedEmail(emailDetails), appConfig))
-        }
+        case SubscriptionDisplayResponse(Some(email), None, _, _) =>
+          save4LaterService.saveEmail(request.user.internalId, EmailDetails(Some(email), emptyString, None))
+          save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
+          Future.successful(Ok(view(filledForm, appConfig)))
 
-      case SubscriptionDisplayResponse(None, None, _, _) =>
-        save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
-        save4LaterService.fetchEmail(request.user.internalId).map { emailDetails =>
-          Ok(view(formWithSavedEmail(emailDetails), appConfig))
-        }
+        case SubscriptionDisplayResponse(None, None, _, _) =>
+          save4LaterService.saveJourneyType(request.user.internalId, JourneyType(false))
+          Future.successful(Ok(view(filledForm, appConfig)))
 
-      case _ => Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
+        case _ =>
+          Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
+      }
     }
   }
 
@@ -213,13 +217,13 @@ class WhatIsYourEmailController @Inject() (
     Future.successful(BadRequest(errorHandler.problemWithService()))
   }
 
-  private def formWithSavedEmail(
-    emailDetailsOpt: Option[EmailDetails]
-  ): Form[Email] =
+  private def formWithSavedEmail(emailDetailsOpt: Option[EmailDetails]): Form[Email] =
     emailDetailsOpt match {
-      case Some(details) if details.newEmail.nonEmpty =>
+      case Some(details) if details.newEmail.nonEmpty     =>
         emailForm.fill(Email(details.newEmail))
-      case _                                          =>
+      case Some(details) if details.currentEmail.nonEmpty =>
+        emailForm.fill(Email(details.currentEmail.get))
+      case _                                              =>
         emailForm
     }
 }
