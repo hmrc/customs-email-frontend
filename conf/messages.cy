@@ -25,7 +25,6 @@ customs.emailfrontend.start.related-content-link3=Y Cynllun Gohirio Tollau
 customs.emailfrontend.start.related-content-link4=Ad-daliadau TAW ar nwyddau wedi’u mewnforio
 customs.emailfrontend.start.related-content-link5=Data tariffau
 
-
 customs.emailfrontend.change-your-email.title=Nodwch eich cyfeiriad e-bost - Rheoli’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datgan Tollau (CDS) - GOV.UK
 customs.emailfrontend.change-your-email.heading=Nodwch gyfeiriad e-bost newydd
 customs.emailfrontend.change-your-email.email=Cyfeiriad e-bost
@@ -66,6 +65,7 @@ customs.emailfrontend.changing-your-email.title-and-heading=Newid eich cyfeiriad
 customs.emailfrontend.changing-your-email.text1=Mae’r Gwasanaeth Datganiadau Tollau yn defnyddio un cyfeiriad e-bost ar gyfer nifer o wasanaethau sy’n gysylltiedig â thollau.
 customs.emailfrontend.changing-your-email.text2=Os ydych yn newid y cyfeiriad e-bost hwn, sicrhewch fod modd i bobl eraill yn eich cwmni gael y negeseuon sydd eu hangen arnynt.
 
+# Error messages
 customs.emailfrontend.error-summary.problem=Mae problem wedi codi.
 customs.emailfrontend.errors.valid-email.empty=Nodwch eich cyfeiriad e-bost
 customs.emailfrontend.errors.valid-email.too-long=Mae’n rhaid i’r cyfeiriad e-bost fod yn 50 o gymeriadau neu lai
@@ -76,6 +76,7 @@ customs.emailfrontend.errors.verify-change=Dewiswch a hoffech gadarnhau neu newi
 customs.emailfrontend.problem-with-service.title-and-heading=Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
 customs.emailfrontend.problem-with-service.info=Nid yw’ch cyfeiriad e-bost wedi’i ddiweddaru. Rhowch gynnig arall arni yn nes ymlaen.
 
+# Timeout dialog
 customs.emailfrontend.timeout.title=Rydych ar fin cael eich allgofnodi
 
 customs.emailfrontend.you-cant-use-service-NoEnrolment.hint1=Nid oes gan y cyfrif Porth y Llywodraeth a ddefnyddioch i fewngofnodi fynediad at CDS.
@@ -85,6 +86,7 @@ customs.emailfrontend.you-cant-use-service-NotAdmin.hint1="Gwnaethoch fewngofnod
 customs.emailfrontend.you-cant-use-service-NotAdmin.hint2=Cysylltwch â’r person a greodd eich cyfrif Porth y Llywodraeth.
 customs.emailfrontend.you-cant-use-service.heading=Ni allwch ddefnyddio’r gwasanaeth hwn
 
+# Verification in progress
 customs.emailfrontend.verification-in-progress.title-and-heading=Ni allwch newid eich cyfeiriad e-bost
 customs.emailfrontend.verification-in-progress.info=Rydych wedi newid eich cyfeiriad e-bost i {0} yn ddiweddar. Os oes angen i chi newid hwn eto, bydd yn rhaid i chi roi cynnig arall arni ymhen 2 awr.
 
