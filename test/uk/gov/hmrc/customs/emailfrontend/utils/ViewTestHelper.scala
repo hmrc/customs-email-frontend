@@ -35,5 +35,5 @@ trait ViewTestHelper extends SpecBase {
   def shouldContainCorrectBanners(viewDoc: Document): Assertion =
     viewDoc
       .getElementsByClass("govuk-phase-banner")
-      .text() mustBe "BETA This is a new service – your feedback will help us to improve it."
+      .text() mustBe "Beta This is a new service. Help us improve it and give your feedback (opens in new tab) ."
 }

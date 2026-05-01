@@ -90,7 +90,6 @@ customs.emailfrontend.you-cant-use-service.heading=Ni allwch ddefnyddio’r gwas
 customs.emailfrontend.verification-in-progress.title-and-heading=Ni allwch newid eich cyfeiriad e-bost
 customs.emailfrontend.verification-in-progress.info=Rydych wedi newid eich cyfeiriad e-bost i {0} yn ddiweddar. Os oes angen i chi newid hwn eto, bydd yn rhaid i chi roi cynnig arall arni ymhen 2 awr.
 
-# Phase banner
-customs.emailfrontend.phase-banner1=Mae hwn yn wasanaeth newydd – bydd eich
-customs.emailfrontend.phase-banner2=adborth
-customs.emailfrontend.phase-banner3=yn ein helpu i''w wella.
+# BETA Banner
+feedback.text = Gwasanaeth newydd yw hwn. Rhowch help i ni ei wella, a {0}.
+feedback.link = rhoi eich adborth (yn agor tab newydd)

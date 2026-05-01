@@ -90,7 +90,6 @@ customs.emailfrontend.you-cant-use-service.heading=You cannot use this service
 customs.emailfrontend.verification-in-progress.title-and-heading=You cannot change your email address
 customs.emailfrontend.verification-in-progress.info=You recently changed your email address to {0}. If you need to change this again, you will need to try again in 2 hours.
 
-# Phase banner
-customs.emailfrontend.phase-banner1=This is a new service – your
-customs.emailfrontend.phase-banner2=feedback
-customs.emailfrontend.phase-banner3=will help us to improve it.
+# BETA Banner
+feedback.text = This is a new service. Help us improve it and {0}.
+feedback.link = give your feedback (opens in new tab)
