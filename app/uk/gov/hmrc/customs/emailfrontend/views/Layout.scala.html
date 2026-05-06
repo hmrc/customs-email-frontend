@@ -26,6 +26,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcReportTechnicalIssueHelper, HmrcLanguageSelectHelper, HmrcStandardPage}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.servicenavigation.ServiceNavigation
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.customs.emailfrontend.utils.Utils.emptyString
 
 @this(
@@ -43,7 +45,6 @@
     helpAndSupport: Boolean = true,
     deskpro: Boolean = true,
     startPage: Boolean = false,
-    welshToggle: Boolean = true,
     sideBarContent: Option[Html] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
@@ -51,10 +52,16 @@
     Some(pageTitle.map(_ + s" - ${messages("service.name")}").getOrElse(messages("service.name")))
 }
 
+@phaseBannerLink = {
+    <a class="govuk-link"
+       href="/contact/beta-feedback-unauthenticated?service=CDS-FIN"
+       target="_blank">
+        @messages("feedback.link")
+    </a>
+}
+
 @phaseBannerContent = {
-    @messages("customs.emailfrontend.phase-banner1")
-        <a class='govuk-link' href='/contact/beta-feedback-unauthenticated?service=CDS-FIN'>@messages("customs.emailfrontend.phase-banner2")</a>
-    @messages("customs.emailfrontend.phase-banner3")
+    @Html(messages("feedback.text", phaseBannerLink))
 }
 
 @additionalHead = {
@@ -81,10 +88,16 @@
 @hmrcStandardPage(
     HmrcStandardPageParams(
         pageTitle = fullPageTitle,
+        serviceName = Some(""),
         serviceURLs =  ServiceURLs(
-            serviceUrl =  None,
             signOutUrl = Some(uk.gov.hmrc.customs.emailfrontend.controllers.routes.SignOutController.signOut.url),
             accessibilityStatementUrl = Some(appConfig.accessibilityLinkUrl)
+        ),
+        serviceNavigation = Some(
+            ServiceNavigation(
+                serviceName = Some(messages("service.name")),
+                serviceUrl = None
+            ).withLanguageToggle()
         ),
         backLink = backLinkUrl.filter(_.nonEmpty).map(url => BackLink(href = url)),
         templateOverrides = TemplateOverrides(
@@ -95,8 +108,7 @@
             })
         ),
         banners = Banners(
-            phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent)))
+            phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("Beta"))), content = HtmlContent(phaseBannerContent)))
         ),
-        isWelshTranslationAvailable = welshToggle
     )
 )(mainContent)
