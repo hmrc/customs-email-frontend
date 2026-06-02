@@ -5,14 +5,14 @@ import AppDependencies.bootstrapVersion
 val appName = "customs-email-frontend"
 
 val silencerVersion = "1.7.16"
-val scala3_3_4      = "3.3.4"
+val scala3_3_6      = "3.3.6"
 
 val scalaStyleConfigFile     = "scalastyle-config.xml"
 val testScalaStyleConfigFile = "test-scalastyle-config.xml"
 val testDirectory            = "test"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := scala3_3_4
+ThisBuild / scalaVersion := scala3_3_6
 
 lazy val scalastyleSettings = Seq(
   scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
