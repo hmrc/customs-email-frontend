@@ -3,3 +3,4 @@ digital-service: CDS Financials
 test-repositories:
   - customs-email-frontend-performance-tests
   - customs-email-acceptance-tests
+serviceNowMapping: SNSVC0019202
