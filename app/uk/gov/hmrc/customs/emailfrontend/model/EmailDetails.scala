@@ -25,7 +25,7 @@ case class EmailDetails(currentEmail: Option[String], newEmail: String, timestam
 
   private val twoHours = 2
 
-  lazy val amendmentInProgress = timestamp match {
+  lazy val amendmentInProgress: Boolean = timestamp match {
     case Some(date) => !date.isBefore(LocalDateTime.now.atOffset(ZoneOffset.UTC).minusHours(twoHours).toLocalDateTime)
     case None       => false
   }

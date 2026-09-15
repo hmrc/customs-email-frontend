@@ -214,7 +214,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
       }
     }
 
-    "have a status of SEE_OTHER for create method when current email not found in " +
+    "have a status of OK for create method when current email not found in " +
       "cache with no timestamp" in new Setup {
 
         when(mockSave4LaterService.fetchEmail(any)(any))
@@ -227,7 +227,7 @@ class VerifyChangeEmailControllerSpec extends SpecBase {
           val request = fakeRequest(GET, routes.VerifyChangeEmailController.create.url)
           val result  = route(app, request).value
 
-          status(result) shouldBe SEE_OTHER
+          status(result) shouldBe OK
         }
       }
 

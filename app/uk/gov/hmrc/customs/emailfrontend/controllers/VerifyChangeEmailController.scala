@@ -19,6 +19,7 @@ package uk.gov.hmrc.customs.emailfrontend.controllers
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
+import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.customs.emailfrontend.config.ErrorHandler
 import uk.gov.hmrc.customs.emailfrontend.connectors.SubscriptionDisplayConnector
 import uk.gov.hmrc.customs.emailfrontend.connectors.httpparsers.EmailVerificationRequestHttpParser.{
@@ -71,6 +72,9 @@ class VerifyChangeEmailController @Inject() (
           case (Some(currentEmail), _) =>
             logger.info(s"Current email available in save4LaterService for EORI: " + request.user.eori)
             Future.successful(Ok(view(confirmVerifyChangeForm, Some(currentEmail))))
+          case (None, newEmail)        =>
+            logger.info(s"NewEmail Exists Journey: SUB09 call made for EORI: " + request.user.eori)
+            subscriptionDisplay()
           case _                       =>
             logger.info(s"No current email available in save4LaterService for EORI: " + request.user.eori)
             Future.successful(Redirect(routes.WhatIsYourEmailController.problemWithService()))
