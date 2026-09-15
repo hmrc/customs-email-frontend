@@ -72,7 +72,7 @@ class VerifyChangeEmailController @Inject() (
           case (Some(currentEmail), _) =>
             logger.info(s"Current email available in save4LaterService for EORI: " + request.user.eori)
             Future.successful(Ok(view(confirmVerifyChangeForm, Some(currentEmail))))
-          case (None, newEmail)           =>
+          case (None, newEmail)        =>
             logger.info(s"NewEmail Exists Journey: SUB09 call made for EORI: " + request.user.eori)
             subscriptionDisplay()
           case _                       =>
